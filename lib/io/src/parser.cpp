@@ -8,7 +8,6 @@
 #include <cyng/factory.h>
 #include <cyng/io/parser/deserializer.h>
 
-//#include <boost/logic/tribool.hpp>
 #include <iostream>
 #include <ios>
 

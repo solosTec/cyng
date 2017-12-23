@@ -8,6 +8,7 @@
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/io/serializer.h>
 #include <cyng/object.h>
+#include <cmath>
 #include <cyng/core/class_interface.h>
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <algorithm>
@@ -349,6 +350,36 @@ namespace cyng
 		{
 			boost::io::ios_flags_saver  ifs(os);
 			os << std::dec << v;
+			return os;
+		}
+		
+		std::ostream& serializer <float, SERIALIZE_JSON>::write(std::ostream& os, float v)
+		{
+			if (std::isnan(v))
+			{
+				os << "null";
+			}
+			else 
+			{
+				boost::io::ios_flags_saver  ifs(os);
+				os.precision(std::numeric_limits< float >::max_digits10);
+				os << v;
+			}
+			return os;
+		}
+
+		std::ostream& serializer <double, SERIALIZE_JSON>::write(std::ostream& os, double v)
+		{
+			if (std::isnan(v))
+			{
+				os << "null";
+			}
+			else 
+			{
+				boost::io::ios_flags_saver  ifs(os);
+				os.precision(std::numeric_limits< double >::max_digits10);
+				os << v;
+			}
 			return os;
 		}
 	}

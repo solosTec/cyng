@@ -172,8 +172,10 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	# std::apply since 7.0
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "7.0")
 		set(${PROJECT_NAME}_STD_APPLY ${PROJECT_NAME}_STD_APPLY_OFF)
+		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_OFF)
     else()
 		set(${PROJECT_NAME}_STD_APPLY ${PROJECT_NAME}_STD_APPLY_ON)
+		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_ON)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE SHARED)
@@ -217,7 +219,7 @@ else()
 endif()
 
 #
-#	setup Boost library
+#	setup Boost library 1.66.0
 #
 # if(UNIX)
 # set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/release")
@@ -235,8 +237,11 @@ if(Boost_FOUND)
 	message(STATUS "** Boost Path       : ${Boost_LIBRARY_DIRS}")
 	message(STATUS "** Boost Libraries  : ${Boost_LIBRARIES}")
 
+if(UNIX)
 	include_directories($ENV{HOME}/projects/beast/include)
 	include_directories($ENV{HOME}/projects/asio/include)
+endif()
+
 	include_directories(${Boost_INCLUDE_DIRS})
 	link_directories(${Boost_LIBRARY_DIRS})
 	

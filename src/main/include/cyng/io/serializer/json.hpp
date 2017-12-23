@@ -149,6 +149,18 @@ namespace cyng
 		{
 			static std::ostream& write(std::ostream& os, std::uint64_t v);
 		};
+		
+		template <>
+		struct serializer <float, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, float v);
+		};
+		
+		template <>
+		struct serializer <double, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, double v);
+		};
 	}
 }
 
