@@ -210,6 +210,22 @@ elseif(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS")	
 	add_definitions(/EHsc /bigobj /std:c++latest)
 	
+	#
+	# help CMake to find Boost
+	#
+	if(NOT BOOST_ROOT)
+		set(BOOST_ROOT "C:/local/boost_1_66_0/" CACHE PATH "BOOST_ROOT" )
+		message(STATUS "** Set BOOST_ROOT  : ${BOOST_ROOT}")
+	endif()
+
+	#
+	# help CMake to find OpenSSL
+	#
+	if(NOT OPENSSL_ROOT_DIR)
+		set(OPENSSL_ROOT_DIR "C:/local/OpenSSL-Win64" CACHE PATH "OPENSSL_ROOT_DIR")
+		message(STATUS "** Set OPENSSL_ROOT_DIR: ${OPENSSL_ROOT_DIR}")
+	endif()
+	
 else()
 
 	message( FATAL_ERROR "Unknown or missing compiler: ${CMAKE_CXX_COMPILER_ID}" )
