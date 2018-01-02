@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <cyng/compatibility/general.h>
+#include <boost/utility/string_view.hpp>
 
 namespace cyng
 {

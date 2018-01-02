@@ -28,7 +28,7 @@ namespace cyng
     using string_view = std::string_view;
     
 #define CYNG_STRING_LITERAL(x)    \
-    x##s 
+    x ## s 
     
 #endif
     

@@ -194,13 +194,15 @@ elseif(MSVC)
 		#	Even 19.5 lacks support for std::apply()
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
 		set(${PROJECT_NAME}_STD_SHARED_MUTEX ${PROJECT_NAME}_STD_SHARED_MUTEX_ON)
-		set(${PROJECT_NAME}_STD_STRING_VIEW	${PROJECT_NAME}_STD_SHARED_MUTEX_ON)
+		set(${PROJECT_NAME}_STD_STRING_VIEW	${PROJECT_NAME}_STD_STRING_VIEW_OFF)
 		set(${PROJECT_NAME}_STD_APPLY	${PROJECT_NAME}_STD_APPLY_ON)
+		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_ON)
 	else()
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
 		set(${PROJECT_NAME}_STD_SHARED_MUTEX ${PROJECT_NAME}_STD_SHARED_MUTEX_OFF)
-		set(${PROJECT_NAME}_STD_STRING_VIEW	${PROJECT_NAME}_STD_SHARED_MUTEX_OFF)
+		set(${PROJECT_NAME}_STD_STRING_VIEW	${PROJECT_NAME}_STD_STD_STRING_VIEW_OFF)
 		set(${PROJECT_NAME}_STD_APPLY	${PROJECT_NAME}_STD_APPLY_OFF)
+		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_OFF)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE STATIC)
@@ -211,8 +213,8 @@ elseif(MSVC)
 #	1>Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
 
 	#	This is Windows 7 (and rules out windows vista)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS")	
-	add_definitions(/EHsc /bigobj /std:c++latest)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")	
+	add_definitions(/EHsc /bigobj /std:c++latest /MP)
 	
 	#
 	# help CMake to find Boost
@@ -323,8 +325,9 @@ add_library(cyng_meta ${GLOBAL_LIBRARY_TYPE} ${meta_lib})
 #
 include (lib/core/lib.cmake)
 add_library(cyng_core ${GLOBAL_LIBRARY_TYPE} ${core_lib})
-target_link_libraries(cyng_core
-	boost_thread)
+if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+	target_link_libraries(cyng_core boost_thread)
+endif()
 
 #
 #	cyng log library
@@ -452,18 +455,21 @@ set_property(
 	TARGET unit_test
 	PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-target_link_libraries(unit_test
-	cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys
-	${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys)
+
+if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+	list(APPEND unittest_link_libs "${Boost_LIBRARIES} ${OPENSSL_LIBRARIES}")
+endif()
+
+target_link_libraries(unit_test ${unittest_link_libs})
 
 #
 # docScript compiler
 #
 include (tools/docc/prg.cmake)
 add_executable(docc ${docc})
-target_link_libraries(docc
-	cyng_io
-	cyng_vm
-	cyng_async
-	cyng_docscript
- 	${Boost_LIBRARIES})
+set(docc_link_libs cyng_io cyng_vm cyng_async cyng_docscript)
+if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+	list(APPEND docc_link_libs "${Boost_LIBRARIES}")
+endif()
+target_link_libraries(docc ${docc_link_libs})

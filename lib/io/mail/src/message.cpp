@@ -978,10 +978,14 @@ mailboxes message::parse_address_list(const string& address_list) const
                     token += *ch;
                     state = state_t::BEGIN;
                 }
-                else if (*ch == codec::LEFT_PARENTHESIS_CHAR)
-                    state = state_t::COMMBEG;
-                else if (isspace(*ch))
-                    ;
+				else if (*ch == codec::LEFT_PARENTHESIS_CHAR)
+				{
+					state = state_t::COMMBEG;
+				}
+				else if (isspace(*ch))
+				{
+					;	//	intended
+				}
 
                 if (ch == address_list.end() - 1)
                 {

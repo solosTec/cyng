@@ -376,9 +376,18 @@ protected:
     /**
     Comparator for the attributes map based on case insensitivity.
     **/
-    struct attr_comp_t : public std::binary_function<std::string, std::string, bool>
+    struct attr_comp_t //: public std::binary_function<std::string, std::string, bool>
     {
-        bool operator()(const std::string& lhs, const std::string& rhs)
+		/// @c first_argument_type is the type of the first argument
+		typedef std::string 	first_argument_type;
+
+		/// @c second_argument_type is the type of the second argument
+		typedef std::string 	second_argument_type;
+
+		/// @c result_type is the return type
+		typedef bool 	result_type;
+
+        bool operator()(const std::string& lhs, const std::string& rhs) const
         {
             return boost::to_lower_copy(lhs) < boost::to_lower_copy(rhs);
         }
