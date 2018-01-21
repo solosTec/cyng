@@ -55,10 +55,21 @@ namespace cyng
 			{
 				return (static_cast<U>(major()) << size::value) + minor();
 			}
+
+			/**
+			 * major element has a higher precedience.
+			 */
+			bool is_less(this_type const& other) const
+			{
+				return (this->major() == other.major())
+					? (this->minor() < other.minor())
+					: (this->major() < other.major())
+					;
+			}
 						
 		};
 	}
-	
+
 	class version : public details::ver<std::uint16_t, std::uint32_t>
 	{
 	public:
@@ -77,6 +88,21 @@ namespace cyng
 		revision();
 	};
 		
+	//	comparison
+	bool operator==(version const&, version const&);
+	bool operator<(version const&, version const&);
+	bool operator!=(version const&, version const&);
+	bool operator>(version const&, version const&);
+	bool operator<=(version const&, version const&);
+	bool operator>=(version const&, version const&);
+
+	bool operator==(revision const&, revision const&);
+	bool operator<(revision const&, revision const&);
+	bool operator!=(revision const&, revision const&);
+	bool operator>(revision const&, revision const&);
+	bool operator<=(revision const&, revision const&);
+	bool operator>=(revision const&, revision const&);
+
 }
 
 #endif	//	CYNG_INTRINSICS_VERSION_H

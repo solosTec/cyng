@@ -7,6 +7,9 @@
 
 #include <cyng/factory/chrono_factory.h>
 #include <cyng/chrono.h>
+#if CYNG_ODBC_INSTALLED
+#include <sql.h> 
+#endif
 
 namespace cyng 
 {	
@@ -61,5 +64,25 @@ namespace cyng
 		return make_object(chrono::days(n));
 	}
 	
+#if CYNG_ODBC_INSTALLED
+	object make_odbc_ts(std::chrono::system_clock::time_point tp)
+	{
+
+		chrono::dbl_time_point dtp = chrono::convert(tp);
+		std::tm t = chrono::convert_utc(dtp.first);
+
+		SQL_TIMESTAMP_STRUCT ts;
+		ts.year = chrono::year(t);
+		ts.month = chrono::month(t);
+		ts.day = chrono::day(t);
+		ts.hour = chrono::hour(t);
+		ts.minute = chrono::minute(t);
+		ts.second = chrono::second(t);
+		//	billionths of a second: 0 .. 999,999,999 
+		ts.fraction = static_cast<SQLUINTEGER>(dtp.second * 1000u * 1000u * 1000u);
+		return make_object(ts);
+	}
+#endif
+
 }
 

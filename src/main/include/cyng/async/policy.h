@@ -21,7 +21,20 @@ namespace cyng
 		{};
 		struct none
 		{};
+
 	}
+
+	/**
+ 	 * task continuation
+	 */
+	enum class continuation
+	{
+		TASK_UNDEFINED,	//	waiting 
+		TASK_CONTINUE,
+		TASK_STOP,
+		TASK_YIELD,	//	explicit thread switch
+	};
+
 }
 
 #endif	//	CYNG_ASYNC_POLICY_H

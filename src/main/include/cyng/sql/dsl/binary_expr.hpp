@@ -13,7 +13,7 @@
 
 namespace cyng 
 {
-	using namespace store;
+	using namespace table;
 	namespace sql
 	{
 		/**

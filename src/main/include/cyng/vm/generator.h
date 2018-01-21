@@ -61,25 +61,25 @@ namespace cyng
 		 * An attribute map (attr_map_t) will be converted into
 		 * a tuple of attributes
 		 */
-		template <>
-		inline void code_builder<attr_map_t>(vector_t& vec, attr_map_t&& am)
-		{
-			std::for_each(am.begin(), am.end(), [&vec](attr_map_t::value_type const& attr) {
-				vec << attr_t(attr.first, attr.second);
-			});
-		}
+		//template <>
+		//inline void code_builder<attr_map_t>(vector_t& vec, attr_map_t&& am)
+		//{
+		//	std::for_each(am.begin(), am.end(), [&vec](attr_map_t::value_type const& attr) {
+		//		vec << attr_t(attr.first, attr.second);
+		//	});
+		//}
 
 		/**
 		 * A parameter map (param_map_t) will be converted into
 		 * a tuple of parameters
 		 */
-		template <>
-		inline void code_builder<param_map_t>(vector_t& vec, param_map_t&& pm)
-		{
-			std::for_each(pm.begin(), pm.end(), [&vec](param_map_t::value_type const& param) {
-				vec << param_t(param.first, param.second);
-			});
-		}
+		//template <>
+		//inline void code_builder<param_map_t>(vector_t& vec, param_map_t&& pm)
+		//{
+		//	std::for_each(pm.begin(), pm.end(), [&vec](param_map_t::value_type const& param) {
+		//		vec << param_t(param.first, param.second);
+		//	});
+		//}
 
 		template < typename T, typename ...Args >
 		void code_builder(vector_t& vec, T&& v, Args&&... args)
@@ -93,6 +93,7 @@ namespace cyng
 		 */
 		inline void code_builder(vector_t& vec)
 		{}
+
 	}
 
 	/**
@@ -151,13 +152,13 @@ namespace cyng
 	vector_t generate_invoke(std::string const& name, Args&&... args)
 	{
 		vector_t vec;
-// 		vec << code::ESBA;
+ 		vec << code::ESBA;
 		
 		workbench::code_builder(vec, std::forward<Args>(args)...);
 		
  		vec 
 		<< invoke(name)
-//  		<< code::REBA
+  		<< code::REBA
  		;
 		
 		return vec;		
@@ -170,19 +171,41 @@ namespace cyng
 	vector_t generate_invoke_remote(std::string const& name, Args&&... args)
 	{
 		vector_t vec;
-// 		vec << defer(code::ESBA);
+ 		vec << defer(code::ESBA);
 
+		//
+		//	special code builder required to defer all included VM ops.
+		//
 		workbench::code_builder(vec, std::forward<Args>(args)...);
 
 		vec
 			<< invoke_remote(name)
-// 			<< defer(code::REBA)
+ 			<< defer(code::REBA)
 			;
 
 		return vec;
 
 	}
 	
+	/**
+	 * generate a complete invoke sequence that will bounced back
+	 */
+	template < typename ...Args >
+	vector_t generate_invoke_reflect(std::string const& name, Args&&... args)
+	{
+		vector_t vec;
+ 		vec << reflect(code::ESBA);
+
+		workbench::code_builder(vec, std::forward<Args>(args)...);
+
+		vec
+			<< invoke_reflect(name)
+ 			<< reflect(code::REBA)
+			;
+
+		return vec;
+
+	}
 }
 
 #endif	//	CYNG_VM_CONTCYNG_VM_GENERATOR_HEXT_H

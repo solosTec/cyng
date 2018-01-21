@@ -9,8 +9,8 @@
 
 
 #include <boost/signals2.hpp>
-#include <cyng/store/key.hpp>
-#include <cyng/store/body.hpp>
+#include <cyng/table/key.hpp>
+#include <cyng/table/body.hpp>
 
 #include <array>
 
@@ -36,10 +36,10 @@ namespace cyng
 		class publisher
 		{
 		public:   
-			using insert_signal = boost::signals2::signal<void(table const*, key_type const&, data_type const&)>;
-			using remove_signal = boost::signals2::signal<void(table const*, key_type const&)>;
+			using insert_signal = boost::signals2::signal<void(table const*, cyng::table::key_type const&, cyng::table::data_type const&, std::uint64_t)>;
+			using remove_signal = boost::signals2::signal<void(table const*, cyng::table::key_type const&)>;
 			using clear_signal  = boost::signals2::signal<void(table const*)>;
-			using modify_signal = boost::signals2::signal<void(table const*, key_type const&, attr_t const&)>;
+			using modify_signal = boost::signals2::signal<void(table const*, cyng::table::key_type const&, attr_t const&)>;
 			
 		public:
 			publisher();

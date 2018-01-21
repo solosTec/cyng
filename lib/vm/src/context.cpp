@@ -14,9 +14,9 @@ namespace cyng
 	: vm_(v)
 	{}
 	
-	vector_t context::get_frame(bool remove)
+	vector_t context::get_frame() const
 	{
-		return vm_.stack_.get_frame(remove);
+		return vm_.stack_.get_frame();
 	}
 	
 	std::size_t context::frame_size() const noexcept
@@ -76,6 +76,11 @@ namespace cyng
 		set_register(boost::system::error_code());
 	}
 	
+	void context::run(vector_t&& prg)
+	{
+		vm_.sync_run(std::move(prg));
+	}
+
 	namespace traits
 	{
 	

@@ -12,9 +12,8 @@
 #include <cyng/intrinsics/sets.h>
 #include <cyng/compatibility/io_service.h>
 #include <chrono>
-// #include <boost/asio.hpp>
-#include <boost/asio/steady_timer.hpp>
 #include <iostream>
+#include <boost/asio/steady_timer.hpp>
 
 namespace cyng 
 {
@@ -34,7 +33,7 @@ namespace cyng
 			 */
 			virtual void run() = 0;
 			virtual void stop() = 0;
-			virtual int dispatch(std::size_t slot, tuple_t const& msg) = 0;
+			virtual void dispatch(std::size_t slot, tuple_t const& msg) = 0;
 			
 			/**
 			 * gcc requires an implementation even though this
@@ -42,6 +41,12 @@ namespace cyng
 			 * cool feature to detect pure virtual calls.
 			 */
 			virtual shared_task get_shared() = 0;
+
+			/*
+			 * Path to get the class name of a task and to group
+			 * by implementation classes.
+			 */
+			virtual std::string get_class_name() const = 0;
 			
 			/**
 			 * @return task id
@@ -54,7 +59,6 @@ namespace cyng
 				if (shutdown_)	return;
 
 				timer_.expires_from_now(d);
-// 				timer_.async_wait(dispatcher_.wrap([this](boost::system::error_code const& ec){
 				timer_.async_wait([this](boost::system::error_code const& ec){
 					if (ec != boost::asio::error::operation_aborted)
 					{
@@ -69,13 +73,19 @@ namespace cyng
 			
 		protected:
 			void cancel_timer();
+
+			/**
+			 * remove this task from task list.
+			 */
+			void remove_this();
 			
-		protected:
+		public:
 			mux& mux_;
+
+		protected:
 			const std::size_t id_;
  			boost::asio::steady_timer timer_;
 			dispatcher_t dispatcher_;
-// 			boost::asio::strand	dispatcher_;
 			bool shutdown_;
 		};
 		

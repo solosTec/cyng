@@ -18,6 +18,7 @@ set (io_cpp
 set (io_h
     src/main/include/cyng/cyng.h
     src/main/include/cyng/io.h
+    src/main/include/cyng/io/hex_dump.hpp
     src/main/include/cyng/io/io_chrono.hpp
     src/main/include/cyng/io/serializer/plain.hpp
     src/main/include/cyng/io/serializer/binary.hpp

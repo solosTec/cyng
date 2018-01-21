@@ -20,7 +20,7 @@ namespace cyng
 	: vt::stack_t()
 	, bp_(0)
 	{
-		ebp();
+		//ebp();
 	}
 	
 	void stack::ebp()
@@ -30,9 +30,9 @@ namespace cyng
 		vt::stack_t::push(make_object(bp_));
 		BOOST_ASSERT_MSG(!vt::stack_t::empty(), "ebp failed" );
 		
-		//	Assigns the value of the stack pointer into
-		//	the base pointer.
-		bp_ = vt::stack_t::size() - 1;
+		//	bp_ points to the element one above the saved
+		//	base pointer.
+		bp_ = vt::stack_t::size();
 	}
 
 	void stack::rbp()
@@ -41,19 +41,14 @@ namespace cyng
 		const std::size_t bp = bp_;
 
 		BOOST_ASSERT_MSG(!vt::stack_t::empty(), "stack is empty" );
-// 		BOOST_ASSERT_MSG(bp_ < size(), "invalid base pointer" );
-// 		BOOST_ASSERT_MSG(type_code_test< types::CYY_INDEX >(c[bp]), "data type index expected" );
-		
+
 		//	Pops the base pointer off the stack, so it is restored
 		//	to its value before
 		bp_ = saved_bp();
+		BOOST_ASSERT_MSG(bp_ < bp, "invalid pase pointer (2)");
 
 		//	Restore old stack size
-		while (bp != vt::stack_t::size())
-		{
-//			std::cout << " --pop(" << bp << "/" << size() << " " << to_literal(top()) << ")-- ";
-			vt::stack_t::pop();
-		}
+		c.resize(bp_);
 	}
 	
 	std::size_t stack::frame_size() const noexcept
@@ -61,41 +56,26 @@ namespace cyng
 		BOOST_ASSERT_MSG(bp_ <= size(), "invalid base pointer" );
 		return (vt::stack_t::empty())
 		? 0 
-		: (vt::stack_t::size() - bp_ - 1)
+		: (vt::stack_t::size() - bp_)
 		;
 	}
 	
-	vector_t stack::get_frame(bool remove)
+	vector_t stack::get_frame() const
 	{
-		vector_t frame;
-		/*const*/ std::size_t fsize = frame_size();
-		frame.reserve(fsize);
-		
-		this->dump(std::cerr);
-		
-		for (std::size_t idx = 0; idx < fsize; idx++)
-		{
-// 			frame[idx] = c[vt::stack_t::size() - idx - 1];
-			frame.push_back( c[bp_ + idx + 1] );	//	reverse
-			
-		}
-		
-		if (remove)
-		{
-			while (fsize-- != 0)
-			{
-				pop();
-			}
-		}
-		return frame;
+		const std::size_t fsize = frame_size();
+		BOOST_ASSERT_MSG(fsize <= vt::stack_t::size(), "frame size to big");
+		return vector_t(c.end() - fsize, c.end());
 	}
 	
 	std::size_t stack::saved_bp() const
 	{
 		BOOST_ASSERT_MSG(!vt::stack_t::empty(), "stack is empty" );
-		BOOST_ASSERT_MSG(bp_ < vt::stack_t::size(), "invalid base pointer");
-// 		BOOST_ASSERT_MSG(type_code_test< types::CYY_INDEX >(c[bp_]), "not a base pointer (data type index expected)" );
-		return value_cast<std::size_t>(this->vt::stack_t::c[bp_], 0);
+		BOOST_ASSERT_MSG(bp_ != 0, "invalid base pointer (1)");
+		BOOST_ASSERT_MSG((bp_ - 1) < vt::stack_t::size(), "invalid base pointer (2)");
+		//BOOST_ASSERT_MSG(bp_ < vt::stack_t::size(), "invalid base pointer");
+		//std::cerr << c[bp_ - 1].get_class().type_name() << std::endl;
+		BOOST_ASSERT_MSG(c[bp_ - 1].get_class().tag() == TC_UINT64, "not a base pointer");
+		return value_cast<std::size_t>(this->vt::stack_t::c[bp_ -  1], 0);
 	}
 	
 	void stack::dump(std::ostream& os) const
@@ -225,10 +205,10 @@ namespace cyng
 
 	void stack::assemble_tuple()
 	{
-		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (tuple)");
-		//BOOST_ASSERT_MSG(type_test<index>(top()), "wrong data type (tuple)");
+		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (tuple)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
+		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (tuple)");
 
 		tuple_t tpl;
 		while (size-- != 0)
@@ -242,9 +222,10 @@ namespace cyng
 
 	void stack::assemble_vector()
 	{
-		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (vector)");
+		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (vector)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
+		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (vector)");
 
 		vector_t vec;
 		while (size-- != 0)
@@ -258,9 +239,10 @@ namespace cyng
 
 	void stack::assemble_set()
 	{
-		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (vector)");
+		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (set)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
+		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (set)");
 
 		set_t set;
 		while (size-- != 0)

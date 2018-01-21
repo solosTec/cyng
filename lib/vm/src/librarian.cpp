@@ -68,7 +68,7 @@ namespace cyng
 		//
 		insert("lib.insert", 3, [this](context& ctx){
 			
-			const vector_t frame = ctx.get_frame(true);
+			const vector_t frame = ctx.get_frame();
 			
 			const vm_call fun = value_cast(frame[0], vm_call());
 			const std::size_t arity = value_cast<std::size_t>(frame[1], 0u);
@@ -86,7 +86,7 @@ namespace cyng
 		//
 		insert("lib.erase", 1, [this](context& ctx){
 			
-			const vector_t frame = ctx.get_frame(true);
+			const vector_t frame = ctx.get_frame();
 			const std::string name = value_cast<std::string>(frame[0], "");
 			this->erase(name);
 
@@ -98,7 +98,7 @@ namespace cyng
 		//
 		insert("lib.invoke", 1, [this](context& ctx){
 			
-			const vector_t frame = ctx.get_frame(true);
+			const vector_t frame = ctx.get_frame();
 			const std::string name = value_cast<std::string>(frame[0], "");
  
 			//	standard function call (no out of band)
@@ -111,7 +111,7 @@ namespace cyng
 		//
 		insert("lib.test", 1, [this](context& ctx){
 			
-			vector_t frame = ctx.get_frame(true);
+			vector_t frame = ctx.get_frame();
 			std::cerr 
 			<< "lib.test("
 			<< frame.size()

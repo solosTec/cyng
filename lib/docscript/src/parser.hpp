@@ -7,7 +7,7 @@
 
 #include <cyng/docscript/parser.h>
 #include <boost/spirit/home/support/attributes.hpp>	//	transform_attribute
-#include <boost/phoenix.hpp>	//	enable assignment of values like cyy::object
+#include <boost/phoenix.hpp>	//	enable assignment of values like object
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/fusion/include/all.hpp>
 #include <iostream>

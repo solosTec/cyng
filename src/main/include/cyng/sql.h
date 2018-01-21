@@ -7,13 +7,13 @@
 #ifndef CYNG_SQL_H
 #define CYNG_SQL_H
 
-#include <cyng/store/meta_interface.h>
+#include <cyng/table/meta_interface.h>
 #include <cyng/sql/dialect.h>
 #include <sstream>
 
 namespace cyng 
 {
-	using namespace store;
+	using namespace table;
 	namespace sql
 	{
 		
@@ -30,7 +30,7 @@ namespace cyng
 		class sql_update;
 		class sql_insert;
 		class sql_create;
-// 		class sql_delete;	//	delete is a C++ keyword
+ 		class sql_remove;	//	SQL delete
 // 		class sql_drop;
 		
 		/**
@@ -107,6 +107,8 @@ namespace cyng
  				return sql_from(meta_, dialect_, stream_);
 			}
 			
+			sql_from all();
+
 			//
 			//	aggregate functions
 			//
@@ -164,6 +166,31 @@ namespace cyng
 		};
 
 		/**
+		 * DELETE ...
+		 */
+		class sql_remove
+		{
+		public:
+			sql_remove(meta_table_ptr, dialect, std::ostream&);
+			
+			template < typename EXPR >
+			sql_where where(EXPR const& expr)
+			{
+				stream_
+					<< "WHERE "
+					;
+				expr.serialize(stream_, meta_, dialect_);
+				return sql_where(meta_, dialect_, stream_);
+			}
+
+		private:
+			meta_table_ptr meta_;
+			dialect dialect_;
+			std::ostream& stream_;
+		};
+
+
+		/**
 		 * Generate SQL commands for a single table.
 		 */
 		class command 
@@ -181,6 +208,11 @@ namespace cyng
 			 */
 			sql_create create();
 			
+			/**
+			 * Assemble the SQL delete statement for this table.
+			 */
+			sql_remove remove();
+
 			/**
 			 * Assemble the SQL insert statement for this table.
 			 */

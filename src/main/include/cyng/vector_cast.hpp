@@ -10,13 +10,6 @@
 #include <cyng/value_cast.hpp>
 #include <cyng/intrinsics/sets.h>
  
-// #ifdef __GNUC__
-// #include <features.h>
-// #if ! __GNUC_PREREQ(5,0)
-// #pragma GCC diagnostic ignored "-Wreturn-local-addr"
-// #endif
-// #endif
-
 namespace cyng 
 {
 	/**
@@ -24,17 +17,17 @@ namespace cyng
 	 * 
 	 * example
 	 * @code
-	  std::vector<std::string> vec = vector_cast<int>(obj);
+	  std::vector<std::string> vec = vector_cast<std::string>(obj, "");
 	 * @endcode
 	 */
 	template < typename T >
-	T vector_cast(object const& obj, T const& def) noexcept
+	std::vector< T > vector_cast(object const& obj, T const& def) noexcept
 	{
 		std::vector< T > result;
-		const vector_t vec;
-		vec = value_cast(obj, vev);
+		vector_t vec;
+		vec = value_cast(obj, vec);
 		
-		for (v : vec)
+		for (auto v : vec)
 		{
 			result.push_back(value_cast<T>(v, def));
 		}

@@ -34,11 +34,11 @@ namespace cyng
 		{
 			friend class base_task;
 			template < typename T, typename ...Args >
-			friend bool start_task_sync(mux& m, Args &&... args);
+			friend std::pair<std::size_t, bool> start_task_sync(mux& m, Args &&... args);
 			template < typename T, typename ...Args >
-			friend void start_task_detached(mux& m, Args &&... args);
+			friend std::size_t start_task_detached(mux& m, Args &&... args);
 			template < typename T, typename R, typename P, typename ...Args >
-			friend bool start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args);
+			friend std::pair<std::size_t, bool> start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args);
 			
 		public:
 			/**
@@ -52,6 +52,14 @@ namespace cyng
 			 * @return count of running tasks
 			 */
 			std::size_t size() const;
+
+			/**
+			 * The class name is the the demangled name.
+			 *
+			 * @return count of running tasks with the specified
+			 * class name.
+			 */
+			std::size_t size(std::string const&) const;
 
 			/**
 			 * @return true if task exists
@@ -84,10 +92,18 @@ namespace cyng
 			 * Works asynchronously.
 			 *
 			 * @return true if request could be internally queued.
-			 * It's no guaranty that specified task exists and would be stopped.
+			 * It's no guaranty that the specified task exists and will be stopped.
 			 */
 			bool stop(std::size_t);
 			
+			/**
+			 * Stop all tasks with the specified class name. 
+			 * Works asynchronously.
+			 *
+			 * @return number of found tasks with the specified class name.
+			 */
+			std::size_t stop(std::string const&);
+
 			/**
 			 * Works asynchronously.
 			 *
@@ -118,12 +134,18 @@ namespace cyng
 			 */
 			bool insert(shared_task, none);
 
-			
+			/**
+			 * Remove the task from task list. 
+			 * Works asynchronously.
+			 * Requirements: Task is already stopped.
+			 */
+			void remove(std::size_t);
+
 		private:
 			/**
-			* distribute all tasks to the
-			* thread pool
-			*/
+			 * distribute all tasks to the
+			 * thread pool
+			 */
 			mutable	scheduler	scheduler_;
 			mutable dispatcher_t dispatcher_;
 			

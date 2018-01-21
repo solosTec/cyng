@@ -76,7 +76,7 @@ namespace cyng
  	{
  		return (value_)
  		? value_->hash()
- 		: CYNG_NULL_HASH;
+ 		: CYNG::null_hash;
  	}
 	
 	//	swap

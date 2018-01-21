@@ -31,6 +31,13 @@ namespace cyng
 			timer_.cancel();
 		}
 
+		void base_task::remove_this()
+		{
+			//mux_.stop(id_);
+			mux_.remove(id_);
+		}
+
+
 	}	// async
 }
 

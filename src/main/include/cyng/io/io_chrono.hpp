@@ -29,6 +29,11 @@ namespace cyng
 	std::ostream& operator<<(std::ostream& os, chrono::dbl_time_point const&);
 
 	/**
+	 * yyyy-mm-dd hh:mm:ss without fractional seconds
+	 */
+	std::string to_str(std::chrono::system_clock::time_point const&);
+
+	/**
 	 * Write a timespan in hh::mm::ss.ffff format.
 	 * 
 	 * @tparam R an arithmetic type representing the number of ticks

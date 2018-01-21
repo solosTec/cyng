@@ -9,6 +9,7 @@ set (sql_cpp
 )
     
 set (sql_h
+	src/main/include/cyng/table/meta_interface.h
     src/main/include/cyng/sql.h
     src/main/include/cyng/sql/dialect.h
 )
@@ -18,6 +19,7 @@ set (sql_dsl
     src/main/include/cyng/sql/dsl/list_expr.hpp
     src/main/include/cyng/sql/dsl/operators.hpp
     src/main/include/cyng/sql/dsl/variable.hpp
+ 	lib/sql/src/variable.cpp
     src/main/include/cyng/sql/dsl/constant.hpp
  	lib/sql/src/constant.cpp
     src/main/include/cyng/sql/dsl/column.h

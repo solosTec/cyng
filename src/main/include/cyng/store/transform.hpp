@@ -163,14 +163,14 @@ namespace cyng
 // 				<< std::endl;
 
 // 				std::pair<table_type::const_iterator,bool> find(key_type const& key) const;
-				std::pair<table::table_type::const_iterator, bool> r = db_.find(key_generator(tbl.table_name_));
+				std::pair<table::table_type::const_iterator, bool> r = db_.find(cyng::table::key_generator(tbl.table_name_));
 				if (r.second)
 				{
 // 					std::pair<std::vector<cyng::object, std::allocator<cyng::object> > const, cyng::lockable>
 // 					std::cout 
 // 					<< boost::core::demangle(typeid(decltype(*r.first)).name())
 // 					<< std::endl;
-					const data_type* dp = object_cast<data_type>((*r.first).second.obj_);
+					const cyng::table::data_type* dp = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 					
 // 					std::vector<cyng::object, std::allocator<cyng::object> >
 // 					std::cout 
@@ -234,7 +234,7 @@ namespace cyng
 // 				<< ")"
 // 				<< std::endl;
 				
-				std::pair<table::table_type::const_iterator, bool> r = db_.find(key_generator(tbl.table_name_));
+				std::pair<table::table_type::const_iterator, bool> r = db_.find(cyng::table::key_generator(tbl.table_name_));
 				if (r.second)
 				{
 // 					std::pair<std::vector<cyng::object, std::allocator<cyng::object> > const, cyng::lockable>
@@ -367,6 +367,16 @@ namespace cyng
 //  				cyng::async::lock<Args...>(std::forward<Args>(args)...);
   				cyng::async::lock(std::forward<Args>(args)...);
 			}
+
+			/*
+			 * single element
+			 */
+			template<typename T>
+			void operator() (T& mtx)
+			{
+				mtx.lock();
+			}
+
 		};
 	}
 }

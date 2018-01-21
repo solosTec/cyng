@@ -12,6 +12,7 @@
 #include <cyng/intrinsics/sets.h>
 #include <cyng/intrinsics/version.h>
 #include <cyng/intrinsics/op.h>
+#include <cyng/intrinsics/label.h>
 #include <cyng/chrono.h>
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/mac.h>
@@ -24,6 +25,42 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/filesystem.hpp>
 // #include <experimental/filesystem>
+#include <boost/asio.hpp>
+
+#if CYNG_ODBC_INSTALLED
+
+#include <sql.h> 
+#include <functional>
+
+namespace std
+{
+	template<>
+	struct equal_to<SQL_TIMESTAMP_STRUCT>
+	{
+		using result_type = bool;
+		using first_argument_type = SQL_TIMESTAMP_STRUCT;
+		using second_argument_type = SQL_TIMESTAMP_STRUCT;
+	
+		inline bool operator()(SQL_TIMESTAMP_STRUCT const& ts1, SQL_TIMESTAMP_STRUCT const& ts2) const noexcept
+		{
+			return ts1.year == ts2.year
+				&& ts1.month == ts2.month
+				&& ts1.day == ts2.day
+				&& ts1.hour == ts2.hour
+				&& ts1.minute == ts2.minute
+				&& ts1.second == ts2.second
+				&& ts1.fraction == ts2.fraction;
+	
+		}
+	};
+}
+#else
+namespace cyng
+{
+	struct dummy_SQL_TIMESTAMP_STRUCT
+	{};
+}
+#endif
 
 #endif 	// CYNG_INTRINSICS_H
 

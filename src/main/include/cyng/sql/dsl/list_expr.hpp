@@ -57,8 +57,8 @@ namespace cyng
 			//	P1 is possible a list expression itself:
 			//	list_expression<P, Args...>
 			//	example:
-			//	P2=cyy::sql::column
-			//	P1=cyy::sql::list_expression<cyy::sql::column,cyy::sql::column>
+			//	P2=cyng::sql::column
+			//	P1=cyng::sql::list_expression<cyng::sql::column,cyng::sql::column>
 			return list_expression<P1, P2>(std::forward<P1>(p1), std::forward<P2>(p2));
 			//	reverse order
 			//return list_expression<P2, P1>(std::forward<P2>(p2), std::forward<P1>(p1));
@@ -75,8 +75,8 @@ namespace cyng
 		//	//	P1 is possible a list expression itself:
 		//	//	list_expression<P, Args...>
 		//	//	example:
-		//	//	P2=cyy::sql::column
-		//	//	P1=cyy::sql::list_expression<cyy::sql::column,cyy::sql::column>
+		//	//	P2=cyng::sql::column
+		//	//	P1=cyng::sql::list_expression<cyng::sql::column,cyng::sql::column>
 
 
 		//	using R = list_expression < P1, Args... >;

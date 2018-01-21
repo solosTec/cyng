@@ -12,6 +12,7 @@ set (core_cpp
   	
   	lib/core/src/tree_walker.cpp
   	lib/core/src/reader.cpp
+  	lib/core/src/set_cast.cpp
   	lib/core/src/algorithm.cpp
   	lib/core/src/split.cpp
 )
@@ -28,6 +29,7 @@ set (core_h
     src/main/include/cyng/core/value_cast_fwd.h
     src/main/include/cyng/value_cast.hpp
     src/main/include/cyng/vector_cast.hpp
+    src/main/include/cyng/set_cast.h
     src/main/include/cyng/core/wrapper_fwd.h
     src/main/include/cyng/core/wrapper.hpp
 #     src/main/include/cyng/core/deleter.hpp
@@ -66,6 +68,7 @@ set (core_intrinsics
     src/main/include/cyng/intrinsics/sets.h
     src/main/include/cyng/intrinsics/version.h
  	src/main/include/cyng/intrinsics/op.h
+ 	src/main/include/cyng/intrinsics/label.h
  	src/main/include/cyng/intrinsics/buffer.h
  	src/main/include/cyng/intrinsics/mac.h
  	src/main/include/cyng/intrinsics/lockable.h
@@ -74,6 +77,7 @@ set (core_intrinsics
  	lib/core/src/intrinsics/sets.cpp
  	lib/core/src/intrinsics/version.cpp
   	lib/core/src/intrinsics/op.cpp
+  	lib/core/src/intrinsics/label.cpp
   	lib/core/src/intrinsics/mac.cpp
   	lib/core/src/intrinsics/lockable.cpp
   	lib/core/src/intrinsics/digest.cpp

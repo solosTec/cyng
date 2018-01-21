@@ -6,7 +6,6 @@
  */ 
 
 #include <cyng/store/table.h>
-// #include <cyng/compatibility/legacy_mode.hpp>
 #include <cyng/store/transform.hpp>
 #include <iostream>
 
@@ -20,7 +19,7 @@ namespace cyng
 		, data_()
 		{}
 
-		table::table(meta_table_ptr mtp)
+		table::table(cyng::table::meta_table_ptr mtp)
 		: publisher()
 		, meta_(mtp)
  		, data_()
@@ -42,7 +41,7 @@ namespace cyng
 			return data_.size();
 		}
 		
-		meta_table_interface const& table::meta() const
+		cyng::table::meta_table_interface const& table::meta() const
 		{
 			return *meta_;
 		}
@@ -53,7 +52,7 @@ namespace cyng
  			this->publisher::clear_signal_(this);
 		}
 		
-		bool table::insert(key_type const& key, data_type const& data, std::uint64_t generation)
+		bool table::insert(cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation)
 		{
 			//	prevent structural integrity
 			if (meta_->check_record(key, data))
@@ -63,14 +62,14 @@ namespace cyng
  				, std::forward_as_tuple(key)
  				, std::forward_as_tuple(make_object(data), generation)).second)	
 				{
-					this->publisher::insert_signal_(this, key, data);
+					this->publisher::insert_signal_(this, key, data, generation);
 					return true;
 				}
 			}
 			return false;
 		}
 		
-		bool table::erase(key_type const& key)
+		bool table::erase(cyng::table::key_type const& key)
 		{
 			//	prevent structural integrity
 			if (meta_->check_key(key))
@@ -85,7 +84,7 @@ namespace cyng
 			return false;
 		}
 		
-		std::pair<table::table_type::const_iterator,bool> table::find(key_type const& key) const
+		std::pair<table::table_type::const_iterator,bool> table::find(cyng::table::key_type const& key) const
 		{
 			if (meta_->check_key(key))
 			{
@@ -95,26 +94,26 @@ namespace cyng
 			return std::make_pair(data_.end(), false);
 		}
 		
-		bool table::exist(key_type const& key) const
+		bool table::exist(cyng::table::key_type const& key) const
 		{
 			return find(key).second;
 		}
 		
-		record table::lookup(key_type const& key) const
+		cyng::table::record table::lookup(cyng::table::key_type const& key) const
 		{
 			std::pair<table::table_type::const_iterator, bool> r = find(key);
 			if (r.second)
 			{
-				const data_type* ptr = object_cast<data_type>((*r.first).second.obj_);
-				return record(meta_, key, *ptr, (*r.first).second.generation_);
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				return cyng::table::record(meta_, key, *ptr, (*r.first).second.generation_);
 			}
 
 			//	empty result
-			return record(meta_);
+			return cyng::table::record(meta_);
 		}
 		
 		
-		bool table::modify(key_type const& key, attr_t&& attr)
+		bool table::modify(cyng::table::key_type const& key, attr_t&& attr)
 		{
 			std::pair<table::table_type::const_iterator, bool> r = find(key);
 			if (r.second)
@@ -122,11 +121,12 @@ namespace cyng
 				BOOST_ASSERT((*r.first).second.obj_.get_class().tag() == TC_VECTOR);
 
 				//
-				//	Write lock record. Only one thread/writer can write the records value.
+				//	Write lock record. Only one thread/writer can modify this record
+				//	at the same time.
 				//
 				unique_lock_t ul((*r.first).second.m_);
 
-				const data_type* ptr = object_cast<data_type>((*r.first).second.obj_);
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 				BOOST_ASSERT(ptr != nullptr);
 				BOOST_ASSERT(attr.first < (*ptr).size());
 
@@ -152,7 +152,7 @@ namespace cyng
 						//
 						//	apply modification
 						//
-						swap(attr.second, (*const_cast<data_type*>(ptr))[attr.first]);
+						swap(attr.second, (*const_cast<cyng::table::data_type*>(ptr))[attr.first]);
 					}
 					return true;
 				}
@@ -160,7 +160,7 @@ namespace cyng
 			return false;
 		}
 		
-		bool table::modify(key_type const& key, param_t&& param)
+		bool table::modify(cyng::table::key_type const& key, param_t&& param)
 		{
 			const std::pair<std::size_t, bool> r = meta_->get_body_index(param.first);
 			return (r.second)
@@ -169,6 +169,23 @@ namespace cyng
 			;
 		}
 		
+		std::size_t table::loop(std::function<void(cyng::table::record const&)> f) const
+		{
+			std::size_t counter = this->size();
+			for (auto const& row : data_)
+			{
+				auto dp = object_cast<cyng::table::data_type>(row.second.obj_);
+				if (dp != nullptr)
+				{
+					//	shared lock
+					shared_lock_t ul(row.second.m_);
+					f(cyng::table::record(meta_, row.first, *object_cast<cyng::table::data_type>(row.second.obj_), row.second.generation_));
+					--counter;
+				}
+			}
+			return counter;
+		}
+
 	}	//	store
 	
 	namespace traits

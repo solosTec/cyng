@@ -77,10 +77,11 @@ namespace cyng
 		{
 			//	could throw
 			try {
-				const std::uint32_t tag = boost::numeric_cast<std::uint32_t>(cyng::type_tag_traits<T>());
+				const std::uint32_t tag = boost::numeric_cast<std::uint32_t>(type_tag_traits<T>());
 				write_binary(os, tag);
 			}
-			catch (boost::numeric::positive_overflow const&) { 
+			catch (boost::numeric::positive_overflow const& ex) { 
+				std::cerr << std::endl << "*** error: " << ex.what() << std::endl;
 				const std::uint32_t tag = 0;
 				write_binary(os, tag);
 			}
@@ -225,6 +226,12 @@ namespace cyng
 			static std::ostream& write(std::ostream& os, mac64 const&);
 		};
 				
+		template <>
+		struct serializer <boost::system::error_code, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, boost::system::error_code const&);
+		};
+
 // 		[with T = boost::uuids::uuid; S = cyng::io::SERIALIZE_BINARY; std::ostream = std::basic_ostream<char>]’
 		template <>
 		struct serializer <boost::uuids::uuid, SERIALIZE_BINARY>
@@ -300,6 +307,30 @@ namespace cyng
 			static std::ostream& write(std::ostream& os, param_map_t const&);
 		};
 
+		
+		template <>
+		struct serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::tcp::endpoint const&);
+		};
+
+		template <>
+		struct serializer <boost::asio::ip::udp::endpoint, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::udp::endpoint const&);
+		};
+
+		template <>
+		struct serializer <boost::asio::ip::icmp::endpoint, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::icmp::endpoint const&);
+		};
+
+		template <>
+		struct serializer <boost::asio::ip::address, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::address const&);
+		};
 	}
 }
 

@@ -10,6 +10,7 @@
 
 #include <cyng/object.h>
 #include <cyng/intrinsics/sets.h>
+#include <cyng/value_cast.hpp>
 #include <cstdint>
 
 namespace cyng 
@@ -118,6 +119,17 @@ namespace cyng
 	 */
 	object find(object const&, std::string const&);
 	
+	template <typename C, typename T>
+	T find_value(C const& c, std::string const& key, T const& def)
+	{
+		return value_cast<T>(find(c, key), def);
+	}
+
+	template <typename C, typename T>
+	T find_value(C const& c, std::size_t key, T const& def)
+	{
+		return value_cast<T>(find(c, key), def);
+	}
 }
 
 #endif 	// CYNG_DOM_ALGORITHM_H

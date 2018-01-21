@@ -94,7 +94,7 @@ namespace cyng
 		});
 	}
 	
-	bool controller::halt(std::size_t limit)
+	void controller::halt()
 	{
 		//
 		//	set halt flag
@@ -105,7 +105,6 @@ namespace cyng
 		//	last instruction - clears library
 		//
 		execute(vector_t{ make_object(code::HALT) }, async::sync());
-		return true;
 	}
 	
 }

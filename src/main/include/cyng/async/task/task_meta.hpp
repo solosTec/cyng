@@ -11,6 +11,7 @@
 #include <cyng/meta/meta.hpp>
 #include <cyng/intrinsics/sets.h>
 #include <boost/assert.hpp>
+#include <cyng/async/policy.h>
 
 namespace cyng 
 {
@@ -27,9 +28,9 @@ namespace cyng
 				{}
 				
 				template <typename ...Args>
-				void operator()(Args&&...  args)
+				continuation operator()(Args&&...  args)
 				{
-					tsk_.process(std::forward<Args>(args)...);
+					return tsk_.process(std::forward<Args>(args)...);
 				}
 			};
 			
@@ -51,23 +52,17 @@ namespace cyng
 				//	select matching slot and call task method process(...)
 				//
 				template < typename TSK >
-				static void invoke(TSK& tsk, std::size_t slot, tuple_t const& msg)
+				static continuation invoke(TSK& tsk, std::size_t slot, tuple_t const& msg)
 				{
-					std::cout << "visit slot " << N << std::endl;
+					//std::cout << "visit slot " << N << std::endl;
 					if (N == slot)
 					{
-						std::cout << "MATCH " << slot << std::endl;
+						//std::cout << "MATCH " << slot << std::endl;
 						typename converter_t::return_type tpl = converter_t::copy(msg.begin(), msg.end());
 						functor<TSK> f(tsk);
-						meta::apply(f, tpl);
-// 						meta::apply([&tsk](auto &&... args){
-// 							tsk.process(args...);
-// 						}, tpl);
+						return meta::apply(f, tpl);
 					}
-					else 
-					{
-						select_signature_impl<N - 1, Args...>::invoke(tsk, slot, msg);
-					}
+					return select_signature_impl<N - 1, Args...>::invoke(tsk, slot, msg);
 				}
 			};
 			
@@ -86,20 +81,14 @@ namespace cyng
 				static_assert(std::is_same<signature_t, typename converter_t::return_type>::value, "invalid message type");
 				
 				template < typename TSK >
-				static void invoke(TSK& tsk, std::size_t slot, tuple_t const& msg)
+				static continuation invoke(TSK& tsk, std::size_t slot, tuple_t const& msg)
 				{
-					std::cout << "visit slot 0" << std::endl;
+					//std::cout << "visit slot 0" << std::endl;
 					BOOST_ASSERT_MSG(slot == 0, "slot error");
-					std::cout << "MATCH " << slot << std::endl;
+					//std::cout << "MATCH " << slot << std::endl;
 					typename converter_t::return_type tpl = converter_t::copy(msg.begin(), msg.end());
-// #if defined(CYNG_LEGACY_MODE_ON)
 					functor<TSK> f(tsk);
-					meta::apply(f, tpl);
-// #else
-// 					meta::apply([&tsk](auto &&... args){
-// 						tsk.process(args...);
-// 					}, tpl);
-// #endif
+					return meta::apply(f, tpl);
 				}
 			};
 
@@ -112,9 +101,9 @@ namespace cyng
 		struct select_signature
 		{
 			template < typename TSK >
-			static void invoke(TSK& tsk, std::size_t idx, tuple_t const& msg)
+			static continuation invoke(TSK& tsk, std::size_t idx, tuple_t const& msg)
 			{
-				detail::select_signature_impl<sizeof...(Args) - 1, Args...>::invoke(tsk, idx, msg);
+				return detail::select_signature_impl<sizeof...(Args) - 1, Args...>::invoke(tsk, idx, msg);
 			}
 		};
 		
@@ -124,11 +113,25 @@ namespace cyng
 		{
 			//call_by_index<ML>::invoke(impl_, 0, msg);
 			template < typename TSK >
-			static void invoke(TSK& tsk, std::size_t idx, tuple_t const& msg)
+			static continuation invoke(TSK& tsk, std::size_t idx, tuple_t const& msg)
 			{
-				detail::select_signature_impl<sizeof...(Args) - 1, Args...>::invoke(tsk, idx, msg);
+				return detail::select_signature_impl<sizeof...(Args) - 1, Args...>::invoke(tsk, idx, msg);
 			}
 		};		
+
+		/**
+		 * Specialized for empty tuple - no process() methods
+		 */
+		template<>
+		struct select_signature <std::tuple<>>
+		{
+			template < typename TSK >
+			static continuation invoke(TSK& tsk, std::size_t idx, tuple_t const& msg)
+			{
+				return continuation::TASK_STOP;
+			}
+		};
+
 	}
 }
 

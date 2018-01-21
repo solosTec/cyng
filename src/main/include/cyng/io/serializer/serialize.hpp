@@ -161,13 +161,30 @@ namespace cyng
 					case type_code::TC_PARAM:
 						do_write<typename std::tuple_element<type_code::TC_PARAM, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
-// 			// 		
+
+					case type_code::TC_EC:
+						do_write<typename std::tuple_element<type_code::TC_EC, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
 					case type_code::TC_UUID:
 						do_write<typename std::tuple_element<type_code::TC_UUID, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
 					case type_code::TC_FS_PATH:
 						do_write<typename std::tuple_element<type_code::TC_FS_PATH, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
+
+					case type_code::TC_IP_TCP_ENDPOINT:
+						do_write<typename std::tuple_element<type_code::TC_IP_TCP_ENDPOINT, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					case type_code::TC_IP_UDP_ENDPOINT:
+						do_write<typename std::tuple_element<type_code::TC_IP_UDP_ENDPOINT, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					case type_code::TC_IP_ICMP_ENDPOINT:
+						do_write<typename std::tuple_element<type_code::TC_IP_ICMP_ENDPOINT, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					case type_code::TC_IP_ADDRESS:
+						do_write<typename std::tuple_element<type_code::TC_IP_ADDRESS, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+
 					case type_code::TC_EOD:
 						do_write<typename std::tuple_element<type_code::TC_EOD, cyng::traits::tag_t>::type, S>(os, obj);
 						break;

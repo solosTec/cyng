@@ -116,7 +116,11 @@ namespace cyng
 			//
 			serialize_type_tag<std::string>(os);
 			serialize_length(os, v.size());
-			return os << v;
+			if (!v.empty())
+			{
+				os.write(v.c_str(), v.size());
+			}
+			return os;
 		}
 		
 		std::ostream& serializer<std::chrono::system_clock::time_point, SERIALIZE_BINARY>::write(std::ostream& os, std::chrono::system_clock::time_point const& v)
@@ -191,10 +195,22 @@ namespace cyng
 			serialize_type_tag<mac64>(os);
 			serialize_length(os, std::tuple_size<mac64::address_type>::value);
 			write_binary(os, v.get_words());
-			//os.write(reinterpret_cast<const std::ostream::char_type*>(v.get_words().data()), sizeof(mac64::address_type));
 			return os;
 		}
 		
+		std::ostream& serializer <boost::system::error_code, SERIALIZE_BINARY>::write(std::ostream& os, boost::system::error_code const& v)
+		{
+			const auto code = v.value();
+
+			//
+			//	type - length - value
+			//
+			serialize_type_tag<boost::system::error_code>(os);
+			serialize_length(os, sizeof(code));
+			write_binary(os, code);
+			return os;
+		}
+
 		std::ostream& serializer <boost::uuids::uuid, SERIALIZE_BINARY>::write(std::ostream& os, boost::uuids::uuid const& v)
 		{
 			static_assert(sizeof(v) == 16, "invalid assumption");
@@ -301,7 +317,7 @@ namespace cyng
 			}
 
 			//	element count
-			serialize_length(os, v.size());
+			write_size_as_object(os, v.size());
 
 			//	serialize instruction
 			serialize_binary(os, make_object(code::ASSEMBLE_ATTR_MAP));
@@ -317,7 +333,7 @@ namespace cyng
 			}
 
 			//	element count
-			serialize_length(os, v.size());
+			write_size_as_object(os, v.size());
 
 			//	serialize instruction
 			serialize_binary(os, make_object(code::ASSEMBLE_PARAM_MAP));
@@ -338,6 +354,57 @@ namespace cyng
 
 			return os;
 		}
+
+		
+		std::ostream& serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::tcp::endpoint const& v)
+		{
+			const auto address = v.address().to_string();
+			const auto port = v.port();
+
+			//
+			//	type - length - data
+			//
+			serialize_type_tag<boost::asio::ip::tcp::endpoint>(os);
+			serialize_length(os, address.size() + sizeof(port));
+			write_binary(os, v.port());
+			return os << address;
+		}
+		
+		std::ostream& serializer <boost::asio::ip::udp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::udp::endpoint const& v)
+		{
+			const std::string s = v.address().to_string();
+
+			//
+			//	type - length - data
+			//
+			serialize_type_tag<boost::asio::ip::udp::endpoint>(os);
+			return os;
+		}
+
+		std::ostream& serializer <boost::asio::ip::icmp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::icmp::endpoint const& v)
+		{
+			const std::string s = v.address().to_string();
+
+			//
+			//	type - length - data
+			//
+			serialize_type_tag<boost::asio::ip::icmp::endpoint>(os);
+			return os;
+		}
+
+		
+		std::ostream& serializer <boost::asio::ip::address, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::address const& v)
+		{
+			const std::string s = v.to_string();
+
+			//
+			//	type - length - data
+			//
+			serialize_type_tag<boost::asio::ip::address>(os);
+			serialize_length(os, s.size());
+			return os << v;
+		}
+
 		
 		std::size_t serialize_length(std::ostream& os, std::size_t length)
 		{

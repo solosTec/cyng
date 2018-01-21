@@ -42,6 +42,13 @@ namespace cyng
 			return ss.str();
 		}
 		
+		std::string to_str(vector_t const& vec)
+		{
+			std::stringstream ss;
+			serializer <vector_t, SERIALIZE_PLAIN>::write(ss, vec);
+			return ss.str();
+		}
+
 		std::ostream& operator<<(std::ostream& os, attr_t const& attr)
 		{
 			boost::io::ios_flags_saver  ifs(os);
@@ -148,6 +155,19 @@ namespace cyng
 				case code::CORA:	os << "CORA";	break;
 				case code::ASP:		os << "ASP";	break;
 				case code::CALL:	os << "CALL";	break;
+				case code::JA:		os << "JA";		break;
+				// 			JCT = 7,	//!< 	jump count, if (--ct) pc = x
+				// 			JP = 8,		//!< 	jump positive, if (mem[sp++] > 0) pc = x
+				// 			JN = 9,		//!< 	jump negative, if (mem[sp++] < 0) pc = x
+				// 			JZ = 0xA,	//!< 	jump zero, if (mem[sp++] == 0) pc = x
+				// 			JNZ = 0xB,	//!< 	jump nonzero, if (mem[sp++] != 0) pc = x
+				// 			JODD = 0xC,	//!< 	jump odd, if (mem[sp++] % 2 == 1) pc = x
+				// 			JZON = 0xD,	//!< 	jump zero or neg, if (mem[sp++] <= 0) pc = x
+				// 			JZOP = 0xE,	//!< 	jump zero or pos, if (mem[sp++] >= 0) pc = x
+				case code::JE:		os << "JE";		break;
+				case code::JNE:		os << "JNE";	break;
+
+
 				case code::RET:		os << "RET";	break;
 			
 				case code::ESBA: 	os << "ESBA";	break;
@@ -168,6 +188,11 @@ namespace cyng
 				case code::ASSEMBLE_TUPLE:		os << "TPL";	break;
 				case code::ASSEMBLE_VECTOR:		os << "VEC";	break;
 				case code::ASSEMBLE_SET:		os << "SET";	break;
+
+					//	error register
+				case code::LERR:	os << "LERR";	
+				case code::TSTERR:	os << "TSTERR";	
+				case code::RESERR:	os << "RESERR";	
 
 				case code::HALT:	os << "HALT";	break;
 				case code::NOOP:	os << "NOOP";	break;

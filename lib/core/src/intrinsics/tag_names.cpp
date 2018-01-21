@@ -42,6 +42,7 @@ namespace cyng
 			"v",		//	version
 			"rev",		//	revision
 			"op",		//	code
+			"label",	//	jump address
 			"log:severity",	//	logging::severity,
 			"binary",	//	buffer_t
 			"mac48",
@@ -71,16 +72,19 @@ namespace cyng
 			"uuid",		//	boost::uuids::uuid
  			"fs:path",	//	boost::filesystem::path
 			
+			"ip:tcp:endpoint",	//	boost::asio::ip::tcp::endpoint
+			"ip:udp:endpoint",	//	boost::asio::ip::udp::endpoint
+			"ip:icmp:endpoint"	//	boost::asio::ip::icmp::endpoint
+			"ip:address",		//	boost::asio::ip::address
+
 			"eod",		//	nomen est omen
 			"COSTUM"
 		};
 		
 		const char* get_type_name(std::size_t idx)
 		{
-// 			cyng::traits::type_tag<T>::name
 			return (idx < std::tuple_size<traits::tag_t>::value)
 			? names[idx]
-// 			: type_tag<T>::name
 			: nullptr
 // 			: "CUSTOM"
 			;

@@ -6,6 +6,8 @@
  */ 
 
 #include <cyng/vm/manip.h>
+#include <cyng/value_cast.hpp>
+#include <iterator>
 
 namespace cyng 
 {
@@ -132,7 +134,60 @@ namespace cyng
 		prg_ << code::REBA;
 	}
 	
-	
+	vector_t& operator<<(vector_t& vec, reloc&&)
+	{
+		std::map<std::string, std::size_t>	tbl;
+
+		//
+		//	1. collect labels and remove them
+		//
+		for (auto pos = vec.begin(); pos != vec.end(); /* empty */)
+		{
+			if (pos->get_class().tag() == TC_LABEL)
+			{
+				label lbl;
+				tbl[value_cast(*pos, lbl).name_] = std::distance(vec.begin(), pos);
+				pos = vec.erase(pos);
+			}
+			else
+			{
+				++pos;
+			}
+		}
+
+		//
+		//	2. substitute labels by address
+		//
+		for (auto pos = vec.begin(); pos != vec.end(); ++pos)
+		{
+			if (pos->get_class().tag() == TC_CODE)
+			{
+				switch (value_cast(*pos, NOOP))
+				{
+				case JA:
+				case JE:
+				case JNE:
+					BOOST_ASSERT_MSG(pos != vec.begin(), "cannot substitute label");
+					if ((pos != vec.begin()) && ((pos - 1)->get_class().tag() == TC_STRING))
+					{
+						//
+						//	get jump address
+						//
+						auto it = tbl.find(value_cast<std::string>(*(pos - 1), ""));
+						BOOST_ASSERT_MSG(it != tbl.end(), "no jump address");
+						if (it != tbl.end())
+						{
+							*(pos - 1) = make_object(it->second);
+						}
+					}
+				default:
+					break;
+				}
+			}
+		}
+
+		return vec;
+	}
 }
 
 

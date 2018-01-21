@@ -80,11 +80,47 @@ namespace cyng
 		
 		std::ostream& serializer <attr_map_t, SERIALIZE_PLAIN>::write(std::ostream& os, attr_map_t const& v)
 		{
+			bool flag = false;
+			std::for_each(v.begin()
+				, v.end()
+				, [&flag, &os](attr_map_t::value_type const& attr) {
+
+				if (flag)
+				{
+					os << ',';
+				}
+				else
+				{
+					flag = true;
+				}
+
+				os << '(' << attr.first << ':';
+				serialize_plain(os, attr.second);
+				os << ')';
+			});
 			return os;
 		}
 
 		std::ostream& serializer <param_map_t, SERIALIZE_PLAIN>::write(std::ostream& os, param_map_t const& v)
 		{
+			bool flag = false;
+			std::for_each(v.begin()
+				, v.end()
+				, [&flag, &os](param_map_t::value_type const& param) {
+
+				if (flag)
+				{
+					os << ',';
+				}
+				else
+				{
+					flag = true;
+				}
+
+				os << '(' << '"' << param.first << '"' << ':';
+				serialize_plain(os, param.second);
+				os << ')';
+			});
 			return os;
 		}
 

@@ -41,8 +41,9 @@ namespace cyng
 		{
 			PREDEF_TABLE = 0x100,
 			PREDEF_DB,
-			PREDEF_KEY,
 			PREDEF_VM_CALL,
+			PREDEF_SESSION,
+			PREDEF_SK,
 		};
 	}
 }

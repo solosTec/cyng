@@ -8,12 +8,12 @@
 #define CYNG_SQL_DSL_PLACEHOLDER_H
 
 #include <ostream>
-#include <cyng/store/meta_interface.h>
+#include <cyng/table/meta_interface.h>
 #include <cyng/sql/dialect.h>
 
 namespace cyng 
 {
-	using namespace store;
+	using namespace table;
 	namespace sql
 	{
 		/**

@@ -74,21 +74,30 @@ message(STATUS "** Platform        : ${CMAKE_SYSTEM}")
 message(STATUS "** Compiler        : ${CMAKE_CXX_COMPILER_ID} v${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "** Timestamp       : ${${PROJECT_NAME}_NOW_UTC}")
 message(STATUS "** CPU Cores       : ${${PROJECT_NAME}_CPU_COUNT}")
+
 if(UNIX)
-# has no meaning on VS
-# set default cmake build type to RelWithDebInfo (None Debug Release RelWithDebInfo MinSizeRel)
-if( NOT CMAKE_BUILD_TYPE )
-	set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
-	message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
-endif()
-message(STATUS "** Build type      : ${CMAKE_BUILD_TYPE}")
-find_program(LSB_RELEASE lsb_release)
-execute_process(COMMAND ${LSB_RELEASE} -is
-    OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-message(STATUS "** System          : ${LSB_RELEASE_ID_SHORT}")
+	# has no meaning on VS
+	# set default cmake build type to RelWithDebInfo (None Debug Release RelWithDebInfo MinSizeRel)
+	if( NOT CMAKE_BUILD_TYPE )
+		set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
+		message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
+	endif()
+	message(STATUS "** Build type      : ${CMAKE_BUILD_TYPE}")
+	find_program(LSB_RELEASE lsb_release)
+	execute_process(COMMAND ${LSB_RELEASE} -is
+		OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+	)
+	message(STATUS "** System          : ${LSB_RELEASE_ID_SHORT}")
+else()
+	if( NOT CMAKE_BUILD_TYPE )
+		set( CMAKE_BUILD_TYPE "Debug" )
+		message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
+	endif()
+	set( LSB_RELEASE_ID_SHORT ${CMAKE_SYSTEM_NAME} )
+
 endif(UNIX)
+
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	message(STATUS "** Address Model   : 64 bit")
 	set(${PROJECT_NAME}_ADDRESS_MODEL 64)
@@ -97,6 +106,7 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 #
 	string(RANDOM LENGTH 16 ALPHABET "1234567890ABCDEF" __RND_VALUE_NULL)
 	string(RANDOM LENGTH 16 ALPHABET "1234567890ABCDEF" __RND_VALUE_EOD)
+	string(RANDOM LENGTH 16 ALPHABET "1234567890ABCDEF" __RND_VALUE_DUMMY)
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 	message(STATUS "** Address Model   : 32 bit")
 	set(${PROJECT_NAME}_ADDRESS_MODEL 32)
@@ -105,6 +115,7 @@ elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 #
 	string(RANDOM LENGTH 8 ALPHABET "1234567890ABCDEF" __RND_VALUE_NULL)
 	string(RANDOM LENGTH 8 ALPHABET "1234567890ABCDEF" __RND_VALUE_EOD)
+	string(RANDOM LENGTH 8 ALPHABET "1234567890ABCDEF" __RND_VALUE_DUMMY)
 else()
 	message(STATUS "** Address Model   : not supported")
 	set(${PROJECT_NAME}_ADDRESS_MODEL 16)
@@ -113,6 +124,7 @@ else()
 #
 	string(RANDOM LENGTH 4 ALPHABET "1234567890ABCDEF" __RND_VALUE_NULL)
 	string(RANDOM LENGTH 4 ALPHABET "1234567890ABCDEF" __RND_VALUE_EOD)
+	string(RANDOM LENGTH 4 ALPHABET "1234567890ABCDEF" __RND_VALUE_DUMMY)
 endif()
 
 #
@@ -120,6 +132,7 @@ endif()
 #
 set (${PROJECT_NAME}_NULL_HASH "0x${__RND_VALUE_NULL}")
 set (${PROJECT_NAME}_EOD_HASH "0x${__RND_VALUE_EOD}")
+set (${PROJECT_NAME}_DUMMY_HASH "0x${__RND_VALUE_DUMMY}")
 
 
 #
@@ -170,6 +183,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	endif()
 	
 	# std::apply since 7.0
+	# BOOST_NO_CXX17_STD_APPLY doesn't do the job
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "7.0")
 		set(${PROJECT_NAME}_STD_APPLY ${PROJECT_NAME}_STD_APPLY_OFF)
 		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_OFF)
@@ -191,11 +205,11 @@ elseif(MSVC)
 		message(FATAL_ERROR "Insufficient MSVC version")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "19.0")
 	#	after Visual Studio 2015
-		#	Even 19.5 lacks support for std::apply()
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
 		set(${PROJECT_NAME}_STD_SHARED_MUTEX ${PROJECT_NAME}_STD_SHARED_MUTEX_ON)
 		set(${PROJECT_NAME}_STD_STRING_VIEW	${PROJECT_NAME}_STD_STRING_VIEW_OFF)
-		set(${PROJECT_NAME}_STD_APPLY	${PROJECT_NAME}_STD_APPLY_ON)
+		#	Even 19.5 lacks support for std::apply()
+		set(${PROJECT_NAME}_STD_APPLY	${PROJECT_NAME}_STD_APPLY_OFF)
 		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_ON)
 	else()
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
@@ -206,11 +220,6 @@ elseif(MSVC)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE STATIC)
-
-#	1>Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
-#	1>- add -D_WIN32_WINNT=0x0501 to the compiler command line; or
-#	1>- add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
-#	1>Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
 
 	#	This is Windows 7 (and rules out windows vista)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")	
@@ -299,6 +308,107 @@ if(OPENSSL_FOUND)
 endif()
 
 #
+#	The path to cmake modules
+#
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/src/modules/")
+
+#
+#	Find SQLite3/UnixODBC library
+#
+if (UNIX)
+
+	#
+	#	SQLite3
+	#
+	find_package(SQLite3)
+	if(SQLite3_FOUND)
+
+		include_directories(${SQLite3_INCLUDE_DIR})
+		link_directories(${SQLITE3_LIBRARY})
+  
+		message(STATUS "** SQLite3 Version   : ${SQLite3_VERSION}")
+		message(STATUS "** SQLite3 Include   : ${SQLite3_INCLUDE_DIR}")
+		message(STATUS "** SQLite3 Libraries : ${SQLite3_LIBRARY}")
+	
+		#
+		#	define this compile flag if SQLite3 library is available
+		#
+		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
+		set(${PROJECT_NAME}_SQLITE3_INSTALLED ON)
+
+	else()
+
+		message(WARNING "** SQLite3 not found")
+#		set(SQLite3_LIBRARY "")
+		set(${PROJECT_NAME}_SQLITE3_INSTALLED OFF)
+
+	endif()
+
+	#
+	#	Find unixODBC library
+	#
+	find_package(UnixODBC)
+	if(UnixODBC_FOUND)
+
+		include_directories(${UnixODBC_INCLUDE_DIRS})
+		link_directories(${UnixODBC_LIBRARIES})
+	
+		message(STATUS "** UnixODBC Include  : ${UnixODBC_INCLUDE_DIRS}")
+		message(STATUS "** UnixODBC Libraries: ${UnixODBC_LIBRARIES}")
+		
+		#
+		#	define this compile flag if ODBC C++ is available
+		#
+		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
+		set(${PROJECT_NAME}_ODBC_INSTALLED ON)
+
+	else()
+
+		message(WARNING "** UnixODBC not found")
+#		set(UnixODBC_LIBRARIES "")
+		set(${PROJECT_NAME}_ODBC_INSTALLED OFF)
+
+	endif()	
+
+elseif(WIN32)
+
+	#
+	#	SQLite3 library is part of this project
+	#
+	include (3party/sqlite.cmake)
+	add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
+
+	#
+	#
+	#	SQLite3 shell
+	include (3party/shell.cmake)
+	add_executable(sqlite3 ${shell})
+	target_link_libraries(sqlite3 lib_sqlite3)
+
+	#
+	#
+	#	Link this library
+	set(${PROJECT_NAME}_SQLITE3_INSTALLED ON)
+	set(SQLite3_LIBRARY ${lib_sqlite3})
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
+
+	#
+	#	ODBC is always available on windows
+	#
+	set(${PROJECT_NAME}_ODBC_INSTALLED ON)
+	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
+
+	message(STATUS "** SQlite3 Version       : ${SQLite3_VERSION}")
+
+else()
+	message(WARNING "** platform not supported")
+endif()
+
+set(${PROJECT_NAME}_MYSQL_INSTALLED OFF)
+set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
+
+
+#
 # include directories for all C/C++ projects
 #
 include_directories(src/main/include)
@@ -359,6 +469,15 @@ target_link_libraries(cyng_vm
 	cyng_io)
 
 #
+#	cyng domain library
+#
+include (lib/domain/lib.cmake)
+add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
+target_link_libraries(cyng_domain
+	cyng_store
+	cyng_vm)
+
+#
 #	cyng async library
 #
 include (lib/async/lib.cmake)
@@ -371,6 +490,12 @@ include (lib/store/lib.cmake)
 add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
 target_link_libraries(cyng_store
 	cyng_core)
+
+#
+#	cyng table library
+#
+include (lib/table/lib.cmake)
+add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
 
 #
 #	cyng sql library
@@ -424,13 +549,37 @@ include (lib/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
 
 #
+#	cyng db library
+#
+include (lib/db/lib.cmake)
+add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
+set(db_link_libs )
+if (${PROJECT_NAME}_ODBC_INSTALLED)
+	if(WIN32)
+		list(APPEND db_link_libs odbc32.lib)
+	else()
+		list(APPEND db_link_libs ${UnixODBC_LIBRARIES})
+	endif(WIN32)
+endif()
+if (${PROJECT_NAME}_SQLITE3_INSTALLED)
+	if(WIN32)
+		list(APPEND db_link_libs lib_sqlite3)
+else()
+		list(APPEND db_link_libs ${SQLite3_LIBRARY})
+	endif(WIN32)
+endif()
+target_link_libraries(cyng_db ${db_link_libs})
+#message(STATUS "** db link library : ${db_link_libs}")
+
+
+#
 # minimal test program
 # hello world!
 # cross compile with 
 # arm-linux-gnueabihf-g++ -O3 -g3 -Wall -fPIC -o "main.o" -c "main.cpp"
 # arm-linux-gnueabihf-g++ -o "hello" main.o
 #
-include (test/hello.cmake)
+include (test/hello/hello.cmake)
 add_executable(hello ${hello})
 
 #
@@ -447,7 +596,7 @@ target_link_libraries(demo
 # test unit using Boost.Test
 # BOOST_TEST_DYN_LINK is required to build a main() function
 #
-include (test/unit-test.cmake)
+include (test/unit-test/unit-test.cmake)
 add_executable(unit_test ${unit_test})
 	
 # BOOST_TEST_DYN_LINK is required to build a main() function
@@ -455,7 +604,7 @@ set_property(
 	TARGET unit_test
 	PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys)
+set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	list(APPEND unittest_link_libs "${Boost_LIBRARIES} ${OPENSSL_LIBRARIES}")

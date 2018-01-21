@@ -157,7 +157,8 @@ namespace cyng
 			NP_TYPE,
 			NP_LENGTH,
 			NP_VALUE,
-			
+			//NP_EMPTY,
+
 		}	state_;
 		
 	public:
@@ -207,7 +208,7 @@ namespace cyng
 		/**
 		 * Overwrite this method to support custom data types.
 		 */
- 		virtual object create_custom_object(std::istream&, std::uint32_t tag, std::uint64_t size);
+ 		virtual object create_custom_object(std::istream&, std::size_t tag, std::uint64_t size);
 		
 	private:
 		
@@ -234,7 +235,7 @@ namespace cyng
 		 * 
 		 * @return true if length is complete
 		 */
-		bool parse_length(char c);
+		state parse_length(char c);
 		
 		/**
 		 * Parsing the value means to store

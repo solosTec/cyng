@@ -10,8 +10,11 @@
 
 #include <cyng/async/task/base_task.h>
 #include <cyng/async/task/task_meta.hpp>
+#include <boost/core/demangle.hpp>
+#include <boost/algorithm/string.hpp>
 #include <memory>
 #include <future>
+#include <typeinfo>
 
 namespace cyng 
 {
@@ -86,9 +89,9 @@ namespace cyng
 					result.set_value(true);
 				});
 				
-// 				std::cout << "task<>::stopp(" << get_id() << ")" << std::endl;
+// 				std::cout << "task<>::stop(" << get_id() << ")" << std::endl;
 				f.wait();
-				std::cout << "task<>::stopped(" << get_id() << ")" << std::endl;
+				//std::cout << "task<>::stopped(" << get_id() << ")" << std::endl;
 				
 			}
 			
@@ -96,14 +99,29 @@ namespace cyng
 			 * dispatch() receive messages and dispatch each message 
 			 * to the appropriate slot.
 			 */
-			virtual int dispatch(std::size_t slot, tuple_t const& msg) override
+			virtual void dispatch(std::size_t slot, tuple_t const& msg) override
 			{
-				if (shutdown_)	return 0;
+				if (shutdown_)	return;
 				auto sp = this->shared_from_this();
-				dispatcher_.post([this, sp, slot, msg](){
-					select_signature<signatures_t>::invoke(impl_, slot, msg);
+				dispatcher_.post([this, sp, slot, msg]() {
+					switch (select_signature<signatures_t>::invoke(impl_, slot, msg))
+					{
+					case continuation::TASK_STOP:
+						this->shutdown_ = true;
+						impl_.stop();
+						sp->cancel_timer();
+						remove_this();
+						break;
+					case continuation::TASK_YIELD:
+						std::this_thread::yield();
+						break;
+					case continuation::TASK_CONTINUE:
+					case continuation::TASK_UNDEFINED:
+					default:
+						break;
+					}
+
 				});
-				return 0;
 			}
 			
 			virtual shared_task get_shared() override
@@ -111,6 +129,17 @@ namespace cyng
 				return this->shared_from_this();
 			}
 			
+			virtual std::string get_class_name() const
+			{
+				//	class node::xxxxxxx
+				std::vector<std::string> parts;
+				boost::split(parts, boost::core::demangle(typeid(impl_type).name()), boost::is_any_of("\t "));
+				
+				return parts.empty()
+					? "TASK"
+					: ((parts.size() > 1) ? parts.at(1)	: parts.at(0));
+			}
+
 		private:
 			impl_type	impl_;
 			

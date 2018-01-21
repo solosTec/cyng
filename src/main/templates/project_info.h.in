@@ -12,17 +12,18 @@ namespace @PROJECT_NAME@
 	const char project_name[] = "@PROJECT_NAME@";
 }
 
-#define @PROJECT_NAME@_PLATFORM	 		"@CMAKE_SYSTEM@"
+#define @PROJECT_NAME@_PLATFORM	 	"@CMAKE_SYSTEM@"
 #define @PROJECT_NAME@_PROCESSOR		"@CMAKE_SYSTEM_PROCESSOR@"
-#define @PROJECT_NAME@_COMPILER			"@CMAKE_C_COMPILER_ID@ v@CMAKE_CXX_COMPILER_VERSION@"
+#define @PROJECT_NAME@_COMPILER		"@CMAKE_C_COMPILER_ID@ v@CMAKE_CXX_COMPILER_VERSION@"
+#define @PROJECT_NAME@_RELEASE		"@LSB_RELEASE_ID_SHORT@"
 #define @PROJECT_NAME@_CMAKE			"v@CMAKE_VERSION@"
 
 #define @PROJECT_NAME@_VERSION_MAJOR 	${${PROJECT_NAME}_VERSION_MAJOR}
 #define @PROJECT_NAME@_VERSION_MINOR 	${${PROJECT_NAME}_VERSION_MINOR}
 #define @PROJECT_NAME@_PATCH_LEVEL   	${${PROJECT_NAME}_PATCH_LEVEL}
-#define @PROJECT_NAME@_VERSION			"${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_PATCH_LEVEL}"
-#define @PROJECT_NAME@_BUILD_DATE     	"${${PROJECT_NAME}_NOW_UTC}"
-#define @PROJECT_NAME@_BUILD_YEAR     	${${PROJECT_NAME}_COPYRIGHT_YEAR}
+#define @PROJECT_NAME@_VERSION		"${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_PATCH_LEVEL}"
+#define @PROJECT_NAME@_BUILD_DATE		"${${PROJECT_NAME}_NOW_UTC}"
+#define @PROJECT_NAME@_BUILD_YEAR		${${PROJECT_NAME}_COPYRIGHT_YEAR}
 
 #define @PROJECT_NAME@_BUILD_TYPE   	"@CMAKE_BUILD_TYPE@"
 #define ${PROJECT_NAME}_ADDRESS_MODEL	${${PROJECT_NAME}_ADDRESS_MODEL}
@@ -34,8 +35,39 @@ namespace @PROJECT_NAME@
 #define	${PROJECT_NAME}_BOOST_LIBRARY_FOUND
 #define	${PROJECT_NAME}_BOOST_VERSION 	${PROJECT_NAME}_BOOST_${Boost_VERSION}
 
-#define  ${PROJECT_NAME}_NULL_HASH 		${${PROJECT_NAME}_NULL_HASH}LL
-#define  ${PROJECT_NAME}_EOD_HASH 		${${PROJECT_NAME}_EOD_HASH}LL
+#include <cstdint>
+
+namespace @PROJECT_NAME@
+{
+	constexpr std::uint64_t null_hash = ${${PROJECT_NAME}_NULL_HASH}ul;
+	constexpr std::uint64_t eod_hash = ${${PROJECT_NAME}_EOD_HASH}ul;
+
+#if	${PROJECT_NAME}_ODBC_INSTALLED
+	constexpr bool odbc_installed = true;
+#else
+	constexpr bool odbc_installed = false;
+	constexpr std::uint64_t sql_timestruct_dummy_hash = ${${PROJECT_NAME}_DUMMY_HASH}ul;
+#endif
+
+#if	${PROJECT_NAME}_SQLITE3_INSTALLED
+	constexpr bool sqlite3_installed = true;
+#else
+	constexpr bool sqlite3_installed = false;
+#endif
+
+#if	${PROJECT_NAME}_MYSQL_INSTALLED
+	constexpr bool mysql_installed = true;
+#else
+	constexpr bool mysql_installed = false;
+#endif
+
+#if	${PROJECT_NAME}_OLEDB_INSTALLED
+	constexpr bool oldedb_installed = true;
+#else
+	constexpr bool oldedb_installed = false;
+#endif
+
+}
 
 //
 //	Source directory during compile time

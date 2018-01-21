@@ -42,7 +42,7 @@ namespace cyng
 			 * create and insert a new table
 			 * @return true if table was actually inserted.
 			 */
-			bool create_table(meta_table_ptr);
+			bool create_table(cyng::table::meta_table_ptr);
 			
 			/**
 			 * @return number of tables
@@ -52,7 +52,7 @@ namespace cyng
 			/**
 			 * generic access on tables
 			 */
-#if defined(CYNG_LEGACY_MODE_ON)
+#if defined(CYNG_STD_APPLY_OFF)
 			template <class F, typename ...Tbls>
 // 			constexpr auto 
 			void
@@ -96,7 +96,7 @@ namespace cyng
 				//
 				//	call function F with unpacked table pointers
 				//
-#if defined(CYNG_LEGACY_MODE_ON)
+#if defined(CYNG_STD_APPLY_OFF)
 				cyng::meta::apply(f, tbl_list);
 #else
 				return cyng::meta::apply(std::forward<F>(f), tbl_list);
@@ -107,6 +107,66 @@ namespace cyng
 				//
 			}
 			
+			/**
+			 * Clears the table contents.
+			 *
+			 * @param name table name
+			 */
+			void clear(std::string const& name);
+
+			/**
+			 * @param name table name
+			 * @param key the record key
+			 * @param body the body to insert
+			 * @return true if the pair was actually inserted.
+			 */
+			bool insert(std::string const& name, cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation);
+
+			/**
+			 * @param name table name
+			 * @param key the record key
+			 * @return true if the record was actually deleted
+			 */
+			bool erase(std::string const& name, cyng::table::key_type const& key);
+
+			/**
+			 * If a matching record was found, the record will be write/exclusive locked.
+			 * The modification signal is send in every case, even when old and new values
+			 * are equal. (This should be changed in an upcoming version).
+			 *
+			 * @param name table name
+			 * @param key the record key
+			 * @param attr a specific attribute of the record body.
+			 * @return true if new value was sucessfully written.
+			 */
+			bool modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr);
+
+			/**
+			 * If a matching record was found, the record will be write/exclusive locked.
+			 * The modification signal is send in every case, even when old and new values
+			 * are equal. (This should be changed in an upcoming version).
+			 *
+			 * @param name table name
+			 * @param key the record key
+			 * @param param a specific parameter of the record body.
+			 * @return true if new value was sucessfully written.
+			 */
+			bool modify(std::string const& name, cyng::table::key_type const& key, param_t&& param);
+
+			/**
+			 * @return meta data
+			 */
+			cyng::table::meta_table_ptr meta(std::string const& name) const;
+
+			/**
+			 * Create all connections in one call
+			 */
+			connections_t get_listener(std::string const& name
+				, publisher::insert_signal::slot_type const& isig
+				, publisher::remove_signal::slot_type const& rsig
+				, publisher::clear_signal::slot_type const& csig
+				, publisher::modify_signal::slot_type const& msig);
+
 		private:
 			/**
 			 * Create a tuple of matching table pointer types 
@@ -160,23 +220,6 @@ namespace cyng
 				
 				return lock_list;
 			}
-			
-			
-		/**
-		 * forward declaration.
-		 * global function to get a const pointer to a table from
-		 * this database layout
-		 * 
-		 * @return a pair containing a const pointer to the requested table
-		 * and there mutex. If no table was found both pointers are null.
-		 * pointer with the specified name or a nullptr.
-		 * 
-		 * To detect such empty pairs use the helper function is_empty().
-		 * 
-		 * @see is_empty()
-		 */
-// 		std::pair<table const*, mutex_t*> 
-// 		find_table(const table&, std::string const& name);
 			
 		private:
 			/**

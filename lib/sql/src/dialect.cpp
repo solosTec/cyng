@@ -153,10 +153,8 @@ namespace cyng
 					case TC_REVISION:		return "BIGINT UNSIGNED";
 					case TC_CODE:			return "INT UNSIGNED";
 					case TC_BUFFER:			return "BLOB";
-// 					case CYY_INDEX:			return "BIGINT UNSIGNED";
-// 					case CYY_DIFF:			return "BIGINT";
-	// 				case CYY_RGB_COLOR8:	return "rgb8";
-	// 				case CYY_RGB_COLOR16:	return "rgb16";
+	// 				case TC_COLOR_8:	return "rgb8";
+	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "CHAR(17)";
 					case TC_MAC64:			return "CHAR(19)";
 
@@ -167,8 +165,6 @@ namespace cyng
 					case TC_TUPLE:			return "TEXT";
 					case TC_VECTOR:			return "TEXT";
 					case TC_SET:			return "TEXT";
-	// 				case CYY_LOCKABLE:		return "lock";
-	// 				case CYY_TABLE:			return "table";
 					
 					case TC_UUID:	
 						BOOST_ASSERT(width == 36 || width == -1);
@@ -176,15 +172,17 @@ namespace cyng
 					case TC_FS_PATH:	
 						BOOST_ASSERT(width == 1024 || width == -1);
 						return "VARCHAR(1024)";
-	//				case CYY_BOOST_ERROR:	return "ec";
-// 					case CYY_BOOST_IP_ADDRESS:		
+					case TC_EC:				return "INT UNSIGNED";
+
+					//	[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65000
+					case TC_IP_TCP_ENDPOINT:
+					case TC_IP_UDP_ENDPOINT:
+					case TC_IP_ICMP_ENDPOINT:	return "CHAR(48)";
+
+ 					case TC_IP_ADDRESS:		
 // 						BOOST_ASSERT(width == 40 || width == -1);
-// 						return "CHAR(40)";	//	!<	IPv4 and IPv6 as string
-// 					case CYY_BOOST_TCP_ENDPOINT:	
-// 						BOOST_ASSERT(width == 48 || width == -1);
-// 						return "CHAR(48)";	//	address and port as string e.g. [ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65000
-	//				case CYY_BOOST_TRIBOOL:	return "tribool";
-	//				case CYY_ARRAY:			return "[]";
+ 						return "CHAR(40)";	//	!<	IPv4 and IPv6 as string
+
 						default:
 							break;
 					}
@@ -219,10 +217,8 @@ namespace cyng
 					case TC_REVISION:		return "INT";
 					case TC_CODE:			return "INT";
 					case TC_BUFFER:			return "BLOB";
-// 					case CYY_INDEX:			return "BIGINT UNSIGNED";
-// 					case CYY_DIFF:			return "BIGINT";
-	// 				case CYY_RGB_COLOR8:	return "rgb8";
-	// 				case CYY_RGB_COLOR16:	return "rgb16";
+	// 				case TC_COLOR_8:	return "rgb8";
+	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "TEXT";
 					case TC_MAC64:			return "TEXT";
 
@@ -233,21 +229,14 @@ namespace cyng
 					case TC_TUPLE:			return "TEXT";
 					case TC_VECTOR:			return "TEXT";
 					case TC_SET:			return "TEXT";
-	// 				case CYY_LOCKABLE:		return "lock";
-	// 				case CYY_TABLE:			return "table";
 					
-					case TC_UUID:			return "TEXT";
-					case TC_FS_PATH:		return "TEXT";
-	//				case CYY_BOOST_ERROR:	return "ec";
-// 					case CYY_BOOST_IP_ADDRESS:		
-// 						BOOST_ASSERT(width == 40 || width == -1);
-// 						return "CHAR(40)";	//	!<	IPv4 and IPv6 as string
-// 					case CYY_BOOST_TCP_ENDPOINT:	
-// 						BOOST_ASSERT(width == 48 || width == -1);
-// 						return "CHAR(48)";	//	address and port as string e.g. [ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65000
-	//				case CYY_BOOST_TRIBOOL:	return "tribool";
-	//				case CYY_ARRAY:			return "[]";
-						default:
+					case TC_UUID:
+					case TC_FS_PATH:
+					case TC_IP_TCP_ENDPOINT:
+					case TC_IP_UDP_ENDPOINT:
+					case TC_IP_ICMP_ENDPOINT:
+					case TC_IP_ADDRESS:		return "TEXT";
+					default:
 							break;
 					}
 					return "BLOB";
@@ -288,10 +277,8 @@ namespace cyng
 					case TC_REVISION:		return "UNSIGNED BIGINT";
 					case TC_CODE:			return "UNSIGNED INTEGER";
 					case TC_BUFFER:			return "BLOB";
-// 					case CYY_INDEX:			return "BIGINT UNSIGNED";
-// 					case CYY_DIFF:			return "BIGINT";
-	// 				case CYY_RGB_COLOR8:	return "rgb8";
-	// 				case CYY_RGB_COLOR16:	return "rgb16";
+	// 				case TC_COLOR_8:	return "rgb8";
+	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "CHAR(17)";
 					case TC_MAC64:			return "CHAR(19)";
 
@@ -302,8 +289,6 @@ namespace cyng
 					case TC_TUPLE:			return "VARCHAR(2048)";
 					case TC_VECTOR:			return "VARCHAR(2048)";
 					case TC_SET:			return "VARCHAR(2048)";
-	// 				case CYY_LOCKABLE:		return "lock";
-	// 				case CYY_TABLE:			return "table";
 					
 					case TC_UUID:			return "CHAR(36)";
 					case TC_FS_PATH:		return "CHAR(1024)";
@@ -347,15 +332,12 @@ namespace cyng
 					case TC_SECOND:			return "BIGINT";	
 					case TC_MINUTE:			return "BIGINT";	
 					case TC_HOUR:			return "BIGINT";	
-// 					case TC_DAYS:			return "BIGINT";	
 					case TC_VERSION:		return "INT";
 					case TC_REVISION:		return "INT";
 					case TC_CODE:			return "INT";
 					case TC_BUFFER:			return "BLOB";
-// 					case CYY_INDEX:			return "BIGINT UNSIGNED";
-// 					case CYY_DIFF:			return "BIGINT";
-	// 				case CYY_RGB_COLOR8:	return "rgb8";
-	// 				case CYY_RGB_COLOR16:	return "rgb16";
+	// 				case TC_COLOR_8:	return "rgb8";
+	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "CHAR(17)";
 					case TC_MAC64:			return "CHAR(19)";
 
@@ -366,8 +348,6 @@ namespace cyng
 					case TC_TUPLE:			return "VARCHAR(2048)";
 					case TC_VECTOR:			return "VARCHAR(2048)";
 					case TC_SET:			return "VARCHAR(2048)";
-	// 				case CYY_LOCKABLE:		return "lock";
-	// 				case CYY_TABLE:			return "table";
 					
 					case TC_UUID:			return "CHAR(36)";
 					case TC_FS_PATH:		return "CHAR(1024)";
@@ -408,7 +388,6 @@ namespace cyng
 					case TC_SECOND:			return "bigint";	
 					case TC_MINUTE:			return "bigint";	
 					case TC_HOUR:			return "bigint";	
-// 					case TC_DAYS:			return "bigint";	
 					case TC_VERSION:		return "bigint";
 					case TC_REVISION:		return "bigint";
 					case TC_CODE:			return "integer";
@@ -420,10 +399,8 @@ namespace cyng
 							return ostream.str();
 						}
 						
-// 					case CYY_INDEX:			return "BIGINT UNSIGNED";
-// 					case CYY_DIFF:			return "BIGINT";
-	// 				case CYY_RGB_COLOR8:	return "rgb8";
-	// 				case CYY_RGB_COLOR16:	return "rgb16";
+	// 				case TC_COLOR_8:	return "rgb8";
+	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "macaddr";	// !
 					case TC_MAC64:			return "macaddr";
 
@@ -434,8 +411,6 @@ namespace cyng
 					case TC_TUPLE:			return "text";
 					case TC_VECTOR:			return "text";
 					case TC_SET:			return "text";
-	// 				case CYY_LOCKABLE:		return "lock";
-	// 				case CYY_TABLE:			return "table";
 					
 					case TC_UUID:			return "uuid";
 					case TC_FS_PATH:		return "varchar(1024)";
@@ -497,10 +472,8 @@ namespace cyng
 			case TC_REVISION:		return "BIGINT UNSIGNED";
 			case TC_CODE:			return "INTEGER UNSIGNED";
 			case TC_BUFFER:			return "BIT VARYING";
-// 					case CYY_INDEX:			return "BIGINT UNSIGNED";
-// 					case CYY_DIFF:			return "BIGINT";
-// 				case CYY_RGB_COLOR8:	return "rgb8";
-// 				case CYY_RGB_COLOR16:	return "rgb16";
+// 				case TC_COLOR_8:	return "rgb8";
+// 				case TC_COLOR_16:	return "rgb16";
 			case TC_MAC48:			return "CHARACTER(17)";
 			case TC_MAC64:			return "CHARACTER(19)";
 
@@ -511,8 +484,6 @@ namespace cyng
 			case TC_TUPLE:			return "VARCHAR(2048)";
 			case TC_VECTOR:			return "VARCHAR(2048)";
 			case TC_SET:			return "VARCHAR(2048)";
-// 				case CYY_LOCKABLE:		return "lock";
-// 				case CYY_TABLE:			return "table";
 			
 			case TC_UUID:			return "CHARACTER(36)";
 			case TC_FS_PATH:		return "VARCHAR(1024)";

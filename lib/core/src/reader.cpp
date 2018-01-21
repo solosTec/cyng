@@ -90,11 +90,6 @@ namespace cyng
 		return false;
 	}
 	
-// 	std::size_t vector_reader::size() const
-// 	{
-// 		return 
-// 	}
-	
 	reader<object> vector_reader::operator[](std::size_t idx) const
 	{
 		return reader<object>(get(idx));

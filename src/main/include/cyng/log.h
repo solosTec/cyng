@@ -60,6 +60,7 @@ namespace cyng
 //
 #define CYNG_LOG(l,s,m)	\
 	{	\
+		using cyng::operator<<; \
 		auto __msg = cyng::logging::entry_t::create(s);	\
 		(*__msg) << m;	\
 		l->push(__msg);	\

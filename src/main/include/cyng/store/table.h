@@ -8,12 +8,13 @@
 #define CYNG_STORE_TABLE_H
 
 
-#include <cyng/store/meta_interface.h>
+#include <cyng/table/meta_interface.h>
 #include <cyng/store/publisher.h>
-#include <cyng/store/record.h>
-#include <unordered_map>
+#include <cyng/table/record.h>
 #include <cyng/intrinsics/traits.hpp>
+#include <cyng/compatibility/async.h>
 #include <functional>
+#include <unordered_map>
 
 namespace cyng 
 {
@@ -26,18 +27,17 @@ namespace cyng
 		using shared_lock_t = cyng::async::shared_lock<mutex_t>;
 		using unique_lock_t = cyng::async::unique_lock<mutex_t>;
 		
+		class db;
 		class table : public publisher
 		{
-// 			template < template<class...> class R, typename ...Tbls>
+			friend class db;
 			template < typename T >
 			friend struct table_functor;
 			template < typename T >
 			friend struct lock_functor;
 			
 		public:
-			using table_type = std::unordered_map< key_type, body_type, std::hash<key_type>, std::equal_to<key_type> >;
-			//	ToDo: substitute key_type by key
-//  			using table_type = std::unordered_map< key, body_type, std::hash<key>, std::equal_to<key> >;
+			using table_type = std::unordered_map< cyng::table::key_type, cyng::table::body_type, std::hash<cyng::table::key_type>, std::equal_to<cyng::table::key_type> >;
 			
 		public:
 			table() = delete;
@@ -46,7 +46,7 @@ namespace cyng
 			/**
 			 * establich a tables from meta data 
 			 */
-			table(meta_table_ptr);
+			table(cyng::table::meta_table_ptr);
 			
 			/**
 			 * Tables are movable
@@ -66,7 +66,7 @@ namespace cyng
 			/**
 			 * @return meta data
 			 */
-			meta_table_interface const& meta() const;
+			cyng::table::meta_table_interface const& meta() const;
 			
 			/**
 			 * Clears the table contents.
@@ -78,13 +78,13 @@ namespace cyng
 			 * @param body the body to insert
 			 * @return true if the pair was actually inserted.
 			 */
-			bool insert(key_type const& key, data_type const& data, std::uint64_t generation);
+			bool insert(cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation);
 
 			/**
 			 * @param key the record key
 			 * @return true if the record was actually deleted
 			 */
-			bool erase(key_type const& key);
+			bool erase(cyng::table::key_type const& key);
 			
 			/**
 			 * Complexity O(log n) - red black tree.
@@ -92,15 +92,14 @@ namespace cyng
 			 * @brief simple record lookup
 			 * @return true if record was found
 			 */
-			bool exist(key_type const& key) const;
+			bool exist(cyng::table::key_type const& key) const;
 			
 			/**
 			 * Complexity O(log n) - red black tree.
 			 *
 			 * @brief simple record lookup
 			 */
-			record lookup(key_type const& key) const;
-			
+			cyng::table::record lookup(cyng::table::key_type const& key) const;
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
@@ -111,7 +110,7 @@ namespace cyng
 			 * @param attr a specific attribute of the record body.
 			 * @return true if new value was sucessfully written. 
 			 */
-			bool modify(key_type const& key, attr_t&& attr);
+			bool modify(cyng::table::key_type const& key, attr_t&& attr);
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
@@ -122,8 +121,16 @@ namespace cyng
 			 * @param param a specific parameter of the record body.
 			 * @return true if new value was sucessfully written. 
 			 */
-			bool modify(key_type const& key, param_t&& param);
+			bool modify(cyng::table::key_type const& key, param_t&& param);
 			
+			/** @brief Loop over all table entries.
+			 * 
+			 * Construct for each data row a record and fires a callback.
+			 *
+			 * @return count of invalid/skipped records
+			 */
+			std::size_t loop(std::function<void(cyng::table::record const&)> f) const;
+
 		private:
 			/**
 			 * This method is potential unsafe, since record data are unlocked
@@ -134,10 +141,10 @@ namespace cyng
 			 * @return a pair consisting of record body and a bool denoting whether the record
 			 * was found. If nothing was found, the body is empty (or an undefined state).
 			 */
-			std::pair<table_type::const_iterator,bool> find(key_type const& key) const;
+			std::pair<table_type::const_iterator, bool> find(cyng::table::key_type const& key) const;
 
 		private:
-			meta_table_ptr meta_;
+			cyng::table::meta_table_ptr meta_;
  			table_type data_;
 		};
 		

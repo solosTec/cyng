@@ -63,7 +63,7 @@ namespace cyng
 		 * @remove if true the call frame will removed from the stack
 		 * @return all elements of the call frame.
 		 */
-		vector_t get_frame(bool remove);
+		vector_t get_frame() const;
 		
 		/**
 		 * Set return value.

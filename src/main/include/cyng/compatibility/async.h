@@ -12,7 +12,7 @@
 //
 //	define synchronisation objects
 //
-#if defined(CYNG_STD_SHARED_MUTEX_ON)
+#if defined(CYNG_STD_SHARED_MUTEX_OFF)
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/lock_options.hpp>
@@ -52,7 +52,7 @@ namespace cyng
 	}
 }
 
-#else // defined(CYNG_STD_SHARED_MUTEX_ON)
+#else // defined(CYNG_STD_SHARED_MUTEX_OFF)
 
 
 #include <shared_mutex>

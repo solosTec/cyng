@@ -30,7 +30,7 @@ namespace cyng
 				{
 					if (pos != end)
 					{
-						std::cout << value_cast<value_type>(*pos, std::get< IDX >(out)) << std::endl;
+						//std::cout << value_cast<value_type>(*pos, std::get< IDX >(out)) << std::endl;
 						//
 						//	assign converted value (copy)
 						//
@@ -58,7 +58,7 @@ namespace cyng
 
 				static void copy(I pos, I end, std::tuple<Args...>& out)
 				{
-					std::cout << value_cast<value_type>(*pos, std::get< IDX >(out)) << std::endl;
+					//std::cout << value_cast<value_type>(*pos, std::get< IDX >(out)) << std::endl;
 					std::get< IDX >(out) = value_cast<value_type>(*pos, std::get< IDX >(out));
 				}
 			};

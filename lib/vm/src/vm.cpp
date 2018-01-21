@@ -15,7 +15,6 @@
 #include <chrono>
 
 #include <boost/uuid/uuid_io.hpp>
-// #include <boost/uuid/nil_generator.hpp>
 #include <boost/uuid/random_generator.hpp>
 
 namespace cyng 
@@ -28,6 +27,7 @@ namespace cyng
 	, stack_()
 	, lib_()
 	, error_register_()
+	, cmp_register_(false)
 	{}
 
 	vm::vm(boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
@@ -37,6 +37,7 @@ namespace cyng
 	, stack_()
 	, lib_()
 	, error_register_()
+	, cmp_register_(false)
 	{}
 
 	boost::uuids::uuid vm::tag() const noexcept
@@ -49,6 +50,8 @@ namespace cyng
 		memory mem(std::move(vec));
 		while (mem)
 		{
+			//stack_.dump(err_);
+
 			//
 			//	next data or instruction
 			//
@@ -69,10 +72,18 @@ namespace cyng
 				//
 				stack_.push(obj);
 			}		
-			
 		}
 	}
 	
+	void vm::sync_run(vector_t&& prg)
+	{
+		//
+		//	save stack pointer
+		//
+		activation a(stack_);
+		run(std::move(prg));
+	}
+
 	void vm::execute(code op, memory& mem)
 	{
 		switch (op)
@@ -98,6 +109,25 @@ namespace cyng
 				//	call, mem[--sp] = pc; pc = x
 				call(mem);
 				break;
+
+			case code::JA:
+				jump_a(mem);
+				break;
+				// 			JCT = 7,	//!< 	jump count, if (--ct) pc = x
+				// 			JP = 8,		//!< 	jump positive, if (mem[sp++] > 0) pc = x
+				// 			JN = 9,		//!< 	jump negative, if (mem[sp++] < 0) pc = x
+				// 			JZ = 0xA,	//!< 	jump zero, if (mem[sp++] == 0) pc = x
+				// 			JNZ = 0xB,	//!< 	jump nonzero, if (mem[sp++] != 0) pc = x
+				// 			JODD = 0xC,	//!< 	jump odd, if (mem[sp++] % 2 == 1) pc = x
+				// 			JZON = 0xD,	//!< 	jump zero or neg, if (mem[sp++] <= 0) pc = x
+				// 			JZOP = 0xE,	//!< 	jump zero or pos, if (mem[sp++] >= 0) pc = x
+			case code::JE:	
+				jump_error(mem);
+				break;
+			case code::JNE:
+				jump_no_error(mem);
+				break;
+
 			case code::RET: 	
 				//	return, pc = mem[sp++]
 				break;
@@ -152,6 +182,18 @@ namespace cyng
 				stack_.assemble_set();
 				break;
 
+			case code::LERR:
+				//	load error register
+				stack_.push(make_object(error_register_));
+				break;
+			case code::TSTERR:
+				//	jump (true) if no error state is set
+				cmp_register_ = !error_register_;
+				break;
+			case code::RESERR:
+				error_register_.clear();
+				break;
+
 			case code::HALT: //	trigger halt
 				//	stop engine
 				lib_.clear();
@@ -176,6 +218,39 @@ namespace cyng
 		stack_.pop();
 	}
 	
+	void vm::jump_a(memory& mem)
+	{
+		//	jump always, pc = x
+		const auto addr = value_cast<std::size_t>(stack_.top(), 0u);
+		mem.jump(addr);
+	}
+
+	void vm::jump_error(memory& mem)
+	{
+		if (error_register_)
+		{
+			jump_a(mem);
+		}
+		else
+		{
+			//	drop jump address
+			stack_.pop();
+		}
+	}
+
+	void vm::jump_no_error(memory& mem)
+	{
+		if (!error_register_)
+		{
+			jump_a(mem);
+		}
+		else
+		{
+			//	drop jump address
+			stack_.pop();
+		}
+	}
+
 	void vm::ret(memory& mem)
 	{
 		// return, pc = mem[sp++]
@@ -191,7 +266,7 @@ namespace cyng
 		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_STRING, "invoke requires a string with an function name");
 		const std::string fname = value_cast< std::string >(obj, "---no function name---");
 		stack_.pop();
-		out_ << "procname := " << fname << std::endl;
+		//out_ << "procname := " << fname << std::endl;
 	
 		//
 		//	call procedure

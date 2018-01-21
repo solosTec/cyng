@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <tuple>
 #include <functional>
+#include <boost/asio.hpp>	//	 boost/asio/ip/tcp.hpp
 #include <cyng/intrinsics/traits.hpp>
 
 namespace cyng 
@@ -51,6 +52,7 @@ namespace cyng
 		version,
 		revision,
 		code,
+		label,
 		logging::severity,
 		buffer_t,
 		mac48,
@@ -79,6 +81,16 @@ namespace cyng
 		boost::system::error_code,
 		boost::uuids::uuid,
 		boost::filesystem::path,
+		boost::asio::ip::tcp::endpoint,
+		boost::asio::ip::udp::endpoint,
+		boost::asio::ip::icmp::endpoint,
+		boost::asio::ip::address,
+#if CYNG_ODBC_INSTALLED
+		SQL_TIMESTAMP_STRUCT,
+#else
+		dummy_SQL_TIMESTAMP_STRUCT,
+#endif
+
 		eod
 		>;
 		
@@ -217,6 +229,7 @@ namespace cyng
 		TC_VERSION	= type_tag_traits<version>(),
 		TC_REVISION	= type_tag_traits<revision>(),
 		TC_CODE		= type_tag_traits<code>(),
+		TC_LABEL	= type_tag_traits<label>(),
 		TC_BUFFER	= type_tag_traits<buffer_t>(),
 		TC_MAC48	= type_tag_traits<mac48>(),
 		TC_MAC64	= type_tag_traits<mac64>(),
@@ -242,6 +255,18 @@ namespace cyng
 		TC_EC		= type_tag_traits<boost::system::error_code>(),
 		TC_UUID		= type_tag_traits<boost::uuids::uuid>(),
 		TC_FS_PATH	= type_tag_traits<boost::filesystem::path>(),
+
+		TC_IP_TCP_ENDPOINT	= type_tag_traits<boost::asio::ip::tcp::endpoint>(),
+		TC_IP_UDP_ENDPOINT = type_tag_traits<boost::asio::ip::udp::endpoint>(),
+		TC_IP_ICMP_ENDPOINT = type_tag_traits<boost::asio::ip::icmp::endpoint>(),
+		TC_IP_ADDRESS = type_tag_traits<boost::asio::ip::address>(),
+
+#if CYNG_ODBC_INSTALLED
+		TC_SQL_TIMESTAMP = type_tag_traits<SQL_TIMESTAMP_STRUCT>(),
+#else
+		TC_SQL_TIMESTAMP = type_tag_traits<dummy_SQL_TIMESTAMP_STRUCT>(),
+#endif
+
 		TC_EOD		= type_tag_traits<eod>()
 	};
 	

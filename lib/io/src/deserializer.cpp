@@ -23,8 +23,9 @@ namespace cyng
 			return make_object(read_object<type>(is));
 		}
 		
-		object deserialize(std::istream& is, std::uint32_t tag, std::uint64_t size)
+		object deserialize(std::istream& is, std::size_t tag, std::uint64_t size)
 		{
+			BOOST_ASSERT_MSG(size != 0, "invalid size");
 			switch (tag)
 			{
 				case TC_NULL:
@@ -88,6 +89,11 @@ namespace cyng
 // 				case TC_EC		= type_tag_traits<boost::system::error_code>(),
 				case TC_UUID:		return deserialize_object<TC_UUID>(is);
 				case TC_FS_PATH:	return deserialize_object<TC_FS_PATH>(is);
+				case TC_IP_TCP_ENDPOINT:	return deserialize_object<TC_IP_TCP_ENDPOINT>(is);
+				case TC_IP_UDP_ENDPOINT:	return deserialize_object<TC_IP_UDP_ENDPOINT>(is);
+				case TC_IP_ICMP_ENDPOINT:	return deserialize_object<TC_IP_ICMP_ENDPOINT>(is);
+				case TC_IP_ADDRESS:		return deserialize_object<TC_IP_ADDRESS>(is);
+
 				case TC_EOD:		
 					BOOST_ASSERT(size == 0);
 					return make_object(eod());

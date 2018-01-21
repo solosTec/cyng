@@ -14,12 +14,12 @@ namespace std
 {
 	size_t hash<cyng::null>::operator()(cyng::null) const noexcept
 	{
-		return CYNG_NULL_HASH;
+		return CYNG::null_hash;
 	}
 
 	size_t hash<cyng::eod>::operator()(cyng::eod) const noexcept
 	{
-		return CYNG_EOD_HASH;
+		return CYNG::eod_hash;
 	}
 
 	size_t hash<cyng::version>::operator()(cyng::version const& v) const noexcept
@@ -67,6 +67,11 @@ namespace std
 		return boost::hash_value(static_cast<std::uint16_t>(v));
 	}
 	
+	size_t hash<cyng::label>::operator()(cyng::label const& v) const noexcept
+	{
+		return boost::hash_value(v.name_);
+	}
+
 	size_t hash<cyng::buffer_t>::operator()(cyng::buffer_t const& v) const noexcept
 	{
 		return boost::hash_value(v);
@@ -141,6 +146,11 @@ namespace std
 		return boost::hash<boost::filesystem::path>()(v);
 	}
 
+	size_t hash<boost::system::error_code>::operator()(boost::system::error_code const& v) const noexcept
+	{
+		return boost::hash<boost::system::error_code>()(v);
+	}
+
 	size_t hash<chrono::system_clock::time_point>::operator()(chrono::system_clock::time_point const& v) const noexcept
 	{
 		using D = chrono::system_clock::time_point::duration;
@@ -176,6 +186,51 @@ namespace std
 	{
 		return boost::hash<cyng::crypto::digest_sha512::value_type>()(v.data_);
 	}
+
+	
+	size_t hash<boost::asio::ip::tcp::endpoint>::operator()(boost::asio::ip::tcp::endpoint const& v) const noexcept
+	{
+		std::size_t seed = 0;
+		boost::hash_combine(seed, v.address().to_string());
+		boost::hash_combine(seed, v.port());
+		return seed;
+	}
+
+	size_t hash<boost::asio::ip::udp::endpoint>::operator()(boost::asio::ip::udp::endpoint const& v) const noexcept
+	{
+		std::size_t seed = 0;
+		boost::hash_combine(seed, v.address().to_string());
+		boost::hash_combine(seed, v.port());
+		return seed;
+	}
+
+	size_t hash<boost::asio::ip::icmp::endpoint>::operator()(boost::asio::ip::icmp::endpoint const& v) const noexcept
+	{
+		std::size_t seed = 0;
+		boost::hash_combine(seed, v.address().to_string());
+		boost::hash_combine(seed, v.port());
+		return seed;
+	}
+
+	size_t hash<boost::asio::ip::address>::operator()(boost::asio::ip::address const& v) const noexcept
+	{
+		return boost::hash<std::string>()(v.to_string());
+	}
+
+#if CYNG_ODBC_INSTALLED
+	size_t hash<SQL_TIMESTAMP_STRUCT>::operator()(SQL_TIMESTAMP_STRUCT const& ts) const noexcept
+	{
+		std::size_t seed = 0;
+		boost::hash_combine(seed, ts.year);
+		boost::hash_combine(seed, ts.month);
+		boost::hash_combine(seed, ts.day);
+		boost::hash_combine(seed, ts.hour);
+		boost::hash_combine(seed, ts.minute);
+		boost::hash_combine(seed, ts.second);
+		boost::hash_combine(seed, ts.fraction);
+		return seed;
+	}
+#endif
 
 }
 

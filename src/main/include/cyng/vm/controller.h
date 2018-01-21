@@ -46,11 +46,8 @@ namespace cyng
 		
 		/**
 		 * Halt engine.
-		 *
-		 * @param limit max limit of wait cycles
-		 * @return true if all pending requests were satisfied.
 		 */
-		bool halt(std::size_t limit = 1024);
+		void halt();
 		
 		
 	private:

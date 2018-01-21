@@ -42,6 +42,7 @@ namespace cyng
 		void serialize_binary(std::ostream& os, object const& obj);
 		void serialize_json(std::ostream& os, object const& obj);
 		std::string to_str(object const&);
+		std::string to_str(vector_t const&);
 	}
 }
 

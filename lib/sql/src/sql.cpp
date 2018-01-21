@@ -45,6 +45,12 @@ namespace cyng
 			return sql_create(meta_, dialect_, stream_);
 		}
 
+		sql_remove command::remove()
+		{
+			clear("DELETE FROM");
+			return sql_remove(meta_, dialect_, stream_);
+		}
+
 		sql_insert command::insert()
 		{
 			clear("INSERT INTO");
@@ -74,6 +80,32 @@ namespace cyng
 		, dialect_(dia)
 		, stream_(os)
 		{}
+
+		sql_from sql_select::all()
+		{
+			//
+			//	all columns
+			//
+			bool init_flag = false;
+			meta_->loop([this, &init_flag](column&& col) {
+				if (!init_flag)
+				{
+					init_flag = true;
+				}
+				else
+				{
+					stream_ << ", ";
+				}
+
+				stream_
+					<< col.name_
+					;
+			});
+
+			stream_ << ' ';
+			return sql_from(meta_, dialect_, stream_);
+		}
+
 
 		sql_from::sql_from(meta_table_ptr m, dialect dia, std::ostream& os)
 		: meta_(m)
@@ -192,6 +224,17 @@ namespace cyng
 			});
 		}
 		
+		sql_remove::sql_remove(meta_table_ptr m, dialect dia, std::ostream& os)
+			: meta_(m)
+			, dialect_(dia)
+			, stream_(os)
+		{
+			stream_
+				<< meta_->get_name()
+				<< ' '
+				;
+		}
+
 		sql_insert::sql_insert(meta_table_ptr m, dialect dia, std::ostream& os)
 		: meta_(m)
 		, dialect_(dia)

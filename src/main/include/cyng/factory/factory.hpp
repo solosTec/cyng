@@ -80,9 +80,9 @@ namespace cyng
 			using value_type = typename std::decay< T >::type;
 			static object boxing(T* p)
 			{
-				std::cout << "--- pointer " 
-				<< boost::core::demangle(typeid( T ).name())
-				<< " ---\n";
+				//std::cout << "--- pointer " 
+				//<< boost::core::demangle(typeid( T ).name())
+				//<< " ---\n";
 				return factory<value_type>::create_object(*p);
 			}
 		};
@@ -100,30 +100,10 @@ namespace cyng
 			}
 			static object boxing(object const& obj)
 			{
-				std::cout << "--- prevent nested objects const& ---\n";
+				//std::cout << "--- prevent nested objects const& ---\n";
 				return obj;
 			}
 		};
-
-		//template <>
-		//struct factory_policy<object&>
-		//{
-		//	static object boxing(object& obj)
-		//	{
-		//		std::cout << "--- prevent nested objects& ---\n";
-		//		return obj;
-		//	}
-		//};
-
-		//template <>
-		//struct factory_policy<object const&>
-		//{
-		//	static object boxing(object const& obj)
-		//	{
-		//		std::cout << "--- prevent nested objects const& ---\n";
-		//		return obj;
-		//	}
-		//};
 
 		/**
 		 * Handle C-style strings as std::string 
@@ -133,8 +113,7 @@ namespace cyng
 		{
 			static object boxing(char const(&p)[N])
 			{
- 				std::cout << "--- Handle C-strings as string objects (I) ---\n";
-// 				return make_object(std::string(p, N - 1));
+ 				//std::cout << "--- Handle C-strings as string objects (I) ---\n";
 				return factory<std::string>::create_object(std::string(p, N - 1));
 			}
 		};
@@ -171,18 +150,8 @@ namespace cyng
 	{
 		using value_type = typename std::decay< T >::type;
 		return detail::factory_policy<value_type>::boxing(std::forward<T>(v));
-		//return detail::factory_policy<T>::boxing(std::forward<T>(v));
 	}
-	
-	/**
-	 * Prevent nested objects.
-	 */
- 	//inline object make_object(object&& obj)
- 	//{
-		//std::cout << "--- prevent nested objects ---\n";
- 	//	return obj;
- 	//}
-	
+		
 	/**
 	 * produce the null object 
 	 */

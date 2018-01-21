@@ -12,8 +12,6 @@
 namespace cyng 
 {
 	template < typename T >
-// 	const T& value_cast(object const&, T const&) noexcept;
-// 	const T& value_cast(object const&, T const& = T()) noexcept;
 	T value_cast(object const&, T const&) noexcept;
 }
 

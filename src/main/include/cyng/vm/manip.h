@@ -13,7 +13,6 @@
 
 namespace cyng 
 {
-
 	namespace detail 
 	{
 		template <typename T >
@@ -42,6 +41,44 @@ namespace cyng
 		
 			vector_t& operator()(vector_t&& v);
 		};
+
+		/** 
+		 * function objects will be executed
+		 */
+		template <typename R>
+		struct stream_policy<std::function<R(void)>&>
+		{
+			using f_t = std::function<R(void)>;
+			vector_t& vec_;
+			stream_policy(vector_t& vec)
+				: vec_(vec)
+			{}
+
+			vector_t& operator()(f_t const& f)
+			{
+				vec_ << f();
+				return vec_;
+			}
+		};
+
+		/** 
+		 * const function objects will be executed
+		 */
+		template <typename R>
+		struct stream_policy<const std::function<R(void)>&>
+		{
+			using f_t = std::function<R(void)>;
+			vector_t& vec_;
+			stream_policy(vector_t& vec)
+				: vec_(vec)
+			{}
+
+			vector_t& operator()(f_t const& f)
+			{
+				vec_ << f();
+				return vec_;
+			}
+		};
 	}
 	
 	/**
@@ -53,11 +90,8 @@ namespace cyng
 	{
 		detail::stream_policy<T> sp(vec);
 		return sp(std::forward<T>(v));
-// 		vec.push_back(make_object(std::forward<T>(v)));
-// 		return vec;
 	}
 	
-// 	vector_t& operator<<(vector_t& vec, vector_t const& vec);
 
 	/**
 	 * simple invoke call of a library function.
@@ -205,6 +239,21 @@ namespace cyng
 		vector_t& prg_;
 	};
 	
+	/**
+	 * Search for labels in the program removes it and substitute 
+	 * jump labels with the real address.
+	 */
+	class reloc
+	{
+	public:
+		friend vector_t& operator<<(vector_t&, reloc&&);
+	};
+	
+	/**
+	 * Push size of vector at end of program vector
+	 */
+	vector_t& operator<<(vector_t&, reloc&&);
+
 }
 
 #endif	//	CYNG_VM_MANIP_H

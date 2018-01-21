@@ -48,6 +48,15 @@ namespace cyng
 		void run(vector_t&&);
 		
 	private:
+
+		/**
+		 * @brief out of band execution (sync)
+		 * 
+		 * Save the stack pointer, executed specified code
+		 * and restore stack pointer.
+		 */
+		void sync_run(vector_t&&);
+
 		/**
 		 * execute a single instruction
 		 */
@@ -69,12 +78,28 @@ namespace cyng
 		 */
 		void invoke();
 		
+		/**
+		 * jump always, pc = x		
+		 */
+		void jump_a(memory& mem);
+
+		/**
+		 * je <label> (jump when error is set)
+		 */
+		void jump_error(memory& mem);
+
+		/**
+		 * jne <label> (jump when no error is set)
+		 */
+		void jump_no_error(memory& mem);
+
 	private:
 		boost::uuids::uuid	tag_;
 		std::ostream	&out_, &err_;
 		stack stack_;
 		librarian lib_;
 		boost::system::error_code	error_register_;
+		bool cmp_register_;
 	};
 }
 

@@ -8,13 +8,11 @@
 #define CYNG_META_HPP
 
 #include <CYNG_project_info.h>
-// #include <boost/config.hpp>
 #include <cyng/compatibility/legacy_mode.hpp>
 #include <type_traits>
 #include <tuple>
 
 #if defined(CYNG_STD_APPLY_OFF)
-// #if defined(BOOST_NO_CXX17_STD_APPLY)
 #include <boost/fusion/functional/invocation/invoke_function_object.hpp>
 #include <boost/fusion/adapted/std_pair.hpp>
 #include <boost/fusion/include/std_pair.hpp>
@@ -72,8 +70,8 @@ namespace cyng
 
 		
 	
+//	BOOST_NO_CXX17_STD_APPLY doesn't fit
 #if defined(CYNG_STD_APPLY_OFF)
-// #if defined(BOOST_NO_CXX17_STD_APPLY)
 		
 		//
 		//	Leveraging Boost.Fusion

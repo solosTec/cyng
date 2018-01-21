@@ -46,10 +46,30 @@ namespace cyng
 				state_ = parse_type(c);
 				break;
 			case NP_LENGTH:
-				if (parse_length(c))
+				state_ = parse_length(c);
+				if (state_ == NP_TYPE)
 				{
-					//	read value
-					state_ = NP_VALUE;
+					BOOST_ASSERT(type_.is_complete());
+					BOOST_ASSERT(length_.is_null());
+					//	no data required to create object
+					switch (type_.type())
+					{
+					case TC_NULL:	next(make_object());	break;
+					case TC_EOD:	next(make_object(eod()));	break;
+					case TC_STRING:	next(make_object(std::string()));	break;
+					case TC_BUFFER:	next(make_object(buffer_t()));	break;
+					case TC_FS_PATH:	next(make_object(boost::filesystem::path()));	break;
+					case TC_IP_TCP_ENDPOINT:	next(make_object(boost::asio::ip::tcp::endpoint()));	break;
+					case TC_IP_UDP_ENDPOINT:	next(make_object(boost::asio::ip::udp::endpoint()));	break;
+					case TC_IP_ICMP_ENDPOINT:	next(make_object(boost::asio::ip::icmp::endpoint()));	break;
+					case TC_IP_ADDRESS:	next(make_object(boost::asio::ip::address()));	break;
+
+					default:
+						BOOST_ASSERT_MSG(false, "data type requires input");
+						break;
+					}
+					type_.reset();
+					length_.reset();
 				}
 				break;
 			case NP_VALUE:
@@ -113,13 +133,13 @@ namespace cyng
 		
 	}
 	
- 	object parser::create_custom_object(std::istream&, std::uint32_t tag, std::uint64_t size)
+ 	object parser::create_custom_object(std::istream&, std::size_t tag, std::uint64_t size)
  	{
  		BOOST_ASSERT_MSG(false, "missing overwrite for create_custom_object()");
  		return make_object();
  	}
 
-	bool parser::parse_length(char c)
+	parser::state parser::parse_length(char c)
 	{
 #ifdef DEBUG_CYY_IO
 		std::cout
@@ -129,7 +149,10 @@ namespace cyng
 			;
 #endif
 
-		return length_.put(c);
+		return (length_.put(c))
+			? (length_.is_null() ? NP_TYPE : NP_VALUE)
+			: NP_LENGTH
+			;
 	}
 	
 	parser::state parser::parse_value(char c)
@@ -255,7 +278,7 @@ namespace cyng
 		{
 			if (size < 126)
 			{
-				source_[0] = size;
+				source_[0] = static_cast<unsigned char>(size & 0xff);
 				pos_ = 1;
 			}
 			else if (size < 0xffff)

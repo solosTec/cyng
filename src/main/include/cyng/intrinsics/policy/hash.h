@@ -67,7 +67,13 @@ namespace std
 		size_t operator()(cyng::code) const noexcept;
 	};
 
-	template<> 
+	template<>
+	struct hash<cyng::label>
+	{
+		size_t operator()(cyng::label const&) const noexcept;
+	};
+
+	template<>
 	struct hash<cyng::buffer_t>
 	{
 		size_t operator()(cyng::buffer_t const&) const noexcept;
@@ -142,7 +148,13 @@ namespace std
 		size_t operator()(boost::filesystem::path const&) const noexcept;
 	};
 
-	template<> 
+	template<>
+	struct hash<boost::system::error_code>
+	{
+		size_t operator()(boost::system::error_code const&) const noexcept;
+	};
+
+	template<>
 	struct hash<chrono::system_clock::time_point>
 	{
 		size_t operator()(chrono::system_clock::time_point const&) const noexcept;
@@ -187,6 +199,60 @@ namespace std
 	struct hash<cyng::crypto::digest_sha512>
 	{
 		size_t operator()(cyng::crypto::digest_sha512 const&) const noexcept;
+	};
+
+	template<>
+	struct hash<boost::asio::ip::tcp::endpoint>
+	{
+		size_t operator()(boost::asio::ip::tcp::endpoint const&) const noexcept;
+	};
+
+	template<>
+	struct hash<boost::asio::ip::udp::endpoint>
+	{
+		size_t operator()(boost::asio::ip::udp::endpoint const&) const noexcept;
+	};
+
+	template<>
+	struct hash<boost::asio::ip::icmp::endpoint>
+	{
+		size_t operator()(boost::asio::ip::icmp::endpoint const&) const noexcept;
+	};
+
+	template<>
+	struct hash<boost::asio::ip::address>
+	{
+		size_t operator()(boost::asio::ip::address const&) const noexcept;
+	};
+
+#if CYNG_ODBC_INSTALLED
+	template<>
+	struct hash<SQL_TIMESTAMP_STRUCT>
+	{
+		size_t operator()(SQL_TIMESTAMP_STRUCT const&) const noexcept;
+	};
+#endif
+
+	template<typename R, typename ...Args>
+	struct hash<function<R(Args...)>>
+	{
+		size_t operator()(function<R(Args...)> const&) const noexcept
+		{
+			return 0;
+		}
+	};
+
+	template<typename R, typename ...Args>
+	struct equal_to<function<R(Args...)>>
+	{
+		using result_type = bool;
+		using first_argument_type = function<R(Args...)>;
+		using second_argument_type = function<R(Args...)>;
+
+		inline bool operator()(function<R(Args...)> const& c1, function<R(Args...)> const& c2) const noexcept
+		{
+			return get_target_address(c1) == get_target_address(c2);
+		}
 	};
 
 }

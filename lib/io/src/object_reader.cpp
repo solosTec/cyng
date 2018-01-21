@@ -121,6 +121,25 @@ namespace cyng
 			return crypto::digest_sha512(a);
 		}
 
+		boost::asio::ip::tcp::endpoint reader_policy<boost::asio::ip::tcp::endpoint>::extract(std::istream& is)
+		{
+			return boost::asio::ip::tcp::endpoint();
+		}
+
+		boost::asio::ip::udp::endpoint reader_policy<boost::asio::ip::udp::endpoint>::extract(std::istream& is)
+		{
+			return boost::asio::ip::udp::endpoint();
+		}
+
+		boost::asio::ip::icmp::endpoint reader_policy<boost::asio::ip::icmp::endpoint>::extract(std::istream& is)
+		{
+			return boost::asio::ip::icmp::endpoint();
+		}
+
+		boost::asio::ip::address reader_policy<boost::asio::ip::address>::extract(std::istream& is)
+		{
+			return boost::asio::ip::address();
+		}
 
 	}
 }

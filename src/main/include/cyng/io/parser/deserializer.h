@@ -15,7 +15,7 @@ namespace cyng
 {
 	namespace io
 	{
-		object deserialize(std::istream&, std::uint32_t tag, std::uint64_t size);
+		object deserialize(std::istream&, std::size_t tag, std::uint64_t size);
 	}
 }
 

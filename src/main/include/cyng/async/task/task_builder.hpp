@@ -37,29 +37,30 @@ namespace cyng
 		 * from a timer callback.
 		 */
 		template < typename T, typename ...Args >
-		bool start_task_sync(mux& m, Args &&... args)
+		std::pair<std::size_t, bool> start_task_sync(mux& m, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
-			return m.insert(tp, sync());
+			return std::make_pair(tp->get_id(), m.insert(tp, sync()));
 		}
 		
 		template < typename T, typename ...Args >
-		void start_task_detached(mux& m, Args &&... args)
+		std::size_t start_task_detached(mux& m, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
 			m.insert(tp, detach());
+			return tp->get_id();
 		}
 
 		template < typename T, typename R, typename P, typename ...Args >
-		bool start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args)
+		std::pair<std::size_t, bool> start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
 			if (m.insert(tp, none()))
 			{
 				tp->suspend(d);
-				return true;
+				return std::make_pair(tp->get_id(), true);
 			}
-			return false;
+			return std::make_pair(tp->get_id(), false);
 		}
 		
 	}	// async

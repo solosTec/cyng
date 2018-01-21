@@ -29,7 +29,7 @@ namespace cyng
 		 * @remove if true the call frame will removed from the stack
 		 * @return all elements of the call frame.
 		 */
-		vector_t get_frame(bool remove);
+		vector_t get_frame() const;
 		
 		/**
 		 * The frame size is the difference
@@ -75,6 +75,12 @@ namespace cyng
 		 */
 		boost::uuids::uuid tag() const noexcept;
 		
+		/**
+		* Execute instructions stored in the
+		* memory
+		*/
+		void run(vector_t&&);
+
 	private:
 		vm& vm_;
 	};

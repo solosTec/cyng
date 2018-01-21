@@ -29,16 +29,9 @@ set (vm_h
     src/main/include/cyng/vm/generator.h
 )
 
-set (vm_domains
-    src/main/include/cyng/vm/domain/log_domain.h
-    src/main/include/cyng/vm/domain/fs_domain.h
-    lib/vm/src/domain/fs_domain.cpp
-    lib/vm/src/domain/log_domain.cpp
-)
 
 # define the vm lib
 set (vm_lib
   ${vm_cpp}
   ${vm_h}
-  ${vm_domains}
 )

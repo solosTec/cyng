@@ -11,6 +11,7 @@
 #include <istream>
 #include <type_traits>
 #include <boost/numeric/conversion/cast.hpp>
+#include <boost/asio.hpp>
 
 namespace cyng 
 {
@@ -200,6 +201,29 @@ namespace cyng
 			static crypto::digest_sha512 extract(std::istream& is);
 		};
 
+		template <>
+		struct reader_policy<boost::asio::ip::tcp::endpoint>
+		{
+			static boost::asio::ip::tcp::endpoint extract(std::istream& is);
+		};
+
+		template <>
+		struct reader_policy<boost::asio::ip::udp::endpoint>
+		{
+			static boost::asio::ip::udp::endpoint extract(std::istream& is);
+		};
+
+		template <>
+		struct reader_policy<boost::asio::ip::icmp::endpoint>
+		{
+			static boost::asio::ip::icmp::endpoint extract(std::istream& is);
+		};
+
+		template <>
+		struct reader_policy<boost::asio::ip::address>
+		{
+			static boost::asio::ip::address extract(std::istream& is);
+		};
 
 	}
 	
