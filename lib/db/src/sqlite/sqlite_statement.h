@@ -10,7 +10,7 @@
 
 #include "sqlite_defs.h"
 #include "sqlite_connection.h"
-#include <cyng/intrinsics\traits\tag.hpp>
+#include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/db/interface_statement.h>
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/version.h>

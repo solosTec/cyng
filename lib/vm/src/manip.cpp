@@ -162,11 +162,11 @@ namespace cyng
 		{
 			if (pos->get_class().tag() == TC_CODE)
 			{
-				switch (value_cast(*pos, NOOP))
+				switch (value_cast(*pos, code::NOOP))
 				{
-				case JA:
-				case JE:
-				case JNE:
+				case code::JA:
+				case code::JE:
+				case code::JNE:
 					BOOST_ASSERT_MSG(pos != vec.begin(), "cannot substitute label");
 					if ((pos != vec.begin()) && ((pos - 1)->get_class().tag() == TC_STRING))
 					{

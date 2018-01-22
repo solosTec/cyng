@@ -193,6 +193,15 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE SHARED)
+	
+	#
+	#	provide a hint for a local installation of boost
+	#
+	if(NOT BOOST_ROOT)
+		set(BOOST_ROOT "~/development/boost_1_66_0/root/" CACHE PATH "BOOST_ROOT" )
+		message(STATUS "** Set BOOST_ROOT  : ${BOOST_ROOT}")
+	endif()
+
 
 elseif(MSVC)
 
@@ -469,19 +478,16 @@ target_link_libraries(cyng_vm
 	cyng_io)
 
 #
-#	cyng domain library
-#
-include (lib/domain/lib.cmake)
-add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
-target_link_libraries(cyng_domain
-	cyng_store
-	cyng_vm)
-
-#
 #	cyng async library
 #
 include (lib/async/lib.cmake)
 add_library(cyng_async ${GLOBAL_LIBRARY_TYPE} ${async_lib})
+
+#
+#	cyng table library
+#
+include (lib/table/lib.cmake)
+add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
 
 #
 #	cyng store library
@@ -489,13 +495,16 @@ add_library(cyng_async ${GLOBAL_LIBRARY_TYPE} ${async_lib})
 include (lib/store/lib.cmake)
 add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
 target_link_libraries(cyng_store
-	cyng_core)
+	cyng_core cyng_table)
 
 #
-#	cyng table library
+#	cyng domain library
 #
-include (lib/table/lib.cmake)
-add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
+include (lib/domain/lib.cmake)
+add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
+target_link_libraries(cyng_domain
+	cyng_store
+	cyng_vm)
 
 #
 #	cyng sql library
@@ -607,9 +616,10 @@ set_property(
 set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	list(APPEND unittest_link_libs "${Boost_LIBRARIES} ${OPENSSL_LIBRARIES}")
+	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
 endif()
 
+message(STATUS "** unit-test libs  : ${unittest_link_libs}")
 target_link_libraries(unit_test ${unittest_link_libs})
 
 #

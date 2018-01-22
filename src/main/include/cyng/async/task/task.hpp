@@ -133,7 +133,8 @@ namespace cyng
 			{
 				//	class node::xxxxxxx
 				std::vector<std::string> parts;
-				boost::split(parts, boost::core::demangle(typeid(impl_type).name()), boost::is_any_of("\t "));
+				auto name = boost::core::demangle(typeid(impl_type).name());
+				boost::split(parts, name, boost::is_any_of("\t "));
 				
 				return parts.empty()
 					? "TASK"

@@ -61,7 +61,7 @@ namespace cyng
 			}, write_access(name));
 			return b;
 #else
-			return access([&key, &data, generation, &b](table* tbl)->bool {
+			return access([&key, &data, generation](table* tbl)->bool {
 				return tbl->insert(key, data, generation);
 			}, write_access(name));
 #endif
