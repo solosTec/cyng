@@ -6,7 +6,7 @@ set (io_lib)
 set (io_cpp
  	lib/io/src/plain.cpp
   	lib/io/src/binary.cpp
- 	lib/io/src/formatted.cpp
+ 	lib/io/src/typed.cpp
  	lib/io/src/json.cpp
  	lib/io/src/io_chrono.cpp
  	lib/io/src/serialize.cpp
@@ -22,7 +22,7 @@ set (io_h
     src/main/include/cyng/io/io_chrono.hpp
     src/main/include/cyng/io/serializer/plain.hpp
     src/main/include/cyng/io/serializer/binary.hpp
-    src/main/include/cyng/io/serializer/formatted.hpp
+    src/main/include/cyng/io/serializer/typed.hpp
     src/main/include/cyng/io/serializer/json.hpp
     src/main/include/cyng/io/serializer/serialize.hpp
     src/main/include/cyng/io/serializer.h

@@ -38,7 +38,7 @@ namespace cyng
 		std::ostream& operator<<(std::ostream& os, buffer_t const&);
 		
 		void serialize_plain(std::ostream&, object const&);
-		void serialize_formatted(std::ostream&, object const&);
+		void serialize_typed(std::ostream&, object const&);
 		void serialize_binary(std::ostream& os, object const& obj);
 		void serialize_json(std::ostream& os, object const& obj);
 		std::string to_str(object const&);

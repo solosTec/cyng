@@ -157,12 +157,18 @@ BOOST_AUTO_TEST_CASE(db_002)
 BOOST_AUTO_TEST_SUITE_END()	//	DB
 
 #include "test-parser-001.h"
+#include "test-parser-002.h"
 
 BOOST_AUTO_TEST_SUITE(PARSER)
 BOOST_AUTO_TEST_CASE(parser_001)
 {
 	using namespace cyng;
 	BOOST_CHECK(test_parser_001());
+}
+BOOST_AUTO_TEST_CASE(parser_002)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_parser_002());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	PARSER
 

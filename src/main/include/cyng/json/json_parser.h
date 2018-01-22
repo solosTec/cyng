@@ -61,7 +61,7 @@ namespace cyng
 		boost::spirit::qi::rule<Iterator, boost::fusion::vector<utf::u32_string, object>(), Skipper > r_pair;
 
 		numeric_parser<Iterator>	r_numeric;
-		utf::obj_parser<Iterator>	r_string;	//	object
+		utf::obj_quote_parser<Iterator>	r_string;	//	object
 		utf::quote_parser<Iterator>	r_quote;		//	u32_string
 		identifier_parser<Iterator>	r_ident;	//	std::string
 		rfc3339_obj_parser<Iterator>	r_dt;	//	std::chrono::system_clock::time_point

@@ -71,7 +71,7 @@ namespace cyng
 		{
 			auto first(begin(input)), last(end(input));
 			convert_u8_to_u32 f(first), l(last);
-			static const obj_parser<convert_u8_to_u32, boost::spirit::qi::standard_wide::space_type> g;
+			static const obj_quote_parser<convert_u8_to_u32, boost::spirit::qi::standard_wide::space_type> g;
 
 			object result;
 			const bool b = boost::spirit::qi::phrase_parse(f, l, g, boost::spirit::qi::standard_wide::space, result);
@@ -83,9 +83,9 @@ namespace cyng
 //  		template struct pair_parser <std::string::const_iterator>;
 //  		template struct pair_parser <buffer_t::const_iterator>;
 		template struct quote_parser <std::string::const_iterator>;
-		template struct obj_parser <std::string::const_iterator>;
+		template struct obj_quote_parser <std::string::const_iterator>;
 		template struct quote_parser <buffer_t::const_iterator>;
-		template struct obj_parser <buffer_t::const_iterator>;
+		template struct obj_quote_parser <buffer_t::const_iterator>;
 		// 		template struct quote_parser <std::string::const_iterator, boost::spirit::qi::standard_wide::space_type>;
 		//  		template struct quote_parser <std::string::const_iterator, boost::spirit::char_encoding::standard_wide>;
 		//		template struct obj_parser <std::string::const_iterator, boost::spirit::char_encoding::standard_wide>;

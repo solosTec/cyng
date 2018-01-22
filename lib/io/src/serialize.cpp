@@ -20,9 +20,9 @@ namespace cyng
 			serializer_helper<SERIALIZE_PLAIN>::write(os, obj);
 		}
 		
-		void serialize_formatted(std::ostream& os, object const& obj)
+		void serialize_typed(std::ostream& os, object const& obj)
 		{
-			serializer_helper<SERIALIZE_FORMATTED>::write(os, obj);
+			serializer_helper<SERIALIZE_TYPED>::write(os, obj);
 		}
 		
 		void serialize_binary(std::ostream& os, object const& obj)

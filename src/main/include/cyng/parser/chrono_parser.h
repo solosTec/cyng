@@ -79,9 +79,9 @@ namespace cyng
 		rfc3339_timestamp_parser<Iterator>				r_ts;
 
 		/**
-			* This is a workaround since boost::phoenix::bind() cannot
-			* deal with Rvalues.
-			*/
+		 * This is a workaround since boost::phoenix::bind() cannot
+		 * deal with Rvalues.
+		 */
 		object helper(std::chrono::system_clock::time_point const&);
 
 	};
@@ -89,17 +89,18 @@ namespace cyng
 
 
 	/**
-		* Parse a raw timepoint string
-		*/
-	template <typename Iterator>
+	 * Parse a raw timepoint string
+	 * example: 2015.04.24 08:29:9.5853489
+	 */
+	template <typename Iterator, typename Skipper = boost::spirit::qi::standard_wide::space_type>
 	struct timepoint_basic_parser
-		: boost::spirit::qi::grammar<Iterator, object()>
+		: boost::spirit::qi::grammar<Iterator, object(), Skipper>
 	{
 		timepoint_basic_parser();
-		boost::spirit::qi::rule<Iterator, object()> 	r_start;
+		boost::spirit::qi::rule<Iterator, object(), Skipper> 	r_start;
 		boost::spirit::qi::uint_parser<std::uint16_t, 10, 1, 4> 	r_uint16;
 		boost::spirit::qi::uint_parser<std::uint8_t, 10, 1, 2>		r_uint8;
-		boost::spirit::qi::rule<Iterator, boost::fusion::vector< std::uint16_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, double >()> r_time;
+		boost::spirit::qi::rule<Iterator, boost::fusion::vector< std::uint16_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, double >(), Skipper> r_time;
 
 	};
 
@@ -111,12 +112,12 @@ namespace cyng
 	/**
 		* Parse any timespan or timepoint object for a script environment. 
 		*/
-	template <typename Iterator>
+	template <typename Iterator, typename Skipper = boost::spirit::qi::standard_wide::space_type>
 	struct chrono_parser
-	: boost::spirit::qi::grammar<Iterator, object()>
+	: boost::spirit::qi::grammar<Iterator, object(), Skipper>
 	{
 		chrono_parser();
-		boost::spirit::qi::rule<Iterator, object()> 	r_start;
+		boost::spirit::qi::rule<Iterator, object(), Skipper> 	r_start;
 
 		boost::spirit::qi::rule<Iterator, object()> r_nanosecond;
 		boost::spirit::qi::rule<Iterator, object()> r_microsecond;
@@ -127,15 +128,15 @@ namespace cyng
 		boost::spirit::qi::rule<Iterator, object()> r_day;
 		
 		/**
-			* read tick counter of time duration
-			*/
+		 * read tick counter of time duration
+		 */
 		boost::spirit::qi::uint_parser<std::uint64_t, 10, 1, -1> 	r_uint64;
 		boost::spirit::qi::uint_parser<std::uint16_t, 10, 1, 5> 	r_uint16;
 		boost::spirit::qi::uint_parser<std::uint8_t, 10, 1, 3>		r_uint8;
 
 		/**
-			* Read timestamps with different formats
-			*/
+		 * Read timestamps with different formats
+		 */
 		timepoint_basic_parser<Iterator>	r_tp;
 		rfc3339_obj_parser<Iterator>		r_rfc3339;
 	};
@@ -158,8 +159,8 @@ namespace cyng
 	};
 
 	/**
-		* expect the format hh:mm:ss
-		*/
+	 * expect the format hh:mm:ss
+	 */
 	template <typename Iterator>
 	struct timespan_parser
 	: boost::spirit::qi::grammar<Iterator, std::chrono::microseconds()>

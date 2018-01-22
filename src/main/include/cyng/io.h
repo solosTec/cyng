@@ -28,7 +28,7 @@ namespace cyng
 		 * Serialization to readable output
 		 * with type information 
 		 */
-		struct SERIALIZE_FORMATTED {};
+		struct SERIALIZE_TYPED {};
 		
 		/**
 		 * Serialization to an internal binary 

@@ -38,6 +38,10 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
     * new task library
 * SQL
     * Generate SQL queries at runtime
+	* C++ compiler checks SQL syntax
+* db
+	* Generalized interface to access databases
+	* Support for ODBC and SQLite3
 * and more
     * logging
     * crypto

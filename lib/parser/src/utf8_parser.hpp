@@ -215,8 +215,8 @@ namespace cyng
 		};
 		
 		template <typename Iterator, typename Skipper>
-		obj_parser<Iterator, Skipper>::obj_parser()
-			: obj_parser::base_type(r_start)
+		obj_quote_parser<Iterator, Skipper>::obj_quote_parser()
+			: obj_quote_parser::base_type(r_start)
 		{
 			r_start
 				%= r_quote	//	transform_attribute<>(...)

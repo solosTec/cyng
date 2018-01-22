@@ -9,7 +9,7 @@
 
 #include <cyng/object.h>
 #include <cyng/io/serializer/plain.hpp>
-#include <cyng/io/serializer/formatted.hpp>
+#include <cyng/io/serializer/typed.hpp>
 #include <cyng/io/serializer/binary.hpp>
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/intrinsics/traits/tag.hpp>

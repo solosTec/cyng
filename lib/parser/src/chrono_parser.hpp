@@ -127,8 +127,8 @@ namespace cyng
 		
 	}
 
-	template <typename Iterator>
-	chrono_parser< Iterator > :: chrono_parser()
+	template <typename Iterator, typename Skipper>
+	chrono_parser< Iterator, Skipper > :: chrono_parser()
 		: chrono_parser::base_type( r_start )
 	{
 
@@ -145,7 +145,7 @@ namespace cyng
 		| r_minute
 		| r_hour
 		| r_day
-		| '"' >> r_tp >> "\"ts"
+		| '"' >> r_tp >> "\"chrono::tp"
 		| '@' >> r_rfc3339
 		;
 		
@@ -162,7 +162,7 @@ namespace cyng
 		;
 		
 		r_second
-		= (r_uint64 >> "sec")[boost::spirit::_val = boost::phoenix::bind(&make_seconds, boost::spirit::_1)]
+		= (r_uint64 >> "chrono:sec")[boost::spirit::_val = boost::phoenix::bind(&make_seconds, boost::spirit::_1)]
 		;
 		
 		r_minute
@@ -180,8 +180,8 @@ namespace cyng
 		
 	}
 	
-	template <typename Iterator>
-	timepoint_basic_parser< Iterator > ::timepoint_basic_parser()
+	template <typename Iterator, typename Skipper>
+	timepoint_basic_parser< Iterator, Skipper > ::timepoint_basic_parser()
 		: timepoint_basic_parser::base_type(r_start)
 	{
 		boost::phoenix::function<tp_intrinsic_factory>	make_intrinsic_tp;

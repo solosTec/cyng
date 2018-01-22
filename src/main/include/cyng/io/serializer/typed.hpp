@@ -4,8 +4,8 @@
  * Copyright (c) 2017 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_IO_SERIALIZE_FORMATTED_HPP
-#define CYNG_IO_SERIALIZE_FORMATTED_HPP
+#ifndef CYNG_IO_SERIALIZE_TYPED_HPP
+#define CYNG_IO_SERIALIZE_TYPED_HPP
 
 #include <cyng/io/serializer/plain.hpp>
 #include <cyng/intrinsics/traits/tag_names.hpp>
@@ -16,7 +16,7 @@ namespace cyng
 	{
 
 		template <typename T>
-		struct serializer<T, SERIALIZE_FORMATTED>
+		struct serializer<T, SERIALIZE_TYPED>
 		{		
 			static std::ostream& write(std::ostream& os, T const& v)
 			{
@@ -30,56 +30,56 @@ namespace cyng
 		};
 		
 		template <>
-		struct serializer <version, SERIALIZE_FORMATTED>
+		struct serializer <version, SERIALIZE_TYPED>
 		{
 			static std::ostream& write(std::ostream& os, version const& v);
 		};
 		
 		template <>
-		struct serializer <revision, SERIALIZE_FORMATTED>
+		struct serializer <revision, SERIALIZE_TYPED>
 		{
 			static std::ostream& write(std::ostream& os, revision const& v);
 		};
 
-		// 		template <>
-// 		struct serializer <bool, SERIALIZE_FORMATTED>
-// 		{
-// 			static std::ostream& write(std::ostream& os, bool v);
-// 		};
+		template <>
+		struct serializer <std::chrono::system_clock::time_point, SERIALIZE_TYPED>
+		{
+			static std::ostream& write(std::ostream& os, std::chrono::system_clock::time_point tp);
+		};
 // 		
 // 		template <>
-// 		struct serializer <buffer_t, SERIALIZE_FORMATTED>
+// 		struct serializer <buffer_t, SERIALIZE_TYPED>
 // 		{
 // 			static std::ostream& write(std::ostream& os, buffer_t const& v);
 // 		};
 // 		
 // 		template <>
-// 		struct serializer <boost::uuids::uuid, SERIALIZE_FORMATTED>
+// 		struct serializer <boost::uuids::uuid, SERIALIZE_TYPED>
 // 		{
 // 			static std::ostream& write(std::ostream& os, boost::uuids::uuid const& v);
 // 		};
 // 
 // 		template <>
-// 		struct serializer <tuple_t, SERIALIZE_FORMATTED>
+// 		struct serializer <tuple_t, SERIALIZE_TYPED>
 // 		{
 // 			static std::ostream& write(std::ostream& os, tuple_t const& v);
 // 		};
 // 
 // 		template <>
-// 		struct serializer <vector_t, SERIALIZE_FORMATTED>
+// 		struct serializer <vector_t, SERIALIZE_TYPED>
 // 		{
 // 			static std::ostream& write(std::ostream& os, vector_t const& v);
 // 		};
 // 
 // 		template <>
-// 		struct serializer <set_t, SERIALIZE_FORMATTED>
+// 		struct serializer <set_t, SERIALIZE_TYPED>
 // 		{
 // 			static std::ostream& write(std::ostream& os, set_t const& v);
 // 		};
 
 
 		// 	template <>
-	// 	struct serializer <boost::filesystem::path, SERIALIZE_FORMATTED>
+	// 	struct serializer <boost::filesystem::path, SERIALIZE_TYPED>
 	// 	{
 	// 		static std::ostream& write(std::ostream& os, boost::filesystem::path const& v);
 	// 	};
@@ -87,5 +87,5 @@ namespace cyng
 	}
 }
 
-#endif // CYNG_IO_SERIALIZE_FORMATTED_HPP
+#endif // CYNG_IO_SERIALIZE_TYPED_HPP
 

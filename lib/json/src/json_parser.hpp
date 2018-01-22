@@ -139,7 +139,6 @@ namespace cyng
 
 		r_pair
 			= (r_quote | r_ident ) >> boost::spirit::qi::lit(':') >> r_obj.alias()
-			//= (r_str | r_ident) >> boost::spirit::qi::lit(':') >> r_value
 			;
 
 		r_value

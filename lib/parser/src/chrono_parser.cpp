@@ -15,8 +15,10 @@ namespace cyng
 {
 	template struct chrono_parser <std::string::const_iterator>;
 	template struct chrono_parser <buffer_t::const_iterator>;
+	template struct chrono_parser <utf::convert_u8_to_u32>;
 	template struct db_timestamp_parser <std::string::const_iterator>;
 	template struct timespan_parser <std::string::const_iterator>;
+	template struct timespan_parser <utf::convert_u8_to_u32>;
 	template struct rfc3339_timestamp_parser <std::string::const_iterator>;
 	template struct rfc3339_timestamp_parser <buffer_t::const_iterator>;
 	template struct rfc3339_obj_parser <std::string::const_iterator>;
@@ -26,10 +28,12 @@ namespace cyng
 	std::pair<object, bool > parse_basic_timestamp(std::string const& inp)
 	{
 		object result = make_now();
-		timepoint_basic_parser< std::string::const_iterator >	g;
-		std::string::const_iterator iter = inp.begin();
-		std::string::const_iterator end = inp.end();
-		const bool r = boost::spirit::qi::parse(iter, end, g, result);
+		
+		auto first(begin(inp)), last(end(inp));
+		utf::convert_u8_to_u32 f(first), l(last);
+		static const timepoint_basic_parser<utf::convert_u8_to_u32, boost::spirit::qi::standard_wide::space_type> g;
+		const bool r = boost::spirit::qi::phrase_parse(f, l, g, boost::spirit::qi::standard_wide::space, result);
+		
 		return (r)
 			? std::make_pair(result, r)
 			: std::make_pair(make_object(), r)

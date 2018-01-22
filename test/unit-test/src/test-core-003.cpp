@@ -36,7 +36,7 @@ namespace cyng
   		std::cout << "a2: " << a2.second.get_class().type_name() << std::endl;
   		std::cout << "a2: " << a2.first << std::endl;
   		std::cout << "a2: " << std::hex << object_cast<version>(a2.second)->full() << std::endl;
-		io::serialize_formatted(std::cout, a2.second);
+		io::serialize_typed(std::cout, a2.second);
 		std::cout<< std::endl;
  
 // 
@@ -61,10 +61,10 @@ namespace cyng
 		auto b1 = make_object(true);
 		auto b2 = make_object(false);
 		std::cout << "b1: ";
-		io::serialize_formatted(std::cout, b1);
+		io::serialize_typed(std::cout, b1);
 		std::cout<< std::endl;
 		std::cout << "b2: ";
-		io::serialize_formatted(std::cout, b2);
+		io::serialize_typed(std::cout, b2);
 		std::cout<< std::endl;
 		
 		

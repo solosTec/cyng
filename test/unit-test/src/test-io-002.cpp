@@ -31,7 +31,7 @@ namespace cyng
 // 		std::cout << o_i.get_class().type_name() << std::endl;
 // 		io::serialize_plain(std::cout, o_i);
 // 		std::cout << ", ";
-// 		io::serialize_formatted(std::cout, o_i);
+// 		io::serialize_typed(std::cout, o_i);
 // 		std::cout << std::endl;
 // 		
 // 		auto o_s = make_object("object");

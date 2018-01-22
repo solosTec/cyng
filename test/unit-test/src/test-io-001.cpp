@@ -21,7 +21,7 @@ namespace cyng
 		auto o_null = factory<null>::create_object();
 		type null_t(o_null.get_class());
 		std::cout << o_null.get_class().type_name() << std::endl;
-		io::serialize_plain(std::cout, o_null);
+		io::serialize_typed(std::cout, o_null);
 		std::cout << std::endl;
 
  		auto o_i = make_object(23);
@@ -29,7 +29,7 @@ namespace cyng
 		std::cout << o_i.get_class().type_name() << std::endl;
 		io::serialize_plain(std::cout, o_i);
 		std::cout << ", ";
-		io::serialize_formatted(std::cout, o_i);
+		io::serialize_typed(std::cout, o_i);
 		std::cout << std::endl;
 		
 		auto o_s = make_object("object");

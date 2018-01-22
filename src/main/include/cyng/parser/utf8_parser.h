@@ -119,10 +119,10 @@ namespace cyng
 		 *  Read a utf-8 quote and produce an object of type string
 		 */
 		template <typename Iterator, typename Skipper = boost::spirit::qi::standard_wide::space_type>
-		struct obj_parser : boost::spirit::qi::grammar< Iterator, object(), Skipper >
+		struct obj_quote_parser : boost::spirit::qi::grammar< Iterator, object(), Skipper >
 		{
-			obj_parser();
-			boost::spirit::qi::rule<Iterator, object(), Skipper > 	r_start;
+			obj_quote_parser();
+			boost::spirit::qi::rule<Iterator, object(), Skipper> 	r_start;
 			quote_parser<Iterator, Skipper>	r_quote;
 		};
 
