@@ -11,6 +11,7 @@
 #include <cyng/parser/object_parser.h>
 #include <cyng/io/serializer.h>
 #include <cyng/factory.h>
+#include <cyng/io/io_chrono.hpp>
 
 namespace cyng 
 {
@@ -33,8 +34,14 @@ namespace cyng
 	
 	bool test_parser_002()
 	{
-		std::pair<object, bool > r1 = parse_object(u8"20chrono:sec");
-// 		std::pair<object, bool > r1 = parse_object(u8"\"2015.04.24 08:29:9.5853489\"chrono::tp");
+		//std::pair<std::chrono::system_clock::time_point, bool > r = parse_db_timestamp("2017-11-26 19:14:42");
+		std::pair<std::chrono::system_clock::time_point, bool > r = parse_db_timestamp("30.09.2016 13:34:26");
+		
+		//io::serialize_typed(std::cout, r.first);
+		std::cout << cyng::to_str(r.first);
+
+		//std::pair<object, bool > r1 = parse_object(u8"20chrono:sec");
+ 		std::pair<object, bool > r1 = parse_object(u8"\"30.09.2016 08:29:09\"chrono:tp");
 		BOOST_CHECK(r1.second);
 // 		2017-11-26 19:14:42.00000000
 		io::serialize_typed(std::cout, r1.first);

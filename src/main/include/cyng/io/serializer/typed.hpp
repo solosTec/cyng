@@ -46,13 +46,13 @@ namespace cyng
 		{
 			static std::ostream& write(std::ostream& os, std::chrono::system_clock::time_point tp);
 		};
-// 		
-// 		template <>
-// 		struct serializer <buffer_t, SERIALIZE_TYPED>
-// 		{
-// 			static std::ostream& write(std::ostream& os, buffer_t const& v);
-// 		};
-// 		
+ 		
+ 		template <>
+ 		struct serializer <std::string, SERIALIZE_TYPED>
+ 		{
+ 			static std::ostream& write(std::ostream& os, std::string const& v);
+ 		};
+ 		
 // 		template <>
 // 		struct serializer <boost::uuids::uuid, SERIALIZE_TYPED>
 // 		{

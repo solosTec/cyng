@@ -9,6 +9,7 @@
 #include <cyng/table/meta.hpp>
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/object_cast.hpp>
+#include <cyng/value_cast.hpp>
 
 #include <chrono>
 
@@ -18,7 +19,10 @@ namespace cyng
 	{
 
 		db::db()
-		: tables_(cyng::table::make_meta_table<1, 2>("db", {"name", "table", "created"}))
+		: tables_(cyng::table::make_meta_table<1, 3>("db"
+			, { "name", "table", "created", "state" }
+			, { TC_STRING, traits::PREDEF_TABLE, TC_TIME_POINT, TC_UINT32 }
+			, { 64, 0, 0, 0 }))
 		, m_()
 		{}
 		
@@ -29,10 +33,10 @@ namespace cyng
 		
 		bool db::create_table(cyng::table::meta_table_ptr ptr)
 		{
-			//	start with generation 1
+			//	start with generation 1 and default state 0
 			unique_lock_t ul(this->m_);
 			return tables_.insert(cyng::table::key_generator(ptr->get_name())
-				, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now()), 1);
+				, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1);
 		}
 		
 		std::size_t db::size() const
@@ -149,7 +153,53 @@ namespace cyng
 				if (ptr != nullptr)	const_cast<table*>(object_cast<table>(ptr->at(0)))->get_listener(isig, rsig,  csig, msig);
 			}
 			return connections_t();
+		}
 
+		std::size_t db::size(std::string const& name) const
+		{
+			shared_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)	return object_cast<table>(ptr->at(0))->size();
+			}
+			return 0;
+		}
+
+		bool db::set_state(std::string const& name, std::uint32_t state)
+		{
+			unique_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)
+				{
+					auto v = const_cast<std::uint32_t*>(object_cast<std::uint32_t>(ptr->at(2)));
+					if (v != nullptr)
+					{
+						*v = state;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		std::uint32_t db::get_state(std::string const& name)
+		{
+			shared_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)	return value_cast<std::uint32_t>(ptr->at(2), 0);
+			}
+			return 0;
 		}
 
 	}	//	store

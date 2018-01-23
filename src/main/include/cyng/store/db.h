@@ -167,6 +167,17 @@ namespace cyng
 				, publisher::clear_signal::slot_type const& csig
 				, publisher::modify_signal::slot_type const& msig);
 
+			/**
+			 * @return size of table
+			 */
+			std::size_t size(std::string const& name) const;
+
+			/**
+			 * manage table state
+			 */
+			bool set_state(std::string const& name, std::uint32_t);
+			std::uint32_t get_state(std::string const& name);
+
 		private:
 			/**
 			 * Create a tuple of matching table pointer types 

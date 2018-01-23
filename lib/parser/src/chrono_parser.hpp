@@ -8,10 +8,6 @@
 #ifndef CYNG_PARSER_CHRONO_HPP
 #define CYNG_PARSER_CHRONO_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-  #pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
-
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/factory.h>
 
@@ -145,7 +141,7 @@ namespace cyng
 		| r_minute
 		| r_hour
 		| r_day
-		| '"' >> r_tp >> "\"chrono::tp"
+		| '"' >> r_tp >> "\"chrono:tp"
 		| '@' >> r_rfc3339
 		;
 		

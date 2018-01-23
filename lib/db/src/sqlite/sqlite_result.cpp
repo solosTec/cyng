@@ -10,22 +10,11 @@
 #include <cyng/factory.h>
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/intrinsics/traits/tag.hpp>
-//#include <cyy/parser/chrono_parser.h>
-//#include <cyy/parser/boost_parser.h>
-//#include <cyy/parser/object_parser.h>
-//#include <cyy/parser/mac_parser.h>
-//#include <cyy/object_type.h>
 
 #include <utility>
 #include <boost/numeric/conversion/converter.hpp>
 #include <boost/uuid/string_generator.hpp>
 
-//
-//	support for m2m data types
-//
-//#include <noddy/m2m/intrinsics/type_traits.hpp>
-//#include <noddy/m2m/intrinsics/factory/obis_factory.h>
-//#include <noddy/m2m/intrinsics/factory/ctrl_address_factory.h>
 
 namespace cyng	
 {
@@ -530,12 +519,6 @@ namespace cyng
 	// 			CYY_BOOST_TCP_SOCKET,	//!<	boost::asio::ip::tcp::socket
 	// 			CYY_BOOST_TRIBOOL,		//!<	boost::logic::tribool
 
-							//
-							//	m2m data types
-							//
-						//case cyng::types::OBIS_CODE:		return get_value_by_code<cyng::types::OBIS_CODE>(*statement_, index);
-						//case cyng::types::CTRL_ADDRESS:	return get_value_by_code<cyng::types::CTRL_ADDRESS>(*statement_, index);
-						//case cyng::types::PHYSICAL_UNIT:	//	a physical unit
 							break;
 
 						default:

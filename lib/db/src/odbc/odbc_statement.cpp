@@ -398,7 +398,10 @@ namespace cyng
 						return (step() && state_ == STATE_POSITIONED)
 							? odbc_result::factory(shared_from_this())
 							: result_ptr()
-						;
+							;
+					case STATE_POSITIONED:
+						return odbc_result::factory(shared_from_this());
+
 					default:
 						break;
 				}
@@ -410,7 +413,8 @@ namespace cyng
 				BOOST_ASSERT_MSG((state_ == STATE_EXECUTED) || (state_ == STATE_POSITIONED)
 					, "STATE_EXECUTED or STATE_POSITIONED expected");
 				// fetch data
-				const SQLRETURN rc = ::SQLFetch(stmt_);
+				const SQLRETURN rc = ::SQLFetchScroll(stmt_, SQL_FETCH_NEXT, 0);
+				//const SQLRETURN rc = ::SQLFetch(stmt_);
 				switch (rc)
 				{
 				case SQL_SUCCESS:

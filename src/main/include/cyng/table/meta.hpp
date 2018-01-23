@@ -35,7 +35,11 @@ namespace cyng
 			, col_names_(cols)
 			, col_types_()
 			, col_width_()
-			{}
+			{
+				BOOST_ASSERT_MSG(std::none_of(cols.begin(), cols.end(), [](std::string const& str) {
+					return str.empty();
+				}), "column names incomplete");
+			}
 
 			meta_table(std::string const& name, col_names_t const& cols, col_types_t const& types)
 			: name_(name)

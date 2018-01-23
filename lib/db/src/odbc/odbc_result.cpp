@@ -10,23 +10,14 @@
 
 #include <cyng/factory.h>
 #include <cyng/parser/chrono_parser.h>
-//#include <cyy/parser/boost_parser.h>
-//#include <cyy/parser/object_parser.h>
-//#include <cyy/parser/mac_parser.h>
 #include <cyng/object.h>
-//#include <cyy/chrono/chrono.h>
 #include <cyng/value_cast.hpp>
+#include <cyng/chrono.h>
 
 #include <utility>
 #include <boost/numeric/conversion/converter.hpp>
 #include <boost/uuid/string_generator.hpp>
 
-//
-//	support for m2m data types
-//
-//#include <noddy/m2m/intrinsics/type_traits.hpp>
-//#include <noddy/m2m/intrinsics/factory/obis_factory.h>
-//#include <noddy/m2m/intrinsics/factory/ctrl_address_factory.h>
 
 namespace cyng	
 {
@@ -282,8 +273,13 @@ namespace cyng
 						t.tm_year = sql_value.year - 1900;
 						t.tm_isdst = 0;	//	ignore DST
 
-						//const std::time_t tt = cyy::chrono::tm_to_tt(t);
-						//return cyy::time_point_factory(tt);
+						const auto tp = chrono::init_tp(sql_value.year
+							, sql_value.month
+							, sql_value.day
+							, sql_value.hour
+							, sql_value.minute
+							, sql_value.second);
+						return make_object(tp);
 					}
 					statement_diagnostics dia;
 					dia.run(stmt);
@@ -579,7 +575,10 @@ namespace cyng
 			result_ptr odbc_result::factory(statement::shared_type stmt)
 			{
 				auto ptr = std::make_shared<odbc_result>(stmt);
-				return std::static_pointer_cast<interface_result>(ptr->shared_from_this());
+				return (stmt->state_ != statement::STATE_TO_CLOSE)
+					? std::static_pointer_cast<interface_result>(ptr->shared_from_this())
+					: result_ptr()
+					;
 			}
 			
 			object odbc_result::get(int index, std::size_t code, std::size_t size)
@@ -614,12 +613,16 @@ namespace cyng
 	 				//	data types defined in cyng library
 						case TC_VERSION:	return get_value_by_code<TC_VERSION>(statement_->stmt_, index, size);
 						case TC_REVISION:	return get_value_by_code<TC_REVISION>(statement_->stmt_, index, size);
-						case TC_BUFFER:	return get_value_by_code<TC_BUFFER>(statement_->stmt_, index, size);
+						case TC_BUFFER:		return get_value_by_code<TC_BUFFER>(statement_->stmt_, index, size);
 	//// 			TC_COLOR_8,		//!<	color with 8 bits per channel
 	//// 			TC_COLOR_16,	//!<	color with 16 bits per channel
 	//// 			
 	//// 			//	datatypes from boost library
-	//						break;
+						case TC_UUID:	return get_value_by_code<TC_UUID>(statement_->stmt_, index, size);
+						//case TC_FS_PATH:	return get_value_by_code<TC_FS_PATH>(statement_->stmt_, index, size);
+							// 			CYY_BOOST_ERROR,	//!<	boost::system::error_code
+						//case TC_IP_ADDRESS:		return get_value_by_code<TC_IP_ADDRESS>(statement_->stmt_, index, size);
+						//case TC_IP_TCP_ENDPOINT: 	return get_value_by_code<TC_IP_TCP_ENDPOINT>(statement_->stmt_, index, size);
 
 						default:
 							break;

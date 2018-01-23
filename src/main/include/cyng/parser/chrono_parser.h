@@ -8,11 +8,6 @@
 #ifndef CYNG_PARSER_CHRONO_H
 #define CYNG_PARSER_CHRONO_H
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-  #pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
-
-
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <cyng/object.h>
@@ -29,30 +24,30 @@ namespace cyng
 	std::pair<std::chrono::system_clock::time_point, bool > parse_db_timestamp(std::string const&);
 
 	/**
-		* parse timespan with RFC 3339 format
-		*/
+	 * parse timespan with RFC 3339 format
+	 */
 	std::pair<std::chrono::system_clock::time_point, bool > parse_rfc3339_timestamp(std::string const&);
 
 	/**
-		* parse timespan with format hh:mm::ss.ffff
-		*/
+	 * parse timespan with format hh:mm::ss.ffff
+	 */
 	std::pair<std::chrono::microseconds, bool > parse_timespan(std::string const&);
 
 	/**
-		* parse timespan with RFC 3339 format
-		*/
+	 * parse timespan with RFC 3339 format
+	 */
 	object parse_rfc3339_obj(std::string const&);
 
 	/**
-		* Parse date time according to RFC 3339
-		* 	https://www.ietf.org/rfc/rfc3339.txt
-		* Examples:
-		@code
-		2022-10-02T15:00:00.05Z
-		1937-01-01T12:00:27.87+00:20
-		1996-12-19T16:39:57-08:00
-		@endcode
-		*/
+	 * Parse date time according to RFC 3339
+	 * 	https://www.ietf.org/rfc/rfc3339.txt
+	 * Examples:
+	 @code
+	 2022-10-02T15:00:00.05Z
+	 1937-01-01T12:00:27.87+00:20
+	 1996-12-19T16:39:57-08:00
+	 @endcode
+	 */
 	template <typename Iterator>
 	struct rfc3339_timestamp_parser
 		: boost::spirit::qi::grammar<Iterator, std::chrono::system_clock::time_point()>
