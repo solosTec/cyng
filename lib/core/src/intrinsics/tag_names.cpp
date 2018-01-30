@@ -74,8 +74,14 @@ namespace cyng
 			
 			"ip:tcp:endpoint",	//	boost::asio::ip::tcp::endpoint
 			"ip:udp:endpoint",	//	boost::asio::ip::udp::endpoint
-			"ip:icmp:endpoint"	//	boost::asio::ip::icmp::endpoint
+			"ip:icmp:endpoint",	//	boost::asio::ip::icmp::endpoint
 			"ip:address",		//	boost::asio::ip::address
+
+#if CYNG_ODBC_INSTALLED
+			"sql::tp",
+#else
+			"sql::dummy",
+#endif
 
 			"eod",		//	nomen est omen
 			"COSTUM"

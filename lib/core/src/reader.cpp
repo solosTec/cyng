@@ -106,6 +106,31 @@ namespace cyng
 	{
 		return false;
 	}
+
+	//
+	//	attr_map_reader
+	//
+	attr_map_reader::attr_map_reader(attr_map_t const& data)
+		: reader<attr_map_t>(data)
+	{}
+
+	bool attr_map_reader::is_leaf() const
+	{
+		return false;
+	}
+
+	//
+	//	param_map_reader
+	//
+	param_map_reader::param_map_reader(param_map_t const& data)
+		: reader<param_map_t>(data)
+	{}
+
+	bool param_map_reader::is_leaf() const
+	{
+		return false;
+	}
+
 }
 
 

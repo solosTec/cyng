@@ -99,14 +99,15 @@ namespace cyng
 				return std::make_pair(std::string((const char*) &out_str[0], str_length), true);
 			}
 
-			void session::close()	
+			bool session::close()	
 			{
 				if (!is_alive())	
 				{
 					commit();
 					const SQLRETURN rc = ::SQLDisconnect(connection_);
-					BOOST_ASSERT(is_ok(rc));
+					return is_ok(rc);
 				}
+				return false;
 			}
 
 

@@ -10,7 +10,6 @@
 
 #include <cyng/io.h>
 #include <cyng/intrinsics.h>
-// #include <cyng/io/io_chrono.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -86,6 +85,24 @@ namespace cyng
  		{
  			static std::ostream& write(std::ostream& os, std::string const& v);
  		};
+
+		template <>
+		struct serializer <std::uint8_t, SERIALIZE_PLAIN>
+		{
+			static std::ostream& write(std::ostream& os, std::uint8_t v);
+		};
+
+		template <>
+		struct serializer <std::uint16_t, SERIALIZE_PLAIN>
+		{
+			static std::ostream& write(std::ostream& os, std::uint16_t v);
+		};
+
+		template <>
+		struct serializer <std::uint32_t, SERIALIZE_PLAIN>
+		{
+			static std::ostream& write(std::ostream& os, std::uint32_t v);
+		};
 	}
 }
 

@@ -11,6 +11,7 @@
 #include <cyng/vm/context.h>
 #include <cyng/vm/generator.h>
 #include <cyng/value_cast.hpp>
+#include <algorithm>
 
 namespace cyng 
 {
@@ -20,9 +21,14 @@ namespace cyng
 		ctx.run(register_function("db.insert", 4, [&db](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 			const std::string name = value_cast<std::string>(frame.at(0), "");
+
 			vector_t tmp;
-			const table::key_type key = value_cast(frame.at(1), tmp);
-			const table::data_type data = value_cast(frame.at(2), tmp);
+			table::key_type key = value_cast(frame.at(1), tmp);
+			std::reverse(key.begin(), key.end());
+
+			table::data_type data = value_cast(frame.at(2), tmp);
+			std::reverse(data.begin(), data.end());
+
 			const std::uint64_t generation = value_cast<std::uint64_t>(frame.at(3), 0);
 			if (!db.insert(name, key, data, generation))
 			{

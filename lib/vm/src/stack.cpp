@@ -144,7 +144,7 @@ namespace cyng
 	void stack::assemble_attr()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (attr)");
-		//BOOST_ASSERT_MSG(type_test<index>(top()), "wrong key type (attr)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (attr)");
 		const auto idx = value_cast<std::size_t>(top(), 0u);
 		pop();
 		push(set_factory(idx, top()));
@@ -155,7 +155,7 @@ namespace cyng
 	void stack::assemble_param()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (param)");
-		//BOOST_ASSERT_MSG(type_test<std::string>(top()), "wrong key type (param)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_STRING, "string expected (param)");
 		const std::string key = value_cast<std::string>(top(), "");
 		BOOST_ASSERT_MSG(!key.empty(), "key is empty (param)");
 		pop();
@@ -167,19 +167,26 @@ namespace cyng
 	void stack::assemble_attr_map()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (attr_map)");
-		//BOOST_ASSERT_MSG(type_test<index>(top()), "wrong data type (attr_map)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (attr_map)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 
 		attr_map_t map;
-		while (size-- != 0)
+		while (size != 0)
 		{
-			//boost::ignore_unused_variable_warning(p);
-			//BOOST_ASSERT_MSG(primary_type_code_test<types::CYY_ATTRIBUTE>(top()), "wrong data type (attr_map)");
+			BOOST_ASSERT_MSG(top().get_class().tag() == TC_ATTR, "attr expected (attr_map)");
 			auto ap = object_cast< attr_t >(top());
 			BOOST_ASSERT_MSG(ap != nullptr, "wrong data type (attr_map)");
-			map[ap->first] = ap->second;
+			if (ap != nullptr)
+			{
+				map[ap->first] = ap->second;
+			}
+			else
+			{
+				map[ap->first] = make_object();
+			}
 			pop();
+			--size;
 		}
 		push(make_object(map));
 	}
@@ -187,18 +194,26 @@ namespace cyng
 	void stack::assemble_param_map()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (param_map)");
-		//BOOST_ASSERT_MSG(type_test<index>(top()), "wrong data type (param_map)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (param_map)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 
 		param_map_t map;
-		while (size-- != 0)
+		while (size != 0)
 		{
-			//BOOST_ASSERT_MSG(primary_type_code_test<types::CYY_PARAMETER>(top()), "wrong data type (param_map)");
+			BOOST_ASSERT_MSG(top().get_class().tag() == TC_PARAM, "param expected (param_map)");
 			auto pp = object_cast< param_t >(top());
 			BOOST_ASSERT_MSG(pp != nullptr, "wrong data type (param_map)");
-			map[pp->first] = pp->second;
+			if (pp != nullptr)
+			{
+				map[pp->first] = pp->second;
+			}
+			else
+			{
+				map[pp->first] = make_object();
+			}
 			pop();
+			size--;
 		}
 		push(make_object(map));
 	}
@@ -206,15 +221,17 @@ namespace cyng
 	void stack::assemble_tuple()
 	{
 		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (tuple)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (tuple)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (tuple)");
 
 		tuple_t tpl;
-		while (size-- != 0)
+		while (size != 0)
 		{
 			tpl.push_back(top());
 			pop();
+			--size;
 		}
 
 		push(make_object(tpl));
@@ -228,10 +245,11 @@ namespace cyng
 		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (vector)");
 
 		vector_t vec;
-		while (size-- != 0)
+		while (size != 0)
 		{
 			vec.push_back(top());
 			pop();
+			--size;
 		}
 
 		push(make_object(vec));
@@ -245,14 +263,14 @@ namespace cyng
 		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (set)");
 
 		set_t set;
-		while (size-- != 0)
+		while (size != 0)
 		{
 			set.insert(top());
 			pop();
+			--size;
 		}
 
 		push(make_object(set));
-
 	}
 
 	void stack::swap()
@@ -276,7 +294,6 @@ namespace cyng
 		//	restore stack pointer
 		stack_.rbp();
 	}
-	
 }
 
 

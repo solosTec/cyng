@@ -159,9 +159,20 @@ namespace cyng
  		vec 
 		<< invoke(name)
   		<< code::REBA
+		//<< unwind_vec(sizeof...(args) + 3)
  		;
-		
+
 		return vec;		
+	}
+
+	/**
+	 * generate a complete invoke sequence with a call frame 
+	 * as unwind manipulator
+	 */
+	template < typename ...Args >
+	unwind<vector_t> generate_invoke_unwinded(std::string const& name, Args&&... args)
+	{
+		return unwind<vector_t>(generate_invoke(name, std::forward<Args>(args)...));
 	}
 
 	/**
@@ -184,9 +195,18 @@ namespace cyng
 			;
 
 		return vec;
-
 	}
 	
+	/**
+	 * generate a complete invoke sequence with a remote call frame
+	 * as unwind manipulator
+	 */
+	template < typename ...Args >
+	unwind<vector_t> generate_invoke_remote_unwinded(std::string const& name, Args&&... args)
+	{
+		return unwind<vector_t>(generate_invoke_remote(name, std::forward<Args>(args)...));
+	}
+
 	/**
 	 * generate a complete invoke sequence that will bounced back
 	 */
@@ -204,8 +224,18 @@ namespace cyng
 			;
 
 		return vec;
-
 	}
+
+	/**
+	* generate a complete invoke sequence that will bounced back
+	* as unwind manipulator
+	*/
+	template < typename ...Args >
+	unwind<vector_t> generate_invoke_reflect_unwinded(std::string const& name, Args&&... args)
+	{
+		return unwind<vector_t>(generate_invoke_reflect(name, std::forward<Args>(args)...));
+	}
+
 }
 
 #endif	//	CYNG_VM_CONTCYNG_VM_GENERATOR_HEXT_H

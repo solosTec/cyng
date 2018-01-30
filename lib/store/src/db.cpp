@@ -155,6 +155,18 @@ namespace cyng
 			return connections_t();
 		}
 
+		void db::disconnect(std::string const& name)
+		{
+			shared_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)	const_cast<table*>(object_cast<table>(ptr->at(0)))->disconnect();
+			}
+		}
+
 		std::size_t db::size(std::string const& name) const
 		{
 			shared_lock_t ul(this->m_);

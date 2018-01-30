@@ -34,7 +34,7 @@ namespace cyng
 		 * 
 		 * @param prg instructions to execute
 		 */
- 		controller& run(vector_t&& prg);
+ 		controller const& run(vector_t&& prg) const;
 		
 		/**
 		 * Execute the specified instructions asynchonously.
@@ -42,7 +42,7 @@ namespace cyng
 		 * @param prg instructions to execute
 		 * @return this object - allows function chaining
 		 */
-		controller& async_run(vector_t&& prg);
+		controller const& async_run(vector_t&& prg) const;
 		
 		/**
 		 * Halt engine.
@@ -51,19 +51,19 @@ namespace cyng
 		
 		
 	private:
-		void execute(vector_t&& prg, async::sync);
-		void execute(vector_t&& prg, async::detach);
+		void execute(vector_t&& prg, async::sync) const;
+		void execute(vector_t&& prg, async::detach) const;
 		
 	private:
 		/**
 		 * Boost.Asio dispatcher for async calls
 		 */
-		dispatcher_t dispatcher_;
+		mutable dispatcher_t dispatcher_;
 
 		/**
 		 * VM implementation
 		 */
-		vm vm_;
+		mutable vm vm_;
 		
 		/**
 		 * If true machine is halted.

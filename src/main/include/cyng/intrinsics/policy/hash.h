@@ -255,6 +255,12 @@ namespace std
 		}
 	};
 
+	//template<>
+	//struct hash<param_map_t>
+	//{
+	//	size_t operator()(param_map_t const&) const noexcept;
+	//};
+	
 }
 
 namespace cyng

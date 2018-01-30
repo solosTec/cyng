@@ -68,7 +68,7 @@ namespace cyng
 			/**
 			 *	Closes the session.
 			 */
-			void close();
+			bool close();
 			
 			/**	@brief transaction interface
 			 *	Starts a transaction.
@@ -102,8 +102,8 @@ namespace cyng
 			boost::system::error_code last_error() const;
 			
 			/**
-			*	@return an object to execute SQL commands
-			*/
+			 *	@return an object to execute SQL commands
+			 */
 			statement_ptr create_statement();
 
 			/**
@@ -121,8 +121,8 @@ namespace cyng
 			
 		private:
 			/**
-			*	Replace the existing session type by the new one.
-			*/
+			 *	Replace the existing session type by the new one.
+			 */
  			static session_ptr reset(connection_type);
 			
 		private:

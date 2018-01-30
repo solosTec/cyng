@@ -17,13 +17,14 @@
 namespace cyng 
 {
 	class vm;
+	class memory;
 	class context
 	{
 	public:
 		context() = delete;
 		context(context const&) = delete;
 		context(context&&) = delete;
-		context(vm&);
+		context(vm&, memory&);
 		
 		/**
 		 * @remove if true the call frame will removed from the stack
@@ -58,7 +59,8 @@ namespace cyng
 		 * Pushes the given element value to the top of the stack.
 		 */
 		void push(object&&);
-		
+		void push(object const&);
+
 		/**
 		 * Set the VM "last result" register 
 		 */
@@ -76,13 +78,20 @@ namespace cyng
 		boost::uuids::uuid tag() const noexcept;
 		
 		/**
-		* Execute instructions stored in the
-		* memory
-		*/
-		void run(vector_t&&);
+		 * Execute instructions immediately on a new
+		 * frame on the stack.
+		 */
+		void run(vector_t&& prg);
+
+		/**
+		 * Append instructions to the running program
+		 * and executes it.
+		 */
+		void attach(vector_t&& prg);
 
 	private:
 		vm& vm_;
+		memory& mem_;
 	};
 
 	/**

@@ -191,6 +191,33 @@ namespace cyng
 		virtual bool is_leaf() const override;
 	};
 	
+	/**
+	 * @brief reader class for attr_map_t
+	 */
+	class attr_map_reader : public reader<attr_map_t>
+	{
+	public:
+		attr_map_reader(attr_map_t const&);
+		
+		/**
+		 * @return true
+		 */
+		virtual bool is_leaf() const override;
+	};
+
+	/**
+	 * @brief reader class for param_map_t
+	 */
+	class param_map_reader : public reader<param_map_t>
+	{
+	public:
+		param_map_reader(param_map_t const&);
+		
+		/**
+		 * @return true
+		 */
+		virtual bool is_leaf() const override;
+	};
 
 	/**
 	 * get the reader type for the specified input
@@ -222,6 +249,30 @@ namespace cyng
 	{
 		using type = reader<object>;
 	};
+
+	template <>
+	struct select_reader< attr_map_t >
+	{
+		using type = attr_map_reader;
+	};
+
+	template <>
+	struct select_reader< param_map_t >
+	{
+		using type = param_map_reader;
+	};
+
+	/**
+	 * helper function to select the reader type
+	 * automatically.
+	 */
+	template < typename T >
+	auto make_reader(T const& c) -> typename select_reader< T >::type
+	{
+		using reader_t = typename select_reader< T >::type;
+		return reader_t(c);
+	}
+
 }
 
 #endif 	// CYNG_DOM_READER_H

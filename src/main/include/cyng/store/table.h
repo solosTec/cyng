@@ -126,10 +126,12 @@ namespace cyng
 			/** @brief Loop over all table entries.
 			 * 
 			 * Construct for each data row a record and fires a callback.
+			 * If callback function return false the loop will be
+			 * terminated.
 			 *
 			 * @return count of invalid/skipped records
 			 */
-			std::size_t loop(std::function<void(cyng::table::record const&)> f) const;
+			std::size_t loop(std::function<bool(cyng::table::record const&)> f) const;
 
 		private:
 			/**

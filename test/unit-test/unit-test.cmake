@@ -9,6 +9,7 @@ set (unit_test_cpp
 	test/unit-test/src/test-core-002.cpp
 	test/unit-test/src/test-core-003.cpp
 	test/unit-test/src/test-core-004.cpp
+	test/unit-test/src/test-core-005.cpp
 	test/unit-test/src/test-async-001.cpp
 	test/unit-test/src/test-async-002.cpp
 	test/unit-test/src/test-io-001.cpp
@@ -33,6 +34,7 @@ set (unit_test_h
 	test/unit-test/src/test-core-002.h
 	test/unit-test/src/test-core-003.h
 	test/unit-test/src/test-core-004.h
+	test/unit-test/src/test-core-005.h
 	test/unit-test/src/test-async-001.h
 	test/unit-test/src/test-async-002.h
 	test/unit-test/src/test-io-001.h

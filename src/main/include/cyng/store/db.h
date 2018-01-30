@@ -167,6 +167,8 @@ namespace cyng
 				, publisher::clear_signal::slot_type const& csig
 				, publisher::modify_signal::slot_type const& msig);
 
+			void disconnect(std::string const& name);
+
 			/**
 			 * @return size of table
 			 */

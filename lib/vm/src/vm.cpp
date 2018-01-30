@@ -147,7 +147,7 @@ namespace cyng
 				break;
 				
 			case code::INVOKE: //	call a library function
-				invoke();
+				invoke(mem);
 				break;
 				
 			case code::IDENT:	//	push VM tag onto stack
@@ -259,7 +259,7 @@ namespace cyng
 		stack_.pop();
 	}
 	
-	void vm::invoke()
+	void vm::invoke(memory& mem)
 	{
 		BOOST_ASSERT_MSG(stack_.size() > 0, "missing parameter invoke()");
 		const object obj = stack_.top();
@@ -271,7 +271,7 @@ namespace cyng
 		//
 		//	call procedure
 		//
-		context ctx(*this);
+		context ctx(*this, mem);
 		if (!lib_.invoke(fname, ctx))
 		{
 #ifdef _DEBUG

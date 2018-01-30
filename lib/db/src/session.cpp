@@ -74,9 +74,9 @@ namespace cyng
  			return connection_->is_alive();
 		}
 
-		void session::close()	
+		bool session::close()	
 		{
- 			connection_->close();
+ 			return connection_->close();
 		}
 	
 		bool session::begin()	

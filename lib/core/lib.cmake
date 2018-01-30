@@ -30,6 +30,7 @@ set (core_h
     src/main/include/cyng/value_cast.hpp
     src/main/include/cyng/vector_cast.hpp
     src/main/include/cyng/set_cast.h
+    src/main/include/cyng/tuple_cast.hpp
     src/main/include/cyng/core/wrapper_fwd.h
     src/main/include/cyng/core/wrapper.hpp
 #     src/main/include/cyng/core/deleter.hpp
@@ -73,6 +74,7 @@ set (core_intrinsics
  	src/main/include/cyng/intrinsics/mac.h
  	src/main/include/cyng/intrinsics/lockable.h
 	src/main/include/cyng/intrinsics/digest.h
+	src/main/include/cyng/intrinsics/color.hpp
 
  	lib/core/src/intrinsics/sets.cpp
  	lib/core/src/intrinsics/version.cpp

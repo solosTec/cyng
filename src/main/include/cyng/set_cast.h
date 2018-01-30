@@ -4,8 +4,8 @@
  * Copyright (c) 2018 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_SET_CAST_HPP
-#define CYNG_SET_CAST_HPP
+#ifndef CYNG_SET_CAST_H
+#define CYNG_SET_CAST_H
 
 #include <cyng/intrinsics/sets.h>
  
@@ -27,5 +27,5 @@ namespace cyng
 	attr_map_t to_attr_map(tuple_t const&);
 }
 
-#endif //	CYNG_SET_CAST_HPP
+#endif 
 

@@ -13,15 +13,15 @@ namespace cyng
 {
 	namespace detail 
 	{
-		stream_policy<vector_t>::stream_policy(vector_t& vec)
-		: vec_(vec)
-		{}
-			
-		vector_t& stream_policy<vector_t>::operator()(vector_t&& v)
-		{
-			vec_.insert(vec_.end(), v.begin(), v.end());
-			return vec_;
-		}
+		//stream_policy<vector_t>::stream_policy(vector_t& vec)
+		//: vec_(vec)
+		//{}
+		//	
+		//vector_t& stream_policy<vector_t>::operator()(vector_t&& v)
+		//{
+		//	vec_.insert(vec_.end(), v.begin(), v.end());
+		//	return vec_;
+		//}
 	}
 
 	invoke::invoke(std::string const& name)
@@ -188,6 +188,32 @@ namespace cyng
 
 		return vec;
 	}
+
+	unwind_vec::unwind_vec(std::size_t n)
+		: n_(n)
+	{}
+
+	vector_t& operator<<(vector_t& vec, unwind_vec&& e)
+	{
+		vector_t res;
+		res.reserve((e.n_ == 0) ? (vec.size() * 2) : e.n_);	//	empirical value
+		for (auto& v : vec)
+		{
+			if (v.get_class().tag() == TC_VECTOR)
+			{
+				auto tmp = value_cast(v, res);
+				tmp << unwind_vec();	//	recursion
+				res.insert(res.end(), tmp.begin(), tmp.end());
+			}
+			else
+			{
+				res.push_back(v);
+			}
+		}
+		std::swap(vec, res);
+		return vec;
+	}
+
 }
 
 

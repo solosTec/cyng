@@ -60,7 +60,8 @@ namespace cyng
 	 * @return attribute with the specified index.
 	 */
 	object find(attr_map_t const&, std::size_t);
-	
+	object find(attr_map_t const&, std::string const&);
+
 	/**
 	 * @return the value of the attribute if the index is matching
 	 * the attribute index. Otherwise a null-objects will return.
@@ -106,13 +107,14 @@ namespace cyng
 	 * of the null object.
 	 */
 	object find(param_map_t const&, std::string const&);
-	
+	object find(param_map_t const&, std::size_t);
+
 	/**
 	 * @return the value of the Parameter if the name is matching
 	 * the parameter name. Otherwise a null-objects will return.
 	 */
 	object find(param_t const&, std::string const&);
-	
+
 	/**
 	 * Detect the type of the object and call the appropriate
 	 * find() method.

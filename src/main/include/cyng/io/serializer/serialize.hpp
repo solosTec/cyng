@@ -31,6 +31,20 @@ namespace cyng
 		}
 		
 		template <typename S>
+		void do_write_custom(std::ostream& os, object obj)
+		{
+			os
+				<< "<!"
+				<< obj.get_class().tag()
+				<< ':'
+				<< obj.get_class().type_name()
+				<< '>'
+				;
+			//std::cerr << "unknown type code: " << obj.get_class().tag() << ", " << obj.get_class().type_name() << std::endl;
+
+		}
+
+		template <typename S>
 		struct serializer_helper
 		{
 			static void write(std::ostream& os, object const& obj)
@@ -189,7 +203,8 @@ namespace cyng
 						do_write<typename std::tuple_element<type_code::TC_EOD, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
 					default:
-						std::cerr << "unknown type code: " << obj.get_class().tag() << ", " << obj.get_class().type_name() << std::endl;
+						//std::cerr << "unknown type code: " << obj.get_class().tag() << ", " << obj.get_class().type_name() << std::endl;
+						do_write_custom<S>(os, obj);
 						break;
 				}
 			}

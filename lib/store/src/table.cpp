@@ -169,7 +169,7 @@ namespace cyng
 			;
 		}
 		
-		std::size_t table::loop(std::function<void(cyng::table::record const&)> f) const
+		std::size_t table::loop(std::function<bool(cyng::table::record const&)> f) const
 		{
 			std::size_t counter = this->size();
 			for (auto const& row : data_)
@@ -179,7 +179,11 @@ namespace cyng
 				{
 					//	shared lock
 					shared_lock_t ul(row.second.m_);
-					f(cyng::table::record(meta_, row.first, *object_cast<cyng::table::data_type>(row.second.obj_), row.second.generation_));
+
+					//
+					//	false terminates the loop
+					//
+					if (!f(cyng::table::record(meta_, row.first, *object_cast<cyng::table::data_type>(row.second.obj_), row.second.generation_)))	break;
 					--counter;
 				}
 			}

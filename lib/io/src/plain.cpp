@@ -80,6 +80,7 @@ namespace cyng
 		
 		std::ostream& serializer <attr_map_t, SERIALIZE_PLAIN>::write(std::ostream& os, attr_map_t const& v)
 		{
+			os << '#' << '(';
 			bool flag = false;
 			std::for_each(v.begin()
 				, v.end()
@@ -98,12 +99,14 @@ namespace cyng
 				serialize_plain(os, attr.second);
 				os << ')';
 			});
+			os << ')';
 			return os;
 		}
 
 		std::ostream& serializer <param_map_t, SERIALIZE_PLAIN>::write(std::ostream& os, param_map_t const& v)
 		{
 			bool flag = false;
+			os << '%' << '(';
 			std::for_each(v.begin()
 				, v.end()
 				, [&flag, &os](param_map_t::value_type const& param) {
@@ -121,6 +124,7 @@ namespace cyng
 				serialize_plain(os, param.second);
 				os << ')';
 			});
+			os << ')';
 			return os;
 		}
 
@@ -187,7 +191,6 @@ namespace cyng
 		
 		std::ostream& serializer <std::string, SERIALIZE_PLAIN>::write(std::ostream& os, std::string const& v)
 		{
-			//os << '"';
 			for (char c : v)
 			{
 				switch (c)
@@ -228,9 +231,48 @@ namespace cyng
 					break;
 				}
 			}
-			//os << '"';
 			return os;
 		}
+
+		std::ostream& serializer <std::uint8_t, SERIALIZE_PLAIN>::write(std::ostream& os, std::uint8_t v)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				<< +v
+				;
+			return os;
+		}
+		std::ostream& serializer <std::uint16_t, SERIALIZE_PLAIN>::write(std::ostream& os, std::uint16_t v)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				<< std::setw(4)
+				<< v
+				;
+			return os;
+		}
+		std::ostream& serializer <std::uint32_t, SERIALIZE_PLAIN>::write(std::ostream& os, std::uint32_t v)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				<< std::setw(8)
+				<< v
+				;
+			return os;
+		}
+
 	}
 }
 

@@ -59,7 +59,23 @@ namespace cyng
 		std::swap(pc_, addr);
 		return addr;
 	}
-    
+
+	memory& operator+=(memory& mem, vector_t const& prg)
+	{
+		//	small optimization
+		mem.mem_.reserve(mem.mem_.size() + prg.size());
+		mem.mem_.insert(mem.mem_.end(), prg.begin(), prg.end());
+		return mem;
+	}
+
+	memory& operator+=(memory& mem, vector_t&& prg)
+	{
+		//	small optimization
+		mem.mem_.reserve(mem.mem_.size() + prg.size());
+		mem.mem_.insert(mem.mem_.end(), std::make_move_iterator(prg.begin()), std::make_move_iterator(prg.end()));
+		return mem;
+	}
+
 }
 
 

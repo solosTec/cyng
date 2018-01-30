@@ -10,6 +10,9 @@
 #include <future>
 #include <memory>
 #include <boost/assert.hpp>
+#ifdef _DEBUG
+#include <cyng/io/serializer.h>
+#endif
 
 namespace cyng 
 {
@@ -20,7 +23,7 @@ namespace cyng
 	, halt_(false)
 	{}
 
-	controller& controller::run(vector_t&& prg)
+	controller const& controller::run(vector_t&& prg) const
 	{
 		if (!halt_)	
 		{
@@ -29,7 +32,7 @@ namespace cyng
 		return *this;
 	}
 	
-	controller& controller::async_run(vector_t&& prg)
+	controller const& controller::async_run(vector_t&& prg) const
 	{
 		if (!halt_)	
 		{
@@ -38,17 +41,29 @@ namespace cyng
 		return *this;
 	}
 	
-	void controller::execute(vector_t&& prg, async::sync)
+	void controller::execute(vector_t&& prg, async::sync) const
 	{
 		//
 		//	recursive calls are not allowed
 		//
-		if (dispatcher_.running_in_this_thread())
-		{
-			std::cerr << "\n***error: recursion!\n" << std::endl;
-// 			return boost::system::errc::make_error_code(boost::system::errc::operation_in_progress);
-			return;
-		}
+//		if (dispatcher_.running_in_this_thread())
+//		{
+//			std::cerr 
+//				<< '\n'
+//				<< '\n'
+//				<< "***error: recursion(sync)! - "
+//				<< std::this_thread::get_id()
+//				<< '\n'
+//				<< '\n'
+//				<< prg.size()
+//				<< " op(s)"
+//				<< std::endl
+//				;
+//#ifdef _DEBUG
+//			std::cerr << io::to_str(prg) << std::endl;
+//#endif
+//			return;
+//		}
 
 		
 		//
@@ -79,7 +94,7 @@ namespace cyng
 		
 	}
 	
-	void controller::execute(vector_t&& prg, async::detach)
+	void controller::execute(vector_t&& prg, async::detach) const
 	{
 		//
 		//	grab the content of the code vector 

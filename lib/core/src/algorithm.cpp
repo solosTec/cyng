@@ -101,6 +101,12 @@ namespace cyng
 			: make_object()
 			;
 	}
+
+	object find(attr_map_t const&, std::string const&)
+	{
+		return make_object();
+	}
+
 	
 	object find(attr_t const& attr, std::size_t idx)
 	{
@@ -183,6 +189,11 @@ namespace cyng
 			;
 	}
 	
+	object find(param_map_t const& v, std::size_t idx)
+	{
+		return find(v, std::to_string(idx));
+
+	}
 	object find(param_t const& param, std::string const& name)
 	{
 		return (param.first == name)

@@ -28,25 +28,18 @@ namespace cyng
 				vec_.push_back(make_object(std::forward<T>(v)));
 				return vec_;
 			}
+			vector_t& operator()(T const& v)
+			{
+				vec_.push_back(make_object(v));
+				return vec_;
+			}
 		};
 		
 		/**
-		 * vectors will be enrolled.
-		 */
-		template <>
-		struct stream_policy<vector_t>
-		{
-			vector_t& vec_;
-			stream_policy(vector_t& vec);
-		
-			vector_t& operator()(vector_t&& v);
-		};
-
-		/** 
 		 * function objects will be executed
 		 */
 		template <typename R>
-		struct stream_policy<std::function<R(void)>&>
+		struct stream_policy<std::function<R(void)> >
 		{
 			using f_t = std::function<R(void)>;
 			vector_t& vec_;
@@ -59,26 +52,13 @@ namespace cyng
 				vec_ << f();
 				return vec_;
 			}
-		};
-
-		/** 
-		 * const function objects will be executed
-		 */
-		template <typename R>
-		struct stream_policy<const std::function<R(void)>&>
-		{
-			using f_t = std::function<R(void)>;
-			vector_t& vec_;
-			stream_policy(vector_t& vec)
-				: vec_(vec)
-			{}
-
-			vector_t& operator()(f_t const& f)
+			vector_t& operator()(f_t&& f)
 			{
 				vec_ << f();
 				return vec_;
 			}
 		};
+
 	}
 	
 	/**
@@ -88,7 +68,8 @@ namespace cyng
 	template <typename T>
 	vector_t& operator<<(vector_t& vec, T&& v)
 	{
-		detail::stream_policy<T> sp(vec);
+		using type = typename std::decay<T>::type;
+		detail::stream_policy<type> sp(vec);
 		return sp(std::forward<T>(v));
 	}
 	
@@ -253,6 +234,59 @@ namespace cyng
 	 * Push size of vector at end of program vector
 	 */
 	vector_t& operator<<(vector_t&, reloc&&);
+
+	/**
+	 * unwind the specified container
+	 */
+	template <typename T>
+	class unwind
+	{
+	public:
+		unwind(T&& c)
+		: container_(std::move(c))
+		{}
+		unwind(unwind&& other)
+		: container_(std::move(other.container_))
+		{}
+
+		friend vector_t& operator<<(vector_t& vec, unwind&& e)
+		{
+			vec.insert(vec.end(), e.container_.begin(), e.container_.end());
+			return vec;
+		}
+
+	private:
+		T container_;
+	};
+
+	/**
+	 * helper to auto detect container type
+	 */
+	template <typename T>
+	unwind<T> unwinder(T&& c)
+	{
+		return unwind<T>(std::move(c));
+	}
+
+
+	/**
+	 * post function.
+	 * Scan vector for vectors and enoll them.
+	 * Work recursively.
+	 */
+	class unwind_vec
+	{
+	public:
+		unwind_vec(std::size_t = 0);
+		friend vector_t& operator<<(vector_t& vec, unwind_vec&& e);
+	private:
+		std::size_t n_;
+	};
+
+	/**
+	 * call unwind_vec as stream operator
+	 */
+	vector_t& operator<<(vector_t&, unwind_vec&&);
 
 }
 

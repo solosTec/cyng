@@ -76,7 +76,7 @@ namespace cyng
 		/**
 		 * invoke a library function
 		 */
-		void invoke();
+		void invoke(memory& mem);
 		
 		/**
 		 * jump always, pc = x		

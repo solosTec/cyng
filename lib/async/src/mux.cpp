@@ -322,6 +322,35 @@ namespace cyng
 			return f.get();
 		}
 		
+		std::size_t mux::send(std::string name, std::size_t slot, tuple_t&& msg) const
+		{
+			if (shutdown_)	return false;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			std::promise<std::size_t> result;
+			auto f = result.get_future();
+			dispatcher_.dispatch([this, name, slot, &msg, &result]() {
+				std::size_t counter{ 0 };
+				for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
+				{
+					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
+					{
+						(*pos).second->dispatch(slot, msg);
+						++counter;
+					}
+				}
+
+				//
+				//	set future value
+				//
+				result.set_value(counter);
+			});
+
+			f.wait();
+			return f.get();
+
+		}
+
 		void mux::remove(std::size_t id)
 		{
 			dispatcher_.dispatch([this, id]() {

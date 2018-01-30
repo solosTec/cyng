@@ -48,7 +48,10 @@ namespace cyng
 			wrapper(Args&&... args)
 				: held_(std::forward<Args>(args)...)
 			{}
-						
+
+			wrapper(wrapper const&) = delete;
+			wrapper& operator=(wrapper const&) = delete;
+
 			virtual ~wrapper()
 			{}
 			
@@ -60,8 +63,8 @@ namespace cyng
 			 */
 			virtual shared_object clone() const override
 			{
-				//return shared_object();
- 				return std::make_shared< wrapper< T > >(held_);
+				return shared_object();
+ 				//return std::make_shared< wrapper< T > >(held_);
 			}
 			
 			virtual class_interface const& get_class() const noexcept override

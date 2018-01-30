@@ -7,11 +7,13 @@
 
 #include <cyng/vm/context.h>
 #include <cyng/vm/vm.h>
+#include <cyng/vm/memory.h>
 
 namespace cyng 
 {
-	context::context(vm& v)
+	context::context(vm& v, memory& mem)
 	: vm_(v)
+	, mem_(mem)
 	{}
 	
 	vector_t context::get_frame() const
@@ -43,7 +45,11 @@ namespace cyng
 	{
 		vm_.stack_.push(std::move(obj));
 	}
-	
+	void context::push(object const& obj)
+	{
+		vm_.stack_.push(std::move(obj));
+	}
+
 	void context::set_register(boost::system::error_code ec)
 	{
 		//
@@ -79,6 +85,11 @@ namespace cyng
 	void context::run(vector_t&& prg)
 	{
 		vm_.sync_run(std::move(prg));
+	}
+
+	void context::attach(vector_t&& prg)
+	{
+		mem_ += std::move(prg);
 	}
 
 	namespace traits

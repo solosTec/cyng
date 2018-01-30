@@ -111,6 +111,14 @@ namespace cyng
 			 */
 			bool send(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
 			
+			/**
+			 * Works asynchronously.
+			 * Deliver message to all tasks with the specified class name
+			 *
+			 * @return number of found tasks with the specified class name.
+			 */
+			std::size_t send(std::string id, std::size_t slot, tuple_t&& tpl) const;
+
 		private:
 			/**
 			 * Non-blocking function.
