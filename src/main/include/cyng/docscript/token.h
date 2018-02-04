@@ -38,28 +38,28 @@ namespace cyng
 		};
 
 		/**
-		* Generate an EOF token
-		*/
+		 * Generate an EOF token
+		 */
 		token make_eof();
 
 		/**
-		* Generate a NL token
-		*/
+		 * Generate a NL token
+		 */
 		token make_nl();
 
 		/**
-		* Generate an entity token
-		*/
+		 * Generate an entity token
+		 */
 		token make_token(std::uint32_t, std::size_t);
 
 		/**
-		* Define an emit function
-		*/
+		 * Define an emit function
+		 */
 		using emit_token_f = std::function<void(token&&)>;
 
 		/**
-		* Streaming operator
-		*/
+		 * Streaming operator
+		 */
 		std::ostream& operator<<(std::ostream& os, const token& tok);
 	}
 }	//	cyng

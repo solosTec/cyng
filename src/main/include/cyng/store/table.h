@@ -26,7 +26,10 @@ namespace cyng
 		using mutex_t 		= cyng::async::shared_mutex;
 		using shared_lock_t = cyng::async::shared_lock<mutex_t>;
 		using unique_lock_t = cyng::async::unique_lock<mutex_t>;
-		
+
+		//
+		//	forward declaration
+		//
 		class db;
 		class table : public publisher
 		{
@@ -172,6 +175,13 @@ namespace cyng
 			using type = cyng::store::table;
 		};
 	}
+
+	/**
+	 * Remove a list of given records
+	 */
+	std::size_t erase(store::table*, table::key_list_t const& keys);
+
+
 }
 
 namespace std

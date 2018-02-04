@@ -13,7 +13,7 @@ namespace cyng
 {
 	//	forward declaration(s):
 	class object;
-	class object_tracker;
+	//class object_tracker;
 
 	namespace core 
 	{

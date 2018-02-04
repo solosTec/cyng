@@ -49,6 +49,10 @@ namespace cyng
 		 */
 		void halt();
 		
+		/**
+		 * @return VM specific hash based in internal tag
+		 */
+		std::size_t hash() const noexcept;
 		
 	private:
 		void execute(vector_t&& prg, async::sync) const;

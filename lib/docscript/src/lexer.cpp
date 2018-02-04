@@ -143,8 +143,6 @@ namespace cyng
 			case '8':
 			case '9':
 				return std::make_pair(save(STATE_TXT_, STATE_DECIMAL_), false);
-				//tmp_ += c;
-				//return std::make_pair(STATE_NUM_, true);				
 			default:
 				tmp_ += c;
 				break;
@@ -175,7 +173,6 @@ namespace cyng
 			case '9':
 				//return std::make_pair(save(STATE_TXT_, STATE_DECIMAL_), false);
 				tmp_ += c;
-				//return STATE_NUM_;
 				return save(STATE_TXT_, STATE_DECIMAL_);
 			default:
 				tmp_ += c;

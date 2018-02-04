@@ -6,10 +6,6 @@
  */ 
 
 #include <cyng/docscript/library.h>
-//#include <iostream>
-//#include <string>
-//#include <iomanip>
-//#include <boost/regex/pending/unicode_iterator.hpp>
 
 namespace cyng	
 {
@@ -69,7 +65,6 @@ namespace cyng
 				: pos->second->get_ptr()
 				;
 		}
-
 	}
 }	//	cyng
 

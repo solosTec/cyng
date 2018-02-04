@@ -83,7 +83,7 @@ namespace cyng
 			}
 			return false;
 		}
-		
+
 		std::pair<table::table_type::const_iterator,bool> table::find(cyng::table::key_type const& key) const
 		{
 			if (meta_->check_key(key))
@@ -189,9 +189,21 @@ namespace cyng
 			}
 			return counter;
 		}
-
 	}	//	store
 	
+	std::size_t erase(store::table* tbl, table::key_list_t const& keys)
+	{
+		BOOST_ASSERT(tbl != nullptr);
+		std::size_t counter{ 0 };
+		std::for_each(keys.begin(), keys.end(), [tbl, &counter](table::key_type const& key) {
+			if (tbl->erase(key))
+			{
+				++counter;
+			}
+		});
+		return counter;
+	}
+
 	namespace traits
 	{
 	

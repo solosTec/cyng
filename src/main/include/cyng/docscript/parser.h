@@ -1,17 +1,12 @@
 /*
- * Copyright Sylko Olzscher 2016
+ * The MIT License (MIT)
  *
- * Use, modification, and distribution is subject to the Boost Software
- * License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
- * http://www.boost.org/LICENSE_1_0.txt)
+ * Copyright (c) 2018 Sylko Olzscher
+ *
  */
 
-#ifndef CYX_DOCSCRIPT_PARSER_H
-#define CYX_DOCSCRIPT_PARSER_H
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-#pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200) 
+#ifndef CYNG_DOCSCRIPT_PARSER_H
+#define CYNG_DOCSCRIPT_PARSER_H
 
 // #define BOOST_SPIRIT_UNICODE
 #include <boost/regex/pending/unicode_iterator.hpp>
@@ -113,4 +108,4 @@ namespace cyng
 	}
 }	//	cyng
 
-#endif	//	CYX_DOCSCRIPT_PARSER_H
+#endif	

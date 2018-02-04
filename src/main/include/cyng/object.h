@@ -17,6 +17,9 @@
 namespace cyng 
 {
 
+	class tracker;
+	class reference;
+
 	/**@brief Generic data type 
 	 * 
 	 * Provides a runtime dynamically typed value for C++, similar to the way languages
@@ -42,6 +45,7 @@ namespace cyng
 	class object
 	{
 		friend class tracker;
+		friend class reference;
 		friend void swap(object&, object&) noexcept;
 		friend bool equal_by_instance(object const&, object const&) noexcept;
 		friend bool equal_by_value(object const&, object const&) noexcept;

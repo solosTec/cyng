@@ -43,6 +43,7 @@ namespace cyng
 			PREDEF_DB,
 			PREDEF_VM_CALL,
 			PREDEF_SESSION,
+			PREDEF_CONNECTION,
 			PREDEF_SK,
 		};
 	}

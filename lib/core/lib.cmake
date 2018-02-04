@@ -7,6 +7,7 @@ set (core_cpp
 	lib/core/src/core.cpp
 	lib/core/src/object.cpp
 	lib/core/src/tracker.cpp
+	lib/core/src/reference.cpp
  	lib/core/src/type.cpp
  	lib/core/src/chrono.cpp
   	
@@ -33,6 +34,8 @@ set (core_h
     src/main/include/cyng/tuple_cast.hpp
     src/main/include/cyng/core/wrapper_fwd.h
     src/main/include/cyng/core/wrapper.hpp
+	src/main/include/cyng/tracker.h
+	src/main/include/cyng/reference.h
 #     src/main/include/cyng/core/deleter.hpp
     src/main/include/cyng/chrono.h
     

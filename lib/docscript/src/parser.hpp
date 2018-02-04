@@ -12,6 +12,9 @@
 #include <boost/fusion/include/all.hpp>
 #include <iostream>
 
+#ifndef CYNG_DOCSCRIPT_PARSER_HPP
+#define CYNG_DOCSCRIPT_PARSER_HPP
+
 namespace boost
 {
 	namespace spirit

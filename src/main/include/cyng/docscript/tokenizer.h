@@ -1,19 +1,16 @@
 /*
- * Copyright Sylko Olzscher 2017
+ * The MIT License (MIT)
  *
- * Use, modification, and distribution is subject to the Boost Software
- * License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
- * http://www.boost.org/LICENSE_1_0.txt)
+ * Copyright (c) 2018 Sylko Olzscher
+ *
  */
 
-#ifndef CYX_DOCSCRIPT_TOKENIZER_H
-#define CYX_DOCSCRIPT_TOKENIZER_H
+#ifndef CYNG_DOCSCRIPT_TOKENIZER_H
+#define CYNG_DOCSCRIPT_TOKENIZER_H
 
 #include <cyng/docscript/docscript.h>
 #include <cyng/docscript/token.h>
 #include <boost/regex/pending/unicode_iterator.hpp>
-//#include <boost/uuid/name_generator.hpp>
-//#include <boost/uuid/random_generator.hpp>
 
 namespace cyng
 {
@@ -112,4 +109,4 @@ namespace cyng
 	}
 }
 
-#endif	//	CYX_DOCSCRIPT_TOKENIZER_H
+#endif	

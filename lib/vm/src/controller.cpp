@@ -13,6 +13,7 @@
 #ifdef _DEBUG
 #include <cyng/io/serializer.h>
 #endif
+#include <boost/functional/hash.hpp>
 
 namespace cyng 
 {
@@ -121,6 +122,14 @@ namespace cyng
 		//
 		execute(vector_t{ make_object(code::HALT) }, async::sync());
 	}
+
+	std::size_t controller::hash() const noexcept
+	{
+		boost::hash<boost::uuids::uuid> uuid_hasher;
+		return uuid_hasher(vm_.tag());
+
+	}
+
 	
 }
 
