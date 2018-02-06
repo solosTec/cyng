@@ -46,13 +46,16 @@ namespace cyng
 			return *meta_;
 		}
 		
-		void table::clear()
+		void table::clear(boost::uuids::uuid source)
 		{
 			data_.clear();
- 			this->publisher::clear_signal_(this);
+ 			this->publisher::clear_signal_(this, source);
 		}
 		
-		bool table::insert(cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation)
+		bool table::insert(cyng::table::key_type const& key
+			, cyng::table::data_type const& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source)
 		{
 			//	prevent structural integrity
 			if (meta_->check_record(key, data))
@@ -62,14 +65,14 @@ namespace cyng
  				, std::forward_as_tuple(key)
  				, std::forward_as_tuple(make_object(data), generation)).second)	
 				{
-					this->publisher::insert_signal_(this, key, data, generation);
+					this->publisher::insert_signal_(this, key, data, generation, source);
 					return true;
 				}
 			}
 			return false;
 		}
 		
-		bool table::erase(cyng::table::key_type const& key)
+		bool table::erase(cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
 			//	prevent structural integrity
 			if (meta_->check_key(key))
@@ -77,7 +80,7 @@ namespace cyng
 				//	second is true if the pair was actually inserted.
 				if (data_.erase(key) != 0)
 				{
-					this->publisher::remove_signal_(this, key);
+					this->publisher::remove_signal_(this, key, source);
 					return true;
 				}
 			}
@@ -113,7 +116,7 @@ namespace cyng
 		}
 		
 		
-		bool table::modify(cyng::table::key_type const& key, attr_t&& attr)
+		bool table::modify(cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source)
 		{
 			std::pair<table::table_type::const_iterator, bool> r = find(key);
 			if (r.second)
@@ -147,7 +150,7 @@ namespace cyng
 						//
 						//	broadcast modification
 						//
-						this->publisher::modify_signal_(this, key, attr);
+						this->publisher::modify_signal_(this, key, attr, source);
 						
 						//
 						//	apply modification
@@ -160,11 +163,11 @@ namespace cyng
 			return false;
 		}
 		
-		bool table::modify(cyng::table::key_type const& key, param_t&& param)
+		bool table::modify(cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source)
 		{
 			const std::pair<std::size_t, bool> r = meta_->get_body_index(param.first);
 			return (r.second)
-			? modify(key, attr_t(r.first, param.second))
+			? modify(key, attr_t(r.first, param.second), source)
 			: false
 			;
 		}
@@ -191,12 +194,12 @@ namespace cyng
 		}
 	}	//	store
 	
-	std::size_t erase(store::table* tbl, table::key_list_t const& keys)
+	std::size_t erase(store::table* tbl, table::key_list_t const& keys, boost::uuids::uuid source)
 	{
 		BOOST_ASSERT(tbl != nullptr);
 		std::size_t counter{ 0 };
-		std::for_each(keys.begin(), keys.end(), [tbl, &counter](table::key_type const& key) {
-			if (tbl->erase(key))
+		std::for_each(keys.begin(), keys.end(), [&](table::key_type const& key) {
+			if (tbl->erase(key, source))
 			{
 				++counter;
 			}

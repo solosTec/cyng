@@ -36,12 +36,6 @@ namespace cyng
 			}
 		}
 
-		std::ostream& operator<<(std::ostream& os, column const& col)
-		{
-			os << col.index_;
-			return os;
-		}
-
 		column make_column(std::size_t index)
 		{
 			return column(index);
@@ -72,12 +66,6 @@ namespace cyng
 				os << ")";
 			}
 
-		}
-
-		std::ostream& operator<<(std::ostream& os, distinct const& col)
-		{
-			os << col.index_;
-			return os;
 		}
 
 		distinct make_distinct(std::size_t index)

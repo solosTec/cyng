@@ -176,4 +176,4 @@ namespace cyng
 	}
 }	//	cyng
 
-
+#endif

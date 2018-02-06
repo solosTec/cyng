@@ -74,20 +74,24 @@ namespace cyng
 			/**
 			 * Clears the table contents.
 			 */
-			void clear();
+			void clear(boost::uuids::uuid source);
 			
 			/**
 			 * @param key the record key
 			 * @param body the body to insert
 			 * @return true if the pair was actually inserted.
 			 */
-			bool insert(cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation);
+			bool insert(cyng::table::key_type const& key
+				, cyng::table::data_type const& data
+				, std::uint64_t generation
+				, boost::uuids::uuid source);
 
 			/**
 			 * @param key the record key
 			 * @return true if the record was actually deleted
 			 */
-			bool erase(cyng::table::key_type const& key);
+			bool erase(cyng::table::key_type const& key
+				, boost::uuids::uuid source);
 			
 			/**
 			 * Complexity O(log n) - red black tree.
@@ -113,7 +117,7 @@ namespace cyng
 			 * @param attr a specific attribute of the record body.
 			 * @return true if new value was sucessfully written. 
 			 */
-			bool modify(cyng::table::key_type const& key, attr_t&& attr);
+			bool modify(cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source);
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
@@ -124,7 +128,7 @@ namespace cyng
 			 * @param param a specific parameter of the record body.
 			 * @return true if new value was sucessfully written. 
 			 */
-			bool modify(cyng::table::key_type const& key, param_t&& param);
+			bool modify(cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source);
 			
 			/** @brief Loop over all table entries.
 			 * 
@@ -179,7 +183,7 @@ namespace cyng
 	/**
 	 * Remove a list of given records
 	 */
-	std::size_t erase(store::table*, table::key_list_t const& keys);
+	std::size_t erase(store::table*, table::key_list_t const& keys, boost::uuids::uuid source);
 
 
 }

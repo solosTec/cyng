@@ -28,6 +28,7 @@ set (sql_dsl
  	lib/sql/src/placeholder.cpp
     src/main/include/cyng/sql/dsl/aggregate.h
  	lib/sql/src/aggregate.cpp
+    src/main/include/cyng/sql/dsl/assign.hpp
 )
 
 # define the sql lib

@@ -36,10 +36,19 @@ namespace cyng
 		class publisher
 		{
 		public:   
-			using insert_signal = boost::signals2::signal<void(table const*, cyng::table::key_type const&, cyng::table::data_type const&, std::uint64_t)>;
-			using remove_signal = boost::signals2::signal<void(table const*, cyng::table::key_type const&)>;
-			using clear_signal  = boost::signals2::signal<void(table const*)>;
-			using modify_signal = boost::signals2::signal<void(table const*, cyng::table::key_type const&, attr_t const&)>;
+			using insert_signal = boost::signals2::signal<void(table const*
+				, cyng::table::key_type const&
+				, cyng::table::data_type const&
+				, std::uint64_t
+				, boost::uuids::uuid)>;
+			using remove_signal = boost::signals2::signal<void(table const*
+				, cyng::table::key_type const&
+				, boost::uuids::uuid)>;
+			using clear_signal  = boost::signals2::signal<void(table const*, boost::uuids::uuid)>;
+			using modify_signal = boost::signals2::signal<void(table const*
+				, cyng::table::key_type const&
+				, attr_t const&
+				, boost::uuids::uuid)>;
 			
 		public:
 			publisher();

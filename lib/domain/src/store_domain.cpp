@@ -11,6 +11,7 @@
 #include <cyng/vm/context.h>
 #include <cyng/vm/generator.h>
 #include <cyng/value_cast.hpp>
+#include <cyng/tuple_cast.hpp>
 #include <algorithm>
 
 namespace cyng 
@@ -19,24 +20,88 @@ namespace cyng
 	void register_store(store::db& db, context& ctx)
 	{
 		ctx.run(register_function("db.insert", 4, [&db](context& ctx) {
+
 			const vector_t frame = ctx.get_frame();
-			const std::string name = value_cast<std::string>(frame.at(0), "");
+			ctx.attach(generate_invoke("log.msg.debug", "db.insert", frame));
 
-			vector_t tmp;
-			table::key_type key = value_cast(frame.at(1), tmp);
-			std::reverse(key.begin(), key.end());
+			auto tpl = cyng::tuple_cast<
+				std::string,			//	[0] table name
+				vector_t,				//	[1] key
+				vector_t,				//	[2] data
+				std::uint64_t			//	[3] generation
+				//boost::uuids::uuid		//	[4] source
+			>(frame);
 
-			table::data_type data = value_cast(frame.at(2), tmp);
-			std::reverse(data.begin(), data.end());
+			//BOOST_ASSERT(ctx.tag() == std::get<4>(tpl));
 
-			const std::uint64_t generation = value_cast<std::uint64_t>(frame.at(3), 0);
-			if (!db.insert(name, key, data, generation))
+			//
+			//	key
+			//
+			std::reverse(std::get<1>(tpl).begin(), std::get<1>(tpl).end());
+
+			//
+			//	data
+			//
+			std::reverse(std::get<2>(tpl).begin(), std::get<2>(tpl).end());
+
+			//
+			//	insert
+			//
+			if (!db.insert(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl), ctx.tag()))
 			{
-				ctx.run(generate_invoke("log.msg.warning", "db.insert failed", key, data));
+				ctx.attach(generate_invoke("log.msg.warning", "db.insert - failed", std::get<0>(tpl), std::get<1>(tpl)));
 			}
-			//ctx.set_return_value(make_object(s.is_open()), 0);
 		}));
 
+		ctx.run(register_function("db.modify.by.attr", 3, [&db](context& ctx) {
+			const vector_t frame = ctx.get_frame();
+
+			ctx.attach(generate_invoke("log.msg.debug", "db.modify", frame));
+
+			auto tpl = cyng::tuple_cast<
+				std::string,			//	[0] table name
+				vector_t,				//	[1] key
+				attr_t					//	[2] data
+				//boost::uuids::uuid		//	[3] source
+			>(frame);
+
+			//BOOST_ASSERT(ctx.tag() == std::get<3>(tpl));
+
+			//
+			//	key
+			//
+			std::reverse(std::get<1>(tpl).begin(), std::get<1>(tpl).end());
+
+			if (!db.modify(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), ctx.tag()))
+			{
+				ctx.attach(generate_invoke("log.msg.warning", "db.modify - failed", std::get<0>(tpl), std::get<1>(tpl)));
+			}
+		}));
+
+		ctx.run(register_function("db.modify.by.param", 3, [&db](context& ctx) {
+			const vector_t frame = ctx.get_frame();
+
+			ctx.attach(generate_invoke("log.msg.debug", "db.modify", frame));
+
+			auto tpl = cyng::tuple_cast<
+				std::string,			//	[0] table name
+				vector_t,				//	[1] key
+				param_t				//	[2] data
+				//boost::uuids::uuid		//	[3] source
+			>(frame);
+
+			//BOOST_ASSERT(ctx.tag() == std::get<3>(tpl));
+
+			//
+			//	key
+			//
+			std::reverse(std::get<1>(tpl).begin(), std::get<1>(tpl).end());
+
+			if (!db.modify(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), ctx.tag()))
+			{
+				ctx.attach(generate_invoke("log.msg.warning", "db.modify - failed", std::get<0>(tpl), std::get<1>(tpl)));
+			}
+		}));
 	}
 
 }

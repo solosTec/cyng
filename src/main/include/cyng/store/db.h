@@ -112,7 +112,7 @@ namespace cyng
 			 *
 			 * @param name table name
 			 */
-			void clear(std::string const& name);
+			void clear(std::string const& name, boost::uuids::uuid source);
 
 			/**
 			 * @param name table name
@@ -120,14 +120,18 @@ namespace cyng
 			 * @param body the body to insert
 			 * @return true if the pair was actually inserted.
 			 */
-			bool insert(std::string const& name, cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation);
+			bool insert(std::string const& name
+				, cyng::table::key_type const& key
+				, cyng::table::data_type const& data
+				, std::uint64_t generation
+				, boost::uuids::uuid source);
 
 			/**
 			 * @param name table name
 			 * @param key the record key
 			 * @return true if the record was actually deleted
 			 */
-			bool erase(std::string const& name, cyng::table::key_type const& key);
+			bool erase(std::string const& name, cyng::table::key_type const& key, boost::uuids::uuid source);
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
@@ -139,7 +143,7 @@ namespace cyng
 			 * @param attr a specific attribute of the record body.
 			 * @return true if new value was sucessfully written.
 			 */
-			bool modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr);
+			bool modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source);
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
@@ -151,7 +155,7 @@ namespace cyng
 			 * @param param a specific parameter of the record body.
 			 * @return true if new value was sucessfully written.
 			 */
-			bool modify(std::string const& name, cyng::table::key_type const& key, param_t&& param);
+			bool modify(std::string const& name, cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source);
 
 			/**
 			 * @return meta data

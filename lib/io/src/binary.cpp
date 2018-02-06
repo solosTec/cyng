@@ -432,7 +432,7 @@ namespace cyng
 			//	serialize std::size_t as object
 			//	
 			try {
-				const std::uint64_t size = boost::numeric_cast<std::uint32_t>(v);
+				const std::uint64_t size = boost::numeric_cast<std::uint64_t>(v);
 				serialize_binary(os, make_object(size));
 			}
 			catch (boost::numeric::positive_overflow const&) { 

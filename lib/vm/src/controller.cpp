@@ -125,12 +125,15 @@ namespace cyng
 
 	std::size_t controller::hash() const noexcept
 	{
-		boost::hash<boost::uuids::uuid> uuid_hasher;
-		return uuid_hasher(vm_.tag());
-
+		static boost::hash<boost::uuids::uuid> uuid_hasher;
+		return uuid_hasher(tag());
 	}
 
-	
+	boost::uuids::uuid controller::tag() const noexcept
+	{
+		return vm_.tag();
+	}
+
 }
 
 

@@ -13,11 +13,12 @@
 #include <cyng/sql/dsl/binary_expr.hpp>
 #include <cyng/sql/dsl/list_expr.hpp>
 #include <cyng/sql/dsl/operators.hpp>
-#include <cyng/sql/dsl/constant.hpp>
-#include <cyng/sql/dsl/variable.hpp>
-#include <cyng/sql/dsl/column.h>
-#include <cyng/sql/dsl/placeholder.h>
+//#include <cyng/sql/dsl/constant.hpp>
+//#include <cyng/sql/dsl/variable.hpp>
+//#include <cyng/sql/dsl/column.h>
+//#include <cyng/sql/dsl/placeholder.h>
 #include <cyng/sql/dsl/aggregate.h>
+#include <cyng/sql/dsl/assign.hpp>
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/intrinsics/traits/tag_names.hpp>
 
@@ -51,9 +52,18 @@ namespace cyng
 		//std::cout << cmd.to_str() << std::endl;
 		BOOST_CHECK_EQUAL(cmd.to_str(), "INSERT INTO employees (id, name, age) VALUES (?, ?, julianday(?))");
 
-		cmd.update(sql::column(2)).where(sql::column(1) == sql::make_constant(42));
+		//sql::make_assign(2, sql::make_constant("hello"));
+		cmd.update(sql::make_assign(2, sql::make_constant("hello"))).where(sql::column(1) == sql::make_constant(42) && sql::column(2) == sql::make_constant("dummy"));
 		//std::cout << cmd.to_str() << std::endl;
-		BOOST_CHECK_EQUAL(cmd.to_str(), "UPDATE employees SET name WHERE (id = 42)");
+		BOOST_CHECK_EQUAL(cmd.to_str(), "UPDATE employees SET name = 'hello' WHERE ((id = 42) AND (name = 'dummy'))");
+		cmd.update(sql::make_assign(2, sql::make_placeholder())).where(sql::column(1) == sql::make_constant(42) && sql::column(2) == sql::make_constant("dummy"));
+		//std::cout << cmd.to_str() << std::endl;
+		BOOST_CHECK_EQUAL(cmd.to_str(), "UPDATE employees SET name = ? WHERE ((id = 42) AND (name = 'dummy'))");
+
+		cmd.update(sql::make_list(sql::make_assign(2, sql::make_constant("hello"))
+		, sql::make_assign(3, sql::make_placeholder())));
+		//std::cout << '[' << cmd.to_str() << ']' << std::endl;
+		BOOST_CHECK_EQUAL(cmd.to_str(), "UPDATE employees SET name = 'hello', datetime(age) = ? ");
 
 		std::string emp("alfred");
 		cmd.remove().where(sql::column(2) == sql::make_variable(emp));

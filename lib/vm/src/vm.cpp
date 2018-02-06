@@ -163,6 +163,7 @@ namespace cyng
 				//
 			case code::ASSEMBLE_ATTR:
 				stack_.assemble_attr();
+				break;
 			case code::ASSEMBLE_PARAM:
 				stack_.assemble_param();
 				break;

@@ -15,6 +15,7 @@
 #include <cyng/factory.h>
 #include <chrono>
 #include <future>
+#include <boost/uuid/nil_generator.hpp>
 
 namespace cyng 
 {
@@ -61,7 +62,7 @@ namespace cyng
 		auto tbl_obj = make_object<store::table>(mtp);
 		
 // 		key_type const& key, data_type const& data
-		const bool b = db_tbl.insert(table::key_generator("name"), table::data_generator(tbl_obj, std::chrono::system_clock::now()), 0);
+		const bool b = db_tbl.insert(table::key_generator("name"), table::data_generator(tbl_obj, std::chrono::system_clock::now()), 0, boost::uuids::nil_uuid());
 		BOOST_CHECK(b);
 		
 		store::db db_1;

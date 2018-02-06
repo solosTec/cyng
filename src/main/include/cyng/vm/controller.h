@@ -53,7 +53,12 @@ namespace cyng
 		 * @return VM specific hash based in internal tag
 		 */
 		std::size_t hash() const noexcept;
-		
+
+		/**
+		 * @return VM internal tag
+		 */
+		boost::uuids::uuid tag() const noexcept;
+
 	private:
 		void execute(vector_t&& prg, async::sync) const;
 		void execute(vector_t&& prg, async::detach) const;

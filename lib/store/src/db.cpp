@@ -10,6 +10,7 @@
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/object_cast.hpp>
 #include <cyng/value_cast.hpp>
+#include <boost/uuid/nil_generator.hpp>
 
 #include <chrono>
 
@@ -28,7 +29,7 @@ namespace cyng
 		
 		db::~db()
 		{
-			tables_.clear();
+			tables_.clear(boost::uuids::nil_uuid());
 		}
 		
 		bool db::create_table(cyng::table::meta_table_ptr ptr)
@@ -36,7 +37,7 @@ namespace cyng
 			//	start with generation 1 and default state 0
 			unique_lock_t ul(this->m_);
 			return tables_.insert(cyng::table::key_generator(ptr->get_name())
-				, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1);
+				, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1, boost::uuids::nil_uuid());
 		}
 		
 		std::size_t db::size() const
@@ -45,82 +46,86 @@ namespace cyng
 			return tables_.size();
 		}	
 
-		void db::clear(std::string const& name)
+		void db::clear(std::string const& name, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
-			access([](table* tbl)->void {
-				tbl->clear();
+			access([&](table* tbl)->void {
+				tbl->clear(source);
 			}, write_access(name));
 		}
 
-		bool db::insert(std::string const& name, cyng::table::key_type const& key, cyng::table::data_type const& data, std::uint64_t generation)
+		bool db::insert(std::string const& name
+			, cyng::table::key_type const& key
+			, cyng::table::data_type const& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
 #if defined(CYNG_STD_APPLY_OFF)
 			bool b = false;
-			access([&key, &data, generation, &b](table* tbl)->void {
+			access([&](table* tbl)->void {
 
-				b = tbl->insert(key, data, generation);
+				b = tbl->insert(key, data, generation, source);
 
 			}, write_access(name));
 			return b;
 #else
-			return access([&key, &data, generation](table* tbl)->bool {
-				return tbl->insert(key, data, generation);
+			return access([&](table* tbl)->bool {
+				return tbl->insert(key, data, generation, source);
 			}, write_access(name));
 #endif
 		}
 
-		bool db::erase(std::string const& name, cyng::table::key_type const& key)
+		bool db::erase(std::string const& name, cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
 #if defined(CYNG_STD_APPLY_OFF)
 			bool b = false;
-			access([&key, &b](table* tbl)->void {
+			access([&](table* tbl)->void {
 
-				b = tbl->erase(key);
+				b = tbl->erase(key, source);
 
 			}, write_access(name));
 			return b;
 #else
-			return access([&key](table* tbl)->bool {
-				return tbl->erase(key);
+			return access([&](table* tbl)->bool {
+				return tbl->erase(key, source);
 			}, write_access(name));
 #endif
 		}
 
-		bool db::modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr)
+		bool db::modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
 #if defined(CYNG_STD_APPLY_OFF)
 			bool b = false;
-			access([&key, &attr, &b](table* tbl)->void {
+			access([&](table* tbl)->void {
 
-				b = tbl->modify(key, std::move(attr));
+				b = tbl->modify(key, std::move(attr), source);
 
 			}, write_access(name));
 			return b;
 #else
-			return access([&key, &attr](table* tbl)->bool {
+			return access([&](table* tbl)->bool {
 				return tbl->modify(key, std::move(attr));
 			}, write_access(name));
 #endif
 		}
 
-		bool db::modify(std::string const& name, cyng::table::key_type const& key, param_t&& param)
+		bool db::modify(std::string const& name, cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
 #if defined(CYNG_STD_APPLY_OFF)
 			bool b = false;
-			access([&key, &param, &b](table* tbl)->void {
+			access([&](table* tbl)->void {
 
-				b = tbl->modify(key, std::move(param));
+				b = tbl->modify(key, std::move(param), source);
 
 			}, write_access(name));
 			return b;
 #else
 			return access([&key, &param](table* tbl)->bool {
-				return tbl->modify(key, std::move(param));
+				return tbl->modify(key, std::move(param), source);
 			}, write_access(name));
 #endif
 		}

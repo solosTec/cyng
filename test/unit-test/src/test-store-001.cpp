@@ -11,6 +11,7 @@
 #include <cyng/table/body.hpp>
 #include <cyng/table/meta.hpp>
 #include <cyng/store/table.h>
+#include <boost/uuid/nil_generator.hpp>
 
 namespace cyng 
 {
@@ -31,13 +32,13 @@ namespace cyng
 		BOOST_CHECK_EQUAL(mt2.get_body_index("body-4").first, 4);
 		
 		store::table tbl_1(mtp);
-		tbl_1.insert(table::key_generator(1, 2), table::data_generator(1, 2, 3, 4, 5), 0);
+		tbl_1.insert(table::key_generator(1, 2), table::data_generator(1, 2, 3, 4, 5), 0, boost::uuids::nil_uuid());
 		//tbl_1.insert(store::key_generator(1, 2), store::data_generator(1, 2, 3, 4, 5));
 
 // 		std::cout << tbl_1.size() << std::endl;
 		BOOST_CHECK_EQUAL(tbl_1.size(), 1);
 		
-		tbl_1.erase(table::key_generator(1, 2));
+		tbl_1.erase(table::key_generator(1, 2), boost::uuids::nil_uuid());
 //  		std::cout << tbl_1.size() << std::endl;
 		BOOST_CHECK_EQUAL(tbl_1.size(), 0);
 		
@@ -52,7 +53,7 @@ namespace cyng
 			{
 //  				std::cout << "INS: " << i1 << ", " << i2 << ", " << tbl_1.size() << ", " << (i1*upper_limit +i2) << std::endl;
  				BOOST_CHECK_EQUAL(tbl_1.size(), (i1*upper_limit + i2));
-				tbl_1.insert(table::key_generator(i1, i2), table::data_generator(i1, i2, i1+i2, i1-i2, i2-i1), 0);
+				tbl_1.insert(table::key_generator(i1, i2), table::data_generator(i1, i2, i1+i2, i1-i2, i2-i1), 0, boost::uuids::nil_uuid());
 			}
 		}
 		
