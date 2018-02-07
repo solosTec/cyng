@@ -107,7 +107,7 @@ namespace cyng
 			return b;
 #else
 			return access([&](table* tbl)->bool {
-				return tbl->modify(key, std::move(attr));
+				return tbl->modify(key, std::move(attr), source);
 			}, write_access(name));
 #endif
 		}
@@ -124,7 +124,7 @@ namespace cyng
 			}, write_access(name));
 			return b;
 #else
-			return access([&key, &param](table* tbl)->bool {
+			return access([&](table* tbl)->bool {
 				return tbl->modify(key, std::move(param), source);
 			}, write_access(name));
 #endif

@@ -45,7 +45,7 @@ namespace cyng
 		};
 		
 		template < typename T >
-		auto make_assign(std::size_t index, constant<T> c) -> assign< typename constant<T>>
+		auto make_assign(std::size_t index, constant<T> c) -> assign<constant<T>>
 		{
 			using A = assign<constant<T>>;
 			return A(index, c);
