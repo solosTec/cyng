@@ -267,50 +267,6 @@ namespace cyng
 			return os;
 		}
 	
-		std::ostream& operator<<(std::ostream& os, buffer_t const& v)
-		{
-			//	store and reset stream state
-			boost::io::ios_flags_saver  ifs(os);
-
-			os
-				<< std::setfill('0')
-				<< std::hex
-				;
-
-			//	write buffer
-			for (const char c : v)
-			{
-				if (c > 31 && c < 127)
-				{
-					os << c;
-				}
-				else if (c == '\\')
-				{
-					os << "\\\\";
-				}
-				else if (c == '"')
-				{
-					os << "\\\"";
-				}
-				else if (c == '\n')
-				{
-					os << "\\n";
-				}
-				else if (c == '\t')
-				{
-					os << "\\t";
-				}
-				else 
-				{
-					os
-						<< "\\x"
-						<< std::setw(2)
-						<< +c
-						;
-				}
-			}
-			return os;
-		}
 	
 	}
 }

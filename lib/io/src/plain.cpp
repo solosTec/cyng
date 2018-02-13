@@ -153,7 +153,10 @@ namespace cyng
 
 			for (const char c : v)
 			{
-				os << hexa[(c & 0xf0) >> 4] << hexa[(c & 0x0f)];
+				os 
+					<< hexa[(c & 0xf0) >> 4] 
+					<< hexa[(c & 0x0f)]
+					;
 			}
 			return os;
 		}

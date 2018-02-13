@@ -11,6 +11,8 @@
 #include <cyng/core/object_interface_fwd.h>
 #include <cyng/intrinsics.h>
 #include <cyng/io/io_chrono.hpp>
+#include <cyng/io/io_buffer.h>
+//#include <CYNG_project_info.h>
 #include <ostream>
 
 namespace cyng 
@@ -35,12 +37,12 @@ namespace cyng
 		 */
 		std::ostream& operator<<(std::ostream& os, mac48 const&);
 		std::ostream& operator<<(std::ostream& os, mac64 const&);
-		std::ostream& operator<<(std::ostream& os, buffer_t const&);
 		
 		void serialize_plain(std::ostream&, object const&);
 		void serialize_typed(std::ostream&, object const&);
 		void serialize_binary(std::ostream& os, object const& obj);
 		void serialize_json(std::ostream& os, object const& obj);
+
 		std::string to_str(object const&);
 		std::string to_str(vector_t const&);
 	}

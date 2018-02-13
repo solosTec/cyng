@@ -198,3 +198,17 @@ BOOST_AUTO_TEST_CASE(crypto_001)
 	BOOST_CHECK(test_crypto_001());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	CRYPTO
+
+#if	CYNG_PUGIXML_INSTALLED
+#include "test-xml-001.h"
+#endif
+
+BOOST_AUTO_TEST_SUITE(XML)
+BOOST_AUTO_TEST_CASE(xml_001)
+{
+	using namespace cyng;
+#if	CYNG_PUGIXML_INSTALLED
+	BOOST_CHECK(test_xml_001());
+#endif
+}
+BOOST_AUTO_TEST_SUITE_END()	//	XML

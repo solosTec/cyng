@@ -29,6 +29,11 @@ namespace cyng
 		return make_object(std::chrono::system_clock::time_point::max());
 	}
 	
+	object make_time_point(std::time_t tt)
+	{
+		return make_object(std::chrono::system_clock::from_time_t(tt));
+	}
+
 	object make_nanoseconds(std::uint64_t n)
 	{
 		return make_object(std::chrono::nanoseconds(n));

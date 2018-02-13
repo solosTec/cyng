@@ -49,7 +49,7 @@ namespace cyng
 		void write_binary(std::ostream& os, T const& v)
 		{
 			static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
-			static_assert(sizeof(T) == N, "type size exceeded");
+			static_assert(N <= sizeof(T), "type size exceeded");
 			os.write(reinterpret_cast<const std::ostream::char_type*>(&v), N);
 		}
 		

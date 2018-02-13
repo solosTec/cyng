@@ -15,6 +15,7 @@ namespace cyng
 	object make_now();
 	object make_time_point_min();
 	object make_time_point_max();
+	object make_time_point(std::time_t);
 	object make_nanoseconds(std::uint64_t);
 	object make_microseconds(std::uint64_t);
 	object make_milliseconds(std::uint64_t);

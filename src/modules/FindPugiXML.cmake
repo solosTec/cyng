@@ -16,6 +16,7 @@ find_path(PugiXML_INCLUDE_DIRS
 		/usr/local/include/odbc
 		/usr/include/libodbc
 		/usr/local/include/libodbc
+		C:/local/pugixml-1.8
 )
 		
 find_library(PugiXML_LIBRARIES
@@ -24,6 +25,7 @@ find_library(PugiXML_LIBRARIES
 	PATHS 
 		/usr/lib
 		/usr/local/lib
+		C:/local/pugixml-1.8/scripts
 )
 
 #set (PugiXML_VERSION, "1.4")

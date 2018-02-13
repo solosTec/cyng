@@ -41,6 +41,11 @@ namespace cyng
 		 */
 		struct SERIALIZE_JSON {};
 
+		/**
+		 * Serialization to XML.
+		 */
+		struct SERIALIZE_XML {};
+
 		template <typename T, typename TAG /*= SERIALIZE_PLAIN*/>
 		struct serializer 
 		{		

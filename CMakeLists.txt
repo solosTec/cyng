@@ -416,6 +416,25 @@ endif()
 set(${PROJECT_NAME}_MYSQL_INSTALLED OFF)
 set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
 
+#
+# libpugixml-dev (v1.8)
+# On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
+#
+find_package(PugiXML)
+if(PugiXML_FOUND)
+
+	message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
+	message(STATUS "** PugiXML Libraries : ${PUGIXML_LIBRARY}")
+	set(${PROJECT_NAME}_PUGIXML_INSTALLED ON)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_PUGIXML_INSTALLED" )
+	include_directories(${PUGIXML_INCLUDE_DIR})
+
+else()
+
+	message(WARNING "** PugiXML not found - don't build XML lib")
+	set(${PROJECT_NAME}_PUGIXML_INSTALLED OFF)
+
+endif()
 
 #
 # include directories for all C/C++ projects
@@ -459,8 +478,9 @@ add_library(cyng_log ${GLOBAL_LIBRARY_TYPE} ${log_lib})
 #
 include (lib/io/lib.cmake)
 add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
-target_link_libraries(cyng_io
-	cyng_core)
+set(io_link_libs cyng_core)
+target_link_libraries(cyng_io ${io_link_libs})
+
 
 #
 #	cyng mail library
@@ -540,6 +560,11 @@ target_link_libraries(cyng_json
 	cyng_io
 	cyng_parser)
 
+if (${PROJECT_NAME}_PUGIXML_INSTALLED)
+	include (lib/xml/lib.cmake)
+	add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
+endif()
+
 #
 #	cyng docScript library
 #
@@ -613,7 +638,7 @@ set_property(
 	TARGET unit_test
 	PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
+set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml)
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	list(APPEND unittest_link_libs ${Boost_LIBRARIES})

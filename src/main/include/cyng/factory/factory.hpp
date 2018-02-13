@@ -106,14 +106,16 @@ namespace cyng
 		};
 
 		/**
-		 * Handle C-style strings as std::string 
+		 * Handle C-style strings as std::string.
+		 * Since std::decay converts <char[N]> to <char *> 
+		 * this specialization should no longer be usefull.
+		 * See specialization for <char const*>
 		 */
  		template <std::size_t N>
 		struct factory_policy<const char(&)[N]>
 		{
 			static object boxing(char const(&p)[N])
 			{
- 				//std::cout << "--- Handle C-strings as string objects (I) ---\n";
 				return factory<std::string>::create_object(std::string(p, N - 1));
 			}
 		};
@@ -123,7 +125,6 @@ namespace cyng
 		{
 			static object boxing(char const* p)
 			{
-//  				std::cout << "--- Handle C-strings as string objects (II) ---\n";
 				return factory<std::string>::create_object(std::string(p));
 			}
 		};

@@ -5,10 +5,8 @@
  * 
  */ 
 
-// #include <cyng/intrinsics/policy/hash.h>
 #include <cyng/io/serializer/binary.hpp>
 #include <cyng/io/serializer.h>
-// #include <cyng/intrinsics/op.h>
 #include <cyng/factory.h>
 #include <cyng/object.h>
 #include <algorithm>

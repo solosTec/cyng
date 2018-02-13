@@ -7,7 +7,6 @@
 
 #include <CYNG_project_info.h>
 #include <cyng/intrinsics/policy/hash.h>
-#include <functional>
 #include <boost/functional/hash.hpp>
 
 namespace std 

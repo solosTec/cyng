@@ -67,6 +67,12 @@ namespace @PROJECT_NAME@
 	constexpr bool oldedb_installed = false;
 #endif
 
+#if	${PROJECT_NAME}_PUGIXML_INSTALLED
+	constexpr bool pugixml_installed = true;
+#else
+	constexpr bool pugixml_installed = false;
+#endif
+
 }
 
 //
