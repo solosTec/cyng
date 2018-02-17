@@ -23,14 +23,13 @@ namespace cyng
 		{
 			static void out(pugi::xml_node node, T const& v)
 			{
+				node.append_attribute("type").set_value(cyng::traits::get_tag_name<T>());
 				pugi::xml_node child = node.append_child(pugi::node_pcdata);
-				child.append_attribute("type").set_value(cyng::traits::get_tag_name<T>());
 
 				using cyng::io::operator<<;
 				std::stringstream ss;
 				ss << v;
 				child.set_value(ss.str().c_str());
-				//child.set_value("ToDo");
 			}
 		};
 
@@ -140,6 +139,12 @@ namespace cyng
 		struct serializer <std::uint8_t>
 		{
 			static void out(pugi::xml_node, std::uint8_t v);
+		};
+
+		template <>
+		struct serializer <std::int8_t>
+		{
+			static void out(pugi::xml_node, std::int8_t v);
 		};
 	}
 }

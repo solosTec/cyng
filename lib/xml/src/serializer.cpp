@@ -99,7 +99,7 @@ namespace cyng
 					write(node.append_child(type_name.c_str()), v.at(0));
 					break;
 				default:
-					write(node, v.at(0));
+					write(node.append_child("value"), v.at(0));
 					break;
 				}
 			}
@@ -137,7 +137,7 @@ namespace cyng
 						write(node.append_child(type_name.c_str()), obj);
 						break;
 					default:
-						write(node, obj);
+						write(node.append_child("value"), obj);
 						break;
 					}
 				}
@@ -154,7 +154,7 @@ namespace cyng
 					write(node.append_child(type_name.c_str()), v.front());
 					break;
 				default:
-					write(node, v.front());
+					write(node.append_child("value"), v.front());
 					break;
 				}
 			}
@@ -267,6 +267,13 @@ namespace cyng
 		void serializer <std::uint8_t>::out(pugi::xml_node node, std::uint8_t c)
 		{
 			node.append_attribute("type").set_value(cyng::traits::get_tag_name<std::uint8_t>());
+			const std::string str = std::to_string(+c);
+			node.append_child(pugi::node_pcdata).set_value(str.c_str());
+		}
+
+		void serializer <std::int8_t>::out(pugi::xml_node node, std::int8_t c)
+		{
+			node.append_attribute("type").set_value(cyng::traits::get_tag_name<std::int8_t>());
 			const std::string str = std::to_string(+c);
 			node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}

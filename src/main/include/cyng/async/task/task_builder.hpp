@@ -62,7 +62,12 @@ namespace cyng
 			}
 			return std::make_pair(tp->get_id(), false);
 		}
-		
+
+		inline std::pair<std::size_t, bool> start_task_sync(mux& m, shared_task tp)
+		{
+			return std::make_pair(tp->get_id(), m.insert(tp, sync()));
+		}
+
 	}	// async
 }
 

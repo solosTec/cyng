@@ -19,7 +19,7 @@ namespace cyng
 
 	void register_store(store::db& db, context& ctx)
 	{
-		ctx.run(register_function("db.insert", 4, [&db](context& ctx) {
+		ctx.attach(register_function("db.insert", 4, [&db](context& ctx) {
 
 			const vector_t frame = ctx.get_frame();
 			ctx.attach(generate_invoke("log.msg.debug", "db.insert", frame));
@@ -53,7 +53,7 @@ namespace cyng
 			}
 		}));
 
-		ctx.run(register_function("db.modify.by.attr", 3, [&db](context& ctx) {
+		ctx.attach(register_function("db.modify.by.attr", 3, [&db](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 
 			ctx.attach(generate_invoke("log.msg.debug", "db.modify", frame));

@@ -39,7 +39,8 @@ namespace cyng
 			friend std::size_t start_task_detached(mux& m, Args &&... args);
 			template < typename T, typename R, typename P, typename ...Args >
 			friend std::pair<std::size_t, bool> start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args);
-			
+			friend std::pair<std::size_t, bool> start_task_sync(mux& m, shared_task tp);
+
 		public:
 			/**
 			 *	constructor

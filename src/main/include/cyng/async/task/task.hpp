@@ -23,9 +23,12 @@ namespace cyng
 		template <typename T>
 		class task : public base_task, public std::enable_shared_from_this< task < T > >
 		{
-			using impl_type = T	;	//	implementation
+			using impl_type = T;	//	implementation
 			using this_type = task < T >;
-			
+
+			template < typename TASK >
+			friend auto task_cast(shared_task tp) noexcept->TASK*;
+
 			//	A task implementation class must declare 
 			//	a list of message types.
 			using signatures_t = typename impl_type::signatures_t;
@@ -146,6 +149,19 @@ namespace cyng
 			
 		};
 		
+		/**
+		 * This cast enables access to the embedded task object
+		 */
+		template < typename T >
+		auto task_cast(shared_task tp) noexcept -> T* 
+		{
+			auto ptr = std::dynamic_pointer_cast< task<T> >(tp);
+			if (ptr)
+			{
+				return &ptr.get()->impl_;
+			}
+			return nullptr;
+		}
 
 	}	// async
 }
