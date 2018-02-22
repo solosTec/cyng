@@ -4,7 +4,7 @@
 set (xml_lib)
 
 set (xml_cpp
-	${PUGIXML_INCLUDE_DIR}/pugixml.cpp
+#	${PUGIXML_INCLUDE_DIR}/pugixml.cpp
   	lib/xml/src/xml.cpp
   	lib/xml/src/serializer.cpp
 )

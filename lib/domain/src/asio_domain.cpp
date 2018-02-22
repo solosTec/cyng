@@ -87,8 +87,22 @@ namespace cyng
 		vm.async_run(register_function("ip.tcp.socket.resolve", 2, [&s](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 			boost::system::error_code ec;
-			boost::asio::ip::tcp::resolver resolver(s.get_executor().context());
-			boost::asio::connect(s, resolver.resolve(value_cast<std::string>(frame.at(0), ""), value_cast<std::string>(frame.at(1), "")), ec);
+            
+            const auto address = value_cast<std::string>(frame.at(0), "");
+            const auto service = value_cast<std::string>(frame.at(1), "");
+            
+#if (BOOST_ASIO_VERSION < 101200)
+            
+            //boost::asio::ip::tcp::resolver resolver(s.get_executor().context());
+            boost::asio::ip::tcp::resolver resolver(s.get_io_service());
+            boost::asio::ip::tcp::resolver::query query(address, service);
+            boost::asio::connect(s, resolver.resolve(query));
+#else
+            
+            boost::asio::ip::tcp::resolver resolver(s.get_executor().context());
+			boost::asio::connect(s, resolver.resolve(address, service), ec);
+            
+#endif
 			ctx.set_register(ec);
 		}));
 

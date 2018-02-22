@@ -18,9 +18,7 @@ set (unit_test_cpp
 	test/unit-test/src/test-mail-001.cpp
 	test/unit-test/src/test-log-001.cpp
 	test/unit-test/src/test-store-001.cpp
-	test/unit-test/src/test-store-002.cpp
-#	test/unit-test/src/test-db-001.cpp
-#	test/unit-test/src/test-db-002.cpp
+    test/unit-test/src/test-store-002.cpp
 	test/unit-test/src/test-vm-001.cpp
 	test/unit-test/src/test-sql-001.cpp
 	test/unit-test/src/test-parser-001.cpp

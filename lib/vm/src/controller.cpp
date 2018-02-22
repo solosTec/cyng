@@ -18,7 +18,7 @@
 namespace cyng 
 {
 
-	controller::controller(boost::asio::io_context& ios, boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
+	controller::controller(io_service_t& ios, boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
 	: dispatcher_(ios)
 	, vm_(tag, out, err)
 	, halt_(false)

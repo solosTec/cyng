@@ -23,7 +23,7 @@ namespace cyng
 
 	struct item
 	{
-		item(boost::asio::io_context& ios, std::uint32_t idx)
+		item(io_service_t& ios, std::uint32_t idx)
 			: start_(std::chrono::system_clock::now())
 			, idx_(idx)
 			, dispatcher_(ios)

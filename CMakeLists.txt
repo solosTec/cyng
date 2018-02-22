@@ -641,7 +641,7 @@ set_property(
 set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml)
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
+	list(APPEND unittest_link_libs ${Boost_LIBRARIES} pthread ${PUGIXML_LIBRARY})
 endif()
 
 message(STATUS "** unit-test libs  : ${unittest_link_libs}")

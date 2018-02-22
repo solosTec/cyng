@@ -27,7 +27,7 @@ namespace cyng
 	{
 	public:
 		controller() = delete;
-		controller(boost::asio::io_context&, boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
+		controller(io_service_t&, boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
 		
 		/**
 		 * Execute the specified instructions asynchonously

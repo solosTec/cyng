@@ -56,7 +56,7 @@ namespace cyng
 			
 			//	Don't require trailing newlines
 			::BIO_set_flags(b64.get(), BIO_FLAGS_BASE64_NO_NL); 
- 			BIO *bmem = ::BIO_new_mem_buf(in, len);
+ 			BIO *bmem = ::BIO_new_mem_buf(const_cast<char*>(in), len);
  			::BIO_push(b64.get(), bmem);
 			
 			std::stringstream result;

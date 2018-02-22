@@ -10,7 +10,6 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/table/body.hpp>
 #include <cyng/table/meta.hpp>
-// #include <cyng/store/table.h>
 #include <cyng/store/db.h>
 #include <cyng/factory.h>
 #include <chrono>
