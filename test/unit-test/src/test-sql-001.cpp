@@ -27,7 +27,7 @@ namespace cyng
 
 	bool test_sql_001()
 	{
-		auto dbmtp = table::make_meta_table<1, 2>("employees", {"id", "name", "age"}, {TC_UINT32, TC_STRING, TC_TIME_POINT}, {1, 32, 1});
+		auto dbmtp = table::make_meta_table<2, 1>("employees", {"id", "name", "age"}, {TC_UINT32, TC_STRING, TC_TIME_POINT}, {1, 32, 1});
 		//sql::command cmd(dbmtp, sql::MYSQL);
 		sql::command cmd(dbmtp, sql::SQLITE);
 		//std::cout << traits::get_type_name(dbmtp->get_type(0)) << std::endl;
@@ -38,14 +38,14 @@ namespace cyng
 		BOOST_CHECK_EQUAL(dbmtp->get_type(2), TC_TIME_POINT);
 
 		cmd.select()[sql::column(2)];
-		std::cout << "'" << cmd.to_str() << "'" << std::endl;
+// 		std::cout << "'" << cmd.to_str() << "'" << std::endl;
 		//BOOST_CHECK_EQUAL(cmd.to_str(), "SELECT name FROM employees ");
 
 		//cmd.select()[sql::constant<int>(1), sql::column(2)].where(sql::column(2) == sql::make_placeholder());
 		//std::cout << cmd.to_str() << std::endl;
 
 		cmd.create();
-		//std::cout << cmd.to_str() << std::endl;
+// 		std::cout << cmd.to_str() << std::endl;
 		BOOST_CHECK_EQUAL(cmd.to_str(), "CREATE TABLE IF NOT EXISTS employees (id INT, name TEXT, age FLOAT, PRIMARY KEY(id, name))");
 
 		cmd.insert();

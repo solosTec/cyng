@@ -198,7 +198,9 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	#	provide a hint for a local installation of boost
 	#
 	if(NOT BOOST_ROOT)
-		set(BOOST_ROOT "~/development/boost_1_66_0/root/" CACHE PATH "BOOST_ROOT" )
+		set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/install" CACHE PATH "BOOST_ROOT")
+        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib")
+		
 		message(STATUS "** Set BOOST_ROOT  : ${BOOST_ROOT}")
 	endif()
 
@@ -259,10 +261,18 @@ endif()
 #
 #	setup Boost library 1.66.0
 #
-# if(UNIX)
-# set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/release")
-# set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/release/lib")
-# endif(UNIX)
+if(UNIX)
+    if(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
+        set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_67_0/install" CACHE PATH "BOOST_ROOT")
+        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_67_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+    elseif(EXISTS "$ENV{HOME}/projects/boost_1_66_0/install")
+        set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/install" CACHE PATH "BOOST_ROOT")
+        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+    endif()
+endif(UNIX)
+
 set(Boost_ADDITIONAL_VERSIONS "1.61.0" "1.62.0" "1.63.0" "1.64.0" "1.65.1" "1.66.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
 find_package(Boost 1.61 REQUIRED COMPONENTS thread system date_time filesystem program_options random signals unit_test_framework regex)
@@ -646,10 +656,9 @@ endif()
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
-endif()
-
-if (UNIX)
-	list(APPEND unittest_link_libs pthread)
+    if (UNIX)
+        list(APPEND unittest_link_libs pthread)
+    endif()
 endif()
 
 message(STATUS "** unit-test libs  : ${unittest_link_libs}")
@@ -663,5 +672,8 @@ add_executable(docc ${docc})
 set(docc_link_libs cyng_io cyng_vm cyng_async cyng_docscript)
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	list(APPEND docc_link_libs "${Boost_LIBRARIES}")
+    if (UNIX)
+        list(APPEND docc_link_libs pthread)
+    endif()
 endif()
 target_link_libraries(docc ${docc_link_libs})
