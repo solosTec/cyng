@@ -638,10 +638,18 @@ set_property(
 	TARGET unit_test
 	PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml)
+set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
+
+if (${PROJECT_NAME}_PUGIXML_INSTALLED)
+	list(APPEND unittest_link_libs cyng_xml ${PUGIXML_LIBRARY})
+endif()
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	list(APPEND unittest_link_libs ${Boost_LIBRARIES} pthread ${PUGIXML_LIBRARY})
+	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
+endif()
+
+if (UNIX)
+	list(APPEND unittest_link_libs pthread)
 endif()
 
 message(STATUS "** unit-test libs  : ${unittest_link_libs}")
