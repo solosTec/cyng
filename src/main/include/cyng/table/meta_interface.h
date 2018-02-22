@@ -12,6 +12,7 @@
 #include <string>
 #include <memory>
 #include <functional>
+#include <map>
 
 namespace cyng 
 {
@@ -111,7 +112,12 @@ namespace cyng
 		/**
 		 * Define an abstract shared pointer
 		 */
-		using meta_table_ptr = std::shared_ptr<meta_table_interface>;	
+		using meta_table_ptr = std::shared_ptr<meta_table_interface>;
+
+		/**
+		 * provide a map of meta data
+		 */
+		using mt_table = std::map<std::string, meta_table_ptr>;
 		
 	}	//	table	
 }

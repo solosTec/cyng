@@ -7,7 +7,7 @@
 
 #include <cyng/vm/controller.h>
 #include <cyng/factory.h>
-#include <future>
+//#include <future>
 #include <memory>
 #include <boost/assert.hpp>
 #ifdef _DEBUG
@@ -18,10 +18,11 @@
 namespace cyng 
 {
 
-	controller::controller(boost::asio::io_service& ios, boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
+	controller::controller(boost::asio::io_context& ios, boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
 	: dispatcher_(ios)
 	, vm_(tag, out, err)
 	, halt_(false)
+	, mutex_()
 	{}
 
 	controller const& controller::run(vector_t&& prg) const
@@ -70,29 +71,32 @@ namespace cyng
 		//
 		//	grab the content of the code vector 
 		//
-		vector_t* vec = new vector_t(std::move(prg));
-// 		std::unique_ptr<vector_t> vec = std::unique_ptr<vector_t>(new vector_t(std::move(prg)));
+		prg_param param(std::move(prg));
 		
-		std::promise<bool> result;
-		auto f = result.get_future();
-		
-		dispatcher_.post([this, vec, &result](){
-			
-			this->vm_.run(std::move(*vec));
-			delete vec;
+		//
+		//	prepare condition variable
+		//
+		std::condition_variable cv;
+		async::unique_lock<async::mutex> lock(mutex_);
+		bool complete = false;	//	bullet proof
+
+		dispatcher_.post([this, param, &cv, &complete]() {
+
+			this->vm_.run(std::move(param.prg_));
 			
 			//
 			//	set condition
 			//
-			result.set_value(true);
-			
+			complete = true;
+			cv.notify_one();
+
 		});
 		
 		//
 		//	wait for condition 
 		//
-		f.wait();
-		
+		cv.wait(lock, [&complete] { return complete; });
+
 	}
 	
 	void controller::execute(vector_t&& prg, async::detach) const
@@ -100,13 +104,11 @@ namespace cyng
 		//
 		//	grab the content of the code vector 
 		//
-// 		std::unique_ptr<vector_t> vec = std::unique_ptr<vector_t>(new vector_t(std::move(prg)));
-		vector_t* vec = new vector_t(std::move(prg));
-		dispatcher_.post([this, vec](){
+		prg_param param(std::move(prg));
+		dispatcher_.post([this, param](){
 			
-			this->vm_.run(std::move(*vec));
-			delete vec;
-			
+			this->vm_.run(std::move(param.prg_));
+
 		});
 	}
 	
@@ -133,6 +135,18 @@ namespace cyng
 	{
 		return vm_.tag();
 	}
+
+	prg_param::prg_param(vector_t&& prg)
+		: prg_(std::move(prg))
+	{}
+
+	prg_param::prg_param(prg_param const& other)
+		: prg_(std::move(other.prg_))
+	{}
+
+	prg_param::prg_param(prg_param&& other)
+		: prg_(std::move(other.prg_))
+	{}
 
 }
 

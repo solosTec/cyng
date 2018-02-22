@@ -49,6 +49,7 @@ BOOST_AUTO_TEST_SUITE_END()	//	CORE
 
 #include "test-async-001.h"
 #include "test-async-002.h"
+#include "test-async-003.h"
 
 BOOST_AUTO_TEST_SUITE(ASYNC)
 BOOST_AUTO_TEST_CASE(async_001)
@@ -60,6 +61,11 @@ BOOST_AUTO_TEST_CASE(async_002)
 {
 	using namespace cyng;
 	BOOST_CHECK(test_async_002());
+}
+BOOST_AUTO_TEST_CASE(async_003)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_async_003());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	ASYNC
 

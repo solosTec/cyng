@@ -86,12 +86,12 @@ namespace cyng
 			if (is_running())
 			{
 				
-				std::cout << "scheduler::run( " 
-				<< std::this_thread::get_id() 
-				<< ", "
-				<< counter
-				<< ")"
-				<< std::endl;			
+				//std::cout << "scheduler::run( " 
+				//<< std::this_thread::get_id() 
+				//<< ", "
+				//<< counter
+				//<< ")"
+				//<< std::endl;			
 				
 				//
 				//	Blocks until stop() is called.
@@ -114,7 +114,7 @@ namespace cyng
 				//
 				while(service_.run() != 0)
 				{
-					std::cout << "pending handlers" << std::endl;
+					//std::cout << "pending handlers" << std::endl;
 					std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 				

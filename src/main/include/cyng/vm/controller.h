@@ -10,6 +10,7 @@
 #include <cyng/compatibility/io_service.h>
 #include <cyng/vm/vm.h>
 #include <cyng/async/policy.h>
+#include <cyng/compatibility/async.h>
 
 namespace cyng 
 {
@@ -26,7 +27,7 @@ namespace cyng
 	{
 	public:
 		controller() = delete;
-		controller(boost::asio::io_service&, boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
+		controller(boost::asio::io_context&, boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
 		
 		/**
 		 * Execute the specified instructions asynchonously
@@ -79,6 +80,21 @@ namespace cyng
 		 */
 		std::atomic<bool>	halt_;
 		
+		/**
+		 * support for sync calls
+		 */
+		mutable async::mutex	mutex_;
+	};
+
+	/**
+	 * helper class to provide a move parameter.
+	 */
+	struct prg_param
+	{
+		mutable vector_t prg_;
+		prg_param(vector_t&&);
+		prg_param(prg_param const&);
+		prg_param(prg_param&&);
 	};
 }
 
