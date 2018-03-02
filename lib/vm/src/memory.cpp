@@ -60,6 +60,11 @@ namespace cyng
 		return addr;
 	}
 
+	double memory::level() const
+	{
+		return (100.0 * pc_) / mem_.size();
+	}
+
 	memory& operator+=(memory& mem, vector_t const& prg)
 	{
 		//	small optimization
@@ -75,6 +80,7 @@ namespace cyng
 		mem.mem_.insert(mem.mem_.end(), std::make_move_iterator(prg.begin()), std::make_move_iterator(prg.end()));
 		return mem;
 	}
+
 
 }
 

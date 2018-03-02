@@ -64,10 +64,10 @@ namespace cyng
 					{
 						this->run();
 					}
-					else 
-					{
-						std::cout << "cancel timer " << this->get_id() << std::endl;
-					}
+					//else 
+					//{
+					//	std::cout << "cancel timer " << this->get_id() << std::endl;
+					//}
 				});
 			}
 			

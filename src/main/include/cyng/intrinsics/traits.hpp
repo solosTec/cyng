@@ -44,7 +44,9 @@ namespace cyng
 			PREDEF_VM_CALL,
 			PREDEF_SESSION,
 			PREDEF_CONNECTION,
+			PREDEF_SOCKET,
 			PREDEF_SK,
+			PREDEF_CUSTOM,
 		};
 	}
 }

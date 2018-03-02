@@ -13,6 +13,7 @@ set (log_h
     src/main/include/cyng/log.h
     src/main/include/cyng/log/severity.h
     src/main/include/cyng/log/entry.hpp
+    src/main/include/cyng/log/logger.hpp
 )
 
 # define the log lib

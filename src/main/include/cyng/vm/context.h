@@ -137,23 +137,18 @@ namespace std
 	template<> 
 	struct hash<cyng::vm_call>
 	{
-		inline size_t operator()(cyng::vm_call const& c) const noexcept
-		{
-			return hash<size_t>{}(get_target_address(c));
-		}
+		size_t operator()(cyng::vm_call const& c) const noexcept;
 	};
 	
 	template<> 
 	struct equal_to<cyng::vm_call>
 	{
+		//	pre C++17
 		using result_type = bool;
 		using first_argument_type = cyng::vm_call;
 		using second_argument_type = cyng::vm_call;
 		
-		inline bool operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept
-		{	
-			return get_target_address(c1) == get_target_address(c2);
-		}
+		bool operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept;
 	};	
 }
 

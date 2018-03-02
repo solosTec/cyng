@@ -58,6 +58,13 @@ namespace cyng
 					case TC_EOD:	next(make_object(eod()));	break;
 					case TC_STRING:	next(make_object(std::string()));	break;
 					case TC_BUFFER:	next(make_object(buffer_t()));	break;
+
+					case TC_TUPLE:	next(tuple_factory()); break;
+					case TC_VECTOR:	next(vector_factory()); break;
+					case TC_SET:	next(set_factory()); break;
+					case TC_ATTR_MAP:	next(attr_map_factory()); break;
+					case TC_PARAM_MAP:	next(param_map_factory()); break;
+
 					case TC_FS_PATH:	next(make_object(boost::filesystem::path()));	break;
 					case TC_IP_TCP_ENDPOINT:	next(make_object(boost::asio::ip::tcp::endpoint()));	break;
 					case TC_IP_UDP_ENDPOINT:	next(make_object(boost::asio::ip::udp::endpoint()));	break;
@@ -65,7 +72,7 @@ namespace cyng
 					case TC_IP_ADDRESS:	next(make_object(boost::asio::ip::address()));	break;
 
 					default:
-						BOOST_ASSERT_MSG(false, "data type requires input");
+						BOOST_ASSERT_MSG(false, "type requires data");
 						break;
 					}
 					type_.reset();

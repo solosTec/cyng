@@ -7,13 +7,15 @@
 
 #include <cyng/vm/controller.h>
 #include <cyng/factory.h>
-//#include <future>
 #include <memory>
 #include <boost/assert.hpp>
 #ifdef _DEBUG
 #include <cyng/io/serializer.h>
 #endif
+#include <system_error>
+//#include <thread>
 #include <boost/functional/hash.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 namespace cyng 
 {
@@ -23,12 +25,18 @@ namespace cyng
 	, vm_(tag, out, err)
 	, halt_(false)
 	, mutex_()
+	, call_stack_()
 	{}
 
 	controller const& controller::run(vector_t&& prg) const
 	{
 		if (!halt_)	
 		{
+#if (BOOST_ASIO_VERSION < 101200)
+			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
+#else
+			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
+#endif
 			execute(std::move(prg), async::sync());
 		}
 		return *this;
@@ -38,6 +46,11 @@ namespace cyng
 	{
 		if (!halt_)	
 		{
+#if (BOOST_ASIO_VERSION < 101200)
+			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
+#else
+			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
+#endif
 			execute(std::move(prg), async::detach());
 		}
 		return *this;
@@ -45,58 +58,42 @@ namespace cyng
 	
 	void controller::execute(vector_t&& prg, async::sync) const
 	{
-		//
-		//	recursive calls are not allowed
-		//
-//		if (dispatcher_.running_in_this_thread())
-//		{
-//			std::cerr 
-//				<< '\n'
-//				<< '\n'
-//				<< "***error: recursion(sync)! - "
-//				<< std::this_thread::get_id()
-//				<< '\n'
-//				<< '\n'
-//				<< prg.size()
-//				<< " op(s)"
-//				<< std::endl
-//				;
-//#ifdef _DEBUG
-//			std::cerr << io::to_str(prg) << std::endl;
-//#endif
-//			return;
-//		}
-
-		
-		//
-		//	grab the content of the code vector 
-		//
-		prg_param param(std::move(prg));
-		
-		//
-		//	prepare condition variable
-		//
-		std::condition_variable cv;
-		async::unique_lock<async::mutex> lock(mutex_);
-		bool complete = false;	//	bullet proof
-
-		dispatcher_.post([this, param, &cv, &complete]() {
-
-			this->vm_.run(std::move(param.prg_));
-			
+		try
+		{
 			//
-			//	set condition
+			//	ToDo: test recursion
+			//call_stack_.running_in_this_thread();
+			//	if running in same thread use the append method 
 			//
-			complete = true;
-			cv.notify_one();
 
-		});
-		
-		//
-		//	wait for condition 
-		//
-		cv.wait(lock, [&complete] { return complete; });
-
+			//
+			//	prepare lock
+			//
+			async::lock_guard<async::mutex> lock(mutex_);
+			alloc_stack alloc(call_stack_);
+			this->vm_.run(std::move(prg));
+		}
+		catch (const std::system_error& ex)
+		{
+			//
+			//	recursion
+			//
+			std::cerr
+				<< "\n\n***ERROR recursion\t"
+				<< this->vm_.tag()
+				<< "\n\n"
+				<< ex.what()
+				<< std::endl;
+		}
+		catch (...)
+		{
+			std::cerr
+				<< "\n\n***FATAL exception\t"
+				<< this->vm_.tag()
+				<< "\n\n"
+				<< std::endl;
+		}
+					
 	}
 	
 	void controller::execute(vector_t&& prg, async::detach) const
@@ -107,6 +104,11 @@ namespace cyng
 		prg_param param(std::move(prg));
 		dispatcher_.post([this, param](){
 			
+			//
+			//	prepare lock
+			//
+			async::lock_guard<async::mutex> lock(mutex_);
+			alloc_stack alloc(call_stack_);
 			this->vm_.run(std::move(param.prg_));
 
 		});
@@ -135,6 +137,29 @@ namespace cyng
 	{
 		return vm_.tag();
 	}
+
+	call_stack::call_stack()
+		: call_stack_()
+	{}
+
+	bool call_stack::running_in_this_thread() const
+	{
+		return (call_stack_.empty())
+			? false
+			: (call_stack_.top() == std::this_thread::get_id())
+			;
+	}
+
+	alloc_stack::alloc_stack(call_stack const& cs)
+		: call_stack_(cs)
+	{
+		call_stack_.call_stack_.push(std::this_thread::get_id());
+	}
+	alloc_stack::~alloc_stack()
+	{
+		call_stack_.call_stack_.pop();
+	}
+
 
 	prg_param::prg_param(vector_t&& prg)
 		: prg_(std::move(prg))

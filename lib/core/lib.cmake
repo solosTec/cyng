@@ -90,6 +90,7 @@ set (core_intrinsics
   	lib/core/src/intrinsics/tag_names.cpp
   	lib/core/src/intrinsics/compare.cpp
   	lib/core/src/intrinsics/hash.cpp
+  	lib/core/src/intrinsics/traits.cpp
 
 #    src/main/include/cyng/compare.h
     src/main/include/cyng/traits.h

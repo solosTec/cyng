@@ -79,10 +79,31 @@ namespace cyng
 		return factory<param_t>::create_object(param_t(v.first, make_object<T>(std::forward<T>(v.second))));
 	}
 	
+	/**
+	 * create empty tuple object
+	 */
 	object tuple_factory();
+
+	/**
+	 * create empty vector object
+	 */
 	object vector_factory();
+
+	/**
+	 * create empty set object
+	 */
 	object set_factory();
 	
+	/**
+	 * create empty attribute map
+	 */
+	object attr_map_factory();
+
+	/**
+	 * create empty parameter map
+	 */
+	object param_map_factory();
+
 	//
 	//	tuple builder
 	//

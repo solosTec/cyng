@@ -101,10 +101,16 @@ namespace cyng
 	}	// traits		
 }
 
+namespace std
+{
+	size_t hash<cyng::vm_call>::operator()(cyng::vm_call const& c) const noexcept
+	{
+		return hash<size_t>{}(get_target_address(c));
+	}
 
+	bool equal_to<cyng::vm_call>::operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept
+	{
+		return get_target_address(c1) == get_target_address(c2);
+	}
 
-
-
-
-
-
+}

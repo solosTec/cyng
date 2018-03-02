@@ -64,6 +64,10 @@ namespace cyng
 		friend memory& operator+=(memory&, vector_t const&);
 		friend memory& operator+=(memory&, vector_t&&);
 
+		/**
+		 * @return percentage of instructions already processed
+		 */
+		double level() const;
 		
 	private:
 		vector_t	mem_;	//!< program

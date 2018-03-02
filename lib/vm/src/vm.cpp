@@ -13,6 +13,7 @@
 #include <cyng/value_cast.hpp>
 #include <cyng/factory.h>
 #include <chrono>
+#include <iomanip>
 
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/random_generator.hpp>
@@ -47,6 +48,7 @@ namespace cyng
 	
 	void vm::run(vector_t&& vec)
 	{
+		auto now = std::chrono::system_clock::now();
 		memory mem(std::move(vec));
 		while (mem)
 		{
@@ -56,7 +58,6 @@ namespace cyng
 			//	next data or instruction
 			//
 			object obj = mem++;
-			
 			if (obj.get_class().tag() == TC_CODE)
 			{
 				//
@@ -71,8 +72,23 @@ namespace cyng
 				//	push value onto the stack
 				//
 				stack_.push(obj);
-			}		
+			}
+
+#ifdef _DEBUG
+			if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
+			{
+				std::cerr << "======> " << tag_ << ':' << std::setprecision(4) << mem.level() << "%" << std::endl;
+			}
+#endif
 		}
+
+#ifdef _DEBUG
+		if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
+		{
+			std::cerr << "======> " << tag_ << " T I M E O U T" << std::endl;
+		}
+#endif
+
 	}
 	
 	void vm::sync_run(vector_t&& prg)

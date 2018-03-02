@@ -193,22 +193,18 @@ namespace std
 	template<> 
 	struct hash<cyng::store::table>
 	{
-		inline size_t operator()(cyng::store::table const& t) const noexcept
-		{
-			return std::hash<std::string>{}(t.meta().get_name());
-		}
+		size_t operator()(cyng::store::table const& t) const noexcept;
 	};
+
 	template<> 
 	struct equal_to<cyng::store::table>
 	{
+		//	pre C++17
 		using result_type = bool;
 		using first_argument_type = cyng::store::table;
 		using second_argument_type = cyng::store::table;
 		
-		inline bool operator()(cyng::store::table const& t1, cyng::store::table const& t2) const noexcept
-		{	
-			return t1.meta().get_name() == t2.meta().get_name();
-		}
+		bool operator()(cyng::store::table const& t1, cyng::store::table const& t2) const noexcept;
 	};	
 }
 

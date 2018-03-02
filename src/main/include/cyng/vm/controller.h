@@ -14,6 +14,26 @@
 
 namespace cyng 
 {
+	class alloc_stack;
+	class call_stack
+	{
+		friend class alloc_stack;
+	public:
+		call_stack();
+		bool running_in_this_thread() const;
+	private:
+		mutable std::stack<std::thread::id>	call_stack_;
+	};
+
+	class alloc_stack
+	{
+	public:
+		alloc_stack(call_stack const&);
+		virtual ~alloc_stack();
+	private:
+		call_stack const& call_stack_;
+	};
+
 
 	/**
 	 *	Wrapper class for VM. All calls into the VM are dispatched
@@ -68,7 +88,7 @@ namespace cyng
 		/**
 		 * Boost.Asio dispatcher for async calls
 		 */
-		mutable dispatcher_t dispatcher_;
+		io_service_t& dispatcher_;
 
 		/**
 		 * VM implementation
@@ -84,6 +104,11 @@ namespace cyng
 		 * support for sync calls
 		 */
 		mutable async::mutex	mutex_;
+
+		/**
+		 * Handle recursion
+		 */
+		call_stack	call_stack_;
 	};
 
 	/**

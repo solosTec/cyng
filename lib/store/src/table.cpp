@@ -216,6 +216,18 @@ namespace cyng
 	}	// traits	
 }
 
+namespace std
+{
+	size_t hash<cyng::store::table>::operator()(cyng::store::table const& t) const noexcept
+	{
+		return std::hash<std::string>{}(t.meta().get_name());
+	}
+
+	bool equal_to<cyng::store::table>::operator()(cyng::store::table const& t1, cyng::store::table const& t2) const noexcept
+	{
+		return t1.meta().get_name() == t2.meta().get_name();
+	}
+}
 
 
 

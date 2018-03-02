@@ -272,6 +272,10 @@ namespace cyng
 					}
 					else 
 					{
+						if (std::cout.bad())
+						{
+							std::cout.clear();
+						}
 						std::cout
 							<< *ptr
 							<< std::endl
@@ -285,6 +289,10 @@ namespace cyng
 		private:
 			void print_error_msg(typename log_base< R >::record_ptr ptr)
 			{
+				if (std::cerr.bad())
+				{
+					std::cerr.clear();
+				}
 				if (terminal_seq_enabled_)
 				{
 					std::cerr
@@ -294,10 +302,21 @@ namespace cyng
 						<< std::endl
 						;
 				}
+				else
+				{
+					std::cerr
+						<< *ptr
+						<< std::endl
+						;
+				}
 			}
 			
 			void print_warning_msg(typename log_base< R >::record_ptr ptr)
 			{
+				if (std::cerr.bad())
+				{
+					std::cerr.clear();
+				}
 				if (terminal_seq_enabled_)
 				{
 					std::cerr
@@ -307,16 +326,34 @@ namespace cyng
 						<< std::endl
 						;
 				}
+				else
+				{
+					std::cerr
+						<< *ptr
+						<< std::endl
+						;
+				}
 			}
 			
 			void print_info_msg(typename log_base< R >::record_ptr ptr)
 			{
+				if (std::cerr.bad())
+				{
+					std::cerr.clear();
+				}
 				if (terminal_seq_enabled_)
 				{
 					std::cerr
 						<< "\033[32m"	//	green
 						<< *ptr
 						<< "\033[0m"	//	reset
+						<< std::endl
+						;
+				}
+				else
+				{
+					std::cerr
+						<< *ptr
 						<< std::endl
 						;
 				}

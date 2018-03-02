@@ -78,7 +78,7 @@ namespace cyng
 			}
 		}));
 
-		ctx.run(register_function("db.modify.by.param", 3, [&db](context& ctx) {
+		ctx.attach(register_function("db.modify.by.param", 3, [&db](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 
 			ctx.attach(generate_invoke("log.msg.debug", "db.modify", frame));
