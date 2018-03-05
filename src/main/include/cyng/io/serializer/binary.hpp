@@ -331,6 +331,16 @@ namespace cyng
 		{
 			static std::ostream& write(std::ostream& os, boost::asio::ip::address const&);
 		};
+
+		/**
+		 * serialize custom types
+		 */
+		template <>
+		struct serializer_custom<SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, std::size_t tag, std::string const& type_name, object const& obj);
+		};
+
 	}
 }
 

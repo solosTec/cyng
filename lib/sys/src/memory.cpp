@@ -12,9 +12,11 @@
 #if BOOST_OS_WINDOWS
 
 #include "windows.h"
+#include "psapi.h"
 #include <string> 
 #include <cctype>
 #include <iostream>
+#pragma comment(lib, "Psapi.lib")
 
 #elif BOOST_OS_LINUX
 
@@ -38,7 +40,12 @@ namespace cyng
 		std::uint64_t get_total_virtual_memory()
 		{
 #if BOOST_OS_WINDOWS
-			return 0;
+
+			MEMORYSTATUSEX memInfo;
+			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+			GlobalMemoryStatusEx(&memInfo);
+			return memInfo.ullTotalPageFile;
+
 #elif BOOST_OS_LINUX			
 			struct sysinfo memInfo;
 			sysinfo (&memInfo);
@@ -55,7 +62,12 @@ namespace cyng
 		std::uint64_t get_used_virtual_memory()
 		{
 #if BOOST_OS_WINDOWS
-			return 0;
+
+			MEMORYSTATUSEX memInfo;
+			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+			GlobalMemoryStatusEx(&memInfo);
+			return memInfo.ullTotalPageFile - memInfo.ullAvailPageFile;
+
 #elif BOOST_OS_LINUX			
 			struct sysinfo memInfo;
 			sysinfo (&memInfo);
@@ -69,6 +81,22 @@ namespace cyng
 #endif
 		}
 		
+		std::uint64_t get_used_virtual_memory_by_process()
+		{
+#if BOOST_OS_WINDOWS
+
+			PROCESS_MEMORY_COUNTERS_EX pmc;
+			ZeroMemory(&pmc, sizeof(PROCESS_MEMORY_COUNTERS_EX));
+			::GetProcessMemoryInfo(::GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc));
+			return pmc.PrivateUsage;
+
+#elif BOOST_OS_LINUX			
+			return 0; 
+#else
+			return 0;
+#endif
+		}
+
 		std::uint64_t get_total_physical_memory()
 		{
 #if BOOST_OS_WINDOWS

@@ -439,6 +439,37 @@ namespace cyng
 			}
 		}
 		
+		std::ostream& serializer_custom<SERIALIZE_BINARY>::write(std::ostream& os, std::size_t tag, std::string const& type_name, object const& obj)
+		{
+			//
+			//	type
+			//
+			//	could throw
+			try {
+				write_binary(os, boost::numeric_cast<std::uint32_t>(tag));
+			}
+			catch (boost::numeric::positive_overflow const& ex) {
+				std::cerr << std::endl << "*** error: " << ex.what() << std::endl;
+				const std::uint32_t tag = traits::PREDEF_CUSTOM;
+				write_binary(os, tag);
+			}
+
+			//
+			//	length
+			//
+			serialize_length(os, type_name.size());
+
+			//
+			//	value
+			//
+			if (!type_name.empty())
+			{
+				os.write(type_name.c_str(), type_name.size());
+			}
+
+			return os;
+		}
+
 	}
 }
 

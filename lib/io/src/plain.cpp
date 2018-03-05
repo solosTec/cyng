@@ -276,6 +276,18 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& serializer_custom<SERIALIZE_PLAIN>::write(std::ostream& os, std::size_t tag, std::string const& type_name, object const& obj)
+		{
+			os
+				<< "<!"
+				<< tag
+				<< ':'
+				<< type_name
+				<< '>'
+				;
+			return os;
+
+		}
 	}
 }
 

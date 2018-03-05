@@ -103,6 +103,15 @@ namespace cyng
 		{
 			static std::ostream& write(std::ostream& os, std::uint32_t v);
 		};
+
+		/**
+		 * serialize custom types
+		 */
+		template <>
+		struct serializer_custom<SERIALIZE_PLAIN>
+		{
+			static std::ostream& write(std::ostream& os, std::size_t tag, std::string const& type_name, object const& obj);
+		};
 	}
 }
 

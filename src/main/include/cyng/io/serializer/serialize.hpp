@@ -31,17 +31,19 @@ namespace cyng
 		}
 		
 		template <typename S>
-		void do_write_custom(std::ostream& os, object obj)
+		void do_write_custom(std::ostream& os, std::size_t tag, std::string const& type_name, object const& obj)
 		{
-			os
-				<< "<!"
-				<< obj.get_class().tag()
-				<< ':'
-				<< obj.get_class().type_name()
-				<< '>'
-				;
-			//std::cerr << "unknown type code: " << obj.get_class().tag() << ", " << obj.get_class().type_name() << std::endl;
+			using serial_t = serializer_custom <S>;
+			//auto p = object_cast<T>(obj);
+			serial_t::write(os, tag, type_name, obj);
 
+			//os
+			//	<< "<!"
+			//	<< obj.get_class().tag()
+			//	<< ':'
+			//	<< obj.get_class().type_name()
+			//	<< '>'
+			//	;
 		}
 
 		template <typename S>
@@ -204,7 +206,7 @@ namespace cyng
 						break;
 					default:
 						//std::cerr << "unknown type code: " << obj.get_class().tag() << ", " << obj.get_class().type_name() << std::endl;
-						do_write_custom<S>(os, obj);
+						do_write_custom<S>(os, obj.get_class().tag(), obj.get_class().type_name(), obj);
 						break;
 				}
 			}

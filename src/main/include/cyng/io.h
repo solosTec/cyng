@@ -13,6 +13,7 @@
 
 namespace cyng 
 {
+	class object;
 	namespace io
 	{
 		//
@@ -46,7 +47,7 @@ namespace cyng
 		 */
 		struct SERIALIZE_XML {};
 
-		template <typename T, typename TAG /*= SERIALIZE_PLAIN*/>
+		template <typename T, typename TAG>
 		struct serializer 
 		{		
 			static std::ostream& write(std::ostream& os, T const& v)
@@ -55,6 +56,23 @@ namespace cyng
 				return os;
 			}
 		};
+
+		template <typename TAG>
+		struct serializer_custom
+		{
+			static std::ostream& write(std::ostream& os, std::size_t tag, std::string const& type_name, object const& obj)
+			{
+				os
+					<< "<!"
+					<< tag
+					<< ':'
+					<< type_name
+					<< '>'
+					;
+				return os;
+			}
+		};
+
 	}	
 }
 

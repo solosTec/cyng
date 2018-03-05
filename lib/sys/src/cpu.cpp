@@ -13,6 +13,9 @@
 #if BOOST_OS_WINDOWS
 
 #include "windows.h"
+#include "TCHAR.h"
+#include "pdh.h"
+#pragma comment(lib, "Pdh.lib")
 
 #elif BOOST_OS_LINUX
 
@@ -72,14 +75,36 @@ namespace cyng
         }        
 #endif
 
+#if BOOST_OS_WINDOWS
+		void init(PDH_HQUERY& cpu_query, PDH_HCOUNTER* cpu_total)
+		{
+			::PdhOpenQuery(NULL, NULL, &cpu_query);
+			// You can also use L"\\Processor(*)\\% Processor Time" and get individual CPU values with PdhGetFormattedCounterArray()
+			::PdhAddEnglishCounter(cpu_query, "\\Processor(_Total)\\% Processor Time", NULL, cpu_total);
+			::PdhCollectQueryData(cpu_query);
+		}
+#endif
+
 		double get_total_cpu_load()
 		{
 #if BOOST_OS_WINDOWS
-			return 0;
+
+			static PDH_HQUERY cpu_query{ nullptr };
+			static PDH_HCOUNTER cpu_total{ nullptr };
+			if (cpu_query == nullptr)
+			{
+				init(cpu_query, &cpu_total);
+			}
+
+			PDH_FMT_COUNTERVALUE counterVal;
+
+			::PdhCollectQueryData(cpu_query);
+			::PdhGetFormattedCounterValue(cpu_total, PDH_FMT_DOUBLE, NULL, &counterVal);
+			return counterVal.doubleValue;
+
+
 #elif BOOST_OS_LINUX
             
-//             static data_t last_data{ 0 };
-//             static std::uint64_t last_idle{ 0 }, last_total{ 0 };
 			static std::size_t previous_idle_time{ 0 }, previous_total_time{ 0 };
 
             const data_t new_data = get_values();
@@ -107,6 +132,12 @@ namespace cyng
 		std::uint64_t get_cpu_load_by_process()
 		{
 #if BOOST_OS_WINDOWS
+			//FILETIME CreationTime, ExitTime, KernelTime, UserTime;
+			//::GetProcessTimes(::GetCurrentProcess(), &CreationTime, &ExitTime, &KernelTime, &UserTime);
+
+			//FILETIME idle_time, kernel_time, user_time;
+			//BOOL res = ::GetSystemTimes(&idle_time, &kernel_time, &user_time);
+
 			return 0;
 #elif BOOST_OS_LINUX			
 			return (std::rand() % 100);

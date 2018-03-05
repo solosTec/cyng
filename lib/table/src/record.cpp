@@ -88,6 +88,23 @@ namespace cyng
 			return generation_;
 		}
 
+		tuple_t record::convert() const
+		{
+			param_map_t key, data;
+			meta_->loop([&](column&& col){
+				if (col.pk_) {
+					key[col.name_] = get(col.pos_);
+				}
+				else {
+					data[col.name_] = get(col.pos_);
+				}
+			});
+
+			return cyng::tuple_factory(cyng::param_factory("key", key)
+				, cyng::param_factory("data", data)
+				, cyng::param_factory("gen", generation_));
+		}
+
 	}	//	table	
 }
 

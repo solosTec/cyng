@@ -53,6 +53,14 @@ namespace cyng
 			 */
 			std::uint64_t get_generation() const;
 
+			/**
+			 * Convert the record into a tuple. Usefull for
+			 * serialization to JSON, XML, you name it.
+			 * If no columns names available, the column index is used
+			 * as parameter name.
+			 */
+			tuple_t convert() const;
+
 		private:
 			object get(std::size_t idx) const;
 			

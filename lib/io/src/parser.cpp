@@ -140,10 +140,19 @@ namespace cyng
 		
 	}
 	
- 	object parser::create_custom_object(std::istream&, std::size_t tag, std::uint64_t size)
+ 	object parser::create_custom_object(std::istream& is, std::size_t tag, std::uint64_t size)
  	{
- 		BOOST_ASSERT_MSG(false, "missing overwrite for create_custom_object()");
- 		return make_object();
+		//
+		//	see binary hpp
+		//	serializer_custom<SERIALIZE_BINARY>
+		//
+
+ 		//BOOST_ASSERT_MSG(false, "missing overwrite for create_custom_object()");
+		std::string v;
+		std::istreambuf_iterator<char> eos;
+		std::string s(std::istreambuf_iterator<char>(is), eos);
+
+ 		return make_object(s);
  	}
 
 	parser::state parser::parse_length(char c)

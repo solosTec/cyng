@@ -591,6 +591,10 @@ target_link_libraries(cyng_docscript
 #
 include (lib/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
+# on windows:	-DPSAPI_VERSION=1
+if (WIN32)
+SET_TARGET_PROPERTIES(cyng_sys PROPERTIES COMPILE_FLAGS "-DPSAPI_VERSION=1")
+endif()
 
 #
 #	cyng db library
