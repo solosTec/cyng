@@ -36,6 +36,24 @@ namespace cyng
 {
 	namespace sys 
 	{
+#if BOOST_OS_LINUX	
+        int parse_line(std::string const& line)
+		{
+			// This assumes that a digit will be found and the line ends in " Kb".
+// 			VmRSS:	     784 kB
+// 			std::cout << line << std::endl;
+			std::string val;
+			for (auto c : line)
+			{
+				if (std::isdigit(static_cast<unsigned char>(c)))
+				{
+					val += c;
+				}
+			}
+			return std::stoi(val);
+		}
+#endif
+        
 		//	Total Virtual Memory
 		std::uint64_t get_total_virtual_memory()
 		{
@@ -90,8 +108,19 @@ namespace cyng
 			::GetProcessMemoryInfo(::GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc));
 			return pmc.PrivateUsage;
 
-#elif BOOST_OS_LINUX			
-			return 0; 
+#elif BOOST_OS_LINUX
+            
+			std::ifstream ifs("/proc/self/status");
+			while (ifs)
+			{
+				std::string line;
+				std::getline(ifs, line);
+				if (line.compare(0, 7, "VmSize:") == 0) {
+					return parse_line(line);
+				}
+			}
+			return 0;
+
 #else
 			return 0;
 #endif
@@ -129,21 +158,6 @@ namespace cyng
 #endif
 		}
 		
-		int parse_line(std::string const& line)
-		{
-			// This assumes that a digit will be found and the line ends in " Kb".
-// 			VmRSS:	     784 kB
-// 			std::cout << line << std::endl;
-			std::string val;
-			for (auto c : line)
-			{
-				if (std::isdigit(static_cast<unsigned char>(c)))
-				{
-					val += c;
-				}
-			}
-			return std::stoi(val);
-		}
 
 #if BOOST_OS_LINUX		
 		std::uint64_t get_used_physical_memory_by_process()
@@ -160,19 +174,6 @@ namespace cyng
 			return 0;
 		}
 
-		std::uint64_t get_used_virtual_memory_by_process()
-		{
-			std::ifstream ifs("/proc/self/status");
-			while (ifs)
-			{
-				std::string line;
-				std::getline(ifs, line);
-				if (line.compare(0, 7, "VmSize:") == 0) {
-					return parse_line(line);
-				}
-			}
-			return 0;
-		}
 #endif
 
 	}
