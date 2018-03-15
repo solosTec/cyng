@@ -81,7 +81,7 @@ namespace cyng
 			}
 		}
 
-		void add_subscription(subscriptions_t& subs, std::string const& name, connections_t& conns)
+		void add_subscription(subscriptions_t& subs, std::string const& name, connections_t&& conns)
 		{
 			//
 			//	close existing connections
@@ -91,7 +91,7 @@ namespace cyng
 			//
 			//	add new subscription
 			//
-			subs.emplace(name, conns);
+			subs.emplace(name, std::move(conns));
 		}
 
 		void close_subscription(subscriptions_t& subs, std::string const& name)

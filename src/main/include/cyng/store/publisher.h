@@ -135,7 +135,7 @@ namespace cyng
 		/**
 		 * Clean way to add a new table listener (subscription)
 		 */
-		void add_subscription(subscriptions_t&, std::string const&, connections_t&);
+		void add_subscription(subscriptions_t&, std::string const&, connections_t&&);
 
 		/**
 		 * Close a specific table subscription
