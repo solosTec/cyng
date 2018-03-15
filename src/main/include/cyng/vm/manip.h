@@ -236,7 +236,7 @@ namespace cyng
 	vector_t& operator<<(vector_t&, reloc&&);
 
 	/**
-	 * unwind the specified container
+	 * Unwind the specified container. Works not recursive. Other than unwind_vec.
 	 */
 	template <typename T>
 	class unwind

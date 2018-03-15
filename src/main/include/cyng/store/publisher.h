@@ -13,6 +13,7 @@
 #include <cyng/table/body.hpp>
 
 #include <array>
+#include <map>
 
 namespace cyng 
 {
@@ -28,6 +29,11 @@ namespace cyng
 		 * Define a data type (array) to hold all 4 (typical) table connections.
 		 */
 		using connections_t = std::array<boost::signals2::connection, 4>;
+
+		/**
+		 * manage relation between tables and existing listeners (connections)
+		 */
+		using subscriptions_t = std::map<std::string, connections_t>;
 
 		/**
 		 * Implementation of signal/event handling. This is intended to be a base class of 
@@ -48,6 +54,7 @@ namespace cyng
 			using modify_signal = boost::signals2::signal<void(table const*
 				, cyng::table::key_type const&
 				, attr_t const&
+				, std::uint64_t
 				, boost::uuids::uuid)>;
 			
 		public:
@@ -103,7 +110,9 @@ namespace cyng
 			boost::signals2::connection get_modify_listener(const modify_signal::slot_type&);
 
 			/**
-			 * Create all connections in one call
+			 * Create all connections in one call.
+			 *
+			 * @return array of slots
 			 */
 			connections_t get_listener(insert_signal::slot_type const& isig
 				, remove_signal::slot_type const& rsig
@@ -123,7 +132,21 @@ namespace cyng
 		 */
 		void disconnect(connections_t&);
 
+		/**
+		 * Clean way to add a new table listener (subscription)
+		 */
+		void add_subscription(subscriptions_t&, std::string const&, connections_t&);
+
+		/**
+		 * Close a specific table subscription
+		 */
+		void close_subscription(subscriptions_t&, std::string const&);
 		
+		/**
+		 * Close all table subscriptions
+		 */
+		void close_subscription(subscriptions_t&);
+
 	}	//	store	
 }
 

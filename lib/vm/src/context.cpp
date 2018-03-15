@@ -16,6 +16,11 @@ namespace cyng
 	, mem_(mem)
 	{}
 	
+	context::context(context& ctx, memory& mem)
+		: vm_(ctx.vm_)
+		, mem_(mem)
+	{}
+
 	vector_t context::get_frame() const
 	{
 		return vm_.stack_.get_frame();
@@ -87,9 +92,10 @@ namespace cyng
 		vm_.sync_run(std::move(prg));
 	}
 
-	void context::attach(vector_t&& prg)
+	context& context::attach(vector_t&& prg)
 	{
 		mem_ += std::move(prg);
+		return *this;
 	}
 
 	namespace traits

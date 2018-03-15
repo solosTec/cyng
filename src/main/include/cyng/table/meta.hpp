@@ -129,9 +129,14 @@ namespace cyng
 				;
 			}
 			
-			virtual param_map_t convert_attr(std::size_t idx, object const& obj) const override
+			virtual param_t to_param(attr_t const& attr) const override
 			{
-				return param_map_t{{col_names_[idx + KEY_SIZE], obj}};
+				return param_t{col_names_[attr.first + KEY_SIZE], attr.second};
+			}
+
+			virtual param_map_t to_param_map(attr_t const& attr) const override
+			{
+				return param_map_t{ to_param(attr) };
 			}
 			
 			virtual param_map_t convert_key(key_type const& key) const override

@@ -25,7 +25,8 @@ namespace cyng
 		context(context const&) = delete;
 		context(context&&) = delete;
 		context(vm&, memory&);
-		
+		context(context&, memory&);
+
 		/**
 		 * @remove if true the call frame will removed from the stack
 		 * @return all elements of the call frame.
@@ -87,7 +88,7 @@ namespace cyng
 		 * Append instructions to the running program
 		 * and executes it.
 		 */
-		void attach(vector_t&& prg);
+		context& attach(vector_t&& prg);
 
 	private:
 		vm& vm_;

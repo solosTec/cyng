@@ -25,6 +25,14 @@ namespace cyng
 	 * No check for duplicates
 	 */
 	attr_map_t to_attr_map(tuple_t const&);
+
+	/**
+	 * @brief copy tuple into vector
+	 *
+	 * No check for duplicates
+	 */
+	vector_t to_vector(tuple_t const&);
+
 }
 
 #endif 

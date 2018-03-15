@@ -112,14 +112,14 @@ namespace cyng
 #endif
 		}
 
-		bool db::modify(std::string const& name, cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source)
+		bool db::modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
 #if defined(CYNG_STD_APPLY_OFF)
 			bool b = false;
 			access([&](table* tbl)->void {
 
-				b = tbl->modify(key, std::move(param), source);
+				b = tbl->modify(key, param, source);
 
 			}, write_access(name));
 			return b;

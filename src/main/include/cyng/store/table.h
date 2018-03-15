@@ -70,6 +70,7 @@ namespace cyng
 			 * @return meta data
 			 */
 			cyng::table::meta_table_interface const& meta() const;
+			cyng::table::meta_table_ptr meta_ptr() const;
 			
 			/**
 			 * Clears the table contents.
@@ -128,7 +129,7 @@ namespace cyng
 			 * @param param a specific parameter of the record body.
 			 * @return true if new value was sucessfully written. 
 			 */
-			bool modify(cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source);
+			bool modify(cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source);
 			
 			/** @brief Loop over all table entries.
 			 * 

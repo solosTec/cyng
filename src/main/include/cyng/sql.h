@@ -183,6 +183,8 @@ namespace cyng
 				return sql_where(meta_, dialect_, stream_);
 			}
 
+			sql_where by_key();
+
 		private:
 			meta_table_ptr meta_;
 			dialect dialect_;

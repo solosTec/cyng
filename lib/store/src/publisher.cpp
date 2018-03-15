@@ -80,7 +80,40 @@ namespace cyng
 				c.disconnect();
 			}
 		}
+
+		void add_subscription(subscriptions_t& subs, std::string const& name, connections_t& conns)
+		{
+			//
+			//	close existing connections
+			//
+			close_subscription(subs, name);
+
+			//
+			//	add new subscription
+			//
+			subs.emplace(name, conns);
+		}
+
+		void close_subscription(subscriptions_t& subs, std::string const& name)
+		{
+			auto pos = subs.find(name);
+			if (pos != subs.end())
+			{
+				disconnect(pos->second);
+				subs.erase(pos);
+			}
+		}
 		
+		void close_subscription(subscriptions_t& subs)
+		{
+			for (auto& sub : subs)
+			{
+				disconnect(sub.second);
+			}
+
+			subs.clear();
+		}
+
 	}	//	store	
 }
 

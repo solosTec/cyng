@@ -202,7 +202,7 @@ namespace cyng
 			if (v.get_class().tag() == TC_VECTOR)
 			{
 				auto tmp = value_cast(v, res);
-				tmp << unwind_vec();	//	recursion
+				tmp << unwind_vec(tmp.size());	//	recursion
 				res.insert(res.end(), tmp.begin(), tmp.end());
 			}
 			else

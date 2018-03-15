@@ -47,6 +47,7 @@ namespace cyng
 					<< ex.what()
 					<< '\n'
 					<< std::endl;
+				throw;	//	rethrow exception to librarian::invoke()
 			}
 		}
 		return false;

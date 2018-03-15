@@ -8,6 +8,8 @@
 #include <cyng/vm/librarian.h>
 #include <cyng/value_cast.hpp>
 #include <cyng/io/serializer.h>
+#include <cyng/vm/memory.h>
+#include <cyng/vm/manip.h>
 
 #ifdef _DEBUG
 #include <iostream>
@@ -41,21 +43,59 @@ namespace cyng
 			const std::size_t arity = (*pos).second.arity();
 			if (ctx.frame_size() >= arity)
 			{
-				(*pos).second(ctx);
-				return true;
+				try
+				{
+					(*pos).second(ctx);
+					return true;
+				}
+				catch (std::exception const& ex)
+				{
+					//
+					//	create an error message
+					//
+					std::stringstream ss;
+					ss
+						<< "***error("
+						<< name
+						<< "): "
+						<< ex.what()
+						;
+					const std::string msg = ss.str();
+					if (!try_error_log(ctx, msg))
+					{
+						//
+						//	print to standard error output if no logger available.
+						//
+						std::cerr
+							<< "\n\n"
+							<< msg
+							<< "\n\n"
+							<< std::endl;
+					}
+				}
 			}
 			else 
 			{
-				std::cerr 
-					<< "\n***Warning: insufficient frame size: "
+				std::stringstream ss;
+				ss
+					<< "***Warning: insufficient frame size: "
 					<< ctx.frame_size()
 					<< '/'
 					<< arity 
 					<< " ["
 					<< name
-					<< "]\n"
-					<< std::endl 
+					<< "]"
 					;
+				const std::string msg = ss.str();
+				if (!try_error_log(ctx, msg))
+				{
+					std::cerr
+						<< "\n\n"
+						<< msg
+						<< "\n\n"
+						<< std::endl
+						;
+				}
 			}
 		}
 		return false;
@@ -143,6 +183,23 @@ namespace cyng
 	, vm_call f)
 	{
 		return insert(name, procedure(f, arity));
+	}
+
+	bool librarian::try_error_log(context& ctx, std::string msg) const
+	{
+		// 
+		auto pos = db_.find("log.msg.error");
+		if (pos != db_.end())
+		{
+			vector_t prg;
+			prg << msg;
+
+			memory mem(std::move(prg));
+			context ctx_log(ctx, mem);
+			(*pos).second(ctx_log);
+			return true;
+		}
+		return false;
 	}
 }
 

@@ -38,6 +38,11 @@ namespace cyng
 		return amap;
 	}
 
+	vector_t to_vector(tuple_t const& tpl)
+	{
+		return vector_t(tpl.begin(), tpl.end());
+	}
+
 }
 
 

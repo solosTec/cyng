@@ -95,7 +95,8 @@ namespace cyng
 			 * @param idx index in data body
 			 * @param obj attribute value
 			 */
-			virtual param_map_t convert_attr(std::size_t idx, object const& obj) const = 0;
+			virtual param_t to_param(attr_t const&) const = 0;
+			virtual param_map_t to_param_map(attr_t const&) const = 0;
 			virtual param_map_t convert_key(key_type const& key) const = 0;
 			
 			/**

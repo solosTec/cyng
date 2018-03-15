@@ -24,8 +24,7 @@ namespace cyng
 		
 		std::ostream& serializer<param_t, SERIALIZE_JSON>::write(std::ostream& os, param_t const& param)
 		{
-// 			boost::io::ios_flags_saver  ifs(os);
-			
+		
 			os
 			<< '"'
 			<< param.first
@@ -41,7 +40,6 @@ namespace cyng
 
 		std::ostream& serializer<attr_t, SERIALIZE_JSON>::write(std::ostream& os, attr_t const& attr)
 		{
-// 			boost::io::ios_flags_saver  ifs(os);
 			
 			os
 			<< '"'

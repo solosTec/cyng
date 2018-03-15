@@ -46,6 +46,11 @@ namespace cyng
 			return *meta_;
 		}
 		
+		cyng::table::meta_table_ptr table::meta_ptr() const
+		{
+			return meta_;
+		}
+
 		void table::clear(boost::uuids::uuid source)
 		{
 			data_.clear();
@@ -150,7 +155,7 @@ namespace cyng
 						//
 						//	broadcast modification
 						//
-						this->publisher::modify_signal_(this, key, attr, source);
+						this->publisher::modify_signal_(this, key, attr, (*r.first).second.generation_, source);
 						
 						//
 						//	apply modification
@@ -163,7 +168,7 @@ namespace cyng
 			return false;
 		}
 		
-		bool table::modify(cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source)
+		bool table::modify(cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source)
 		{
 			const std::pair<std::size_t, bool> r = meta_->get_body_index(param.first);
 			return (r.second)

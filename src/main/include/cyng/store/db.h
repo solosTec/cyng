@@ -155,7 +155,7 @@ namespace cyng
 			 * @param param a specific parameter of the record body.
 			 * @return true if new value was sucessfully written.
 			 */
-			bool modify(std::string const& name, cyng::table::key_type const& key, param_t&& param, boost::uuids::uuid source);
+			bool modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source);
 
 			/**
 			 * @return meta data

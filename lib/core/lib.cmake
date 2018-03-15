@@ -26,14 +26,15 @@ set (core_h
     src/main/include/cyng/core/class_impl.hpp
     src/main/include/cyng/core/object_interface.h
     src/main/include/cyng/core/object_cast_fwd.h
+    src/main/include/cyng/core/wrapper_fwd.h
+    src/main/include/cyng/core/wrapper.hpp
+	src/main/include/cyng/core/enable_object_from_this.hpp
     src/main/include/cyng/object_cast.hpp
     src/main/include/cyng/core/value_cast_fwd.h
     src/main/include/cyng/value_cast.hpp
     src/main/include/cyng/vector_cast.hpp
     src/main/include/cyng/set_cast.h
     src/main/include/cyng/tuple_cast.hpp
-    src/main/include/cyng/core/wrapper_fwd.h
-    src/main/include/cyng/core/wrapper.hpp
 	src/main/include/cyng/tracker.h
 	src/main/include/cyng/reference.h
 #     src/main/include/cyng/core/deleter.hpp

@@ -26,9 +26,19 @@ namespace cyng
 				os << "datetime(";
 			}
 
-			os 
-			<< tbl->get_name(index_ - 1)
-			;
+			if (index_ > tbl->size())
+			{ 
+				os
+					<< "index out of range: "
+					<< index_
+					;
+			}
+			else
+			{
+				os
+					<< tbl->get_name(index_ - 1)
+					;
+			}
 
 			if (b)
 			{
