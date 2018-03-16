@@ -145,15 +145,20 @@ namespace cyng
 			//	set condition
 			//
 			complete = true;
-			cv.notify_one();
+			cv.notify_all();
 
 		});
 
 		//
 		//	wait for condition 
 		//
+#if defined(__GNUC__) && (__GNUC___ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ > 4))
+		//	gcc greater than 5.4
 		cv.wait(lock, [&complete] { return complete; });
-#endif
+#else
+		cv.wait(lock);
+#endif		
+#endif	//	CYNG_VM_SIMPLE_LOCK
 
 	}
 	
