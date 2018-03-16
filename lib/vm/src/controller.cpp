@@ -13,29 +13,35 @@
 #include <cyng/io/serializer.h>
 #endif
 #include <system_error>
-//#include <thread>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 namespace cyng 
 {
 
-	controller::controller(io_service_t& ios, boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
+	controller::controller(io_service_t& ios
+		, boost::uuids::uuid tag
+		, std::ostream& out
+		, std::ostream& err)
 	: dispatcher_(ios)
-	, vm_(tag, out, err)
-	, halt_(false)
-	, mutex_()
-	, call_stack_()
+		, vm_(tag, out, err)
+		, halt_(false)
+		, mutex_()
+		, call_stack_()
 	{}
 
 	controller const& controller::run(vector_t&& prg) const
 	{
 		if (!halt_)	
 		{
-#if (BOOST_ASIO_VERSION < 101200)
+#ifdef CYNG_VM_SIMPLE_LOCK
 			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
 #else
-			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
+#if (BOOST_ASIO_VERSION < 101200)
+			BOOST_ASSERT_MSG(!dispatcher_.get_io_service().stopped(), "service not running");
+#else
+			BOOST_ASSERT_MSG(!dispatcher_.get_io_context().stopped(), "service not running");
+#endif
 #endif
 			execute(std::move(prg), async::sync());
 		}
@@ -46,10 +52,14 @@ namespace cyng
 	{
 		if (!halt_)	
 		{
-#if (BOOST_ASIO_VERSION < 101200)
+#ifdef CYNG_VM_SIMPLE_LOCK
 			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
 #else
-			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
+#if (BOOST_ASIO_VERSION < 101200)
+			BOOST_ASSERT_MSG(!dispatcher_.get_io_service().stopped(), "service not running");
+#else
+			BOOST_ASSERT_MSG(!dispatcher_.get_io_context().stopped(), "service not running");
+#endif
 #endif
 			execute(std::move(prg), async::detach());
 		}
@@ -58,6 +68,10 @@ namespace cyng
 	
 	void controller::execute(vector_t&& prg, async::sync) const
 	{
+		//
+		//	simple lock has no guaranties about execution ordering
+		//
+#ifdef CYNG_VM_SIMPLE_LOCK
 		try
 		{
 			//
@@ -93,11 +107,60 @@ namespace cyng
 				<< "\n\n"
 				<< std::endl;
 		}
-					
+#else
+		if (dispatcher_.running_in_this_thread())
+		{
+			//
+			//	recursion is not allowed
+			//
+			std::cerr
+				<< "\n\n***error: recursion(sync)! - "
+				<< std::this_thread::get_id()
+				<< "\n\n"
+				<< prg.size()
+				<< " op(s)"
+				<< std::endl
+				;
+			BOOST_ASSERT_MSG(false, "VM recursion");
+			return;
+		}
+
+		//
+		//	grab the content of the code vector 
+		//
+		prg_param param(std::move(prg));
+
+		//
+		//	prepare condition variable
+		//
+		std::condition_variable cv;
+		async::unique_lock<async::mutex> lock(mutex_);
+		bool complete = false;	//	bullet proof
+
+		dispatcher_.post([this, param, &cv, &complete]() {
+
+			this->vm_.run(std::move(param.prg_));
+
+			//
+			//	set condition
+			//
+			complete = true;
+			cv.notify_one();
+
+		});
+
+		//
+		//	wait for condition 
+		//
+		cv.wait(lock, [&complete] { return complete; });
+#endif
+
 	}
 	
 	void controller::execute(vector_t&& prg, async::detach) const
 	{
+#ifdef CYNG_VM_SIMPLE_LOCK
+
 		//
 		//	grab the content of the code vector 
 		//
@@ -112,6 +175,18 @@ namespace cyng
 			this->vm_.run(std::move(param.prg_));
 
 		});
+#else
+		//
+		//	grab the content of the code vector 
+		//
+		prg_param param(std::move(prg));
+		dispatcher_.post([this, param]() {
+
+			this->vm_.run(std::move(param.prg_));
+
+		});
+
+#endif
 	}
 	
 	void controller::halt()

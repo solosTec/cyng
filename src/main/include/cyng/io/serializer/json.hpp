@@ -127,6 +127,12 @@ namespace cyng
 		};
 		
 		template <>
+		struct serializer <std::uint8_t, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, std::uint8_t v);
+		};
+
+		template <>
 		struct serializer <std::int32_t, SERIALIZE_JSON>
 		{
 			static std::ostream& write(std::ostream& os, std::int32_t v);
