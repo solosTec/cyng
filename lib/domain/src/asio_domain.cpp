@@ -57,18 +57,18 @@ namespace cyng
 		//
 		//	Get the local endpoint of the socket.
 		//
-		vm.run(register_function("ip.tcp.socket.localEndpoint", 0, [&s](context& ctx) {
+		vm.run(register_function("ip.tcp.socket.ep.local", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
-			ctx.set_return_value(make_object(s.local_endpoint(ec)), 0);
+			ctx.push(make_object(s.local_endpoint(ec)));
 			ctx.set_register(ec);
 		}));
 
 		//
 		//	Get the remote endpoint of the socket.
 		//
-		vm.run(register_function("ip.tcp.socket.remoteEndpoint", 0, [&s](context& ctx) {
+		vm.run(register_function("ip.tcp.socket.ep.remote", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
-			ctx.set_return_value(make_object(s.remote_endpoint(ec)), 0);
+			ctx.push(make_object(s.remote_endpoint(ec)));
 			ctx.set_register(ec);
 		}));
 
@@ -104,19 +104,7 @@ namespace cyng
 			boost::asio::connect(s, resolver.resolve(address, service), ec);
             
 #endif
-			//boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(address), 26862);
-			//s.connect(endpoint, ec);
-
 			BOOST_ASSERT(s.is_open());
-			//char buff[1024];
-			//try
-			//{
-			//	s.read_some(boost::asio::buffer(buff, 1024));
-			//}
-			//catch (std::exception ex)
-			//{
-			//	std::cerr << ex.what() << std::endl;
-			//}
 			ctx.set_register(ec);
 		}));
 

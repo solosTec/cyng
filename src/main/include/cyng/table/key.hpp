@@ -22,6 +22,7 @@ namespace cyng
 		 */
 		using key_type = vector_t;
 		using key_list_t = std::list<key_type>;
+		//using key_list_t = std::set<key_type>;	//!< keys are unique
 
 		namespace
 		{

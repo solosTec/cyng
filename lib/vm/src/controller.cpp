@@ -114,7 +114,9 @@ namespace cyng
 			//	recursion is not allowed
 			//
 			std::cerr
-				<< "\n\n***error: recursion(sync)! - "
+				<< "\n\n***error: recursion("
+				<< vm_.tag()
+				<< ")! - "
 				<< std::this_thread::get_id()
 				<< "\n\n"
 				<< prg.size()

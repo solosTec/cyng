@@ -123,16 +123,22 @@ namespace cyng
 
 		boost::asio::ip::tcp::endpoint reader_policy<boost::asio::ip::tcp::endpoint>::extract(std::istream& is)
 		{
-			return boost::asio::ip::tcp::endpoint();
+			std::uint16_t port = read_binary<std::uint16_t>(is);
+			std::istreambuf_iterator<char> eos;
+			std::string address(std::istreambuf_iterator<char>(is), eos);
+			boost::system::error_code ec;
+			return boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(address, ec), port);
 		}
 
 		boost::asio::ip::udp::endpoint reader_policy<boost::asio::ip::udp::endpoint>::extract(std::istream& is)
 		{
+			std::uint16_t port = read_binary<std::uint16_t>(is);
 			return boost::asio::ip::udp::endpoint();
 		}
 
 		boost::asio::ip::icmp::endpoint reader_policy<boost::asio::ip::icmp::endpoint>::extract(std::istream& is)
 		{
+			std::uint16_t port = read_binary<std::uint16_t>(is);
 			return boost::asio::ip::icmp::endpoint();
 		}
 
