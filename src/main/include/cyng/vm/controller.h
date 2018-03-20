@@ -80,6 +80,12 @@ namespace cyng
 		 */
 		boost::uuids::uuid tag() const noexcept;
 
+		/**
+		 * @return true if the current thread is executing a handler that was submitted 
+		 * from this VM. Otherwise returns false.
+		 */
+		bool same_thread() const;
+
 	private:
 		void execute(vector_t&& prg, async::sync) const;
 		void execute(vector_t&& prg, async::detach) const;

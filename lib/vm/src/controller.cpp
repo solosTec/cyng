@@ -216,6 +216,11 @@ namespace cyng
 		return vm_.tag();
 	}
 
+	bool controller::same_thread() const
+	{
+		return dispatcher_.running_in_this_thread();
+	}
+
 	call_stack::call_stack()
 		: call_stack_()
 	{}
