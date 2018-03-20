@@ -135,7 +135,7 @@ namespace cyng
 		//
 		//	prepare condition variable
 		//
-		std::condition_variable cv;
+		async::condition_variable cv;
 		async::unique_lock<async::mutex> lock(mutex_);
 		bool complete = false;	//	bullet proof
 
@@ -147,7 +147,7 @@ namespace cyng
 			//	set condition
 			//
 			complete = true;
-			cv.notify_one();
+			cv.notify_all();
 
 		});
 
@@ -155,7 +155,8 @@ namespace cyng
 		//	wait for condition 
 		//
 		cv.wait(lock, [&complete] { return complete; });
-#endif
+		
+#endif	//	CYNG_VM_SIMPLE_LOCK
 
 	}
 	
