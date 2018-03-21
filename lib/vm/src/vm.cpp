@@ -293,11 +293,11 @@ namespace cyng
 		{
 #ifdef _DEBUG
 			std::cerr
-				<< '\n'
-				<< "***Warning: function ["
+				<< "\n\n***Warning: function ["
 				<< fname
-				<< "] is not registered in library"
-				<< '\n'
+				<< "] is not registered in VM "
+				<< tag_
+				<< "\n\n"
 				<< std::endl
 				;
 #endif

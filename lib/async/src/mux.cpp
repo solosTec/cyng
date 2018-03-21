@@ -67,9 +67,9 @@ namespace cyng
 			std::promise<std::size_t> result;
 			auto f = result.get_future();
 			dispatcher_.dispatch([this, name, &result]() {
-				std::count_if(tasks_.begin(), tasks_.end(), [name](task_map::value_type const& v) {
+				result.set_value(std::count_if(tasks_.begin(), tasks_.end(), [name](task_map::value_type const& v) {
 					return boost::algorithm::equals(name, v.second->get_class_name());
-				});
+				}));
 			});
 			f.wait();
 			return f.get();

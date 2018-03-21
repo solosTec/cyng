@@ -230,7 +230,7 @@ namespace cyng
 						}
 						else 
 						{
-							BOOST_ASSERT_MSG(length <= size, "wrong data length (std::string)");
+							BOOST_ASSERT_MSG(length <= static_cast<SQLLEN>(size), "wrong data length (std::string)");
 							result.assign(binvalue.begin(), binvalue.begin() + length);
 						}
 						return make_object(result);
@@ -274,10 +274,10 @@ namespace cyng
 						t.tm_isdst = 0;	//	ignore DST
 
 						const auto tp = chrono::init_tp(sql_value.year
-							, sql_value.month
-							, sql_value.day
-							, sql_value.hour
-							, sql_value.minute
+							, static_cast<std::uint8_t>(sql_value.month)
+							, static_cast<std::uint8_t>(sql_value.day)
+							, static_cast<std::uint8_t>(sql_value.hour)
+							, static_cast<std::uint8_t>(sql_value.minute)
 							, sql_value.second);
 						return make_object(tp);
 					}
@@ -367,7 +367,7 @@ namespace cyng
 					SQLINTEGER  bytes{ 0 };
 					while (SQLRETURN rc = ::SQLGetData(stmt, index, SQL_C_BINARY, result.data(), size + 1, &length) != SQL_NO_DATA)
 					{
-						bytes += length;
+						bytes += static_cast<SQLINTEGER>(length);
 					}
 					return make_object(result);
 					//if (is_ok(rc))
