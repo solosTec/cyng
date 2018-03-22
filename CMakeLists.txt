@@ -619,6 +619,15 @@ endif()
 target_link_libraries(cyng_db ${db_link_libs})
 #message(STATUS "** db link library : ${db_link_libs}")
 
+#
+#	platform specific libraries
+#
+if (WIN32)
+
+	include (lib/scm/lib.cmake)
+	add_library(cyng_scm ${GLOBAL_LIBRARY_TYPE} ${scm_lib})
+
+endif()
 
 #
 # minimal test program
