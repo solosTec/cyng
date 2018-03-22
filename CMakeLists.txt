@@ -259,7 +259,7 @@ else()
 endif()
 
 #
-#	setup Boost library 1.66.0
+#	setup Boost library 1.67.0 or 1.66.0
 #
 if(UNIX)
     if(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
@@ -273,7 +273,7 @@ if(UNIX)
     endif()
 endif(UNIX)
 
-set(Boost_ADDITIONAL_VERSIONS "1.61.0" "1.62.0" "1.63.0" "1.64.0" "1.65.1" "1.66.0")
+set(Boost_ADDITIONAL_VERSIONS "1.61.0" "1.62.0" "1.63.0" "1.64.0" "1.65.1" "1.66.0" "1.67.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
 find_package(Boost 1.61 REQUIRED COMPONENTS thread system date_time filesystem program_options random signals unit_test_framework regex)
 #find_package(Boost 1.61 REQUIRED COMPONENTS thread system date_time filesystem)
@@ -644,6 +644,7 @@ target_link_libraries(demo
 # test unit using Boost.Test
 # BOOST_TEST_DYN_LINK is required to build a main() function
 #
+if(${PROJECT_NAME}_BUILD_TEST)
 include (test/unit-test/unit-test.cmake)
 add_executable(unit_test ${unit_test})
 	
@@ -667,6 +668,7 @@ endif()
 
 message(STATUS "** unit-test libs  : ${unittest_link_libs}")
 target_link_libraries(unit_test ${unittest_link_libs})
+endif()
 
 #
 # docScript compiler

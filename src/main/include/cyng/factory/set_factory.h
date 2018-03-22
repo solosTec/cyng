@@ -58,7 +58,7 @@ namespace cyng
 	template <typename T>
 	object make_object(std::pair<std::size_t, T>&& v)
 	{
- 		std::cout << "attr factory\n";
+//  		std::cout << "attr factory\n";
 		return factory<attr_t>::create_object(attr_t(v.first, make_object<T>(std::forward<T>(v.second))));
 	}
 	
