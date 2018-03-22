@@ -10,6 +10,7 @@
 #include <cyng/json/json_parser.h>
 #include <cyng/factory.h>
 #include <cyng/io/serializer.h>
+#include <cyng/io/serializer/json.hpp>
 #include <cyng/factory.h>
 #include <ios>
 #include <iterator>
@@ -57,6 +58,21 @@ namespace cyng
 		{
 			io::serialize_json(os, obj);
 		}
+
+		std::string to_string(object const& obj)
+		{
+			std::stringstream ss;
+			write(ss, obj);
+			return ss.str();
+		}
+
+		std::string to_string(tuple_t const& tpl)
+		{
+			std::stringstream ss;
+			cyng::io::serializer <tuple_t, cyng::io::SERIALIZE_JSON>::write(ss, tpl);
+			return ss.str();
+		}
+
 	}
 }
 

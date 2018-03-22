@@ -11,6 +11,7 @@
 
 #include <cyng/core/object_interface_fwd.h>
 #include <cyng/intrinsics/buffer.h>
+#include <cyng/intrinsics/sets.h>
 #include <string>
 
 namespace cyng 
@@ -21,6 +22,8 @@ namespace cyng
 		object read(buffer_t const&);
 		object read_file(std::string const&);
 		void write(std::ostream&, object const&);
-	}	
+		std::string to_string(object const&);
+		std::string to_string(tuple_t const&);
+	}
 }
 #endif
