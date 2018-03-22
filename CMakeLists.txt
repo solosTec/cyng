@@ -193,17 +193,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE SHARED)
-	
-	#
-	#	provide a hint for a local installation of boost
-	#
-	if(NOT BOOST_ROOT)
-		set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/install" CACHE PATH "BOOST_ROOT")
-        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib")
-		
-		message(STATUS "** Set BOOST_ROOT  : ${BOOST_ROOT}")
-	endif()
-
 
 elseif(MSVC)
 
@@ -236,14 +225,6 @@ elseif(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE")	
 	add_definitions(/EHsc /bigobj /std:c++latest /MP)
 	
-	#
-	# help CMake to find Boost
-	#
-	if(NOT BOOST_ROOT)
-		set(BOOST_ROOT "C:/local/boost_1_66_0/" CACHE PATH "BOOST_ROOT" )
-		message(STATUS "** Set BOOST_ROOT  : ${BOOST_ROOT}")
-	endif()
-
 	#
 	# help CMake to find OpenSSL
 	#
