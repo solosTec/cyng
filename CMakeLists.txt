@@ -29,7 +29,7 @@ project(CYNG)
 
 # Add a version number
 set (${PROJECT_NAME}_VERSION_MAJOR 0)
-set (${PROJECT_NAME}_VERSION_MINOR 2)
+set (${PROJECT_NAME}_VERSION_MINOR 3)
 
 string(TIMESTAMP THIS_YEAR "%Y")
 set (${PROJECT_NAME}_COPYRIGHT_YEAR ${THIS_YEAR})
@@ -252,11 +252,29 @@ if(UNIX)
         set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
         message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
     endif()
+elseif(WIN32)
+    if(EXISTS "C:/local/boost_1_67_0")
+        set(BOOST_ROOT "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
+        set(BOOST_LIBRARYDIR "C:/local/boost_1_67_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
+        set(BOOST_INCLUDE_DIR "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
+        set(BOOST_DIR "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
+        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+		set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-x64-1_67.lib")
+		set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc141-mt-gd-x64-1_67.lib")
+		set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc141-mt-gd-x64-1_67.lib")
+	endif()
 endif(UNIX)
 
 set(Boost_ADDITIONAL_VERSIONS "1.61.0" "1.62.0" "1.63.0" "1.64.0" "1.65.1" "1.66.0" "1.67.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
-find_package(Boost 1.61 REQUIRED COMPONENTS thread system date_time filesystem program_options random signals unit_test_framework regex)
+find_package(Boost 1.61 REQUIRED COMPONENTS thread system date_time filesystem program_options random unit_test_framework regex)
 #find_package(Boost 1.61 REQUIRED COMPONENTS thread system date_time filesystem)
 
 if(Boost_FOUND)
@@ -408,24 +426,16 @@ set(${PROJECT_NAME}_MYSQL_INSTALLED OFF)
 set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
 
 #
-# libpugixml-dev (v1.8)
+# pugixml-master (v1.8.1)
 # On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
+# Included as 3party software
 #
-find_package(PugiXML)
-if(PugiXML_FOUND)
+set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/3party/pugixml-181")
+message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
+set(${PROJECT_NAME}_PUGIXML_INSTALLED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_PUGIXML_INSTALLED" )
+include_directories(${PUGIXML_INCLUDE_DIR})
 
-	message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
-	message(STATUS "** PugiXML Libraries : ${PUGIXML_LIBRARY}")
-	set(${PROJECT_NAME}_PUGIXML_INSTALLED ON)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_PUGIXML_INSTALLED" )
-	include_directories(${PUGIXML_INCLUDE_DIR})
-
-else()
-
-	message(WARNING "** PugiXML not found - don't build XML lib")
-	set(${PROJECT_NAME}_PUGIXML_INSTALLED OFF)
-
-endif()
 
 #
 # include directories for all C/C++ projects
