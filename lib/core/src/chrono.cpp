@@ -7,6 +7,9 @@
 
 #include <cyng/chrono.h>
 #include <ctime>
+#include <cerrno>
+#include <cstring>
+#include <iostream>
 #include <boost/assert.hpp>
 #include <boost/core/ignore_unused.hpp>
 
@@ -117,6 +120,12 @@ namespace cyng
 			
 #ifdef BOOST_WINDOWS
 			const errno_t e = ::gmtime_s(&r, &tt);
+			if (e != 0)
+			{
+				char msg[128];
+				::strerror_s(msg, 128, e);
+				std::cerr << msg << std::endl;
+			}
 			BOOST_ASSERT_MSG (e == 0, "convert_utc");
 #else
 			//	POSIX API
