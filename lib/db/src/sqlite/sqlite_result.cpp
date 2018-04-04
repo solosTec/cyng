@@ -140,7 +140,12 @@ namespace cyng
 						BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
 						//	format is "2014-11-28 11:06:44"
 						//	parse time stamp
-						return parse_rfc3339_obj(result);
+						std::pair<std::chrono::system_clock::time_point, bool > r = parse_db_timestamp(result);
+						return (r.second)
+							? make_object(r.first)
+							: make_now()
+							;
+						//return parse_rfc3339_obj(result);
 					}
 					return make_object();
 				}

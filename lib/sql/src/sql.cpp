@@ -97,9 +97,21 @@ namespace cyng
 					stream_ << ", ";
 				}
 
-				stream_
-					<< col.name_
-					;
+				if (!has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT))
+				{
+					stream_
+						<< "datetime("
+						<< col.name_
+						<< ")"
+						;
+
+				}
+				else
+				{
+					stream_
+						<< col.name_
+						;
+				}
 			});
 
 			stream_ << ' ';
