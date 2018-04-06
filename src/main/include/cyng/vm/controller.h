@@ -45,6 +45,17 @@ namespace cyng
 	 */
 	class controller
 	{
+		/**
+		 * helper class to provide a move parameter.
+		 */
+		struct parameter
+		{
+			mutable vector_t prg_;
+			parameter(vector_t&&);
+			parameter(parameter const&);
+			parameter(parameter&&);
+		};
+
 	public:
 		controller() = delete;
 		controller(io_service_t&, boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
@@ -124,16 +135,6 @@ namespace cyng
 		call_stack	call_stack_;
 	};
 
-	/**
-	 * helper class to provide a move parameter.
-	 */
-	struct prg_param
-	{
-		mutable vector_t prg_;
-		prg_param(vector_t&&);
-		prg_param(prg_param const&);
-		prg_param(prg_param&&);
-	};
 }
 
 #endif	//	CYNG_VM_CONTROLLER_H

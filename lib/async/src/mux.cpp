@@ -303,13 +303,21 @@ namespace cyng
 			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 			
+			//
+			//	move the content of the message 
+			//
+			parameter param(std::move(msg));
+
 			std::promise<bool> result;
 			auto f = result.get_future();
-			dispatcher_.dispatch([this, id, slot, &msg, &result](){
+			dispatcher_.dispatch([this, id, slot, param, &result](){
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())
 				{
-					(*pos).second->dispatch(slot, msg);
+					//
+					//	async dispatching
+					//
+					(*pos).second->dispatch(slot, param.msg_);
 					result.set_value(true);
 				}
 				else 
@@ -321,21 +329,48 @@ namespace cyng
 			f.wait();
 			return f.get();
 		}
+
+		void mux::post(std::size_t id, std::size_t slot, tuple_t&& msg) const
+		{
+			if (shutdown_)	return;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			//
+			//	move the content of the message 
+			//
+			parameter param(std::move(msg));
+
+			dispatcher_.dispatch([this, id, slot, param]() {
+				auto pos = tasks_.find(id);
+				if (pos != tasks_.end())
+				{
+					//
+					//	async dispatching
+					//
+					(*pos).second->dispatch(slot, param.msg_);
+				}
+			});
+		}
 		
 		std::size_t mux::send(std::string name, std::size_t slot, tuple_t&& msg) const
 		{
-			if (shutdown_)	return false;
+			if (shutdown_)	return 0u;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			//
+			//	move the content of the message 
+			//
+			parameter param(std::move(msg));
 
 			std::promise<std::size_t> result;
 			auto f = result.get_future();
-			dispatcher_.dispatch([this, name, slot, &msg, &result]() {
+			dispatcher_.dispatch([this, name, slot, param, &result]() {
 				std::size_t counter{ 0 };
 				for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
 				{
 					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
 					{
-						(*pos).second->dispatch(slot, msg);
+						(*pos).second->dispatch(slot, param.msg_);
 						++counter;
 					}
 				}
@@ -351,12 +386,49 @@ namespace cyng
 
 		}
 
+		void mux::post(std::string name, std::size_t slot, tuple_t&& msg) const
+		{
+			if (shutdown_)	return;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			//
+			//	move the content of the message 
+			//
+			parameter param(std::move(msg));
+
+			dispatcher_.dispatch([this, name, slot, param]() {
+				std::size_t counter{ 0 };
+				for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
+				{
+					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
+					{
+						(*pos).second->dispatch(slot, param.msg_);
+						++counter;
+					}
+				}
+
+			});
+		}
+
 		void mux::remove(std::size_t id)
 		{
 			dispatcher_.dispatch([this, id]() {
 				tasks_.erase(id);
 			});
 		}
+
+		mux::parameter::parameter(tuple_t&& msg)
+			: msg_(std::move(msg))
+		{}
+
+		mux::parameter::parameter(parameter const& other)
+			: msg_(std::move(other.msg_))
+		{}
+
+		mux::parameter::parameter(parameter&& other)
+			: msg_(std::move(other.msg_))
+		{}
+
 	}
 }
 

@@ -128,9 +128,9 @@ namespace cyng
 		}
 
 		//
-		//	grab the content of the code vector 
+		//	move the content of the code vector 
 		//
-		prg_param param(std::move(prg));
+		parameter param(std::move(prg));
 
 		//
 		//	prepare condition variable
@@ -182,7 +182,7 @@ namespace cyng
 		//
 		//	grab the content of the code vector 
 		//
-		prg_param param(std::move(prg));
+		parameter param(std::move(prg));
 		dispatcher_.post([this, param]() {
 
 			this->vm_.run(std::move(param.prg_));
@@ -244,15 +244,15 @@ namespace cyng
 	}
 
 
-	prg_param::prg_param(vector_t&& prg)
+	controller::parameter::parameter(vector_t&& prg)
 		: prg_(std::move(prg))
 	{}
 
-	prg_param::prg_param(prg_param const& other)
+	controller::parameter::parameter(parameter const& other)
 		: prg_(std::move(other.prg_))
 	{}
 
-	prg_param::prg_param(prg_param&& other)
+	controller::parameter::parameter(parameter&& other)
 		: prg_(std::move(other.prg_))
 	{}
 
