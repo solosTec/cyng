@@ -179,6 +179,7 @@ namespace cyng
 				case code::INVOKE:	os << "INVOKE";	break; 
 				case code::IDENT:	os << "IDENT";	break;
 				case code::NOW:		os << "NOW";	break;
+				case code::PID:		os << "PID";	break;
 
 					//	assembly
 				case code::ASSEMBLE_ATTR:		os << "ATTR";	break;
