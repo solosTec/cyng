@@ -14,6 +14,9 @@
 #ifdef _DEBUG
 #include <boost/core/demangle.hpp>
 #endif
+//#include <boost/fusion/container/vector.hpp>
+//#include <boost/fusion/include/make_list.hpp>
+#include <boost/fusion/include/make_vector.hpp>
 
 namespace cyng 
 {
@@ -54,9 +57,7 @@ namespace cyng
 			 */
 #if defined(CYNG_STD_APPLY_OFF)
 			template <class F, typename ...Tbls>
-// 			constexpr auto 
 			void
-// 			access(F&& f, std::tuple<Tbls...>& tbls) -> typename  boost::fusion::result_of::invoke_function_object<F,std::tuple<Tbls...> >::type
 			access(F f, Tbls&& ... tbls)
 #else
 			template <class F, typename ...Tbls>
@@ -156,6 +157,48 @@ namespace cyng
 			 * @return true if new value was sucessfully written.
 			 */
 			bool modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source);
+
+
+#if defined(CYNG_STD_APPLY_OFF)
+			template <class F, typename ...Tbls>
+			bool multi_modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source, F f, Tbls&& ... tbls)
+#else
+			template <class F, typename ...Tbls>
+			bool multi_modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source, F&& f, Tbls&& ... tbls)
+#endif
+			{
+				//
+				//	Read lock on db.
+				//
+				cyng::async::shared_lock<cyng::async::shared_mutex> sl(this->m_);
+
+				//
+				//	Get the tuple with table pointers. The first element is the table to be changed.
+				//
+				auto tbl_list = get_table_ptrs(write_access(name), std::forward<Tbls>(tbls)...);
+
+				//
+				//	Generate a tuple with the appropriate lock types
+				//	read/write lock tables
+				//  lock_list is a tuple of boost::shared_lock<boost::shared_mutex> and
+				//  boost::unique_lock<boost::shared_mutex>.
+				//
+				auto lock_list = get_locks(write_access(name), std::forward<Tbls>(tbls)...);
+
+				//
+				//	Set the lock for all tables
+				//
+				cyng::meta::apply(sync_functor(), lock_list);
+
+				//
+				//	call function F with unpacked table pointers
+				//
+#if defined(CYNG_STD_APPLY_OFF)
+				return cyng::meta::apply(f, std::tuple_cat(std::make_tuple(key, param, source), tbl_list));
+#else
+				return cyng::meta::apply(std::forward<F>(f), std::tuple_cat(std::make_tuple(key, param, source), tbl_list));
+#endif
+			}
 
 			/**
 			 * @return meta data
