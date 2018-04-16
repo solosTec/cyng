@@ -26,6 +26,8 @@ namespace cyng
 			record(meta_table_ptr, key_type const&, data_type const&, std::uint64_t);
 			record(record const&);
 			
+			record& operator=(record const&);
+
 			/**
 			 * @return true is record doesn't contain valid data
 			 *
@@ -66,9 +68,9 @@ namespace cyng
 			
 		private:
 			meta_table_ptr meta_;
-			const key_type	key_;
-			const data_type	data_;
-			const std::uint64_t generation_;
+			key_type	key_;
+			data_type	data_;
+			std::uint64_t generation_;
 		};
 		
 	}	//	table	

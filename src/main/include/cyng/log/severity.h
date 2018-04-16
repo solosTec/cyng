@@ -31,6 +31,7 @@ namespace cyng
 		//	enumeration types (both scoped and unscoped) can have overloaded operators
 		std::ostream& operator<<(std::ostream& os, severity s);
 
+		severity to_severity(std::string const&);
 	}	
 }
 

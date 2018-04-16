@@ -6,6 +6,7 @@
  */ 
 
 #include <cyng/log/severity.h>
+#include <boost/algorithm/string/predicate.hpp>
 
 namespace cyng 
 {
@@ -27,6 +28,18 @@ namespace cyng
 			}
 			return os;
 		}
+
+		severity to_severity(std::string const& str)
+		{
+			if (boost::algorithm::iequals(str, "TRACE"))	return severity::LEVEL_TRACE;
+			else if (boost::algorithm::iequals(str, "DEBUG"))	return severity::LEVEL_DEBUG;
+			else if (boost::algorithm::iequals(str, "INFO"))	return severity::LEVEL_INFO;
+			else if (boost::algorithm::iequals(str, "WARN"))	return severity::LEVEL_WARNING;
+			else if (boost::algorithm::iequals(str, "ERROR"))	return severity::LEVEL_ERROR;
+			else if (boost::algorithm::iequals(str, "FATAL"))	return severity::LEVEL_FATAL;
+			return severity::LEVEL_INFO;
+		}
+
 	}	
 }
 
