@@ -209,7 +209,7 @@ namespace cyng
 				template <>
 				object get_value<revision>(sqlite3_stmt* stmt, int index)
 				{
-					const auto result = boost::numeric::converter<std::uint64_t, int>::convert(::sqlite3_column_int64(stmt, index));
+					const auto result = boost::numeric::converter<std::uint32_t, int>::convert(::sqlite3_column_int64(stmt, index));
 					return make_object<version>(result);
 				}
 				

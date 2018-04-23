@@ -74,7 +74,8 @@ namespace cyng
 	{
 	public:
 		version(std::uint16_t, std::uint16_t);
-		version(std::uint32_t);
+		explicit version(std::uint32_t);
+		explicit version(double);
 		version(version const&);
 		version();
 	};
