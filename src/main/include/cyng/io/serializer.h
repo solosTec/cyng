@@ -32,7 +32,9 @@ namespace cyng
 		std::ostream& operator<<(std::ostream& os, revision const&);
 		//	enumeration types (both scoped and unscoped) can have overloaded operators
 		std::ostream& operator<<(std::ostream& os, code c);
-		/**
+        //	enumeration types (both scoped and unscoped) can have overloaded operators
+        std::ostream& operator<<(std::ostream& os, logging::severity s);
+        /**
 		 *  format is xx:xx:xx:xx:xx:xx (17 bytes)
 		 */
 		std::ostream& operator<<(std::ostream& os, mac48 const&);

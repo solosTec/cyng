@@ -9,6 +9,7 @@
 
 #include <cyng/log/severity.h>
 #include <cyng/io/io_chrono.hpp>
+//#include <cyng/io/serializer.h>
 #include <chrono>
 #include <sstream>
 #include <thread>
@@ -63,7 +64,7 @@ namespace cyng
 					<< rec.tp_
 					<< ']'
 					<< ' '
-					<< rec.level_
+                    << to_string(rec.level_)
 					<< ' '
 #if BOOST_OS_WINDOWS
 					<< std::dec
@@ -149,7 +150,7 @@ namespace cyng
 				<< rec.tp_
 				<< ']'
 				<< ' '
-				<< rec.level_
+                << to_string(rec.level_)
 				<< " -- "
 // 				<< rec.stream_
 				;

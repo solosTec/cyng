@@ -206,7 +206,23 @@ namespace cyng
 			return os;
 		}
 	
-	
+        std::ostream& operator<<(std::ostream& os, logging::severity s)
+        {
+            switch(s)
+            {
+                case logging::severity::LEVEL_TRACE:	os << "TRACE";	break;
+                case logging::severity::LEVEL_DEBUG: 	os << "DEBUG";	break;
+                case logging::severity::LEVEL_INFO: 	os << "INFO ";	break;
+                case logging::severity::LEVEL_WARNING: 	os << "WARN ";	break;
+                case logging::severity::LEVEL_ERROR: 	os << "ERROR";	break;
+                case logging::severity::LEVEL_FATAL: 	os << "FATAL";	break;
+                default:
+                    os.setstate(std::ios_base::failbit);
+                    break;
+            }
+            return os;
+        }
+
 		std::ostream& operator<<(std::ostream& os, mac48 const& v)
 		{
 			//	std::array< std::uint8_t, 6 >
