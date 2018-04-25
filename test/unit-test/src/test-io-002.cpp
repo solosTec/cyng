@@ -120,14 +120,15 @@ namespace cyng
 			io::serialize_binary(f, make_object(""));
 			io::serialize_binary(f, make_object("hello, world!"));
 
-			io::serialize_binary(f, make_object(std::chrono::system_clock::now()));
+			io::serialize_binary(f, make_object(chrono::init_tp(2018, 4, 20, 6, 5, 32)));
 			io::serialize_binary(f, make_object(std::chrono::nanoseconds(10)));
 			io::serialize_binary(f, make_object(std::chrono::microseconds(11)));
 			io::serialize_binary(f, make_object(std::chrono::milliseconds(12)));
 			io::serialize_binary(f, make_object(std::chrono::seconds(13)));
 			io::serialize_binary(f, make_object(std::chrono::minutes(14)));
 			io::serialize_binary(f, make_object(std::chrono::hours(15)));
-			io::serialize_binary(f, make_object(cyng::chrono::convert(std::chrono::system_clock::now())));
+			io::serialize_binary(f, make_object(cyng::chrono::convert(chrono::init_tp(2018, 4, 20, 6, 5, 33))));
+			//io::serialize_binary(f, make_object(cyng::chrono::convert(std::chrono::system_clock::now())));
 
 			io::serialize_binary(f, make_object(cyng::version(1, 5)));
 			io::serialize_binary(f, make_object(cyng::revision(cyng::version(1, 6), cyng::version(7, 8))));
@@ -171,7 +172,7 @@ namespace cyng
 			//boost::uuids::uuid,
 			io::serialize_binary(f, make_object(boost::uuids::string_generator()("2f28413a-d69f-4fc6-b39b-14ff401b15d2")));
 			//boost::filesystem::path,
-			io::serialize_binary(f, make_object(boost::filesystem::current_path()));
+			io::serialize_binary(f, make_object(boost::filesystem::path("demo.txt")));
 			//boost::asio::ip::tcp::endpoint,
 			io::serialize_binary(f, make_object(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20015)));
 			//boost::asio::ip::udp::endpoint,
@@ -181,8 +182,7 @@ namespace cyng
 			//boost::asio::ip::address,
 			io::serialize_binary(f, make_object(boost::asio::ip::address::from_string("172.16.254.1")));
 
-			io::serialize_binary(f, make_object(0xAA55AA55));
-			io::serialize_binary(f, make_object("OK"));
+			//io::serialize_binary(f, make_object(0xAA55AA55)); // not portable!
 
 			//
 			//	dealing with large values

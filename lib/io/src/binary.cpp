@@ -131,7 +131,7 @@ namespace cyng
 			//	type - length - diff
 			//
 			serialize_type_tag<std::chrono::system_clock::time_point>(os);
-			serialize_length(os, sizeof(diff));
+			serialize_length(os, sizeof(duration::rep));
 			write_binary(os, diff.count());
 			return os;
 		}

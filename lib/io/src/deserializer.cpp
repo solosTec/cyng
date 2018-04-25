@@ -36,7 +36,7 @@ namespace cyng
 				case TC_FLOAT:			return deserialize_object<TC_FLOAT>(is);
 				case TC_DOUBLE:			return deserialize_object<TC_DOUBLE>(is);
 				case TC_FLOAT80:		
-					//	differebt sizes on different compilers
+					//	different sizes on different compilers
 					BOOST_ASSERT(size == sizeof(long double));
 					return deserialize_object<TC_FLOAT80>(is);
 // 		// 		const char*,
@@ -61,7 +61,9 @@ namespace cyng
 				case TC_MINUTE:			return deserialize_object<TC_MINUTE>(is);
 				case TC_HOUR:			return deserialize_object<TC_HOUR>(is);
 // 				
- 				case TC_DBL_TP:			return deserialize_object<TC_DBL_TP>(is);
+ 				case TC_DBL_TP:			
+					BOOST_ASSERT(size == sizeof(chrono::dbl_time_point));
+					return deserialize_object<TC_DBL_TP>(is);
  				case TC_VERSION:		return deserialize_object<TC_VERSION>(is);
  				case TC_REVISION:		return deserialize_object<TC_REVISION>(is);
  				case TC_CODE:			return deserialize_object<TC_CODE>(is);
