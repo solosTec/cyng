@@ -104,7 +104,8 @@ namespace cyng
 			io::serialize_binary(f, make_object(static_cast<char>(33)));
 			io::serialize_binary(f, make_object(boost::math::constants::e<float>()));	//	2.71828
 			io::serialize_binary(f, make_object(boost::math::constants::pi<double>()));	//	3.14159
-			io::serialize_binary(f, make_object(boost::math::constants::phi<long double>()));	//	1.61803
+			//	differebt sizes on different compilers
+			//io::serialize_binary(f, make_object(boost::math::constants::phi<long double>()));	//	1.61803
 
 			io::serialize_binary(f, make_object(static_cast<std::uint8_t>(34)));
 			io::serialize_binary(f, make_object(static_cast<std::uint16_t>(3)));
@@ -172,26 +173,32 @@ namespace cyng
 			//boost::filesystem::path,
 			io::serialize_binary(f, make_object(boost::filesystem::current_path()));
 			//boost::asio::ip::tcp::endpoint,
+			io::serialize_binary(f, make_object(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20015)));
 			//boost::asio::ip::udp::endpoint,
+			io::serialize_binary(f, make_object(boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20016)));
 			//boost::asio::ip::icmp::endpoint,
+			io::serialize_binary(f, make_object(boost::asio::ip::icmp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20017)));
 			//boost::asio::ip::address,
+			io::serialize_binary(f, make_object(boost::asio::ip::address::from_string("172.16.254.1")));
 
 			io::serialize_binary(f, make_object(0xAA55AA55));
 			io::serialize_binary(f, make_object("OK"));
-// 			io::serialize_binary(f, cyng::buffer_factory("buffer"));
-			//io::serialize_binary(f, make_object(3.1415972));
 
 			//
 			//	dealing with large values
 			//
-// 			cyng::random_string_factory rsf("abcdefghijklmnopqrstuvwxyz");
-// 			io::serialize_binary(f, rsf(1000));
+#ifdef _TEST_LARGE_TYPES
+			cyng::random_string_factory rsf("abcdefghijklmnopqrstuvwxyz");
+ 			io::serialize_binary(f, rsf(1000));
+#endif
 
 			//
 			//	custom objects
 			//
+#ifdef _TEST_CUSTOM_TYPES
 			custom c;
 			io::serialize_binary(f, make_object(c));
+#endif
 		}
 		{
 			std::fstream f(file_name, std::ios::binary | std::ios::in);

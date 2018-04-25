@@ -133,18 +133,27 @@ namespace cyng
 		boost::asio::ip::udp::endpoint reader_policy<boost::asio::ip::udp::endpoint>::extract(std::istream& is)
 		{
 			std::uint16_t port = read_binary<std::uint16_t>(is);
-			return boost::asio::ip::udp::endpoint();
+			std::istreambuf_iterator<char> eos;
+			std::string address(std::istreambuf_iterator<char>(is), eos);
+			boost::system::error_code ec;
+			return boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(address, ec), port);
 		}
 
 		boost::asio::ip::icmp::endpoint reader_policy<boost::asio::ip::icmp::endpoint>::extract(std::istream& is)
 		{
 			std::uint16_t port = read_binary<std::uint16_t>(is);
-			return boost::asio::ip::icmp::endpoint();
+			std::istreambuf_iterator<char> eos;
+			std::string address(std::istreambuf_iterator<char>(is), eos);
+			boost::system::error_code ec;
+			return boost::asio::ip::icmp::endpoint(boost::asio::ip::address::from_string(address, ec), port);
 		}
 
 		boost::asio::ip::address reader_policy<boost::asio::ip::address>::extract(std::istream& is)
 		{
-			return boost::asio::ip::address();
+			std::istreambuf_iterator<char> eos;
+			std::string address(std::istreambuf_iterator<char>(is), eos);
+			boost::system::error_code ec;
+			return boost::asio::ip::address::from_string(address, ec);
 		}
 
 		logging::severity reader_policy<logging::severity>::extract(std::istream& is)

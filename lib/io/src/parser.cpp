@@ -347,7 +347,6 @@ namespace cyng
 		{
 			//	32 bit length
 			return *reinterpret_cast<std::uint32_t const*>(source_);
-// 			return brute_cast<std::uint32_t, 0>(source_);
 		}
 
 

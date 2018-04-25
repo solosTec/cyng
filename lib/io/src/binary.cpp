@@ -228,8 +228,7 @@ namespace cyng
 			//
 			serialize_type_tag<boost::filesystem::path>(os);
 			serialize_length(os, v.size());
-			//	ToDo: write data
-			return os;
+			return os << v.string();
 		}
 		
 		std::ostream& serializer <eod, SERIALIZE_BINARY>::write(std::ostream& os, eod)
@@ -369,24 +368,30 @@ namespace cyng
 		
 		std::ostream& serializer <boost::asio::ip::udp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::udp::endpoint const& v)
 		{
-			const std::string s = v.address().to_string();
+			const auto address = v.address().to_string();
+			const auto port = v.port();
 
 			//
 			//	type - length - data
 			//
 			serialize_type_tag<boost::asio::ip::udp::endpoint>(os);
-			return os;
+			serialize_length(os, address.size() + sizeof(port));
+			write_binary(os, v.port());
+			return os << address;
 		}
 
 		std::ostream& serializer <boost::asio::ip::icmp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::icmp::endpoint const& v)
 		{
-			const std::string s = v.address().to_string();
+			const auto address = v.address().to_string();
+			const auto port = v.port();
 
 			//
 			//	type - length - data
 			//
 			serialize_type_tag<boost::asio::ip::icmp::endpoint>(os);
-			return os;
+			serialize_length(os, address.size() + sizeof(port));
+			write_binary(os, v.port());
+			return os << address;
 		}
 
 		

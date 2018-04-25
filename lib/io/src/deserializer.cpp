@@ -35,7 +35,10 @@ namespace cyng
 // 				case TC_CHAR:
 				case TC_FLOAT:			return deserialize_object<TC_FLOAT>(is);
 				case TC_DOUBLE:			return deserialize_object<TC_DOUBLE>(is);
-				case TC_FLOAT80:		return deserialize_object<TC_FLOAT80>(is);
+				case TC_FLOAT80:		
+					//	differebt sizes on different compilers
+					BOOST_ASSERT(size == sizeof(long double));
+					return deserialize_object<TC_FLOAT80>(is);
 // 		// 		const char*,
 				case TC_UINT8:			return deserialize_object<TC_UINT8>(is);
 				case TC_UINT16:			
