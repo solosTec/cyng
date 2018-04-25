@@ -179,7 +179,6 @@ namespace cyng
 			serialize_type_tag<mac48>(os);
 			serialize_length(os, std::tuple_size<mac48::address_type>::value);
 			write_binary(os, v.get_octets());
-			//os.write(reinterpret_cast<const std::ostream::char_type*>(v.get_octets().data()), sizeof(mac48::address_type));
 			return os;
 		}
 		
@@ -403,6 +402,36 @@ namespace cyng
 			return os << v;
 		}
 
+		
+		std::ostream& serializer <crypto::digest_md5, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_md5 const& digest)
+		{
+			serialize_type_tag<crypto::digest_md5>(os);
+			serialize_length(os, sizeof(crypto::digest_md5::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
+		std::ostream& serializer <crypto::digest_sha1, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_sha1 const& digest)
+		{
+			serialize_type_tag<crypto::digest_sha1>(os);
+			serialize_length(os, sizeof(crypto::digest_sha1::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
+		std::ostream& serializer <crypto::digest_sha256, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_sha256 const& digest)
+		{
+			serialize_type_tag<crypto::digest_sha256>(os);
+			serialize_length(os, sizeof(crypto::digest_sha256::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
+		
+		std::ostream& serializer <crypto::digest_sha512, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_sha512 const& digest)
+		{
+			serialize_type_tag<crypto::digest_sha512>(os);
+			serialize_length(os, sizeof(crypto::digest_sha512::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
 		
 		std::size_t serialize_length(std::ostream& os, std::size_t length)
 		{

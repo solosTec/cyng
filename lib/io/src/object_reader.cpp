@@ -147,5 +147,10 @@ namespace cyng
 			return boost::asio::ip::address();
 		}
 
+		logging::severity reader_policy<logging::severity>::extract(std::istream& is)
+		{
+			return read_binary<logging::severity>(is);
+		}
+
 	}
 }

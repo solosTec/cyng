@@ -268,7 +268,102 @@ namespace cyng
 			return os;
 		}
 	
-	
+		std::ostream& operator<<(std::ostream& os, crypto::digest_md5 const& digest)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				;
+
+			//
+			// 	format xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+			//	32 characters
+
+			std::for_each(digest.data_.begin(), digest.data_.end(), [&os](char c) {
+				os
+					<< std::setw(2)
+					<< (+c & 0xFF)	//	promote to integer
+					;
+			});
+
+			return os;
+		}
+
+		std::ostream& operator<<(std::ostream& os, crypto::digest_sha1 const& digest)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				;
+
+			//
+			// 	format 37aa63c77398d954473262e1a0057c1e632eda77
+			//	40 characters
+
+			std::for_each(digest.data_.begin(), digest.data_.end(), [&os](char c) {
+				os
+					<< std::setw(2)
+					<< (+c & 0xFF)	//	promote to integer
+					;
+			});
+
+			return os;
+		}
+
+		std::ostream& operator<<(std::ostream& os, crypto::digest_sha256 const& digest)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				;
+
+			//
+			// 	format dd8521ac3bdb59d9c4f6fcb4a3a14d9cf586dd30b63e6b1dafab18f059fdcc6c
+			//	64 characters
+
+			std::for_each(digest.data_.begin(), digest.data_.end(), [&os](char c) {
+				os
+					<< std::setw(2)
+					<< (+c & 0xFF)	//	promote to integer
+					;
+			});
+
+			return os;
+		}
+
+		std::ostream& operator<<(std::ostream& os, crypto::digest_sha512 const& digest)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::hex
+				<< std::setfill('0')
+				;
+
+			//
+			// 	format xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...
+			//	128 characters
+
+			std::for_each(digest.data_.begin(), digest.data_.end(), [&os](char c) {
+				os
+					<< std::setw(2)
+					<< (+c & 0xFF)	//	promote to integer
+					;
+			});
+
+			return os;
+		}
+
 	}
 }
 

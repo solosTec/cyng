@@ -21,6 +21,9 @@ namespace cyng
 		digest_md5::digest_md5(value_type&& v)
 			: data_(std::forward<value_type>(v))
 		{}
+		digest_md5::digest_md5(digest_md5 const& v)
+			: data_(v.data_)
+		{}
 
 		digest_sha1::digest_sha1()
 			: data_({ { 0 } })
@@ -30,6 +33,9 @@ namespace cyng
 		{}
 		digest_sha1::digest_sha1(value_type&& v)
 			: data_(std::forward<value_type>(v))
+		{}
+		digest_sha1::digest_sha1(digest_sha1 const& v)
+			: data_(v.data_)
 		{}
 
 		digest_sha256::digest_sha256()
@@ -41,6 +47,9 @@ namespace cyng
 		digest_sha256::digest_sha256(value_type&& v)
 			: data_(std::forward<value_type>(v))
 		{}
+		digest_sha256::digest_sha256(digest_sha256 const& v)
+			: data_(v.data_)
+		{}
 
 		digest_sha512::digest_sha512()
 			: data_({ { 0 } })
@@ -50,6 +59,9 @@ namespace cyng
 		{}
 		digest_sha512::digest_sha512(value_type&& v)
 			: data_(std::forward<value_type>(v))
+		{}
+		digest_sha512::digest_sha512(digest_sha512 const& v)
+			: data_(v.data_)
 		{}
 	}
 

@@ -84,6 +84,7 @@ namespace cyng
 	{
 	public:
 		revision(std::uint32_t, std::uint32_t);
+		revision(version, version);
 		revision(std::uint64_t);
 		revision(revision const&);
 		revision();

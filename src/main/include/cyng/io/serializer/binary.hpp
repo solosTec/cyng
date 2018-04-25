@@ -332,6 +332,27 @@ namespace cyng
 			static std::ostream& write(std::ostream& os, boost::asio::ip::address const&);
 		};
 
+		template <>
+		struct serializer <crypto::digest_md5, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_md5 const&);
+		};
+		template <>
+		struct serializer <crypto::digest_sha1, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_sha1 const&);
+		};
+		template <>
+		struct serializer <crypto::digest_sha256, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_sha256 const&);
+		};
+		template <>
+		struct serializer <crypto::digest_sha512, SERIALIZE_BINARY>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_sha512 const&);
+		};
+
 		/**
 		 * serialize custom types
 		 */

@@ -62,6 +62,7 @@ namespace cyng
  				case TC_VERSION:		return deserialize_object<TC_VERSION>(is);
  				case TC_REVISION:		return deserialize_object<TC_REVISION>(is);
  				case TC_CODE:			return deserialize_object<TC_CODE>(is);
+				case TC_SEVERITY:		return deserialize_object<TC_SEVERITY>(is);
  				case TC_BUFFER:			return deserialize_object<TC_BUFFER>(is);
  				case TC_MAC48:			return deserialize_object<TC_MAC48>(is);
  				case TC_MAC64:			return deserialize_object<TC_MAC64>(is);
@@ -99,6 +100,16 @@ namespace cyng
 					return make_object(eod());
 				
 				default:
+#ifdef DEBUG_CYY_IO
+					std::cout
+						<< "tag: "
+						<< traits::get_type_name(tag)
+						<< " ("
+						<< tag
+						<< ") - not implemented"
+						<< std::endl
+						;
+#endif
 					break;
 			}
 			return make_object();

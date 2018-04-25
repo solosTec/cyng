@@ -230,6 +230,7 @@ namespace cyng
 		TC_REVISION	= type_tag_traits<revision>(),
 		TC_CODE		= type_tag_traits<code>(),
 		TC_LABEL	= type_tag_traits<label>(),
+		TC_SEVERITY = type_tag_traits<logging::severity>(),
 		TC_BUFFER	= type_tag_traits<buffer_t>(),
 		TC_MAC48	= type_tag_traits<mac48>(),
 		TC_MAC64	= type_tag_traits<mac64>(),

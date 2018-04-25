@@ -8,13 +8,15 @@
 #include <cyng/factory.h>
 #include <cyng/io/parser/deserializer.h>
 
+#ifdef DEBUG_CYY_IO
+#include <cyng/io/serializer.h>
+#endif
+
 #include <iostream>
 #include <ios>
 
 namespace cyng 
 {
-
-
 	//
 	//	parser
 	//
@@ -103,9 +105,8 @@ namespace cyng
 	{
 #ifdef DEBUG_CYY_IO
 		std::stringstream ss;
-		//const bool b = 
-		serialize_stream(ss, obj, io::custom_callback());
-		std::cout << ss.str() << std::endl;
+		io::serialize_plain(std::cout, obj);
+		std::cout << std::endl;
 #endif
 		code_.push_back(std::move(obj));
 	}
@@ -121,8 +122,7 @@ namespace cyng
 #ifdef DEBUG_CYY_IO
 		std::cout
 			<< "type: "
-			//<< types::name(type_.target_)
-			<< types::name(type_.type())
+			<< traits::get_type_name(type_.type())
 			<< " ("
 			<< type_.type()
 			<< ")"
@@ -157,14 +157,6 @@ namespace cyng
 
 	parser::state parser::parse_length(char c)
 	{
-#ifdef DEBUG_CYY_IO
-		std::cout
-			<< "length: "
-			<< length_.length()
-			<< std::endl
-			;
-#endif
-
 		return (length_.put(c))
 			? (length_.is_null() ? NP_TYPE : NP_VALUE)
 			: NP_LENGTH
@@ -249,12 +241,22 @@ namespace cyng
 
 		bool length_field::put(char c)
 		{
-			if (pos_ == size_)
+			BOOST_ASSERT(pos_ != size_);
+			source_[pos_++] = c;
+#ifdef DEBUG_CYY_IO
+			if (is_complete())
 			{
+				std::cout
+					<< "length: "
+					<< length()
+					<< std::endl
+					;
 				return true;
 			}
-			source_[pos_++] = c;
+			return false;
+#else
 			return is_complete();
+#endif
 		}
 
 		void length_field::reset()
@@ -269,13 +271,11 @@ namespace cyng
 			{
 				//	16 bit length
 				return *reinterpret_cast<std::uint16_t const*>(&source_[1]);
-// 				return brute_cast<std::uint16_t, 1>(source_);
 			}
 			else if (source_[0] == 127)
 			{
 				//	64 bit length
 				return *reinterpret_cast<std::uint64_t const*>(&source_[1]);
-// 				return brute_cast<std::uint64_t, 1>(source_);
 			}
 			return source_[0];
 		}

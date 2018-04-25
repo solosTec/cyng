@@ -38,6 +38,11 @@ namespace cyng
 		std::ostream& operator<<(std::ostream& os, mac48 const&);
 		std::ostream& operator<<(std::ostream& os, mac64 const&);
 		
+		std::ostream& operator<<(std::ostream& os, crypto::digest_md5 const&);
+		std::ostream& operator<<(std::ostream& os, crypto::digest_sha1 const&);
+		std::ostream& operator<<(std::ostream& os, crypto::digest_sha256 const&);
+		std::ostream& operator<<(std::ostream& os, crypto::digest_sha512 const&);
+
 		void serialize_plain(std::ostream&, object const&);
 		void serialize_typed(std::ostream&, object const&);
 		void serialize_binary(std::ostream& os, object const& obj);

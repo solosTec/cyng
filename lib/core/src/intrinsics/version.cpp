@@ -35,6 +35,10 @@ namespace cyng
 	: this_type(maj, min)
 	{}
 	
+	revision::revision(version maj, version min)
+		: this_type(maj.full(), min.full())
+	{}
+
 	revision::revision(std::uint64_t v)
 	: this_type(v)
 	{}
