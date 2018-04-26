@@ -53,7 +53,9 @@ namespace cyng
 				case TC_INT32:			return deserialize_object<TC_INT32>(is);
 				case TC_INT64:			return deserialize_object<TC_INT64>(is);
 				case TC_STRING:			return deserialize_object<TC_STRING>(is);
-				case TC_TIME_POINT:		return deserialize_object<TC_TIME_POINT>(is);
+				case TC_TIME_POINT:		
+					BOOST_ASSERT(size == sizeof(chrono::dbl_time_point));
+					return deserialize_object<TC_TIME_POINT>(is);
 				case TC_NANO_SECOND:	return deserialize_object<TC_NANO_SECOND>(is);
 				case TC_MICRO_SECOND:	return deserialize_object<TC_MICRO_SECOND>(is);
 				case TC_MILLI_SECOND:	return deserialize_object<TC_MILLI_SECOND>(is);

@@ -112,8 +112,9 @@ namespace cyng
 		 const double seconds = ts.second + chrono::second(r);
 		 * @endcode
 		 */
-		dbl_time_point convert(std::chrono::system_clock::time_point const&);
-		
+		dbl_time_point to_dbl_time_point(std::chrono::system_clock::time_point const&);
+		std::chrono::system_clock::time_point to_time_point(dbl_time_point const&);
+
 		/**
 		 * Calculate duration of day.
 		 * 

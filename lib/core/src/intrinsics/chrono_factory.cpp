@@ -73,7 +73,7 @@ namespace cyng
 	object make_odbc_ts(std::chrono::system_clock::time_point tp)
 	{
 
-		chrono::dbl_time_point dtp = chrono::convert(tp);
+		chrono::dbl_time_point dtp = chrono::to_dbl_time_point(tp);
 		std::tm t = chrono::convert_utc(dtp.first);
 
 		SQL_TIMESTAMP_STRUCT ts;

@@ -14,12 +14,10 @@ namespace cyng
 		
 		std::chrono::system_clock::time_point reader_policy<std::chrono::system_clock::time_point>::extract(std::istream& is)
 		{
-			using duration = std::chrono::system_clock::time_point::duration;
-			using rep = duration::rep;
-			const rep ticks = read_binary<rep>(is);
-			const duration d(ticks);
-			//	const auto diff = std::chrono::duration_cast<duration>(*ptr - std::chrono::system_clock::time_point::min());
-			return std::chrono::system_clock::time_point::min() + d;
+			chrono::dbl_time_point dtp;
+			dtp.first = read_binary<std::time_t>(is);
+			dtp.second = read_binary<double>(is);
+			return cyng::chrono::to_time_point(dtp);
 		}
 		
 		std::string reader_policy<std::string>::extract(std::istream& is)

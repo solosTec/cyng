@@ -123,16 +123,16 @@ namespace cyng
 		
 		std::ostream& serializer<std::chrono::system_clock::time_point, SERIALIZE_BINARY>::write(std::ostream& os, std::chrono::system_clock::time_point const& v)
 		{
-			using duration = std::chrono::system_clock::time_point::duration;
-			const auto diff = std::chrono::duration_cast<duration>(v - std::chrono::system_clock::time_point::min());
+			static_assert(sizeof(std::time_t) == sizeof(std::int64_t), "fix timestamp size");
+			const auto dtp = chrono::to_dbl_time_point(v);
 
 			//
-			//	Write a time point value in binary format as a difference.
-			//	type - length - diff
+			//	Write a time point value in binary format as std::time_t.
 			//
 			serialize_type_tag<std::chrono::system_clock::time_point>(os);
-			serialize_length(os, sizeof(duration::rep));
-			write_binary(os, diff.count());
+			serialize_length(os, sizeof(chrono::dbl_time_point));
+			write_binary(os, dtp.first);
+			write_binary(os, dtp.second);
 			return os;
 		}
 
