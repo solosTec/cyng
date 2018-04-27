@@ -10,6 +10,7 @@
 #include <cyng/async/scheduler.h>
 #include <cyng/async/task_fwd.h>
 #include <cyng/intrinsics/sets.h>
+#include <cyng/object.h>
 #include <cyng/compatibility/io_service.h>
 
 namespace cyng 
@@ -40,6 +41,17 @@ namespace cyng
 			template < typename T, typename R, typename P, typename ...Args >
 			friend std::pair<std::size_t, bool> start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args);
 			friend std::pair<std::size_t, bool> start_task_sync(mux& m, shared_task tp);
+
+			/**
+			 * helper class to provide a move parameter.
+			 */
+			struct parameter
+			{
+				mutable tuple_t msg_;
+				parameter(tuple_t&&);
+				parameter(parameter const&);
+				parameter(parameter&&);
+			};
 
 		public:
 			/**
@@ -106,19 +118,33 @@ namespace cyng
 			std::size_t stop(std::string const&);
 
 			/**
-			 * Works asynchronously.
+			 * Works asynchronously but waits until message is dispatched.
 			 *
 			 * @return true if message could be delivered
 			 */
 			bool send(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
-			
+
 			/**
-			 * Works asynchronously.
-			 * Deliver message to all tasks with the specified class name
+			 * Works complete asynchronously.
+			 */
+			void post(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
+
+			/**
+			 * Deliver message to all tasks with the specified class name.
+			 * Works asynchronously but waits until message is dispatched
+			 * to all targets.
 			 *
 			 * @return number of found tasks with the specified class name.
 			 */
 			std::size_t send(std::string id, std::size_t slot, tuple_t&& tpl) const;
+
+			/**
+			 * Deliver message to all tasks with the specified class name.
+			 * Works complete asynchronously.
+			 *
+			 * @return number of found tasks with the specified class name.
+			 */
+			void post(std::string id, std::size_t slot, tuple_t&& tpl) const;
 
 		private:
 			/**

@@ -225,6 +225,11 @@ namespace cyng
 			static boost::asio::ip::address extract(std::istream& is);
 		};
 
+		template <>
+		struct reader_policy<logging::severity>
+		{
+			static logging::severity extract(std::istream& is);
+		};
 	}
 	
 	/**

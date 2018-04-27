@@ -52,7 +52,8 @@ namespace cyng
 		
 		INVOKE = 0x100,	//!< 	call a library function
 		IDENT,			//!< 	push VM tag onto stack
-		NOW,			//!<	push current timestamp onto stack
+		NOW,			//!<	push current timestamp on stack
+		PID,			//!<	push current process id on stack
 
 		//	assembly
 		ASSEMBLE_ATTR,			//!< 	build an attribute

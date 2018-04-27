@@ -24,7 +24,6 @@
 #include <boost/system/error_code.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/filesystem.hpp>
-// #include <experimental/filesystem>
 #include <boost/asio.hpp>
 
 #if CYNG_ODBC_INSTALLED

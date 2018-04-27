@@ -7,6 +7,7 @@
 
 #include <cyng/intrinsics/version.h>
 #include <iostream>
+#include <cmath>
 
 namespace cyng 
 {
@@ -18,6 +19,10 @@ namespace cyng
 	: this_type(v)
 	{}
 	
+	version::version(double d)
+		: this_type(d, std::round(std::fabs(d - std::trunc(d)) * 1e4))
+	{}
+
 	version::version(version const& v)
 	: this_type(v.first, v.second)
 	{}
@@ -30,6 +35,10 @@ namespace cyng
 	: this_type(maj, min)
 	{}
 	
+	revision::revision(version maj, version min)
+		: this_type(maj.full(), min.full())
+	{}
+
 	revision::revision(std::uint64_t v)
 	: this_type(v)
 	{}

@@ -123,16 +123,16 @@ namespace cyng
 		
 		std::ostream& serializer<std::chrono::system_clock::time_point, SERIALIZE_BINARY>::write(std::ostream& os, std::chrono::system_clock::time_point const& v)
 		{
-			using duration = std::chrono::system_clock::time_point::duration;
-			const auto diff = std::chrono::duration_cast<duration>(v - std::chrono::system_clock::time_point::min());
+			static_assert(sizeof(std::time_t) == sizeof(std::int64_t), "fix timestamp size");
+			const auto dtp = chrono::to_dbl_time_point(v);
 
 			//
-			//	Write a time point value in binary format as a difference.
-			//	type - length - diff
+			//	Write a time point value in binary format as std::time_t.
 			//
 			serialize_type_tag<std::chrono::system_clock::time_point>(os);
-			serialize_length(os, sizeof(diff));
-			write_binary(os, diff.count());
+			serialize_length(os, sizeof(chrono::dbl_time_point));
+			write_binary(os, dtp.first);
+			write_binary(os, dtp.second);
 			return os;
 		}
 
@@ -179,7 +179,6 @@ namespace cyng
 			serialize_type_tag<mac48>(os);
 			serialize_length(os, std::tuple_size<mac48::address_type>::value);
 			write_binary(os, v.get_octets());
-			//os.write(reinterpret_cast<const std::ostream::char_type*>(v.get_octets().data()), sizeof(mac48::address_type));
 			return os;
 		}
 		
@@ -229,8 +228,7 @@ namespace cyng
 			//
 			serialize_type_tag<boost::filesystem::path>(os);
 			serialize_length(os, v.size());
-			//	ToDo: write data
-			return os;
+			return os << v.string();
 		}
 		
 		std::ostream& serializer <eod, SERIALIZE_BINARY>::write(std::ostream& os, eod)
@@ -370,24 +368,30 @@ namespace cyng
 		
 		std::ostream& serializer <boost::asio::ip::udp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::udp::endpoint const& v)
 		{
-			const std::string s = v.address().to_string();
+			const auto address = v.address().to_string();
+			const auto port = v.port();
 
 			//
 			//	type - length - data
 			//
 			serialize_type_tag<boost::asio::ip::udp::endpoint>(os);
-			return os;
+			serialize_length(os, address.size() + sizeof(port));
+			write_binary(os, v.port());
+			return os << address;
 		}
 
 		std::ostream& serializer <boost::asio::ip::icmp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::icmp::endpoint const& v)
 		{
-			const std::string s = v.address().to_string();
+			const auto address = v.address().to_string();
+			const auto port = v.port();
 
 			//
 			//	type - length - data
 			//
 			serialize_type_tag<boost::asio::ip::icmp::endpoint>(os);
-			return os;
+			serialize_length(os, address.size() + sizeof(port));
+			write_binary(os, v.port());
+			return os << address;
 		}
 
 		
@@ -403,6 +407,36 @@ namespace cyng
 			return os << v;
 		}
 
+		
+		std::ostream& serializer <crypto::digest_md5, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_md5 const& digest)
+		{
+			serialize_type_tag<crypto::digest_md5>(os);
+			serialize_length(os, sizeof(crypto::digest_md5::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
+		std::ostream& serializer <crypto::digest_sha1, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_sha1 const& digest)
+		{
+			serialize_type_tag<crypto::digest_sha1>(os);
+			serialize_length(os, sizeof(crypto::digest_sha1::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
+		std::ostream& serializer <crypto::digest_sha256, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_sha256 const& digest)
+		{
+			serialize_type_tag<crypto::digest_sha256>(os);
+			serialize_length(os, sizeof(crypto::digest_sha256::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
+		
+		std::ostream& serializer <crypto::digest_sha512, SERIALIZE_BINARY>::write(std::ostream& os, crypto::digest_sha512 const& digest)
+		{
+			serialize_type_tag<crypto::digest_sha512>(os);
+			serialize_length(os, sizeof(crypto::digest_sha512::value_type));
+			write_binary(os, digest.data_);
+			return os;
+		}
 		
 		std::size_t serialize_length(std::ostream& os, std::size_t length)
 		{

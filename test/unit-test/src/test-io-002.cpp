@@ -10,10 +10,14 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/factory.h>
 #include <cyng/type.h>
-//#include <cyng/intrinsics/traits.hpp>
+#include <cyng/crypto/hash/md5.h>
+#include <cyng/crypto/hash/sha1.h>
+#include <cyng/crypto/hash/sha256.h>
+#include <cyng/crypto/hash/sha512.h>
 #include <cyng/io/serializer.h>
 #include <cyng/io/parser/parser.h>
 #include <boost/uuid/string_generator.hpp>
+#include <boost/math/constants/constants.hpp>
 
 namespace cyng
 {
@@ -95,25 +99,106 @@ namespace cyng
 			BOOST_ASSERT_MSG(f.is_open(), "bad state");
 
 			io::serialize_binary(f, make_object());	//	test NULL value
+
+			io::serialize_binary(f, make_object(true));	
+			io::serialize_binary(f, make_object(static_cast<char>(33)));
+			io::serialize_binary(f, make_object(boost::math::constants::e<float>()));	//	2.71828
+			io::serialize_binary(f, make_object(boost::math::constants::pi<double>()));	//	3.14159
+			//	differebt sizes on different compilers
+			//io::serialize_binary(f, make_object(boost::math::constants::phi<long double>()));	//	1.61803
+
+			io::serialize_binary(f, make_object(static_cast<std::uint8_t>(34)));
+			io::serialize_binary(f, make_object(static_cast<std::uint16_t>(3)));
+			io::serialize_binary(f, make_object(static_cast<std::uint32_t>(4)));
+			io::serialize_binary(f, make_object(static_cast<std::uint64_t>(5)));
+
+			io::serialize_binary(f, make_object(static_cast<std::int8_t>(35)));
+			io::serialize_binary(f, make_object(static_cast<std::int16_t>(7)));
+			io::serialize_binary(f, make_object(static_cast<std::int32_t>(8)));
+			io::serialize_binary(f, make_object(static_cast<std::int64_t>(9)));
+
 			io::serialize_binary(f, make_object(""));
-			io::serialize_binary(f, make_object(0xAA55AA55));
 			io::serialize_binary(f, make_object("hello, world!"));
- 			io::serialize_binary(f, make_object(boost::uuids::string_generator()("2f28413a-d69f-4fc6-b39b-14ff401b15d2")));
-			io::serialize_binary(f, make_object("OK"));
-// 			io::serialize_binary(f, cyng::buffer_factory("buffer"));
-			//io::serialize_binary(f, make_object(3.1415972));
+
+			io::serialize_binary(f, make_object(chrono::init_tp(2018, 4, 20, 6, 5, 32)));
+			io::serialize_binary(f, make_object(std::chrono::nanoseconds(10)));
+			io::serialize_binary(f, make_object(std::chrono::microseconds(11)));
+			io::serialize_binary(f, make_object(std::chrono::milliseconds(12)));
+			io::serialize_binary(f, make_object(std::chrono::seconds(13)));
+			io::serialize_binary(f, make_object(std::chrono::minutes(14)));
+			io::serialize_binary(f, make_object(std::chrono::hours(15)));
+			io::serialize_binary(f, make_object(cyng::chrono::to_dbl_time_point(chrono::init_tp(2018, 4, 20, 6, 5, 33))));
+			//io::serialize_binary(f, make_object(cyng::chrono::convert(std::chrono::system_clock::now())));
+
+			io::serialize_binary(f, make_object(cyng::version(1, 5)));
+			io::serialize_binary(f, make_object(cyng::revision(cyng::version(1, 6), cyng::version(7, 8))));
+
+			//code,
+			io::serialize_binary(f, make_object(cyng::ESBA));
+			//label,
+			//logging::severity,
+			io::serialize_binary(f, make_object(cyng::logging::severity::LEVEL_WARNING));
+			//buffer_t,
+			io::serialize_binary(f, make_object(cyng::buffer_t{16, 17, 18}));
+			//mac48,
+			io::serialize_binary(f, make_object(cyng::mac48(0x00, 0xFF, 0xB0, 0x4B, 0xBE, 0xAA)));
+			//mac64,
+			//color_8,
+			//color_16,
+		
+			//crypto::digest_md5,
+			io::serialize_binary(f, make_object(crypto::digest_md5(md5_hash("hash me"))));
+			//crypto::digest_sha1,
+			io::serialize_binary(f, make_object(crypto::digest_sha1(sha1_hash("hash me"))));
+			//crypto::digest_sha256,
+			io::serialize_binary(f, make_object(crypto::digest_sha256(sha256_hash("hash me"))));
+			//crypto::digest_sha512,
+			io::serialize_binary(f, make_object(crypto::digest_sha512(sha512_hash("hash me"))));
+
+			//object, 		//	embedded object - don't do this
+		
+			//tuple_t,
+			//vector_t,
+			//set_t,
+
+			//attr_map_t,		//	std::map<std::size_t, object>;
+			//attr_t,			//	std::pair<std::size_t, object>;
+			//param_map_t,	//	std::map<std::string, object>;
+			//param_t,		//	std::pair<std::string, object>;
+		
+			//lockable,
+		
+			//boost::system::error_code,
+			//boost::uuids::uuid,
+			io::serialize_binary(f, make_object(boost::uuids::string_generator()("2f28413a-d69f-4fc6-b39b-14ff401b15d2")));
+			//boost::filesystem::path,
+			io::serialize_binary(f, make_object(boost::filesystem::path("demo.txt")));
+			//boost::asio::ip::tcp::endpoint,
+			io::serialize_binary(f, make_object(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20015)));
+			//boost::asio::ip::udp::endpoint,
+			io::serialize_binary(f, make_object(boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20016)));
+			//boost::asio::ip::icmp::endpoint,
+			io::serialize_binary(f, make_object(boost::asio::ip::icmp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 20017)));
+			//boost::asio::ip::address,
+			io::serialize_binary(f, make_object(boost::asio::ip::address::from_string("172.16.254.1")));
+
+			//io::serialize_binary(f, make_object(0xAA55AA55)); // not portable!
 
 			//
 			//	dealing with large values
 			//
-// 			cyng::random_string_factory rsf("abcdefghijklmnopqrstuvwxyz");
-// 			io::serialize_binary(f, rsf(1000));
+#ifdef _TEST_LARGE_TYPES
+			cyng::random_string_factory rsf("abcdefghijklmnopqrstuvwxyz");
+ 			io::serialize_binary(f, rsf(1000));
+#endif
 
 			//
 			//	custom objects
 			//
+#ifdef _TEST_CUSTOM_TYPES
 			custom c;
 			io::serialize_binary(f, make_object(c));
+#endif
 		}
 		{
 			std::fstream f(file_name, std::ios::binary | std::ios::in);

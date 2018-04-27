@@ -12,7 +12,7 @@ namespace cyng
 {	
 	std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const& tp)
 	{
-		const auto r = chrono::convert(tp);
+		const auto r = chrono::to_dbl_time_point(tp);
 		return os << r;
 	}
 	

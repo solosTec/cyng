@@ -168,13 +168,22 @@ namespace cyng
 			return std::chrono::minutes(60 * (utc_tt.tm_hour - local_tt.tm_hour) + (utc_tt.tm_min - local_tt.tm_min));
 		}
         
-		std::pair<std::time_t, double> convert(std::chrono::system_clock::time_point const& tp)
+		std::pair<std::time_t, double> to_dbl_time_point(std::chrono::system_clock::time_point const& tp)
 		{
+			//	Probably precision get lost.
 			const std::time_t tt = std::chrono::system_clock::to_time_t(tp);
 			dbl_seconds sec  = tp - std::chrono::system_clock::from_time_t(tt);
 			BOOST_ASSERT_MSG(sec.count() < 1.0, "error in fractional second");
 			return std::make_pair(tt, sec.count());
-		}		
+		}
+
+		std::chrono::system_clock::time_point to_time_point(dbl_time_point const& dtp)
+		{
+			//	Probably precision get lost.
+			return std::chrono::system_clock::from_time_t(dtp.first)
+				+ std::chrono::duration_cast<std::chrono::microseconds>(dbl_seconds(dtp.second));
+		}
+
                 
 		std::chrono::system_clock::duration duration_of_day(std::chrono::system_clock::time_point const& tp)
 		{

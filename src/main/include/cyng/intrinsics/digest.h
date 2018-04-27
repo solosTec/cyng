@@ -32,6 +32,7 @@ namespace cyng
 			digest_md5();
 			digest_md5(value_type const& v);
 			digest_md5(value_type&& v);
+			digest_md5(digest_md5 const& v);
 			value_type data_;
 		};
 		
@@ -45,6 +46,7 @@ namespace cyng
 			digest_sha1();
 			digest_sha1(value_type const& v);
 			digest_sha1(value_type&& v);
+			digest_sha1(digest_sha1 const& v);
 			value_type data_;
 		};
 		
@@ -58,6 +60,7 @@ namespace cyng
 			digest_sha256();
 			digest_sha256(value_type const& v);
 			digest_sha256(value_type&& v);
+			digest_sha256(digest_sha256 const& v);
 			value_type data_;
 		};
 
@@ -71,6 +74,7 @@ namespace cyng
 			digest_sha512();
 			digest_sha512(value_type const& v);
 			digest_sha512(value_type&& v);
+			digest_sha512(digest_sha512 const& v);
 			value_type data_;
 		};
 	}

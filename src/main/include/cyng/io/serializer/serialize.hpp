@@ -76,7 +76,10 @@ namespace cyng
 					case type_code::TC_DOUBLE:
 						do_write<typename std::tuple_element<type_code::TC_DOUBLE, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
-// 			// 		const char*,
+					case type_code::TC_FLOAT80:
+						do_write<typename std::tuple_element<type_code::TC_FLOAT80, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					// 			// 		const char*,
 					case type_code::TC_UINT8:
 						do_write<typename std::tuple_element<type_code::TC_UINT8, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
@@ -138,6 +141,9 @@ namespace cyng
 					case type_code::TC_CODE:
 						do_write<typename std::tuple_element<type_code::TC_CODE, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
+					case type_code::TC_SEVERITY:
+						do_write<typename std::tuple_element<type_code::TC_SEVERITY, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
 					case type_code::TC_BUFFER:
 						do_write<typename std::tuple_element<type_code::TC_BUFFER, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
@@ -154,7 +160,19 @@ namespace cyng
 						do_write<typename std::tuple_element<type_code::TC_COLOR_16, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
 						
-// 			
+					case type_code::TC_DIGEST_MD5:
+						do_write<typename std::tuple_element<type_code::TC_DIGEST_MD5, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					case type_code::TC_DIGEST_SHA1:
+						do_write<typename std::tuple_element<type_code::TC_DIGEST_SHA1, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					case type_code::TC_DIGEST_SHA256:
+						do_write<typename std::tuple_element<type_code::TC_DIGEST_SHA256, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+					case type_code::TC_DIGEST_SHA512:
+						do_write<typename std::tuple_element<type_code::TC_DIGEST_SHA512, cyng::traits::tag_t>::type, S>(os, obj);
+						break;
+						// 			
 					case type_code::TC_TUPLE:
 						do_write<typename std::tuple_element<type_code::TC_TUPLE, cyng::traits::tag_t>::type, S>(os, obj);
 						break;

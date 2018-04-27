@@ -17,6 +17,7 @@
 
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/random_generator.hpp>
+#include <boost/process/environment.hpp>
 
 namespace cyng 
 {
@@ -170,8 +171,12 @@ namespace cyng
 				stack_.push(make_object(tag_));
 				break;
 
-			case code::NOW:	//	push current timestamp onto stack
+			case code::NOW:	//	push current timestamp on stack
 				stack_.push(make_object(std::chrono::system_clock::now()));
+				break;
+
+			case code::PID:	//	push current process id on stack
+				stack_.push(make_object(boost::this_process::get_id()));
 				break;
 
 				//

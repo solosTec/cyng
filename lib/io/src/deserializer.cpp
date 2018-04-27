@@ -35,7 +35,10 @@ namespace cyng
 // 				case TC_CHAR:
 				case TC_FLOAT:			return deserialize_object<TC_FLOAT>(is);
 				case TC_DOUBLE:			return deserialize_object<TC_DOUBLE>(is);
-				case TC_FLOAT80:		return deserialize_object<TC_FLOAT80>(is);
+				case TC_FLOAT80:		
+					//	different sizes on different compilers
+					BOOST_ASSERT(size == sizeof(long double));
+					return deserialize_object<TC_FLOAT80>(is);
 // 		// 		const char*,
 				case TC_UINT8:			return deserialize_object<TC_UINT8>(is);
 				case TC_UINT16:			
@@ -50,7 +53,9 @@ namespace cyng
 				case TC_INT32:			return deserialize_object<TC_INT32>(is);
 				case TC_INT64:			return deserialize_object<TC_INT64>(is);
 				case TC_STRING:			return deserialize_object<TC_STRING>(is);
-				case TC_TIME_POINT:		return deserialize_object<TC_TIME_POINT>(is);
+				case TC_TIME_POINT:		
+					BOOST_ASSERT(size == sizeof(chrono::dbl_time_point));
+					return deserialize_object<TC_TIME_POINT>(is);
 				case TC_NANO_SECOND:	return deserialize_object<TC_NANO_SECOND>(is);
 				case TC_MICRO_SECOND:	return deserialize_object<TC_MICRO_SECOND>(is);
 				case TC_MILLI_SECOND:	return deserialize_object<TC_MILLI_SECOND>(is);
@@ -58,10 +63,13 @@ namespace cyng
 				case TC_MINUTE:			return deserialize_object<TC_MINUTE>(is);
 				case TC_HOUR:			return deserialize_object<TC_HOUR>(is);
 // 				
- 				case TC_DBL_TP:			return deserialize_object<TC_DBL_TP>(is);
+ 				case TC_DBL_TP:			
+					BOOST_ASSERT(size == sizeof(chrono::dbl_time_point));
+					return deserialize_object<TC_DBL_TP>(is);
  				case TC_VERSION:		return deserialize_object<TC_VERSION>(is);
  				case TC_REVISION:		return deserialize_object<TC_REVISION>(is);
  				case TC_CODE:			return deserialize_object<TC_CODE>(is);
+				case TC_SEVERITY:		return deserialize_object<TC_SEVERITY>(is);
  				case TC_BUFFER:			return deserialize_object<TC_BUFFER>(is);
  				case TC_MAC48:			return deserialize_object<TC_MAC48>(is);
  				case TC_MAC64:			return deserialize_object<TC_MAC64>(is);
@@ -99,6 +107,16 @@ namespace cyng
 					return make_object(eod());
 				
 				default:
+#ifdef DEBUG_CYY_IO
+					std::cout
+						<< "tag: "
+						<< traits::get_type_name(tag)
+						<< " ("
+						<< tag
+						<< ") - not implemented"
+						<< std::endl
+						;
+#endif
 					break;
 			}
 			return make_object();

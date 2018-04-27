@@ -63,10 +63,15 @@ namespace std
 	
 	size_t hash<cyng::code>::operator()(cyng::code v) const noexcept
 	{
-		return boost::hash_value(static_cast<std::uint16_t>(v));
+        return boost::hash_value(static_cast<std::uint8_t>(v));
 	}
 	
-	size_t hash<cyng::label>::operator()(cyng::label const& v) const noexcept
+    size_t hash<cyng::logging::severity>::operator()(cyng::logging::severity v) const noexcept
+    {
+        return boost::hash_value(static_cast<std::uint16_t>(v));
+    }
+
+    size_t hash<cyng::label>::operator()(cyng::label const& v) const noexcept
 	{
 		return boost::hash_value(v.name_);
 	}

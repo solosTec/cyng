@@ -20,6 +20,7 @@ set (async_h
     src/main/include/cyng/async/pool.h
     src/main/include/cyng/async/scheduler.h
     src/main/include/cyng/async/mux.h
+    src/main/include/cyng/async/task_fwd.h
     src/main/include/cyng/async/signal_handler.h
     src/main/include/cyng/async/task/base_task.h
     src/main/include/cyng/async/task/task.hpp

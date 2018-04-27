@@ -28,10 +28,9 @@ namespace cyng
 			LEVEL_FATAL,
 		};
 		
-		//	enumeration types (both scoped and unscoped) can have overloaded operators
-		std::ostream& operator<<(std::ostream& os, severity s);
-
-	}	
+		severity to_severity(std::string const&);
+        std::string to_string(severity);
+    }
 }
 
 #endif	//	CYNG_LOG_SEVERITY_H

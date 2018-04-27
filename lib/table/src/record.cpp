@@ -32,6 +32,20 @@ namespace cyng
 		, data_(rec.data_)
 		, generation_(rec.generation_)
 		{}
+
+		record& record::operator=(record const& other)
+		{
+			if (this != &other)
+			{
+				meta_ = other.meta_;
+				key_ = other.key_;
+				data_ = other.data_;
+				generation_ = other.generation_;
+
+			}
+			return *this;
+		}
+
 		
 		bool record::empty() const
 		{

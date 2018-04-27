@@ -11,7 +11,6 @@
 #include <cstddef>
 #include <tuple>
 #include <functional>
-#include <boost/asio.hpp>	//	 boost/asio/ip/tcp.hpp
 #include <cyng/intrinsics/traits.hpp>
 
 namespace cyng 
@@ -21,6 +20,8 @@ namespace cyng
 		/**
 		 * Declare a tag list for all supported types.
 		 * Note that void is not a valid tuple element.
+		 *
+		 * Consider using Boost.Multiprecision
 		 */
 		using tag_t = std::tuple<
 		null,
@@ -206,7 +207,7 @@ namespace cyng
 		TC_CHAR 	= type_tag_traits<char>(),
 		TC_FLOAT	= type_tag_traits<float>(),
 		TC_DOUBLE	= type_tag_traits<double>(),
-		TC_FLOAT80	= type_tag_traits<long double>(),
+		TC_FLOAT80	= type_tag_traits<long double>(),	//	different sizes on different compilers
 // 		const char*,
 		TC_UINT8	= type_tag_traits<std::uint8_t>(), 
 		TC_UINT16	= type_tag_traits<std::uint16_t>(),
@@ -230,6 +231,7 @@ namespace cyng
 		TC_REVISION	= type_tag_traits<revision>(),
 		TC_CODE		= type_tag_traits<code>(),
 		TC_LABEL	= type_tag_traits<label>(),
+		TC_SEVERITY = type_tag_traits<logging::severity>(),
 		TC_BUFFER	= type_tag_traits<buffer_t>(),
 		TC_MAC48	= type_tag_traits<mac48>(),
 		TC_MAC64	= type_tag_traits<mac64>(),

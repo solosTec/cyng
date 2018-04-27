@@ -46,6 +46,7 @@ namespace cyng
 			
 		public:
 			virtual bool push(record_ptr ptr) = 0;
+			virtual void set_severity(severity) = 0;
 		};
 		
 		/**
@@ -68,6 +69,9 @@ namespace cyng
 			{
 				return false;
 			}
+
+			virtual void set_severity(severity) override
+			{}
 		};
 		
 		/**
@@ -139,6 +143,11 @@ namespace cyng
 				return true;
 			}
 			
+			virtual void set_severity(severity s) override
+			{
+				threshold_ = s;
+			}
+
 		private:
 			void write(typename log_base< R >::record_ptr ptr)
 			{
@@ -178,7 +187,7 @@ namespace cyng
 			
 			void create_backup_file()
 			{
-				std::pair<std::time_t, double> r = chrono::convert(std::chrono::system_clock::now());
+				std::pair<std::time_t, double> r = chrono::to_dbl_time_point(std::chrono::system_clock::now());
 				std::tm tm = cyng::chrono::convert_utc(r.first);
 
 				//	build a filename for backup file
@@ -284,6 +293,11 @@ namespace cyng
 				});
 				
 				return true;
+			}
+
+			virtual void set_severity(severity s) override
+			{
+				threshold_ = s;
 			}
 
 		private:
@@ -534,6 +548,11 @@ namespace cyng
 // 						;
 				}
 				return true;
+			}
+
+			virtual void set_severity(severity s) override
+			{
+				threshold_ = s;
 			}
 
 		private:

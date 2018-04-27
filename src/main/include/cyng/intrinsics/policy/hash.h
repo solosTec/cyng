@@ -67,7 +67,13 @@ namespace std
 		size_t operator()(cyng::code) const noexcept;
 	};
 
-	template<>
+    template<>
+    struct hash<cyng::logging::severity>
+    {
+        size_t operator()(cyng::logging::severity) const noexcept;
+    };
+
+    template<>
 	struct hash<cyng::label>
 	{
 		size_t operator()(cyng::label const&) const noexcept;
