@@ -19,6 +19,7 @@
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/numeric_parser.h>
 #include <cyng/parser/chrono_parser.h>
+#include <cyng/parser/buffer_parser.h>
 #include <cyng/intrinsics/sets.h>
 
 namespace cyng	
@@ -37,6 +38,7 @@ namespace cyng
 		boost::spirit::qi::rule<Iterator, object(), Skipper> 	r_start, r_obj, r_set, r_map;
 		chrono_parser<Iterator, Skipper>		r_chrono;
 		numeric_parser<Iterator>	r_numeric;
+		buffer_parser<Iterator>		r_buffer;
 		utf::string_parser<Iterator>	r_string;
 		utf::obj_quote_parser<Iterator>	r_quote;
 		

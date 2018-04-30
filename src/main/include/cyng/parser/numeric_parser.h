@@ -8,11 +8,6 @@
 #ifndef CYNG_PARSER_NUMERIC_H
 #define CYNG_PARSER_NUMERIC_H
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-  #pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
-
-
 #include <cyng/object.h>
 
 #include <boost/config/warning_disable.hpp>
