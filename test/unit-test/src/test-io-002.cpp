@@ -134,7 +134,7 @@ namespace cyng
 			io::serialize_binary(f, make_object(cyng::revision(cyng::version(1, 6), cyng::version(7, 8))));
 
 			//code,
-			io::serialize_binary(f, make_object(cyng::ESBA));
+            io::serialize_binary(f, make_object(cyng::code::ESBA));
 			//label,
 			//logging::severity,
 			io::serialize_binary(f, make_object(cyng::logging::severity::LEVEL_WARNING));
