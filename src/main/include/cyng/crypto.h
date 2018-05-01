@@ -5,8 +5,8 @@
  * 
  */ 
 
-#ifndef CYY_CRYPTO_H
-#define CYY_CRYPTO_H
+#ifndef CYNG_CRYPTO_H
+#define CYNG_CRYPTO_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
   #pragma once
@@ -28,9 +28,10 @@ namespace cyng
 		using EVP_KEY_ptr = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
 		using BIO_ptr = std::unique_ptr<BIO, decltype(&::BIO_free)>;
 		using BIO_ptr_all = std::unique_ptr<BIO, decltype(&::BIO_free_all)>;
+		using X509_ptr = std::unique_ptr<X509, decltype(&::X509_free)>;
 		using X509_REQ_ptr = std::unique_ptr<X509_REQ, decltype(&::X509_REQ_free)>;
 		//using X509_NAME_ptr = std::unique_ptr<X509_NAME, decltype(&::???)>;
-		
+
 	}
 }
 #endif

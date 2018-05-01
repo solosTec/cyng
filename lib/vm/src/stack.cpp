@@ -107,7 +107,7 @@ namespace cyng
 	bool stack::is_bp(std::size_t pos) const
 	{
 		if (!empty() && bp_ < size())
-// 		if (!empty() && bp_ < size() && type_code_test<types::CYY_INDEX>(c[bp_]))
+// 		if (!empty() && bp_ < size() && type_code_test<types::CYNG_INDEX>(c[bp_]))
 		{
 			//	start with last saved base pointer
 			std::size_t bp = stack::saved_bp();
@@ -117,7 +117,7 @@ namespace cyng
 				if (bp == 0)	break;
 
 				BOOST_ASSERT_MSG(bp < size(), "invalid base pointer");
-// 				BOOST_ASSERT_MSG(type_code_test< types::CYY_INDEX >(c[bp]), "not a base pointer (data type index expected)");
+// 				BOOST_ASSERT_MSG(type_code_test< types::CYNG_INDEX >(c[bp]), "not a base pointer (data type index expected)");
 
 				//
 				//	get next bp

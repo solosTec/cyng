@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 			std::cout
 				<< "docScript compiler v"
 				<< CYNG_VERSION
-				<< " (based on cyy v"
+				<< " (based on cyng v"
 				<< CYNG_VERSION
 				<< ")"
 				<< std::endl
@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
 // 				<< CYX_BUILD_TYPE
 // 				<< std::endl
 // 				<< "ODBC available: "
-// #if defined(CYY_ODBC_HEADER_AVAILABLE)
+// #if defined(CYNG_ODBC_HEADER_AVAILABLE)
 // 				<< "yes"
 // #else
 // 				<< "no"
@@ -219,7 +219,7 @@ int main(int argc, char* argv[]) {
 //  		cyng::docscript::driver d(incp, verbose);
 // 		return d.run(boost::filesystem::path(inp_file).filename()
 // 			, tmp
-// 			, cyy::verify_extension(out_file, "html")
+// 			, cyng::verify_extension(out_file, "html")
 // 			, vm["body"].as< bool >());
 
 	}

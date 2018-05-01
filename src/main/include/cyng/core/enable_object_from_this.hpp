@@ -24,7 +24,7 @@ namespace cyng
 	namespace core 
 	{
 		/**
-		 * In a future version this should enable to get an object pointer ffrom inside 
+		 * In a future version this should enable to get an object pointer from inside 
 		 * the wrapped class.
 		 */
 		template<class T>

@@ -83,7 +83,7 @@ namespace cyng
 				object get_value<std::int64_t>(sqlite3_stmt* stmt, int index)
 				{
 					const std::int64_t result = ::sqlite3_column_int64(stmt, index);
-					//return cyy::numeric_factory_cast<std::uint64_t>(result);
+					//return cyng::numeric_factory_cast<std::uint64_t>(result);
 					return make_object<std::uint64_t>(result);
 				}
 				
@@ -236,21 +236,21 @@ namespace cyng
 				
 				//	std::size_t
 				//template <>
-				//object get_value<cyy::index>(sqlite3_stmt* stmt, int index)
+				//object get_value<cyng::index>(sqlite3_stmt* stmt, int index)
 				//{
 				//	const auto result = boost::numeric::converter<std::size_t, int>::convert(::sqlite3_column_int64(stmt, index));
-				//	return cyy::index_factory(result);
+				//	return cyng::index_factory(result);
 				//}
 				//
 				////	std::ptrdiff_t
 				//template <>
-				//object get_value<cyy::diff>(sqlite3_stmt* stmt, int index)
+				//object get_value<cyng::diff>(sqlite3_stmt* stmt, int index)
 				//{
 				//	const std::ptrdiff_t result = ::sqlite3_column_int64(stmt, index);
-				//	return cyy::diff_factory(result);
+				//	return cyng::diff_factory(result);
 				//}
 				
-				//	cyy::mac48
+				//	cyng::mac48
 				template <>
 				object get_value<mac48>(sqlite3_stmt* stmt, int index)
 				{
@@ -262,7 +262,7 @@ namespace cyng
 						std::string input((const char*)ptr, size);
 
 						//	call mac parser
-						//const auto r = cyy::io::parse_mac48(input);
+						//const auto r = cyng::io::parse_mac48(input);
 						//return (r.second)
 						//	? make_object(r.first)
 						//	: make_object()
@@ -271,7 +271,7 @@ namespace cyng
 					return make_object();
 				}
 
-				//	cyy::mac64
+				//	cyng::mac64
 				template <>
 				object get_value<mac64>(sqlite3_stmt* stmt, int index)
 				{
@@ -283,7 +283,7 @@ namespace cyng
 						std::string input((const char*)ptr, size);
 
 						//	call mac parser
-						//const auto r = cyy::io::parse_mac64(input);
+						//const auto r = cyng::io::parse_mac64(input);
 						//return (r.second)
 						//	? make_object(r.first)
 						//	: make_object()
@@ -292,7 +292,7 @@ namespace cyng
 					return make_object();
 				}
 
-				//	cyy::attr_map_t
+				//	cyng::attr_map_t
 				template <>
 				object get_value<attr_map_t>(sqlite3_stmt* stmt, int index)
 				{
@@ -305,7 +305,7 @@ namespace cyng
 						result = "%[" + std::string((const char*)ptr, size) + "]";
 
 						//	call object parser
-						//auto r = cyy::io::parse_obj(result);
+						//auto r = cyng::io::parse_obj(result);
 						//return (r.second)
 						//	? r.first
 						//	: make_object()
@@ -327,7 +327,7 @@ namespace cyng
 						result = "%(" + std::string((const char*)ptr, size) + ")";
 						
 						//	call object parser
-						//auto r = cyy::io::parse_obj(result);
+						//auto r = cyng::io::parse_obj(result);
 						//return (r.second)
 						//	? r.first
 						//	: make_object()
@@ -380,7 +380,7 @@ namespace cyng
 						const std::string str((const char*)ptr, size);
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 						BOOST_ASSERT(str.size() < 40);
-						//return cyy::io::parse_ip_address(str).first;
+						//return cyng::io::parse_ip_address(str).first;
 					}
 					return make_object();
 				}
@@ -395,7 +395,7 @@ namespace cyng
 						const std::string str((const char*)ptr, size);
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 						BOOST_ASSERT(str.size() < 48);
-						//return cyy::io::parse_tcp_endpoint(str).first;
+						//return cyng::io::parse_tcp_endpoint(str).first;
 					}
 					return make_object();
 				}
@@ -410,7 +410,7 @@ namespace cyng
 				//		const std::string str((const char*)ptr, size);
 				//		BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 				//		BOOST_ASSERT(str.size() > 10);
-				//		return cyy::obis_factory(str);
+				//		return cyng::obis_factory(str);
 				//	}
 				//	return make_object();
 				//}
@@ -425,7 +425,7 @@ namespace cyng
 				//		const std::string str((const char*)ptr, size);
 				//		BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 				//		//BOOST_ASSERT(str.size() == 17);
-				//		return cyy::ctrl_address_factory(str);
+				//		return cyng::ctrl_address_factory(str);
 				//	}
 				//	return make_object();
 				//}
@@ -486,43 +486,43 @@ namespace cyng
 						case TC_SECOND:	return get_value_by_code<TC_SECOND>(*statement_, index);
 						case TC_MINUTE:	return get_value_by_code<TC_MINUTE>(*statement_, index);
 						case TC_HOUR:		return get_value_by_code<TC_HOUR>(*statement_, index);
-						//case cyy::types::CYY_DAYS:		return get_value_by_code<cyy::types::CYY_DAYS>(*statement_, index);
+						//case cyng::types::CYNG_DAYS:		return get_value_by_code<cyng::types::CYNG_DAYS>(*statement_, index);
 						
-	// 			//	data types defined in cyy library
+	// 			//	data types defined in cyng library
 						case TC_VERSION:	return get_value_by_code<TC_VERSION>(*statement_, index);
 						case TC_REVISION:	return get_value_by_code<TC_REVISION>(*statement_, index);
-	// 			CYY_OP,			//!<	VM operation
+	// 			CYNG_OP,			//!<	VM operation
 						case TC_BUFFER:	return get_value_by_code<TC_BUFFER>(*statement_, index);
-						//case cyy::types::CYY_INDEX:		return get_value_by_code<cyy::types::CYY_INDEX>(*statement_, index);
-						//case cyy::types::CYY_DIFF:		return get_value_by_code<cyy::types::CYY_DIFF>(*statement_, index);
+						//case cyng::types::CYNG_INDEX:		return get_value_by_code<cyng::types::CYNG_INDEX>(*statement_, index);
+						//case cyng::types::CYNG_DIFF:		return get_value_by_code<cyng::types::CYNG_DIFF>(*statement_, index);
 	// 			TC_COLOR_8,		//!<	color with 8 bits per channel
 	// 			TC_COLOR_16,	//!<	color with 16 bits per channel
 						case TC_MAC48:			return get_value_by_code<TC_MAC48>(*statement_, index);
 						case TC_MAC64:			return get_value_by_code<TC_MAC64>(*statement_, index);
-							// 			CYY_MD5,	//!<	md5 digest
-	// 			CYY_SHA1,	//!<	sha1 digest
-	// 			CYY_SHA512,	//!<	sha512 digest
+							// 			CYNG_MD5,	//!<	md5 digest
+	// 			CYNG_SHA1,	//!<	sha1 digest
+	// 			CYNG_SHA512,	//!<	sha512 digest
 	// 			
 						//	std::map< std::size_t, object >
 						case TC_ATTR_MAP:	return get_value_by_code<TC_ATTR_MAP>(*statement_, index);
 						//	std::map< std::string, object >
 						case TC_PARAM_MAP:	return get_value_by_code<TC_PARAM_MAP>(*statement_, index);
-	// 			CYY_ATTRIBUTE,	//!<	std::pair<std::size_t, object>
-	// 			CYY_PARAMETER,	//!<	std::pair<std::string, object>
-	// 			CYY_TUPLE,		//!<	std::list<object>
-	// 			CYY_VECTOR,		//!<	std::vector<object>
-	// 			CYY_SET,		//!<	std::set<object>
-	// 			CYY_LOCKABLE,		//!<	std::pair<T,mutex>
-	// 			CYY_TABLE,		//!<	defined in CYY store library
+	// 			CYNG_ATTRIBUTE,	//!<	std::pair<std::size_t, object>
+	// 			CYNG_PARAMETER,	//!<	std::pair<std::string, object>
+	// 			CYNG_TUPLE,		//!<	std::list<object>
+	// 			CYNG_VECTOR,		//!<	std::vector<object>
+	// 			CYNG_SET,		//!<	std::set<object>
+	// 			CYNG_LOCKABLE,		//!<	std::pair<T,mutex>
+	// 			CYNG_TABLE,		//!<	defined in CYY store library
 	// 			
 	// 			//	datatypes from boost library
 						case TC_UUID:	return get_value_by_code<TC_UUID>(*statement_, index);
 						case TC_FS_PATH:	return get_value_by_code<TC_FS_PATH>(*statement_, index);
-	// 			CYY_BOOST_ERROR,	//!<	boost::system::error_code
+	// 			CYNG_BOOST_ERROR,	//!<	boost::system::error_code
 						case TC_IP_ADDRESS:		return get_value_by_code<TC_IP_ADDRESS>(*statement_, index);
 						case TC_IP_TCP_ENDPOINT: 	return get_value_by_code<TC_IP_TCP_ENDPOINT>(*statement_, index);
-	// 			CYY_BOOST_TCP_SOCKET,	//!<	boost::asio::ip::tcp::socket
-	// 			CYY_BOOST_TRIBOOL,		//!<	boost::logic::tribool
+	// 			CYNG_BOOST_TCP_SOCKET,	//!<	boost::asio::ip::tcp::socket
+	// 			CYNG_BOOST_TRIBOOL,		//!<	boost::logic::tribool
 
 							break;
 

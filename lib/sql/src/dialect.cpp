@@ -148,7 +148,7 @@ namespace cyng
 					case TC_SECOND:			return "BIGINT";	
 					case TC_MINUTE:			return "BIGINT";	
 					case TC_HOUR:			return "BIGINT";	
-// 					case CYY_DAYS:			return "BIGINT";	
+// 					case CYNG_DAYS:			return "BIGINT";	
 					case TC_VERSION:		return "INT UNSIGNED";
 					case TC_REVISION:		return "BIGINT UNSIGNED";
 					case TC_CODE:			return "INT UNSIGNED";
@@ -212,7 +212,7 @@ namespace cyng
 					case TC_SECOND:			return "INT";	
 					case TC_MINUTE:			return "INT";	
 					case TC_HOUR:			return "INT";	
-// 					case CYY_DAYS:			return "INT";	
+// 					case CYNG_DAYS:			return "INT";	
 					case TC_VERSION:		return "INT";
 					case TC_REVISION:		return "INT";
 					case TC_CODE:			return "INT";
@@ -414,15 +414,15 @@ namespace cyng
 					
 					case TC_UUID:			return "uuid";
 					case TC_FS_PATH:		return "varchar(1024)";
-	//				case CYY_BOOST_ERROR:	return "ec";
-// 					case CYY_BOOST_IP_ADDRESS:		
+	//				case CYNG_BOOST_ERROR:	return "ec";
+// 					case CYNG_BOOST_IP_ADDRESS:		
 // 						BOOST_ASSERT(width == 40 || width == -1);
 // 						return "CHAR(40)";	//	!<	IPv4 and IPv6 as string
-// 					case CYY_BOOST_TCP_ENDPOINT:	
+// 					case CYNG_BOOST_TCP_ENDPOINT:	
 // 						BOOST_ASSERT(width == 48 || width == -1);
 // 						return "CHAR(48)";	//	address and port as string e.g. [ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65000
-	//				case CYY_BOOST_TRIBOOL:	return "tribool";
-	//				case CYY_ARRAY:			return "[]";
+	//				case CYNG_BOOST_TRIBOOL:	return "tribool";
+	//				case CYNG_ARRAY:			return "[]";
 						default:
 							break;
 					}
@@ -487,15 +487,15 @@ namespace cyng
 			
 			case TC_UUID:			return "CHARACTER(36)";
 			case TC_FS_PATH:		return "VARCHAR(1024)";
-//				case CYY_BOOST_ERROR:	return "ec";
-// 					case CYY_BOOST_IP_ADDRESS:		
+//				case CYNG_BOOST_ERROR:	return "ec";
+// 					case CYNG_BOOST_IP_ADDRESS:		
 // 						BOOST_ASSERT(width == 40 || width == -1);
 // 						return "CHAR(40)";	//	!<	IPv4 and IPv6 as string
-// 					case CYY_BOOST_TCP_ENDPOINT:	
+// 					case CYNG_BOOST_TCP_ENDPOINT:	
 // 						BOOST_ASSERT(width == 48 || width == -1);
 // 						return "CHAR(48)";	//	address and port as string e.g. [ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65000
-//				case CYY_BOOST_TRIBOOL:	return "tribool";
-//				case CYY_ARRAY:			return "[]";
+//				case CYNG_BOOST_TRIBOOL:	return "tribool";
+//				case CYNG_ARRAY:			return "[]";
 				default:
 					break;
 			}

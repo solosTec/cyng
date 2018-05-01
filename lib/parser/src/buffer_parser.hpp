@@ -12,7 +12,7 @@
 #include <cyng/factory/factory.hpp>
 
 #include <boost/spirit/home/support/attributes.hpp>	//	transform_attribute
-#include <boost/spirit/include/phoenix.hpp>	//	enable assignment of values like cyy::object
+#include <boost/spirit/include/phoenix.hpp>	//	enable assignment of values like cyng::object
 	
 namespace cyng
 {

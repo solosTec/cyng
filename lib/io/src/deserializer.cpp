@@ -107,7 +107,7 @@ namespace cyng
 					return make_object(eod());
 				
 				default:
-#ifdef DEBUG_CYY_IO
+#ifdef DEBUG_CYNG_IO
 					std::cout
 						<< "tag: "
 						<< traits::get_type_name(tag)

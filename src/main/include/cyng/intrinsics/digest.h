@@ -78,7 +78,6 @@ namespace cyng
 			value_type data_;
 		};
 	}
-
 }
 
 #include <functional>

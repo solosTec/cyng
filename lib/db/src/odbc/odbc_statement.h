@@ -90,10 +90,10 @@ namespace cyng
 				//bool bind_value(int, bool);
 				//bool bind_value(int, float);
 				//bool bind_value(int, double);
-				//bool bind_value(int, cyy::buffer_t const*);
-				//bool bind_value(int, cyy::version);
-				//bool bind_value(int, cyy::revision);
-				//bool bind_value(int, cyy::chrono::days);
+				//bool bind_value(int, cyng::buffer_t const*);
+				//bool bind_value(int, cyng::version);
+				//bool bind_value(int, cyng::revision);
+				//bool bind_value(int, cyng::chrono::days);
 				//bool bind_value(int, std::chrono::nanoseconds);
 				//bool bind_value(int, std::chrono::microseconds);
 				//bool bind_value(int, std::chrono::milliseconds);
@@ -101,8 +101,8 @@ namespace cyng
 				//bool bind_value(int, std::chrono::minutes);
 				//bool bind_value(int, std::chrono::hours);
 				//bool bind_value(int, std::chrono::system_clock::time_point);
-				//bool bind_value(int, cyy::attr_t const&);
-				//bool bind_value(int, cyy::param_t const&);
+				//bool bind_value(int, cyng::attr_t const&);
+				//bool bind_value(int, cyng::param_t const&);
 				//
 				////	m2m data types
 				//bool bind_value(int, cyng::m2m::obis const&);

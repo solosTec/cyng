@@ -249,7 +249,7 @@ namespace cyng
 					{
 						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
 						//	the content before returning.
-						//const std::string str = cyy::io::to_string(*ptr, cyy::io::custom_callback());
+						//const std::string str = cyng::io::to_string(*ptr, cyng::io::custom_callback());
 						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));
@@ -262,7 +262,7 @@ namespace cyng
 					{
 						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
 						//	the content before returning.
-						//const std::string str = cyy::io::to_string(*ptr, cyy::io::custom_callback());
+						//const std::string str = cyng::io::to_string(*ptr, cyng::io::custom_callback());
 						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));
@@ -275,7 +275,7 @@ namespace cyng
 					{
 						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
 						//	the content before returning.
-						//const std::string str = cyy::io::to_literal(*ptr, cyy::io::custom_callback());
+						//const std::string str = cyng::io::to_literal(*ptr, cyng::io::custom_callback());
 						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));
@@ -288,7 +288,7 @@ namespace cyng
 					{
 						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
 						//	the content before returning.
-						//const std::string str = cyy::io::to_literal(*ptr, cyy::io::custom_callback());
+						//const std::string str = cyng::io::to_literal(*ptr, cyng::io::custom_callback());
 						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));

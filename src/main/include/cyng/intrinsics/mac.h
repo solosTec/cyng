@@ -130,7 +130,7 @@ namespace cyng
 	/** @brief EUI-64
 	 * Media access control address (8 bytes == 64 bits)
 	 * @see https://standards.ieee.org/develop/regauth/tut/eui.pdf
-	 * @see cyy::mac48
+	 * @see cyng::mac48
 	 */
 	class mac64
 	{

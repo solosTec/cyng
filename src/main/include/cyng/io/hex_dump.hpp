@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <boost/assert.hpp>
 #include <boost/range.hpp>
-//#include <cyy/util/brute_cast.hpp>
+//#include <cyng/util/brute_cast.hpp>
 
 namespace cyng 
 {
@@ -32,7 +32,7 @@ namespace cyng
 		 *	@code
 		 *		const char* data;
 		 *		size_t size;
-		 *		cyy::io::hex_dump hd;
+		 *		cyng::io::hex_dump hd;
 		 *		hd( std::cout, data, data + size );
 		 *	@endcode
 		 * 

@@ -154,7 +154,7 @@ namespace cyng
 					dia.run(stmt);
 					return make_object();
 					//const std::int64_t result = ::sqlite3_column_int64(stmt, index);
-					//return cyy::numeric_factory_cast<std::uint64_t>(result);
+					//return cyng::numeric_factory_cast<std::uint64_t>(result);
 				}
 				
 				template <>
@@ -290,49 +290,49 @@ namespace cyng
 			//	object get_value<std::chrono::nanoseconds>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const std::chrono::nanoseconds::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::nanoseconds_factory(result);
+			//		return cyng::nanoseconds_factory(result);
 			//	}
 			//	
 			//	template <>
 			//	object get_value<std::chrono::microseconds>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const std::chrono::microseconds::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::microseconds_factory(result);
+			//		return cyng::microseconds_factory(result);
 			//	}
 			//	
 			//	template <>
 			//	object get_value<std::chrono::milliseconds>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const std::chrono::milliseconds::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::milliseconds_factory(result);
+			//		return cyng::milliseconds_factory(result);
 			//	}
 			//	
 			//	template <>
 			//	object get_value<std::chrono::seconds>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const std::chrono::seconds::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::seconds_factory(result);
+			//		return cyng::seconds_factory(result);
 			//	}
 			//	
 			//	template <>
 			//	object get_value<std::chrono::minutes>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const std::chrono::minutes::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::minutes_factory(result);
+			//		return cyng::minutes_factory(result);
 			//	}
 			//	
 			//	template <>
 			//	object get_value<std::chrono::hours>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const std::chrono::hours::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::hours_factory(result);
+			//		return cyng::hours_factory(result);
 			//	}
 			//	
 			//	template <>
-			//	object get_value<cyy::chrono::days>(SQLHSTMT stmt, int index, std::size_t)
+			//	object get_value<cyng::chrono::days>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
-			//		const cyy::chrono::days::rep result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::days_factory(result);
+			//		const cyng::chrono::days::rep result = ::sqlite3_column_int64(stmt, index);
+			//		return cyng::days_factory(result);
 			//	}
 			//	
 				template <>
@@ -387,7 +387,7 @@ namespace cyng
 					//dia.run(stmt);
 					//return make_object();
 
-					//cyy::buffer_t result;
+					//cyng::buffer_t result;
 					//int size = ::sqlite3_column_bytes(stmt, index);
 					//if (size > 0)	{
 					//	result.resize(size);
@@ -400,21 +400,21 @@ namespace cyng
 			//	
 			//	//	std::size_t
 			//	template <>
-			//	object get_value<cyy::index>(SQLHSTMT stmt, int index, std::size_t)
+			//	object get_value<cyng::index>(SQLHSTMT stmt, int index, std::size_t)
 			//	{
 			//		const auto result = boost::numeric::converter<std::size_t, int>::convert(::sqlite3_column_int64(stmt, index));
-			//		return cyy::index_factory(result);
+			//		return cyng::index_factory(result);
 			//	}
 			//	
 			//	//	std::ptrdiff_t
 			//	template <>
-			//	object get_value<cyy::diff>(SQLHSTMT stmt, int index)
+			//	object get_value<cyng::diff>(SQLHSTMT stmt, int index)
 			//	{
 			//		const std::ptrdiff_t result = ::sqlite3_column_int64(stmt, index);
-			//		return cyy::diff_factory(result);
+			//		return cyng::diff_factory(result);
 			//	}
 				
-				//	cyy::mac48
+				//	cyng::mac48
 				template <>
 				object get_value<mac48>(SQLHSTMT stmt, int index, std::size_t size)
 				{
@@ -423,7 +423,7 @@ namespace cyng
 					if (str.size() > 17)
 					{
 						//	call mac parser
-						//const auto r = cyy::io::parse_mac48(str);
+						//const auto r = cyng::io::parse_mac48(str);
 						//return (r.second)
 						//	?make_object(r.first)
 						//	:make_object()
@@ -432,7 +432,7 @@ namespace cyng
 					return make_object();
 				}
 
-				//	cyy::mac64
+				//	cyng::mac64
 				template <>
 				object get_value<mac64>(SQLHSTMT stmt, int index, std::size_t size)
 				{
@@ -441,7 +441,7 @@ namespace cyng
 					if (str.size() > 18)
 					{
 						//	call mac parser
-						//const auto r = cyy::io::parse_mac48(str);
+						//const auto r = cyng::io::parse_mac48(str);
 						//return (r.second)
 						//	?make_object(r.first)
 						//	:make_object()
@@ -450,9 +450,9 @@ namespace cyng
 					return make_object();
 				}
 
-			//	//	cyy::attr_map_t
+			//	//	cyng::attr_map_t
 			//	template <>
-			//	object get_value<cyy::attr_map_t>(SQLHSTMT stmt, int index)
+			//	object get_value<cyng::attr_map_t>(SQLHSTMT stmt, int index)
 			//	{
 			//		const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
 			//		if (ptr != NULL)
@@ -463,7 +463,7 @@ namespace cyng
 			//			result = "%[" + std::string((const char*)ptr, size) + "]";
 
 			//			//	call object parser
-			//			auto r = cyy::io::parse_obj(result);
+			//			auto r = cyng::io::parse_obj(result);
 			//			return (r.second)
 			//				? r.first
 			//				:make_object()
@@ -472,9 +472,9 @@ namespace cyng
 			//		return make_object();
 			//	}
 
-			//	//	cyy::param_map_t
+			//	//	cyng::param_map_t
 			//	template <>
-			//	object get_value<cyy::param_map_t>(SQLHSTMT stmt, int index)
+			//	object get_value<cyng::param_map_t>(SQLHSTMT stmt, int index)
 			//	{
 			//		const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
 			//		if (ptr != NULL)
@@ -485,7 +485,7 @@ namespace cyng
 			//			result = "%(" + std::string((const char*)ptr, size) + ")";
 			//			
 			//			//	call object parser
-			//			auto r = cyy::io::parse_obj(result);
+			//			auto r = cyng::io::parse_obj(result);
 			//			return (r.second)
 			//				? r.first
 			//				:make_object()
@@ -518,7 +518,7 @@ namespace cyng
 			//			BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 			//			BOOST_ASSERT(str.size() < 1024);
 			//			
-			//			return cyy::path_factory(str);
+			//			return cyng::path_factory(str);
 			//		}
 			//		return make_object();
 			//	}
@@ -533,7 +533,7 @@ namespace cyng
 			//			const std::string str((const char*)ptr, size);
 			//			BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 			//			BOOST_ASSERT(str.size() < 40);
-			//			return cyy::io::parse_ip_address(str).first;
+			//			return cyng::io::parse_ip_address(str).first;
 			//		}
 			//		return make_object();
 			//	}
@@ -548,7 +548,7 @@ namespace cyng
 			//			const std::string str((const char*)ptr, size);
 			//			BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 			//			BOOST_ASSERT(str.size() < 48);
-			//			return cyy::io::parse_tcp_endpoint(str).first;
+			//			return cyng::io::parse_tcp_endpoint(str).first;
 			//		}
 			//		return make_object();
 			//	}
@@ -620,7 +620,7 @@ namespace cyng
 	//// 			//	datatypes from boost library
 						case TC_UUID:	return get_value_by_code<TC_UUID>(statement_->stmt_, index, size);
 						//case TC_FS_PATH:	return get_value_by_code<TC_FS_PATH>(statement_->stmt_, index, size);
-							// 			CYY_BOOST_ERROR,	//!<	boost::system::error_code
+							// 			CYNG_BOOST_ERROR,	//!<	boost::system::error_code
 						//case TC_IP_ADDRESS:		return get_value_by_code<TC_IP_ADDRESS>(statement_->stmt_, index, size);
 						//case TC_IP_TCP_ENDPOINT: 	return get_value_by_code<TC_IP_TCP_ENDPOINT>(statement_->stmt_, index, size);
 

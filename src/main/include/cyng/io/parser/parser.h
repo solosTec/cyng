@@ -281,4 +281,4 @@ namespace cyng
 	
 }	//	cyng
 
-#endif // CYY_IO_NATIVE_PARSER_H
+#endif // CYNG_IO_NATIVE_PARSER_H

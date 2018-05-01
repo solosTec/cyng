@@ -101,7 +101,7 @@ namespace cyng
 	 *
 	 *	Example:
 	 *	@code
-	 vector_t vec = cyy::code_generator( "1", 2, std::chrono::seconds(3));
+	 vector_t vec = cyng::code_generator( "1", 2, std::chrono::seconds(3));
 	 *	@endcode
 	 */
 	template < typename ...Args >

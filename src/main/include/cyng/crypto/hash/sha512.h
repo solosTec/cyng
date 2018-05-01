@@ -5,8 +5,8 @@
  * 
  */ 
 
-#ifndef CYY_CRYPTO_SHA512_H
-#define CYY_CRYPTO_SHA512_H
+#ifndef CYNG_CRYPTO_SHA512_H
+#define CYNG_CRYPTO_SHA512_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
   #pragma once
@@ -43,5 +43,5 @@ namespace cyng
 	crypto::digest_sha512::value_type sha512_hash(buffer_t const&);
 }
 
-#endif	//	CYY_CRYPTO_SHA512_H
+#endif	//	CYNG_CRYPTO_SHA512_H
 

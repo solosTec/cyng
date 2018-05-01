@@ -8,7 +8,7 @@
 #include <cyng/factory.h>
 #include <cyng/io/parser/deserializer.h>
 
-#ifdef DEBUG_CYY_IO
+#ifdef DEBUG_CYNG_IO
 #include <cyng/io/serializer.h>
 #endif
 
@@ -103,7 +103,7 @@ namespace cyng
 	
 	void parser::next(object&& obj)
 	{
-#ifdef DEBUG_CYY_IO
+#ifdef DEBUG_CYNG_IO
 		std::stringstream ss;
 		io::serialize_plain(std::cout, obj);
 		std::cout << std::endl;
@@ -119,7 +119,7 @@ namespace cyng
 			return state_;
 		}
 		
-#ifdef DEBUG_CYY_IO
+#ifdef DEBUG_CYNG_IO
 		std::cout
 			<< "type: "
 			<< traits::get_type_name(type_.type())
@@ -243,7 +243,7 @@ namespace cyng
 		{
 			BOOST_ASSERT(pos_ != size_);
 			source_[pos_++] = c;
-#ifdef DEBUG_CYY_IO
+#ifdef DEBUG_CYNG_IO
 			if (is_complete())
 			{
 				std::cout

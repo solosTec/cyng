@@ -91,7 +91,7 @@ namespace cyng
 				bool bind_value(SQLHSTMT stmt, SQLSMALLINT index, T const* ptr, std::size_t column_size)
 				{
 #ifdef _DEBUG
-					//std::cerr << cyy::demangle<T>() << " NOT SEPCIALIZED" << std::endl;
+					//std::cerr << cyng::demangle<T>() << " NOT SEPCIALIZED" << std::endl;
 #endif
 					return false;
 				}
@@ -437,7 +437,7 @@ namespace cyng
 			bool statement::bind_value_by_code(object obj, std::size_t column_size)
 			{
 				typedef typename cyng::traits::reverse_type< C >::type type;
-				//static_assert(!std::is_same<type, cyy::undef>::value, "undefined type");
+				//static_assert(!std::is_same<type, cyng::undef>::value, "undefined type");
 
 				BOOST_ASSERT_MSG(state_ == STATE_PREPARED, "STATE_PREPARED expected");
 
@@ -500,7 +500,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYY_MAC48 ==> std::string
+						//	CYNG_MAC48 ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 17);
 					}
 
@@ -509,7 +509,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYY_MAC64 ==> std::string
+						//	CYNG_MAC64 ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 19);
 					}
 
@@ -518,7 +518,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYY_ATTR_MAP ==> std::string
+						//	CYNG_ATTR_MAP ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 2048);
 					}
 
@@ -527,7 +527,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYY_PARAM_MAP ==> std::string
+						//	CYNG_PARAM_MAP ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 2048);
 					}
 
@@ -536,7 +536,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYY_ATTRIBUTE ==> std::string
+						//	CYNG_ATTRIBUTE ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 1024);
 					}
 
@@ -545,7 +545,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYY_PARAMETER ==> std::string
+						//	CYNG_PARAMETER ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 1024);
 					}
 
