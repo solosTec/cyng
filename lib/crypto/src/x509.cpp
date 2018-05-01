@@ -8,6 +8,7 @@
 #include <cyng/crypto/x509.h>
 #include <openssl/crypto.h>	//	OPENSSL_cleanse
 #include <iostream>
+#include <stdio.h>
 
 namespace cyng 
 {
@@ -88,16 +89,25 @@ namespace cyng
 
 		bool write_to_disk(EVP_PKEY * pkey, X509 * x509)
 		{
-			/* Open the PEM file for writing the key to disk. */
+            //  open the PEM file for writing the key to disk
+#if BOOST_OS_WINDOWS
 			FILE * pkey_file = nullptr;
-			auto err = ::fopen_s(&pkey_file, "key.pem", "wb");
+            auto err = fopen_s(&pkey_file, "key.pem", "wb");
 			if (err != 0)
 			{
 				std::cerr << "Unable to open \"key.pem\" for writing." << std::endl;
 				return false;
 			}
+#else
+            FILE * pkey_file = fopen("key.pem", "wb");
+            if (pkey_file == nullptr)
+            {
+                std::cerr << "Unable to open \"key.pem\" for writing." << std::endl;
+                return false;
+            }
 
-			/* Write the key to disk. */
+#endif
+            //  Write the key to disk
 			bool ret = ::PEM_write_PrivateKey(pkey_file, pkey, NULL, NULL, 0, NULL, NULL);
 			fclose(pkey_file);
 
@@ -107,7 +117,8 @@ namespace cyng
 				return false;
 			}
 
-			/* Open the PEM file for writing the certificate to disk. */
+#if BOOST_OS_WINDOWS
+            /* Open the PEM file for writing the certificate to disk. */
 			FILE * x509_file;
 			err = ::fopen_s(&x509_file, "cert.pem", "wb");
 			if (err != 0)
@@ -115,8 +126,17 @@ namespace cyng
 				std::cerr << "Unable to open \"cert.pem\" for writing." << std::endl;
 				return false;
 			}
+#else
+            //  open the PEM file for writing the certificate to disk
+            FILE * x509_file = fopen("cert.pem", "wb");
+            if (x509_file == nullptr)
+            {
+                std::cerr << "Unable to open \"cert.pem\" for writing." << std::endl;
+                return false;
+            }
+#endif
 
-			/* Write the certificate to disk. */
+            //  Write the certificate to disk
 			ret = ::PEM_write_X509(x509_file, x509);
 			fclose(x509_file);
 

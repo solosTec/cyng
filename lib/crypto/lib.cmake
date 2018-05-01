@@ -28,15 +28,17 @@ set (crypto_h
     src/main/include/cyng/crypto/x509.h
 )
 
-set (crypto_open_ssl
-	lib/crypto/src/openssl/applink.c
-)
-
-source_group("OpenSSL" FILES ${crypto_open_ssl})
-
 # define the crypto lib
 set (crypto_lib
   ${crypto_cpp}
   ${crypto_h}
-  ${crypto_open_ssl}
 )
+
+if(WIN32)
+	set (crypto_open_ssl
+		lib/crypto/src/openssl/applink.c
+	)
+
+	source_group("OpenSSL" FILES ${crypto_open_ssl})
+	list(APPEND crypto_lib ${crypto_open_ssl})
+endif()
