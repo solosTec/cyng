@@ -19,7 +19,18 @@ namespace cyng
 {
 	namespace crypto
 	{
+        /**
+         * @brief encrypt
+         * Only blocks with 16 bytes supported.
+         * @see https://wiki.openssl.org/index.php/EVP_Authenticated_Encryption_and_Decryption
+         * @see https://wiki.openssl.org/index.php/EVP_Symmetric_Encryption_and_Decryption
+         */
 		void encrypt(buffer_t&, buffer_t const&, aes_256_key const&);
+
+        /**
+         * @brief decrypt
+         * Only blocks with 16 bytes supported.
+         */
 		void decrypt(buffer_t&, buffer_t const&, aes_256_key const&);
 	}
 }
