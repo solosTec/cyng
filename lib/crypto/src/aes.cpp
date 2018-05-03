@@ -7,6 +7,7 @@
 
 #include <cyng/crypto/aes.h>
 #include <openssl/crypto.h>	//	OPENSSL_cleanse
+#include <boost/assert.hpp>
 
 namespace cyng 
 {
