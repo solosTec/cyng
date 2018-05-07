@@ -90,15 +90,17 @@ namespace cyng
 		}
 	}
 		
-	void parser::post_processing()
+	std::size_t parser::post_processing()
 	{
-		post_processing(stream_buffer_.size());
+		return post_processing(stream_buffer_.size());
 	}
 
-	void parser::post_processing(std::size_t count)
+	std::size_t parser::post_processing(std::size_t count)
 	{
 		//	trigger callback
+		const std::size_t ops = code_.size();
 		if (cb_)	cb_(std::move(code_));
+		return ops;
 	}
 	
 	void parser::next(object&& obj)

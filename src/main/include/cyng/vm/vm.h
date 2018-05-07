@@ -31,6 +31,7 @@ namespace cyng
 	class vm
 	{
 		friend class context;
+		friend class librarian;
 		
 	public:
 		vm(std::ostream& = std::cout, std::ostream& = std::cerr);

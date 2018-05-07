@@ -135,6 +135,10 @@ namespace cyng
 		call_stack	call_stack_;
 	};
 
+	/**
+	 * @return occurence count of specified op
+	 */
+	std::size_t op_counter(vector_t const& prg, code op);
 }
 
 #endif	//	CYNG_VM_CONTROLLER_H

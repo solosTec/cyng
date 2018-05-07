@@ -159,7 +159,6 @@ namespace cyng
  		vec 
 		<< invoke(name)
   		<< code::REBA
-		//<< unwind_vec(sizeof...(args) + 3)
  		;
 
 		return vec;		

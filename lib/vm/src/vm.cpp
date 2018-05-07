@@ -12,6 +12,10 @@
 #include <cyng/core/class_interface.h>
 #include <cyng/value_cast.hpp>
 #include <cyng/factory.h>
+#ifdef _DEBUG
+#include <cyng/io/serializer.h>
+#endif
+
 #include <chrono>
 #include <iomanip>
 
@@ -50,10 +54,39 @@ namespace cyng
 	void vm::run(vector_t&& vec)
 	{
 		auto now = std::chrono::system_clock::now();
+
+#ifdef __DEBUG
+		//
+		//	It could be indicate a problem, if an instruction vector does not end with a REBA op,
+		//	because call stack will not be restored properly.
+		//
+		const bool risk_flag = (vec.back().get_class().tag() != TC_CODE) 
+			|| (vec.back().get_class().tag() == TC_CODE) && (value_cast(vec.back(), code::NOOP) != code::REBA);
+
+		if (risk_flag)
+		{
+			using cyng::io::operator<<;
+			std::stringstream ss;
+			ss
+				<< vec.size()
+				<< " ops ending with "
+				<< cyng::io::to_str(vec.back())
+				;
+			lib_.try_debug_log(*this, ss.str());
+		}
+#endif
+
 		memory mem(std::move(vec));
 		while (mem)
 		{
+
+#ifdef __DEBUG
 			//stack_.dump(err_);
+
+			//std::stringstream ss;
+			//stack_.dump(ss);
+			//lib_.try_debug_log(*this, ss.str());
+#endif
 
 			//
 			//	next data or instruction
@@ -65,7 +98,6 @@ namespace cyng
 				//	execute a single instruction
 				//
 				execute(value_cast(obj, code::NOOP), mem);
-				
 			}
 			else 
 			{
@@ -75,7 +107,7 @@ namespace cyng
 				stack_.push(obj);
 			}
 
-#ifdef _DEBUG
+#ifdef __DEBUG
 			if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
 			{
 				std::cerr << "======> " << tag_ << ':' << std::setprecision(4) << mem.level() << "%" << std::endl;
@@ -83,19 +115,30 @@ namespace cyng
 #endif
 		}
 
+#ifdef __DEBUG
+		if (risk_flag)
+		{
+			using cyng::io::operator<<;
+			std::stringstream ss;
+			ss
+				<< "stack dump: "
+				;
+			stack_.dump(ss);
+			lib_.try_debug_log(*this, ss.str());
+		}
+#endif
 #ifdef _DEBUG
 		if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
 		{
 			std::cerr << "======> " << tag_ << " T I M E O U T" << std::endl;
 		}
 #endif
-
 	}
 	
 	void vm::sync_run(vector_t&& prg)
 	{
 		//
-		//	save stack pointer
+		//	save and restore call stack
 		//
 		activation a(stack_);
 		run(std::move(prg));
@@ -154,13 +197,13 @@ namespace cyng
 			case code::SUB: 	//	subtract, temp = mem[sp++]; mem[sp] = mem[sp] - temp
 				break;
 		
-			case code::ESBA:	
+			case code::ESBA:	//	establish base address	
 				//	mem[--sp] = bp; bp = sp;
 				stack_.ebp();
 				break;
-			case code::REBA:
+			case code::REBA:	//	restore base address
 				//	sp = bp; bp = mem[sp++];
-				stack_.rbp();
+				stack_.rbp();	//	resize stack
 				break;
 				
 			case code::INVOKE: //	call a library function
@@ -297,14 +340,29 @@ namespace cyng
 		if (!lib_.invoke(fname, ctx))
 		{
 #ifdef _DEBUG
-			std::cerr
-				<< "\n\n***Warning: function ["
+			std::stringstream ss;
+			ss
+				<< "***Warning: function ["
 				<< fname
 				<< "] is not registered in VM "
 				<< tag_
-				<< "\n\n"
-				<< std::endl
 				;
+			//ss
+			//	<< "***Warning: function ["
+			//	<< name
+			//	<< "] not registered"
+			//	;
+			const std::string msg = ss.str();
+			if (!lib_.try_error_log(ctx, msg))
+			{
+				std::cerr
+					<< "\n\n"
+					<< msg
+					<< "\n\n"
+					<< std::endl
+					;
+			}
+
 #endif
 			//	set error register
 // 			ctx.set_register(boost::system::errc::operation_canceled);

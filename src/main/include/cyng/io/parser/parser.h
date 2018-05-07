@@ -175,9 +175,11 @@ namespace cyng
 		
 		/**
 		 * parse the specified range
+		 * 
+		 * @return count of generated instructions
 		 */
 		template < typename I >
-		void read(I start, I end)
+		std::size_t read(I start, I end)
 		{
 			//	doesn't work for plain pointers
 			//static_assert(std::is_same<typename I::value_type, char>::value, "wrong iterator type");
@@ -186,7 +188,7 @@ namespace cyng
 				this->put(c);
 			});
 			
-			post_processing();
+			return post_processing();
 		}
 		
 	protected:
@@ -203,7 +205,7 @@ namespace cyng
 		 * bytes in the read buffer and should be in most cases
 		 * zero.
 		 */
-		virtual void post_processing(std::size_t count);
+		virtual std::size_t post_processing(std::size_t count);
 		
 		/**
 		 * Overwrite this method to support custom data types.
@@ -223,7 +225,7 @@ namespace cyng
 		 * Probe if parsing is completed and
 		 * inform listener.
 		 */
-		void post_processing();
+		std::size_t post_processing();
 		
 		/**
 		* parser data type (4 bytes)

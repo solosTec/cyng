@@ -7,6 +7,7 @@
 
 #include <cyng/crypto/x509.h>
 #include <openssl/crypto.h>	//	OPENSSL_cleanse
+#include <boost/predef.h>
 #include <iostream>
 #include <stdio.h>
 

@@ -13,6 +13,9 @@
 #include <cyng/value_cast.hpp>
 #include <cyng/tuple_cast.hpp>
 #include <algorithm>
+#ifdef _DEBUG
+#include <boost/algorithm/string.hpp>
+#endif
 
 namespace cyng 
 {
@@ -22,15 +25,16 @@ namespace cyng
 		ctx.attach(register_function("db.req.insert", 4, [&db](context& ctx) {
 
 			const vector_t frame = ctx.get_frame();
-			ctx.attach(generate_invoke("log.msg.debug", "db.req.insert", frame));
+			//ctx.attach(generate_invoke("log.msg.debug", "db.req.insert", frame));
 
 			auto tpl = cyng::tuple_cast<
 				std::string,			//	[0] table name
 				vector_t,				//	[1] key
 				vector_t,				//	[2] data
 				std::uint64_t			//	[3] generation
-				//boost::uuids::uuid		//	[4] source
 			>(frame);
+
+			ctx.attach(generate_invoke("log.msg.debug", "db.req.insert", std::get<0>(tpl), std::get<1>(tpl).size(), std::get<2>(tpl).size()));
 
 			//
 			//	key
@@ -60,10 +64,7 @@ namespace cyng
 				std::string,			//	[0] table name
 				vector_t,				//	[1] key
 				attr_t					//	[2] data
-				//boost::uuids::uuid		//	[3] source
 			>(frame);
-
-			//BOOST_ASSERT(ctx.tag() == std::get<3>(tpl));
 
 			//
 			//	key
@@ -82,8 +83,8 @@ namespace cyng
 			ctx.attach(generate_invoke("log.msg.debug", "db.req.modify.by.param", frame));
 
 			auto tpl = cyng::tuple_cast<
-				std::string,			//	[0] table name
-				vector_t,				//	[1] key
+				std::string,		//	[0] table name
+				vector_t,			//	[1] key
 				param_t				//	[2] data
 			>(frame);
 
@@ -122,11 +123,13 @@ namespace cyng
 
 		ctx.attach(register_function("db.clear", 1, [&db](context& ctx) {
 			const vector_t frame = ctx.get_frame();
-			ctx.attach(generate_invoke("log.msg.debug", "db.clear", frame));
+			//ctx.attach(generate_invoke("log.msg.debug", "db.clear", frame));
 
 			auto tpl = cyng::tuple_cast<
 				std::string			//	[0] table name
 			>(frame);
+
+			ctx.attach(generate_invoke("log.msg.debug", "db.clear", std::get<0>(tpl)));
 
 			db.clear(std::get<0>(tpl), ctx.tag());
 			//{

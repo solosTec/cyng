@@ -41,6 +41,14 @@ namespace cyng
 		 */
 		bool erase(std::string const&);
 		
+		/**
+		 * Test if function "log.msg.error" is registered. 
+		 *
+		 * @return true if logger is available
+		 */
+		bool try_error_log(context& ctx, std::string) const;
+		bool try_debug_log(vm& v, std::string) const;
+
 	private:
 		/**
 		 * expose internal functions as VM functions 
@@ -57,14 +65,7 @@ namespace cyng
 		 */
 		bool insert(std::string const& name, std::size_t arity, vm_call proc);
 		bool insert(std::string const&, procedure&&);
-
-		/**
-		 * Test if function "log.msg.error" is registered. 
-		 *
-		 * @return true if logger is available
-		 */
-		bool try_error_log(context& ctx, std::string) const;
-		
+	
 	private:
 		std::unordered_map<std::string, procedure>	db_;
 		

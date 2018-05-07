@@ -10,6 +10,7 @@
 #include <cyng/io/serializer.h>
 #include <cyng/vm/memory.h>
 #include <cyng/vm/manip.h>
+#include <cyng/vm/vm.h>
 
 #ifdef _DEBUG
 #include <iostream>
@@ -84,7 +85,8 @@ namespace cyng
 					<< arity 
 					<< " ["
 					<< name
-					<< "]"
+					<< "] "
+					<< cyng::io::to_str(ctx.get_frame())
 					;
 				const std::string msg = ss.str();
 				if (!try_error_log(ctx, msg))
@@ -97,7 +99,16 @@ namespace cyng
 						;
 				}
 			}
+
+			//
+			//	error - but function is available
+			//	
+			return true;
 		}
+
+		//
+		//	function not registered
+		//
 		return false;
 	}
 	
@@ -158,7 +169,6 @@ namespace cyng
 			<< ", "
 			;
 			io::serialize_plain(std::cout, make_object(frame));
-// 			<< value_cast<std::string>(frame[0], "")
 			std::cerr
 			<< ")"
 			<< std::endl;
@@ -191,16 +201,49 @@ namespace cyng
 		auto pos = db_.find("log.msg.error");
 		if (pos != db_.end())
 		{
+			//
+			//	fake memory
+			//
 			vector_t prg;
-			prg << msg;
-
 			memory mem(std::move(prg));
+
+			//
+			//	save and restore call stack 
+			//
+			activation a(ctx.vm_.stack_);
+			ctx.vm_.stack_.push(make_object(msg));
+
 			context ctx_log(ctx, mem);
 			(*pos).second(ctx_log);
 			return true;
 		}
 		return false;
 	}
+
+	bool librarian::try_debug_log(vm& v, std::string msg) const
+	{
+		// 
+		auto pos = db_.find("log.msg.debug");
+		if (pos != db_.end())
+		{
+			//
+			//	fake memory
+			//
+			vector_t prg;
+			memory mem(std::move(prg));
+
+			//
+			//	save and restore call stack 
+			//
+			activation a(v.stack_);
+			v.stack_.push(make_object(msg));
+			context ctx_log(v, mem);
+			(*pos).second(ctx_log);
+			return true;
+		}
+		return false;
+	}
+
 }
 
 

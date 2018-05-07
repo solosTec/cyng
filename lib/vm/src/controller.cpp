@@ -256,6 +256,13 @@ namespace cyng
 		: prg_(std::move(other.prg_))
 	{}
 
+	std::size_t op_counter(vector_t const& prg, code op)
+	{
+		return std::count_if(prg.begin(), prg.end(), [&](object const& obj) {
+			return ((obj.get_class().tag() == TC_CODE) && (value_cast(obj, code::NOOP) == op));
+		});
+	}
+
 }
 
 

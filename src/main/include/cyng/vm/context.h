@@ -18,8 +18,11 @@ namespace cyng
 {
 	class vm;
 	class memory;
+	class librarian;
 	class context
 	{
+		friend class librarian;
+
 	public:
 		context() = delete;
 		context(context const&) = delete;

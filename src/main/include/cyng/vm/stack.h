@@ -46,7 +46,7 @@ namespace cyng
 		void ebp();
 		
 		/**
-		 * restore base pointer
+		 * restore base pointer and optional previous stack size
 		 */
 		void rbp();
 		

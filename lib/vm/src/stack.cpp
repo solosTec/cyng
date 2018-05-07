@@ -41,14 +41,17 @@ namespace cyng
 		const std::size_t bp = bp_;
 
 		BOOST_ASSERT_MSG(!vt::stack_t::empty(), "stack is empty" );
+		BOOST_ASSERT_MSG(bp != 0, "invalid bp (rbp)");
 
 		//	Pops the base pointer off the stack, so it is restored
 		//	to its value before
 		bp_ = saved_bp();
 		BOOST_ASSERT_MSG(bp_ < bp, "invalid pase pointer (2)");
 
-		//	Restore old stack size
-		c.resize(bp_);
+		//	Restore old stack size:
+		//	This is the position of the saved BP less 1 for the position
+		//	of the stored bp itself.
+		c.resize(bp - 1);
 	}
 	
 	std::size_t stack::frame_size() const noexcept
@@ -224,7 +227,10 @@ namespace cyng
 		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (tuple)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
-		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (tuple)");
+		if (size > c.size())
+		{
+			throw std::runtime_error("not enough parameters (tuple)");
+		}
 
 		tuple_t tpl;
 		while (size != 0)
@@ -240,9 +246,13 @@ namespace cyng
 	void stack::assemble_vector()
 	{
 		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (vector)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (vector)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
-		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (vector)");
+		if (size > c.size())
+		{
+			throw std::runtime_error("not enough parameters (vector)");
+		}
 
 		vector_t vec;
 		while (size != 0)
@@ -258,9 +268,14 @@ namespace cyng
 	void stack::assemble_set()
 	{
 		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (set)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (set)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
-		BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (set)");
+		//BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (set)");
+		if (size > c.size())
+		{
+			throw std::runtime_error("not enough parameters (set)");
+		}
 
 		set_t set;
 		while (size != 0)
@@ -292,7 +307,7 @@ namespace cyng
 	activation::~activation()
 	{
 		//	restore stack pointer
-		stack_.rbp();
+		stack_.rbp();	//	remove elements from stack
 	}
 }
 
