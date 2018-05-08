@@ -7,6 +7,7 @@
 
 #include <cyng/vm/controller.h>
 #include <cyng/factory.h>
+#include <cyng/value_cast.hpp>
 #include <memory>
 #include <boost/assert.hpp>
 #ifdef _DEBUG
