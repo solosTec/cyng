@@ -147,6 +147,7 @@ namespace cyng
 			//
 			//	set condition
 			//
+			async::unique_lock<async::mutex> lock(mutex_);
 			complete = true;
 			cv.notify_all();
 
