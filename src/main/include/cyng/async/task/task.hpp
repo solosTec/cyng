@@ -102,7 +102,7 @@ namespace cyng
 			 * dispatch() receive messages and dispatch each message 
 			 * to the appropriate slot.
 			 */
-			virtual void dispatch(std::size_t slot, tuple_t const& msg) override
+			virtual void dispatch(std::size_t slot, tuple_t msg) override
 			{
 				if (shutdown_)	return;
 				auto sp = this->shared_from_this();

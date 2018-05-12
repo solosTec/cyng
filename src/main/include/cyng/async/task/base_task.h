@@ -33,7 +33,7 @@ namespace cyng
 			 */
 			virtual void run() = 0;
 			virtual void stop() = 0;
-			virtual void dispatch(std::size_t slot, tuple_t const& msg) = 0;
+			virtual void dispatch(std::size_t slot, tuple_t msg) = 0;
 			
 			/**
 			 * gcc requires an implementation even though this
