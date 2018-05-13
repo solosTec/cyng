@@ -21,8 +21,9 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/streambuf.hpp>
-#include <cyng/io/mail/dialog.hpp>
-#include <cyng/io/mail/message.hpp>
+#include "dialog.hpp"
+#include "message.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -32,7 +33,7 @@ namespace mailio
 /**
 IMAP client implementation.
 **/
-class imap
+class MAILIO_EXPORT imap
 {
 public:
 

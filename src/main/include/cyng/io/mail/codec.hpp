@@ -15,6 +15,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 
 #include <string>
 #include <stdexcept>
+#include "export.hpp"
 
 
 namespace mailio
@@ -26,7 +27,7 @@ Base class for codecs, contains various constants and miscellaneous functions fo
 
 @todo `encode()` and `decode()` as abstract methods?
 **/
-class codec
+class MAILIO_EXPORT codec
 {
 public:
 

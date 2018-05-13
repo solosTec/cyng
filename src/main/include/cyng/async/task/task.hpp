@@ -63,7 +63,7 @@ namespace cyng
 			 */
 			virtual std::size_t stop() override
 			{
-				if (shutdown_)	return;
+                if (shutdown_)	return 0u;
 				
 				//
 				// set shutdown flag

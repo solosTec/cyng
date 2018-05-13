@@ -11,6 +11,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 */
 
 
+//#include "mailio/mailboxes.hpp"
 #include <cyng/io/mail/mailboxes.hpp>
 
 
@@ -83,6 +84,13 @@ mailboxes::mailboxes(vector<mail_address> address_list, vector<mail_group> group
 bool mailboxes::empty() const
 {
     return addresses.empty() && groups.empty();
+}
+
+
+void mailboxes::clear()
+{
+    addresses.clear();
+    groups.clear();
 }
 
 } // namespace mailio

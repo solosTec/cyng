@@ -16,6 +16,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <string>
 #include <vector>
 #include "codec.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -27,7 +28,7 @@ Base64 codec.
 
 @todo Add static method `string encode(string)` to be used by `smtp`?
 **/
-class base64 : public codec
+class MAILIO_EXPORT base64 : public codec
 {
 public:
 

@@ -24,6 +24,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include "q_codec.hpp"
 #include "mime.hpp"
 #include "mailboxes.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -33,7 +34,7 @@ namespace mailio
 /**
 Mail message and applied parsing/formatting algorithms.
 **/
-class message : public mime
+class MAILIO_EXPORT message : public mime
 {
 public:
 
@@ -83,11 +84,54 @@ public:
     void format(std::string& message_str, bool dot_escape = false) const;
 
     /**
+    Parsing a message from a string.
+
+    Essentially, the method calls the same one from `mime` and checks for errors.
+
+    @param message_str   String to parse.
+    @param dot_escape    Flag if the leading dot should be escaped.
+    @throw message_error No author address.
+    @throw *             `mime::parse(const string&, bool)`.
+    **/
+    void parse(const std::string& message_str, bool dot_escape = false);
+
+    /**
     Checking if the mail is empty.
 
     @return True if empty, false if not.
     **/
     bool empty() const;
+
+    /**
+    Setting the author to a given address.
+
+    The given address is set as the only one, others are deleted.
+
+    @param mail Mail address to set.
+    **/
+    void from(const mail_address& mail);
+
+    /**
+    Getting the author address.
+
+    @return Author mail address.
+    **/
+    mailboxes from() const;
+
+    /**
+    Adding an addrress to the author field.
+
+    @param mail Mail address to set.
+    **/
+    void add_from(const mail_address& mail);
+
+    /**
+    Formatting the author as string.
+
+    @return  Author name and address as formatted string.
+    @throw * `format_address(const string&, const string&)`.
+    **/
+    std::string from_to_string() const;
 
     /**
     Setting the sender to the given address.
@@ -97,7 +141,7 @@ public:
     void sender(const mail_address& mail);
 
     /**
-    Getting the sender.
+    Getting the sender address.
 
     @return Sender mail address.
     **/
@@ -203,7 +247,7 @@ public:
 
     @param group Group to add.
     **/
-    void add_bcc_recipient(const mail_group& mail);
+    void add_bcc_recipient(const mail_group& group);
 
     /**
     Getting the BCC recipients names and addresses.
@@ -295,6 +339,11 @@ protected:
     static const std::string FROM_HEADER;
 
     /**
+    `Sender` header name.
+    **/
+    static const std::string SENDER_HEADER;
+
+    /**
     `Reply-To` header name.
     **/
     static const std::string REPLY_TO_HEADER;
@@ -333,7 +382,9 @@ protected:
     Formatting the header to a string.
 
     @return              Header as string.
-    @throw message_error Formatting failure of non multipart message with boundary.
+    @throw message_error No boundary for multipart message.
+    @throw message_error No author.
+    @throw message_error No sender for multiple authors.
     @throw *             `mime::format_header()`.
     **/
     virtual std::string format_header() const;
@@ -342,8 +393,8 @@ protected:
     Parsing a header line for a specific header.
 
     @param header_line   Header line to be parsed.
-    @throw message_error Parsing failure of header, line policy overflow.
-    @throw message_error Parsing failure of header, no sender.
+    @throw message_error Line policy overflow in a header.
+    @throw message_error Empty author header.
     @throw *             `mime::parse_header_line(const string&)`, `mime::parse_header_name_value(const string&, string&, string&)`,
                          `parse_address_list(const string&)`, `parse_subject(const string&)`, `parse_date(const string&)`.
     **/
@@ -427,6 +478,11 @@ protected:
     @todo                Not tested with charsets different than ASCII and UTF-8.
     **/
     std::string parse_address_name(const std::string& address_name) const;
+
+    /**
+    From name and address.
+    **/
+    mailboxes _from;
 
     /**
     Sender name and address.

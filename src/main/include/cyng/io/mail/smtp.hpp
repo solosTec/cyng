@@ -22,6 +22,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <boost/asio/streambuf.hpp>
 #include "message.hpp"
 #include "dialog.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -31,7 +32,7 @@ namespace mailio
 /**
 SMTP client implementation.
 **/
-class smtp
+class MAILIO_EXPORT smtp
 {
 public:
 

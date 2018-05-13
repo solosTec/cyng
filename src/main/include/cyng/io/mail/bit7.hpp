@@ -16,6 +16,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <string>
 #include <vector>
 #include "codec.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -25,7 +26,7 @@ namespace mailio
 /**
 Seven bit codec.
 **/
-class bit7 : public codec
+class MAILIO_EXPORT bit7 : public codec
 {
 public:
 

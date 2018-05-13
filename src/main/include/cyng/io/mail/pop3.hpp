@@ -23,6 +23,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <boost/asio/streambuf.hpp>
 #include "dialog.hpp"
 #include "message.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -32,7 +33,7 @@ namespace mailio
 /**
 POP3 client implementation.
 **/
-class pop3
+class MAILIO_EXPORT pop3
 {
 public:
 
@@ -130,6 +131,7 @@ public:
     Fetching a message.
     
     @param message_no Message number to fetch.
+    @param msg        Fetched message.
     @throw pop3_error Fetching message failure.
     @throw *          `parse_status(const string&)`, `dialog::send(const string&)`, `dialog::receive()`.
     **/

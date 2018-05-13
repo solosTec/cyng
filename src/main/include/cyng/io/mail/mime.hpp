@@ -20,6 +20,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <map>
 #include <boost/algorithm/string/case_conv.hpp>
 #include "codec.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -50,7 +51,7 @@ addr-spec = (dot-atom / quoted-string) "@" (dot-atom / dtext)
 /**
 Mime part implementation.
 **/
-class mime
+class MAILIO_EXPORT mime
 {
 public:
 
@@ -137,7 +138,10 @@ public:
     **/
     mime(const mime&) = default;
 
-    mime(mime&&) = delete;
+    /**
+    Default move constructor.
+    **/
+    mime(mime&&) = default;
 
     /**
     Default destructor.
@@ -145,11 +149,14 @@ public:
     virtual ~mime() = default;
 
     /**
-    Default assignment operator.
+    Default copy assignment operator.
     **/
     mime& operator=(const mime&) = default;
 
-    void operator=(mime&&) = delete;
+    /**
+    Default move assignment operator.
+    **/
+    mime& operator=(mime&&) = default;
 
     /**
     Formatting the mime part to a string.
@@ -376,17 +383,8 @@ protected:
     /**
     Comparator for the attributes map based on case insensitivity.
     **/
-    struct attr_comp_t //: public std::binary_function<std::string, std::string, bool>
+    struct attr_comp_t : public std::less<std::string>
     {
-		/// @c first_argument_type is the type of the first argument
-		typedef std::string 	first_argument_type;
-
-		/// @c second_argument_type is the type of the second argument
-		typedef std::string 	second_argument_type;
-
-		/// @c result_type is the return type
-		typedef bool 	result_type;
-
         bool operator()(const std::string& lhs, const std::string& rhs) const
         {
             return boost::to_lower_copy(lhs) < boost::to_lower_copy(rhs);

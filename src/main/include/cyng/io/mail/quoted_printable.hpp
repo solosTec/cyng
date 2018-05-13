@@ -16,6 +16,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <string>
 #include <vector>
 #include "codec.hpp"
+#include "export.hpp"
 
 
 namespace mailio
@@ -25,7 +26,7 @@ namespace mailio
 /**
 Quoted Printable codec.
 **/
-class quoted_printable : public codec
+class MAILIO_EXPORT quoted_printable : public codec
 {
 public:
 

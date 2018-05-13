@@ -18,6 +18,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/streambuf.hpp>
+#include "export.hpp"
 
 
 namespace mailio
@@ -27,7 +28,7 @@ namespace mailio
 /**
 Dealing with network in a line oriented fashion.
 **/
-class dialog
+class MAILIO_EXPORT dialog
 {
 public:
 
