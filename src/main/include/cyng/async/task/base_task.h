@@ -32,7 +32,18 @@ namespace cyng
 			 * run() is called at startup and from timer callback.
 			 */
 			virtual void run() = 0;
-			virtual void stop() = 0;
+
+			/**
+			 * stop() is called to shutdown a task.
+			 *
+			 * @return The number of asynchronous operations that were cancelled.
+			 */
+			virtual std::size_t stop() = 0;
+
+			/**
+			 * Dispatch message to specified slot. It effectively calls the member function
+			 * process() and expands the tuple to a parameter pack with correct data types.
+			 */
 			virtual void dispatch(std::size_t slot, tuple_t msg) = 0;
 			
 			/**
@@ -72,7 +83,10 @@ namespace cyng
 			}
 			
 		protected:
-			void cancel_timer();
+			/**
+			 * @return The number of asynchronous operations that were cancelled.
+			 */
+			std::size_t cancel_timer();
 
 			/**
 			 * remove this task from task list.

@@ -137,7 +137,6 @@ namespace cyng
 		//	prepare condition variable
 		//
 		async::condition_variable cv;
-		async::unique_lock<async::mutex> lock(mutex_);
 		bool complete = false;	//	bullet proof
 
 		dispatcher_.post([this, param, &cv, &complete]() {
@@ -147,7 +146,7 @@ namespace cyng
 			//
 			//	set condition
 			//
-			async::unique_lock<async::mutex> lock(mutex_);
+			async::lock_guard<async::mutex> lk(mutex_);
 			complete = true;
 			cv.notify_all();
 
@@ -156,6 +155,7 @@ namespace cyng
 		//
 		//	wait for condition 
 		//
+		async::unique_lock<async::mutex> lock(mutex_);
 		cv.wait(lock, [&complete] { return complete; });
 		
 #endif	//	CYNG_VM_SIMPLE_LOCK
@@ -201,10 +201,30 @@ namespace cyng
 		//
 		halt_ = true;
 		
+		std::atomic<bool> complete = false;	//	completion flag
+
+		dispatcher_.dispatch([this, &complete]() {
+
+			//
+			//	last instruction - clears library
+			//
+			this->vm_.run(vector_t{ make_object(code::HALT) });
+
+			//
+			//	set condition
+			//
+			complete.exchange(true);
+
+		});
+
 		//
-		//	last instruction - clears library
+		//	wait for flag
 		//
-		execute(vector_t{ make_object(code::HALT) }, async::sync());
+		while (!complete.load())
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
 	}
 
 	std::size_t controller::hash() const noexcept

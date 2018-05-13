@@ -58,8 +58,10 @@ namespace cyng
 			
 			/**
 			 * stop() is called to shutdown a task.
+			 *
+			 * @return The number of asynchronous operations that were cancelled.
 			 */
-			virtual void stop() override
+			virtual std::size_t stop() override
 			{
 				if (shutdown_)	return;
 				
@@ -74,7 +76,7 @@ namespace cyng
 				//
 				auto sp = this->shared_from_this();
 				
-				std::promise<bool> result;
+				std::promise<std::size_t> result;
 				auto f = result.get_future();
 				
 				dispatcher_.post([this, sp, &result](){
@@ -87,15 +89,11 @@ namespace cyng
 					//  It is the responsibility of the implementor to guarantee
 					//  this behavior. 
 					//
-					sp->cancel_timer();
+					result.set_value(sp->cancel_timer());
 					
-					result.set_value(true);
 				});
 				
-// 				std::cout << "task<>::stop(" << get_id() << ")" << std::endl;
-				f.wait();
-				//std::cout << "task<>::stopped(" << get_id() << ")" << std::endl;
-				
+				return f.get();	
 			}
 			
 			/**

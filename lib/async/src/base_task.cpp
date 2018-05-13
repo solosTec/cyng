@@ -26,9 +26,9 @@ namespace cyng
 			return id_;
 		}
 		
-		void base_task::cancel_timer()
+		std::size_t base_task::cancel_timer()
 		{
-			timer_.cancel();
+			return timer_.cancel();
 		}
 
 		void base_task::remove_this()
