@@ -201,7 +201,7 @@ namespace cyng
 		//
 		halt_ = true;
 		
-		std::atomic<bool> complete = false;	//	completion flag
+        std::atomic<bool> complete{ false };	//	completion flag
 
 		dispatcher_.dispatch([this, &complete]() {
 
