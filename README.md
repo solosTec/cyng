@@ -103,7 +103,7 @@ in CMakeList.txt to the correct path.
 
 ## License ##
 
-CYY C++ library is free software under the terms of the [MIT License](https://github.com/solosTec/cyng/blob/master/LICENSE).
+CYNG C++ library is free software under the terms of the [MIT License](https://github.com/solosTec/cyng/blob/master/LICENSE).
 
 ## Contact ##
 
