@@ -22,7 +22,8 @@ namespace cyng
 	//
 	class memory;
 	class context;
-	
+	class controller;
+
 	/**
 	 * Implements a simple stack oriented machine
 	 * 
@@ -32,6 +33,7 @@ namespace cyng
 	{
 		friend class context;
 		friend class librarian;
+		friend class controller;
 		
 	public:
 		vm(std::ostream& = std::cout, std::ostream& = std::cerr);

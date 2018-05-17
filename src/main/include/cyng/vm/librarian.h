@@ -12,9 +12,11 @@
 
 namespace cyng 
 {
+	class controller;
 	class librarian
 	{
-// 		friend class activate;
+ 		friend class controller;
+
 	public:
 		librarian();
 		librarian(librarian const&) = delete;

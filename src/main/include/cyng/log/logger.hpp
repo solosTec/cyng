@@ -93,11 +93,11 @@ namespace cyng
 				, std::size_t rotation_size = 32UL * 1024UL * 1024UL	//	32 MB
 			)
 			: dispatcher_(ioc)
-			, path_(p)
-			, logstream_(path_.string(), std::fstream::app)
-			, threshold_(threshold)
-			, rotation_size_(rotation_size)
-			, uncommitted_(0)
+				, path_(p)
+				, logstream_(path_.string(), std::fstream::app)
+				, threshold_(threshold)
+				, rotation_size_(rotation_size)
+				, uncommitted_(0)
 			{}
 			
 			/**

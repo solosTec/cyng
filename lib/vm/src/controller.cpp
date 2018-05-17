@@ -8,6 +8,8 @@
 #include <cyng/vm/controller.h>
 #include <cyng/factory.h>
 #include <cyng/value_cast.hpp>
+#include <cyng/io/serializer.h>
+
 #include <memory>
 #include <boost/assert.hpp>
 #ifdef _DEBUG
@@ -29,6 +31,7 @@ namespace cyng
 		, halt_(false)
 		, mutex_()
 		, call_stack_()
+		, load_(0)
 	{}
 
 	controller const& controller::run(vector_t&& prg) const
@@ -128,35 +131,81 @@ namespace cyng
 			return;
 		}
 
+
 		//
 		//	move the content of the code vector 
 		//
+		vector_t dump(prg);	//	make a copy
 		parameter param(std::move(prg));
 
 		//
 		//	prepare condition variable
 		//
-		async::condition_variable cv;
-		bool complete = false;	//	bullet proof
+		//async::condition_variable cv;
+		//async::unique_lock<async::mutex> lock(mutex_);
+		//bool complete = false;	//	bullet proof
+		++load_;
 
-		dispatcher_.post([this, param, &cv, &complete]() {
+		std::atomic<bool> complete{ false };	//	completion flag
+
+		dispatcher_.dispatch([this, param, &complete]() {
 
 			this->vm_.run(std::move(param.prg_));
-
 			//
 			//	set condition
 			//
-			async::lock_guard<async::mutex> lk(mutex_);
-			complete = true;
-			cv.notify_all();
-
+			--load_;
+			complete.exchange(true);
 		});
+
+		//
+		//	wait for flag
+		//
+		std::size_t counter{ 0 };
+		while (!complete.load())
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			++counter;
+			if (counter > 16)
+			{
+				std::cerr
+					<< "\n\n"
+					<< "*** "
+					<< this->vm_.tag()
+					<< " sync-load: "
+					<< load_.load()
+					<< " / "
+					<< std::dec
+					<< counter
+					<< " / "
+					<< io::to_str(dump)
+					<< " ***\n\n"
+					<< std::endl
+					;
+				break;
+			}
+		}
+
+		//dispatcher_.post([this, param, &cv/*, &complete*/]() {
+
+		//	this->vm_.run(std::move(param.prg_));
+
+		//	//
+		//	//	set condition
+		//	//
+		//	//async::lock_guard<async::mutex> lk(mutex_);
+		//	//complete = true;
+		//	cv.notify_all();
+		//	--load_;
+
+		//});
 
 		//
 		//	wait for condition 
 		//
-		async::unique_lock<async::mutex> lock(mutex_);
-		cv.wait(lock, [&complete] { return complete; });
+		//cv.wait(lock, [&complete] { return complete; });
+		//cv.wait(lock);
+
 		
 #endif	//	CYNG_VM_SIMPLE_LOCK
 
@@ -241,6 +290,17 @@ namespace cyng
 	bool controller::same_thread() const
 	{
 		return dispatcher_.running_in_this_thread();
+	}
+
+	void controller::register_function(std::string name
+		, std::size_t arity
+		, vm_call proc)
+	{
+		dispatcher_.post([this, name, arity, proc]() {
+
+			this->vm_.lib_.insert(name, arity, proc);
+
+		});
 	}
 
 	call_stack::call_stack()

@@ -97,6 +97,22 @@ namespace cyng
 		 */
 		bool same_thread() const;
 
+		/**
+		 * Register a VM procedure.
+		 * 
+		 * Signature of vm_call is:
+		 * @code
+		 * void(context&)
+		 * @endcode
+		 * 
+		 * @param name procedure name
+		 * @param arity parameter count
+		 * @param proc procedure to call 
+		 */
+		void register_function(std::string name
+			, std::size_t arity
+			, vm_call proc);
+
 	private:
 		void execute(vector_t&& prg, async::sync) const;
 		void execute(vector_t&& prg, async::detach) const;
@@ -133,6 +149,8 @@ namespace cyng
 		 * Handle recursion
 		 */
 		call_stack	call_stack_;
+
+		mutable std::atomic<int>	load_;
 	};
 
 	/**
