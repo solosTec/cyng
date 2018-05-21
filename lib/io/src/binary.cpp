@@ -123,7 +123,7 @@ namespace cyng
 		
 		std::ostream& serializer<std::chrono::system_clock::time_point, SERIALIZE_BINARY>::write(std::ostream& os, std::chrono::system_clock::time_point const& v)
 		{
-			static_assert(sizeof(std::time_t) == sizeof(std::int64_t), "fix timestamp size");
+// 			static_assert(sizeof(std::time_t) == sizeof(std::int64_t), "fix timestamp size");
 			const auto dtp = chrono::to_dbl_time_point(v);
 
 			//
@@ -131,8 +131,15 @@ namespace cyng
 			//
 			serialize_type_tag<std::chrono::system_clock::time_point>(os);
 			serialize_length(os, sizeof(chrono::dbl_time_point));
-			write_binary(os, dtp.first);
-			write_binary(os, dtp.second);
+			if (sizeof(std::time_t) == sizeof(std::int64_t))
+			{
+				write_binary(os, dtp.first);	//	std::time_t
+			}
+			else 
+			{
+				write_binary(os, static_cast<std::uint64_t>(dtp.first));	//	std::time_t
+			}
+			write_binary(os, dtp.second);	//	double
 			return os;
 		}
 
@@ -244,15 +251,24 @@ namespace cyng
 		std::ostream& serializer <cyng::chrono::dbl_time_point, SERIALIZE_BINARY>::write(std::ostream& os, cyng::chrono::dbl_time_point const& v)
 		{
 			//	std::pair<std::time_t, double>
-			static_assert(sizeof(chrono::dbl_time_point) == sizeof(std::time_t) + sizeof(double), "alignment error");
+// 			static_assert(sizeof(chrono::dbl_time_point) == sizeof(std::time_t) + sizeof(double), "alignment error");
 
 			//
 			//	type - length - values
 			//
 			serialize_type_tag<chrono::dbl_time_point>(os);
 			serialize_length(os, sizeof(chrono::dbl_time_point));
-			write_binary(os, v.first);
-			write_binary(os, v.second);
+			if (sizeof(std::time_t) == sizeof(std::int64_t))
+			{
+				write_binary(os, v.first);	//	std::time_t
+			}
+			else 
+			{
+				//	do the same on parser side!
+				write_binary(os, static_cast<std::uint64_t>(v.first));	//	std::time_t
+			}
+
+			write_binary(os, v.second);	//	double
 			return os;
 		};
 

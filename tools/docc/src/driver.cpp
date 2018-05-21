@@ -387,7 +387,7 @@ namespace cyng
 		{
 			return (boost::filesystem::exists(p) && boost::filesystem::is_regular(p))
 				? std::make_tuple(std::chrono::system_clock::from_time_t(boost::filesystem::last_write_time(p)), boost::filesystem::file_size(p))
-				: std::make_tuple(std::chrono::system_clock::now(), 0ul)
+				: std::make_tuple(std::chrono::system_clock::now(), uintmax_t(0u))
 				;
 		}
 
