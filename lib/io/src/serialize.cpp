@@ -49,6 +49,13 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_str(tuple_t const& tpl)
+		{
+			std::stringstream ss;
+			serializer <tuple_t, SERIALIZE_PLAIN>::write(ss, tpl);
+			return ss.str();
+		}
+
 		std::ostream& operator<<(std::ostream& os, attr_t const& attr)
 		{
 			boost::io::ios_flags_saver  ifs(os);

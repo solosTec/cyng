@@ -52,6 +52,7 @@ namespace cyng
 
 		std::string to_str(object const&);
 		std::string to_str(vector_t const&);
+		std::string to_str(tuple_t const&);
 	}
 }
 

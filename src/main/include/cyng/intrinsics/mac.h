@@ -116,16 +116,16 @@ namespace cyng
 	bool operator<=(mac48 const&, mac48 const&);
 	bool operator>=(mac48 const&, mac48 const&);
 
-	/**
-	 * Retrieve a list of the first 16 MACs of this system. Currently only
-	 * available for windows.
-	 */
-	std::vector<mac48>	retrieve_mac48();
 	
 	/**
 	 * @return true if specified address is a broadcast address
 	 */
 	bool is_broadcast(mac48 const&);
+
+	/**
+	 * Generate a random private MAC
+	 */
+	mac48 generate_random_mac48();
 
 	/** @brief EUI-64
 	 * Media access control address (8 bytes == 64 bits)

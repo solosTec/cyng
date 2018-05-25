@@ -99,6 +99,15 @@ namespace cyng
 #endif
 		}
 		
+		std::uint8_t get_used_virtual_memory_in_percent()
+		{
+			auto const total = cyng::sys::get_total_virtual_memory();
+			return (total == 0)
+				? 100
+				: ((cyng::sys::get_used_virtual_memory() * 100) / total)
+				;
+		}
+
 		std::uint64_t get_used_virtual_memory_by_process()
 		{
 #if BOOST_OS_WINDOWS
@@ -129,7 +138,12 @@ namespace cyng
 		std::uint64_t get_total_physical_memory()
 		{
 #if BOOST_OS_WINDOWS
-			return 0;
+
+			MEMORYSTATUSEX memInfo;
+			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+			GlobalMemoryStatusEx(&memInfo);
+			return memInfo.ullTotalPhys;
+
 #elif BOOST_OS_LINUX			
 			struct sysinfo memInfo;
 			sysinfo (&memInfo);
@@ -145,7 +159,12 @@ namespace cyng
 		std::uint64_t get_used_physical_memory()
 		{
 #if BOOST_OS_WINDOWS
-			return 0;
+
+			MEMORYSTATUSEX memInfo;
+			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+			GlobalMemoryStatusEx(&memInfo);
+			return memInfo.ullTotalPhys - memInfo.ullAvailPhys;
+
 #elif BOOST_OS_LINUX			
 			struct sysinfo memInfo;
 			sysinfo (&memInfo);
@@ -158,6 +177,27 @@ namespace cyng
 #endif
 		}
 		
+		std::uint8_t get_used_physical_memory_in_percent()
+		{
+#if BOOST_OS_WINDOWS
+
+			MEMORYSTATUSEX memInfo;
+			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+			GlobalMemoryStatusEx(&memInfo);
+			return memInfo.dwMemoryLoad;
+
+#elif BOOST_OS_LINUX			
+
+			auto const total = cyng::sys::get_total_physical_memory();
+			return (total == 0)
+				? 100
+				: ((cyng::sys::get_used_physical_memory() * 100) / total)
+				;
+#else
+			return 0;
+#endif
+
+		}
 
 #if BOOST_OS_LINUX		
 		std::uint64_t get_used_physical_memory_by_process()

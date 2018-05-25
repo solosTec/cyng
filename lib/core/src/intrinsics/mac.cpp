@@ -6,13 +6,9 @@
  */ 
 
 #include <cyng/intrinsics/mac.h>
-#include <boost/predef.h>
-#if BOOST_OS_WINDOWS
-#include <winsock2.h>
-#include <iphlpapi.h>
-#pragma comment(lib, "IPHLPAPI.lib")
-#endif
 #include <cyng/util/slice.hpp>
+#include <random>
+//#include <boost/predef.h>
 #include <boost/assert.hpp>
 
 namespace cyng 
@@ -138,42 +134,24 @@ namespace cyng
 		return (a == mac48::get_broadcast_address());
 	}
 
-
-	std::vector<mac48>	retrieve_mac48()
+	mac48 generate_random_mac48()
 	{
-		std::vector<mac48> result;
-#if BOOST_OS_WINDOWS
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max());
 
-		// Allocate information for up to 16 NICs
-		IP_ADAPTER_ADDRESSES AdapterInfo[16];       
+		mac48::address_type	addr;
+		std::generate(addr.begin(), addr.end(), [&dis, &gen]() {
+			return dis(gen);
+		});
 
-		// Save memory size of buffer
-		DWORD dwBufLen = sizeof(AdapterInfo);       
+		//	Mark as private address (second-least significant bit is on)
+		addr[0] |= 0x2u;
 
-													// Arguments for GetAdapterAddresses:
-		DWORD dwStatus = GetAdaptersAddresses(0, 0, NULL, AdapterInfo, &dwBufLen);
-		// [out] buffer to receive data
-		// [in] size of receive data buffer
+		return mac48(addr);
 
-		// Verify return value is valid, no buffer overflow
-		BOOST_ASSERT(dwStatus == ERROR_SUCCESS);                    
-
-		// Contains pointer to current adapter info
-		PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;           
-
-		do {
-			result.push_back(mac48(pAdapterInfo->PhysicalAddress[0]
-				, pAdapterInfo->PhysicalAddress[1]
-				, pAdapterInfo->PhysicalAddress[2]
-				, pAdapterInfo->PhysicalAddress[3]
-				, pAdapterInfo->PhysicalAddress[4]
-				, pAdapterInfo->PhysicalAddress[5]));
-
-			pAdapterInfo = pAdapterInfo->Next;                      // Progress through linked list
-		} while (pAdapterInfo && (dwStatus == NO_ERROR));
-#endif
-		return result;
 	}
+
 
 	mac64::mac64()
 	: address_()
