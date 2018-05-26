@@ -8,6 +8,7 @@
 #include <cyng/intrinsics/mac.h>
 #include <cyng/util/slice.hpp>
 #include <random>
+#include <algorithm>
 //#include <boost/predef.h>
 #include <boost/assert.hpp>
 

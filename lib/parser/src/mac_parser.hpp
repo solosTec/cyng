@@ -9,6 +9,7 @@
 #define CYNG_PARSER_MAC_HPP
 
 #include <cyng/parser/mac_parser.h>
+#include <cyng/factory/factory.hpp>
 
 #include <boost/spirit/home/support/attributes.hpp>	//	transform_attribute
 #include <boost/spirit/include/phoenix.hpp>	//	enable assignment of values like cyy::object

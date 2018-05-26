@@ -18,6 +18,7 @@
 
 #elif BOOST_OS_LINUX
 
+#include <cyng/parser/mac_parser.h>
 // #include "sys/types.h"
 // #include "sys/sysinfo.h"
 //#include "stdlib.h"
@@ -30,6 +31,7 @@
 //#include <array>
 //#include <cstdint>
 //#include <numeric>
+#include <boost/filesystem.hpp>
 #else
 #warning unknow OS
 #endif
@@ -39,14 +41,14 @@ namespace cyng
 	namespace sys 
 	{
 #if BOOST_OS_LINUX
-		address_list get_mac48(std::string const& name)
+        std::vector<mac48> retrieve_mac48(std::string const& name)
 		{
 			// sol@paramount:~> cat /sys/class/net/eno16777736/address
 			// 00:0c:29:cc:e3:d4
 
 			const boost::filesystem::path root("/sys/class/net/");
 			const boost::filesystem::path p = root / name / "address";
-			address_list	al;
+            std::vector<mac48>	result;
 
 			//	open file
 			std::ifstream infile(p.string(), std::ios::in);
@@ -56,14 +58,14 @@ namespace cyng
 			if (std::getline(infile, line, '\n'))
 			{
 				//			std::cout << "parse: " << line << std::endl;
-				const std::pair<cyng::mac48, bool > r = cyng::io::parse_mac48(line);
+                const std::pair<cyng::mac48, bool > r = cyng::parse_mac48(line);
 				if (r.second && !r.first.is_nil())
 				{
-					al.push_back(r.first);
+                    result.push_back(r.first);
 				}
 			}
 
-			return al;
+            return result;
 		}
 #endif
 
@@ -107,7 +109,6 @@ namespace cyng
 			const boost::filesystem::path p("/sys/class/net/");
 			BOOST_ASSERT_MSG(boost::filesystem::is_directory(p), "not a directory");
 
-			address_list	result;
 			std::for_each(boost::filesystem::directory_iterator(p)
 				, boost::filesystem::directory_iterator()
 				, [&result](boost::filesystem::path const& adapter)
@@ -116,8 +117,8 @@ namespace cyng
 				if (boost::filesystem::is_directory(adapter))
 				{
 					const boost::filesystem::path name = adapter.stem();
-					const address_list al = get_mac48(name.string());
-					result.insert(result.end(), al.begin(), al.end());
+                    const std::vector<mac48> al = retrieve_mac48(name.string());
+                    result.insert(result.end(), result.begin(), result.end());
 				}
 			});
 

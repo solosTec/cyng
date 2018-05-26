@@ -635,10 +635,6 @@ add_executable(hello ${hello})
 #
 include (test/demo.cmake)
 add_executable(demo ${demo})
-# libraries to link
-target_link_libraries(demo
-# 	cyng_core
-	${Boost_LIBRARIES})
 	
 #
 # test unit using Boost.Test
