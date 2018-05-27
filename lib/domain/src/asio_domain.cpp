@@ -18,75 +18,75 @@ namespace cyng
 
 	void register_socket(boost::asio::ip::tcp::socket& s, controller& vm)
 	{
-		vm.run(register_function("ip.tcp.socket.shutdown", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.shutdown", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			s.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	Any asynchronous send, receive or connect operations will be cancelled immediately, 
 		//	and will complete with the boost::asio::error::operation_aborted error.
 		//
-		vm.run(register_function("ip.tcp.socket.close", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.close", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			s.close(ec);
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	This function causes all outstanding asynchronous connect, send and receive operations 
 		//	to finish immediately, and the handlers for cancelled operations will be passed 
 		//	the boost::asio::error::operation_aborted error.
 		//
-		vm.run(register_function("ip.tcp.socket.cancel", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.cancel", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			s.cancel(ec);
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	This function causes all outstanding asynchronous connect, send and receive operations 
 		//	to finish immediately, and the handlers for cancelled operations will be passed 
 		//	the boost::asio::error::operation_aborted error.
 		//
-		vm.run(register_function("ip.tcp.socket.isOpen", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.isOpen", 0, [&s](context& ctx) {
 			ctx.set_return_value(make_object(s.is_open()), 0);
-		}));
+		});
 
 		//
 		//	Get the local endpoint of the socket.
 		//
-		vm.run(register_function("ip.tcp.socket.ep.local", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.ep.local", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			ctx.push(make_object(s.local_endpoint(ec)));
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	Get the remote endpoint of the socket.
 		//
-		vm.run(register_function("ip.tcp.socket.ep.remote", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.ep.remote", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			ctx.push(make_object(s.remote_endpoint(ec)));
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	Connect the socket to the specified endpoint.
 		//
-		vm.run(register_function("ip.tcp.socket.connect", 1, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.connect", 1, [&s](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 			boost::system::error_code ec;
 			s.connect(value_cast(frame.at(0), boost::asio::ip::tcp::endpoint()), ec);
 			BOOST_ASSERT(s.is_open());
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	Connect the socket to the specified endpoint using the resolver
 		//
-		vm.run(register_function("ip.tcp.socket.resolve", 2, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.resolve", 2, [&s](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 			boost::system::error_code ec;
             
@@ -106,21 +106,21 @@ namespace cyng
 #endif
 			BOOST_ASSERT(s.is_open());
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	Determine the number of bytes available for reading.
 		//
-		vm.run(register_function("ip.tcp.socket.available", 0, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.available", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			ctx.set_return_value(make_object(s.available(ec)), 0);
 			ctx.set_register(ec);
-		}));
+		});
 
 		//
 		//	Send a buffer_t object synchronously
 		//
-		vm.run(register_function("ip.tcp.socket.write", 1, [&s](context& ctx) {
+		vm.register_function("ip.tcp.socket.write", 1, [&s](context& ctx) {
 			const vector_t frame = ctx.get_frame();
 			boost::system::error_code ec;
 			buffer_t buf;
@@ -131,7 +131,6 @@ namespace cyng
 			//
 			ctx.set_return_value(make_object(boost::asio::write(s, boost::asio::buffer(buf.data(), buf.size()), ec)), 0);
 			ctx.set_register(ec);
-		}));
+		});
 	}
-
 }
