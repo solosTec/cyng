@@ -50,6 +50,7 @@ namespace cyng
 		 */
 		bool try_error_log(context& ctx, std::string) const;
 		bool try_debug_log(vm& v, std::string) const;
+		bool try_halt(vm& v) const;
 
 	private:
 		/**

@@ -244,6 +244,28 @@ namespace cyng
 		return false;
 	}
 
+	bool librarian::try_halt(vm& v) const
+	{
+		auto pos = db_.find("vm.halt");
+		if (pos != db_.end())
+		{
+			//
+			//	fake memory
+			//
+			vector_t prg;
+			memory mem(std::move(prg));
+
+			//
+			//	save and restore call stack 
+			//
+			activation a(v.stack_);
+			context ctx_halt(v, mem);
+			(*pos).second(ctx_halt);
+			return true;
+		}
+		return false;
+	}
+
 }
 
 

@@ -260,6 +260,9 @@ namespace cyng
 				break;
 
 			case code::HALT: //	trigger halt
+				//	set halt flag
+				lib_.try_halt(*this);
+
 				//	stop engine
 				lib_.clear();
 				break;

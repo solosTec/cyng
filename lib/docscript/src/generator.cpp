@@ -787,7 +787,7 @@ namespace cyng
 					<< " op codes"
 					<< std::endl;
 			}
-			vm_.run(vector_t(prg));
+			vm_.async_run(vector_t(prg));
 		}
 
 		std::size_t generator::meta(boost::filesystem::path const& out) const

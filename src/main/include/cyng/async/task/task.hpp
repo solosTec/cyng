@@ -13,7 +13,6 @@
 #include <boost/core/demangle.hpp>
 #include <boost/algorithm/string.hpp>
 #include <memory>
-#include <future>
 #include <typeinfo>
 
 namespace cyng 
@@ -50,7 +49,7 @@ namespace cyng
 			virtual void run() override
 			{
 				if (shutdown_)	return;
-				auto sp = this->shared_from_this();
+				auto sp = get_shared();
 				dispatcher_.post([this, sp](){
 					impl_.run();					
 				});
@@ -63,37 +62,22 @@ namespace cyng
 			 */
 			virtual std::size_t stop() override
 			{
-                if (shutdown_)	return 0u;
+				if (shutdown_)	return 0u;
 				
 				//
 				// set shutdown flag
 				//
 				shutdown_ = true;
 				
+				impl_.stop();
+
 				//
-				//	Add one reference to prevent call 
-				//	of destructor.
+				//  Now it's safe to stop the timer.
+				//  Before stop() a task could restart the timer again.
+				//  It is the responsibility of the implementor to guarantee
+				//  this behavior. 
 				//
-				auto sp = this->shared_from_this();
-				
-				std::promise<std::size_t> result;
-				auto f = result.get_future();
-				
-				dispatcher_.post([this, sp, &result](){
-					
-					impl_.stop();
-					
-					//
-					//  Now it's safe to stop the timer.
-					//  Before stop() a task could restart the timer again.
-					//  It is the responsibility of the implementor to guarantee
-					//  this behavior. 
-					//
-					result.set_value(sp->cancel_timer());
-					
-				});
-				
-				return f.get();	
+				return cancel_timer();
 			}
 			
 			/**
@@ -103,7 +87,7 @@ namespace cyng
 			virtual void dispatch(std::size_t slot, tuple_t msg) override
 			{
 				if (shutdown_)	return;
-				auto sp = this->shared_from_this();
+				auto sp{ this->shared_from_this() };
 				dispatcher_.post([this, sp, slot, msg]() {
 					switch (select_signature<signatures_t>::invoke(impl_, slot, msg))
 					{

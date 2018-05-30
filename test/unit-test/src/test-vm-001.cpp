@@ -82,7 +82,11 @@ namespace cyng
 		//
 		//	halt VM, stop execution engine
 		//
-		ctrl.halt();
+		//ctrl.halt();
+		ctrl.access([](vm& vm) {
+			vm.run(vector_t{ make_object(code::HALT) });
+		});
+
 		ios.stop();
 		
 		return true;

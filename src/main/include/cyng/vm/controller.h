@@ -14,27 +14,6 @@
 
 namespace cyng 
 {
-	class alloc_stack;
-	class call_stack
-	{
-		friend class alloc_stack;
-	public:
-		call_stack();
-		bool running_in_this_thread() const;
-	private:
-		mutable std::stack<std::thread::id>	call_stack_;
-	};
-
-	class alloc_stack
-	{
-	public:
-		alloc_stack(call_stack const&);
-		virtual ~alloc_stack();
-	private:
-		call_stack const& call_stack_;
-	};
-
-
 	/**
 	 *	Wrapper class for VM. All calls into the VM are dispatched
 	 *	over a strand object. This allows execution of code 
@@ -66,8 +45,17 @@ namespace cyng
 		 * 
 		 * @param prg instructions to execute
 		 */
- 		controller const& run(vector_t&& prg) const;
-		
+		//controller const& run(vector_t&& prg) const;
+
+		/**
+		 * The callback function will be executed asynchronous in a different thread.
+		 *
+		 * @param cb callback that provides thread safe (exclusive) access to VM.
+		 * 
+		 * Function calls can be chained.
+		 */
+		controller const& access(std::function<void(vm&)> cb) const;
+
 		/**
 		 * Execute the specified instructions asynchonously.
 		 * 
@@ -79,7 +67,7 @@ namespace cyng
 		/**
 		 * Halt engine.
 		 */
-		void halt();
+		bool is_halted() const;
 		
 		/**
 		 * @return VM specific hash based in internal tag
@@ -109,14 +97,10 @@ namespace cyng
 		 * @param arity parameter count
 		 * @param proc procedure to call 
 		 */
-		void register_function(std::string name
+		controller const& register_function(std::string name
 			, std::size_t arity
 			, vm_call proc);
 
-	private:
-		void execute(vector_t&& prg, async::sync) const;
-		void execute(vector_t&& prg, async::detach) const;
-		
 	private:
 #ifdef CYNG_VM_SIMPLE_LOCK
 		/**
@@ -140,17 +124,6 @@ namespace cyng
 		 */
 		std::atomic<bool>	halt_;
 		
-		/**
-		 * support for sync calls
-		 */
-		mutable async::mutex	mutex_;
-
-		/**
-		 * Handle recursion
-		 */
-		call_stack	call_stack_;
-
-		mutable std::atomic<int>	load_;
 	};
 
 	/**
