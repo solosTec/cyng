@@ -35,6 +35,11 @@ namespace cyng
 		return db_.erase(name) != 0;
 	}
 	
+	std::size_t librarian::size() const noexcept
+	{
+		return db_.size();
+	}
+
 	bool librarian::invoke(std::string const& name, context& ctx) const
 	{
 		auto pos = db_.find(name);
@@ -174,6 +179,15 @@ namespace cyng
 			<< std::endl;
 		});
 		
+		//
+		//	Push number of registered callbacks on stack
+		//
+		insert("lib.size", 0, [this](context& ctx) {
+
+			ctx.push(make_object(db_.size()));
+
+		});
+
 	}
 	
 	bool librarian::insert(std::string const& name, procedure&& p)

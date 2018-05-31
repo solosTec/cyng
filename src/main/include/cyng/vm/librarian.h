@@ -52,6 +52,11 @@ namespace cyng
 		bool try_debug_log(vm& v, std::string) const;
 		bool try_halt(vm& v) const;
 
+		/**
+		 * @return number of registered functions.
+		 */
+		std::size_t size() const noexcept;
+
 	private:
 		/**
 		 * expose internal functions as VM functions 
