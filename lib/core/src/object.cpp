@@ -7,6 +7,7 @@
 #include <cyng/object.h>
 #include <cyng/core/class_interface.h>
 #include <cyng/core/object_interface.h>
+#include <cyng/intrinsics/traits/tag.hpp>
 #include <CYNG_project_info.h>
 
 namespace cyng 
@@ -21,41 +22,36 @@ namespace cyng
 	
 	object::object(object const& obj)
 	: value_(obj.value_)
-	{
-// 		std::cout << "object::object(object const& obj) = ";
-// 		obj.serialize(std::cout)	<< " => ";
-// 		this->serialize(std::cout)	<< std::endl;
-		
-	}
+	{}
 	
 	object::object(object&& obj)
  	: value_(std::move(obj.value_))
-	{
-// 		std::cout << "object::object(object&& obj)" << std::endl;
-	}
+	{}
 	
 	object::~object() noexcept
-	{
-// 		std::cout << "~operator(object const& obj) ";
-// 		if (value_)	value_->serialize(std::cout); else std::cout << "NULL";
-// 		std::cout<< std::endl;		
-	}
+	{}
 	
 	object& object::operator=(object const& obj)
 	{
-// 		std::cout << "operator=(object const& obj)" << std::endl;
 		value_.operator=(obj.value_);
 		return *this;
 	}
 	
 	object& object::operator=(object&& obj)
 	{
-// 		std::cout << "operator=(object&& obj)" << std::endl;
 		value_.operator=(std::move(obj.value_));
 		return *this;		
 	}
 	
-	
+	bool object::is_null() const noexcept
+	{
+		//
+		//	First test if there is a value and then if this value
+		//	is of type null.
+		//
+		return (!!value_ && (value_->get_class().tag() == TC_NULL));
+	}
+
 	object::operator bool() const noexcept
 	{
 		//	force bool() operator
