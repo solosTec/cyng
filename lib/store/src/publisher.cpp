@@ -72,6 +72,31 @@ namespace cyng
 			};
 		}
 
+		std::size_t publisher::num_insert_slots() const
+		{
+			return insert_signal_.num_slots();
+		}
+		std::size_t publisher::num_remove_slots() const
+		{
+			return remove_signal_.num_slots();
+		}
+		std::size_t publisher::num_clear_slots() const
+		{
+			return clear_signal_.num_slots();
+		}
+		std::size_t publisher::num_modify_slots() const
+		{
+			return modify_signal_.num_slots();
+		}
+		std::size_t publisher::num_all_slots() const
+		{
+			return num_insert_slots()
+				+ num_remove_slots()
+				+ num_clear_slots()
+				+ num_modify_slots()
+				;
+		}
+
 
 		void disconnect(connections_t& cs)
 		{

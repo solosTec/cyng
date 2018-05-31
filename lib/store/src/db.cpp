@@ -172,6 +172,30 @@ namespace cyng
 			}
 		}
 
+		std::size_t db::num_all_slots(std::string const& name) const
+		{
+			shared_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)	const_cast<table*>(object_cast<table>(ptr->at(0)))->num_all_slots();
+			}
+			return 0u;
+		}
+
+		std::size_t db::num_all_slots() const
+		{
+			shared_lock_t ul(this->m_);
+			std::size_t count{ 0 };
+			tables_.loop([&count](cyng::table::record const& rec)->bool {
+				count += object_cast<table>(rec["table"])->num_all_slots();
+				return true;
+			});
+			return count;
+		}
+
 		std::size_t db::size(std::string const& name) const
 		{
 			shared_lock_t ul(this->m_);
@@ -182,7 +206,7 @@ namespace cyng
 				BOOST_ASSERT(ptr != nullptr);
 				if (ptr != nullptr)	return object_cast<table>(ptr->at(0))->size();
 			}
-			return 0;
+			return 0u;
 		}
 
 		bool db::set_state(std::string const& name, std::uint32_t state)

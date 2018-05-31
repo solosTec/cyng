@@ -118,7 +118,32 @@ namespace cyng
 				, remove_signal::slot_type const& rsig
 				, clear_signal::slot_type const& csig
 				, modify_signal::slot_type const& msig);
+
+			/**
+			 * @return The number of slots connected to the insert signal
+			 */
+			std::size_t num_insert_slots() const;
 			
+			/**
+			 * @return The number of slots connected to the remove signal
+			 */
+			std::size_t num_remove_slots() const;
+
+			/**
+			 * @return The number of slots connected to the clear signal
+			 */
+			std::size_t num_clear_slots() const;
+
+			/**
+			 * @return The number of slots connected to the modify signal
+			 */
+			std::size_t num_modify_slots() const;
+
+			/**
+			 * @return The number of all connected slots
+			 */
+			std::size_t num_all_slots() const;
+
 		protected:
 			insert_signal	insert_signal_;
 			remove_signal	remove_signal_;

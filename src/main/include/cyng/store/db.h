@@ -14,8 +14,6 @@
 #ifdef _DEBUG
 #include <boost/core/demangle.hpp>
 #endif
-//#include <boost/fusion/container/vector.hpp>
-//#include <boost/fusion/include/make_list.hpp>
 #include <boost/fusion/include/make_vector.hpp>
 
 namespace cyng 
@@ -215,6 +213,12 @@ namespace cyng
 				, publisher::modify_signal::slot_type const& msig);
 
 			void disconnect(std::string const& name);
+
+			/**
+			 * @return The number of all connected slots of specified table
+			 */
+			std::size_t num_all_slots(std::string const& name) const;
+			std::size_t num_all_slots() const;
 
 			/**
 			 * @return size of table
