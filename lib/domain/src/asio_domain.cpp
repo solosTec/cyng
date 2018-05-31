@@ -97,12 +97,14 @@ namespace cyng
             
             boost::asio::ip::tcp::resolver resolver(s.get_io_service());
             boost::asio::ip::tcp::resolver::query query(address, service);
-            boost::asio::connect(s, resolver.resolve(query));
+            boost::asio::connect(s, resolver.resolve(query), ec);
+            std::cerr << "OLD: " << ec << std::endl;
 #else
             
             boost::asio::ip::tcp::resolver resolver(s.get_executor().context());
 			boost::asio::connect(s, resolver.resolve(address, service), ec);
-            
+            std::cerr << "NEW: " << ec << std::endl;
+
 #endif
 			BOOST_ASSERT(s.is_open());
 			ctx.set_register(ec);

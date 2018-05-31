@@ -122,15 +122,15 @@ namespace cyng
 		//
 		//	insert a function
 		//
-		insert("lib.insert", 3, [this](context& ctx){
+        insert("lib.insert", 3, [this](context& ctx){
 			
-			const vector_t frame = ctx.get_frame();
+            const vector_t frame = ctx.get_frame();
 			
-			const vm_call fun = value_cast(frame[0], vm_call());
-			const std::size_t arity = value_cast<std::size_t>(frame[1], 0u);
-			const std::string name = value_cast<std::string>(frame[2], "");
-			this->insert(name, arity, fun);
-		});
+            const vm_call fun = value_cast(frame[0], vm_call());
+            const std::size_t arity = value_cast<std::size_t>(frame[1], 0u);
+            const std::string name = value_cast<std::string>(frame[2], "");
+            this->insert(name, arity, fun);
+        });
 		
 		//
 		//	clear library

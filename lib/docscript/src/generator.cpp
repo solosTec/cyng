@@ -44,7 +44,7 @@ namespace cyng
 
 		void generator::register_this()
 		{
-			vm_.async_run(cyng::register_function("now", 1, [this](context& ctx) {
+            vm_.register_function("now", 1, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -55,9 +55,9 @@ namespace cyng
 				//	<< std::endl;
 #endif
 				ctx.set_return_value(cyng::make_object(std::chrono::system_clock::now()), 0);
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("meta", 3, [this](context& ctx) {
+            vm_.register_function("meta", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -82,9 +82,9 @@ namespace cyng
 				//
 				// function meta has no return values
 				//
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("debug", 3, [this](context& ctx) {
+            vm_.register_function("debug", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -120,9 +120,9 @@ namespace cyng
 				// function meta has no return values
 				//
 
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("title", 1, [this](context& ctx) {
+            vm_.register_function("title", 1, [this](context& ctx) {
 
 				//	[1idx,true,"Introduction into docScript"]
 				const cyng::vector_t frame = ctx.get_frame();
@@ -165,9 +165,9 @@ namespace cyng
 				//
 				// function meta has no return values
 				//
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("contents", 2, [this](context& ctx) {
+            vm_.register_function("contents", 2, [this](context& ctx) {
 
 				//	[1idx,true,%(("depth":"4"))]
 				const cyng::vector_t frame = ctx.get_frame();
@@ -181,9 +181,9 @@ namespace cyng
 
 #endif
 				const cyng::vector_reader reader(frame);
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("header", 3, [this](context& ctx) {
+            vm_.register_function("header", 3, [this](context& ctx) {
 
 				//	[1idx,true,%(("level":"1"),("tag":"79bf3ba0-2362-4ea5-bcb5-ed93844ac59a"),("title":"Basics"))]
 				const cyng::vector_t frame = ctx.get_frame();
@@ -206,9 +206,9 @@ namespace cyng
 
 				const std::string node = generate_header(level, txt, tag);
 				ctx.set_return_value(make_object(node), 0);
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("header.1", 3, [this](context& ctx) {
+            vm_.register_function("header.1", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
@@ -238,9 +238,9 @@ namespace cyng
 // 					const std::string node = generate_header(1, txt, uuid_gen_());
 // 					ctx.set_return_value(make_object(node), 0);
 // 				}
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("header.2", 3, [this](context& ctx) {
+            vm_.register_function("header.2", 3, [this](context& ctx) {
 
 				//	[1idx,true,"Examples"]
 				//	[3idx, true, "DocScript", "of", "Examples"]
@@ -273,9 +273,9 @@ namespace cyng
 // 					const std::string node = generate_header(2, txt, uuid_gen_());
 // 					ctx.set_return_value(make_object(node), 0);
 // 				}
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("header.3", 3, [this](context& ctx) {
+            vm_.register_function("header.3", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
@@ -305,9 +305,9 @@ namespace cyng
 // 					const std::string node = generate_header(3, txt, uuid_gen_());
 // 					ctx.set_return_value(make_object(node), 0);
 // 				}
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("header.4", 3, [this](context& ctx) {
+            vm_.register_function("header.4", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
@@ -337,9 +337,9 @@ namespace cyng
 // 					const std::string node = generate_header(4, txt, uuid_gen_());
 // 					ctx.set_return_value(make_object(node), 0);
 // 				}
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("paragraph", 1, [this](context& ctx) {
+            vm_.register_function("paragraph", 1, [this](context& ctx) {
 
 				//	[131idx,".","power","more","you", ..."]
 				const cyng::vector_t frame = ctx.get_frame();
@@ -358,9 +358,9 @@ namespace cyng
 				const std::string node = "\n<p>" + accumulate(reader, size, 0) + "</p>";
 				ctx.set_return_value(make_object(node), 0);
 
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("bold", 3, [this](context& ctx) {
+            vm_.register_function("bold", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -392,9 +392,9 @@ namespace cyng
 
 				ctx.set_return_value(make_object(node), 0);
 
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("emphasise", 3, [this](context& ctx) {
+            vm_.register_function("emphasise", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -426,9 +426,9 @@ namespace cyng
 
 				ctx.set_return_value(make_object(node), 0);
 
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("color", 3, [this](context& ctx) {
+            vm_.register_function("color", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -467,9 +467,9 @@ namespace cyng
 				//ctx.set_return_value_invoke(make_object(node), 0);
 				ctx.set_return_value(make_object(node), 0);
 
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("link", 3, [this](context& ctx) {
+            vm_.register_function("link", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
@@ -500,13 +500,13 @@ namespace cyng
 				ctx.set_return_value(make_object(node), 0);
 				//ctx.set_return_value_invoke(make_object(node), 0);
 
-			}));
+            });
 
 			//<figure>
 			//  <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
 			//  <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
 			//</figure>
-			vm_.async_run(cyng::register_function("figure", 3, [this](context& ctx) {
+            vm_.register_function("figure", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 				//	[1idx,false,%(("caption":"figure with caption"),("source":"LogoSmall.jpg"))]
@@ -584,10 +584,10 @@ namespace cyng
 					}
 					ctx.set_return_value(make_object(node), 0);
 				}
-			}));
+            });
 
 
-			vm_.async_run(cyng::register_function("quote", 3, [this](context& ctx) {
+            vm_.register_function("quote", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 				//	[1idx,true,%(("source":"Earl Wilson"),("url":"https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html"))]
@@ -622,9 +622,9 @@ namespace cyng
 				const std::string node = ss.str();
 				ctx.set_return_value(cyng::make_object(node), 0);
 
-			}));
+            });
 
-			vm_.async_run(cyng::register_function("generate", 1, [this](context& ctx) {
+            vm_.register_function("generate", 1, [this](context& ctx) {
 				cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
@@ -669,7 +669,7 @@ namespace cyng
 					//serialize(file, ++frame.begin(), frame.end());
 				}
 
-			}));
+            });
 
 
 		}

@@ -198,9 +198,9 @@ namespace cyng
 				case code::ASSEMBLE_SET:		os << "SET";	break;
 
 					//	error register
-				case code::LERR:	os << "LERR";	
-				case code::TSTERR:	os << "TSTERR";	
-				case code::RESERR:	os << "RESERR";	
+                case code::LERR:	os << "LERR";	break;
+                case code::TSTERR:	os << "TSTERR";		break;
+                case code::RESERR:	os << "RESERR";		break;
 
 				case code::HALT:	os << "HALT";	break;
 				case code::NOOP:	os << "NOOP";	break;
