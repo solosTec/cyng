@@ -8,7 +8,6 @@
 #include <cyng/async/mux.h>
 #include <cyng/async/task/base_task.h>
 #include <boost/algorithm/string/predicate.hpp>
-#include <future>
 #include <iostream>
 #include <algorithm>
 
@@ -39,43 +38,7 @@ namespace cyng
 		mux::~mux()
 		{}
 		
-		std::size_t mux::size() const
-		{
-			if (shutdown_)	return 0u;
-			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
-			
-			//
-			//	thread safe access to task list
-			//
-			std::promise<std::size_t> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, &result](){
-				result.set_value(tasks_.size());
-			});
-			f.wait();
-			return f.get();
-		}
-		
-		std::size_t mux::size(std::string const& name) const
-		{
-			if (shutdown_)	return 0u;
-			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
-
-			//
-			//	thread safe access to task list
-			//
-			std::promise<std::size_t> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, name, &result]() {
-				result.set_value(std::count_if(tasks_.begin(), tasks_.end(), [name](task_map::value_type const& v) {
-					return boost::algorithm::equals(name, v.second->get_class_name());
-				}));
-			});
-			f.wait();
-			return f.get();
-		}
-
-		bool mux::is_task(std::size_t id) const
+		bool mux::size(std::function<void(std::size_t)> f) const
 		{
 			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
@@ -83,13 +46,40 @@ namespace cyng
 			//
 			//	thread safe access to task list
 			//
-			std::promise<bool> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, id, &result](){
-				result.set_value(tasks_.find(id) != tasks_.end());
+			dispatcher_.dispatch([this, f](){
+				f(tasks_.size());
 			});
-			f.wait();
-			return f.get();
+			return true;
+		}
+		
+		bool mux::size(std::string const& name, std::function<void(std::size_t)> f) const
+		{
+			if (shutdown_)	return false;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			//
+			//	thread safe access to task list
+			//
+			dispatcher_.dispatch([this, name, f]() {
+				f(std::count_if(tasks_.begin(), tasks_.end(), [name](task_map::value_type const& v) {
+					return boost::algorithm::equals(name, v.second->get_class_name());
+				}));
+			});
+			return true;
+		}
+
+		bool mux::is_task(std::size_t id, std::function<void(bool)> f) const
+		{
+			if (shutdown_)	return false;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+			
+			//
+			//	thread safe access to task list
+			//
+			dispatcher_.dispatch([this, id, f](){
+				f(tasks_.find(id) != tasks_.end());
+			});
+			return true;
 		}
 		
 		std::size_t mux::next_id()
@@ -106,20 +96,14 @@ namespace cyng
 		{
 			//
 			//	We can shutdown the multiplexer only once
-			//
-			
+			//		
 			if (!shutdown_.exchange(true))
 			{
-				//std::cout << "mux::stop(#" << tasks_.size() << ")" << std::endl;	
-
 				//
 				//	stop all tasks
 				//
-				std::promise<bool> result;
-				auto f = result.get_future();
-				dispatcher_.dispatch([this, &result](){
-					
-					task_lst zombi_tasks;
+				task_lst zombi_tasks;
+				dispatcher_.dispatch([this, &zombi_tasks](){
 					
 					//
 					//	reverse order - latest entries first
@@ -128,6 +112,7 @@ namespace cyng
 					{
 						//
 						//	call stop()
+						//	This call is sync.
 						//
 						(*pos).second->stop();
 						
@@ -141,49 +126,41 @@ namespace cyng
 						//
 						pos = decltype(pos){ tasks_.erase(std::next(pos).base()) };
 						
-						//
-						//	enable thread switch
-						//
-						std::this_thread::yield();
 					}
-					
-					//
-					//	wait for pending references
-					//
-					while (true) 
-					{
-						bool b = std::any_of(zombi_tasks.begin(), zombi_tasks.end(), [](weak_task wtp){
-							return !wtp.expired();
-						});					
-						
-						if (b)
-						{
-							std::cerr << "MUST WAIT FOR SHUTDOWN " 
-							<< std::count_if(zombi_tasks.begin(), zombi_tasks.end(), [this](weak_task wtp){
-								auto tp = wtp.lock();
-								if (tp)
-								{
-									std::cerr << "task $" << tp->get_id() << " is still alive" << std::endl;
-// 									tp->stop();
-									scheduler_.get_io_service().poll();
-								}
-								return !wtp.expired();				
-							})
-							<< std::endl;	
-							std::this_thread::sleep_for(std::chrono::seconds(1));
-						}
-						else 
-						{
-							break;
-						}
-					}
-					
-					result.set_value(true);
 				});
 
-				f.wait();
-				return f.get();
+				//
+				//	wait for pending references
+				//
+				while (true)
+				{
+					bool b = std::any_of(zombi_tasks.begin(), zombi_tasks.end(), [](weak_task wtp) {
+						return !wtp.expired();
+					});
+
+					if (b)
+					{
+						std::cerr << "MUST WAIT FOR SHUTDOWN "
+							<< std::count_if(zombi_tasks.begin(), zombi_tasks.end(), [this](weak_task wtp) {
+							auto tp = wtp.lock();
+							if (tp)
+							{
+								std::cerr << "task $" << tp->get_id() << " is still alive" << std::endl;
+								scheduler_.get_io_service().poll();
+							}
+							return !wtp.expired();
+						})
+							<< std::endl;
+						std::this_thread::sleep_for(std::chrono::seconds(1));
+					}
+					else {
+						break;
+					}
+				}
+
+				return true;
 			}
+
 			return false;
 		}
 		
@@ -192,34 +169,64 @@ namespace cyng
 			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 			
-			std::promise<bool> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, id, &result](){
+			dispatcher_.dispatch([this, id](){
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())
 				{
 					(*pos).second->stop();
 					tasks_.erase(pos);
-					result.set_value(true);
-				}
-				else 
-				{
-					result.set_value(false);
 				}
 			});
-			
-			f.wait();
-			return f.get();
+			return true;
 		}
 		
-		std::size_t mux::stop(std::string const& name)
+		bool mux::stop(std::size_t id, std::function<void(bool, std::size_t)> f)
 		{
 			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 
-			std::promise<std::size_t> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, name, &result]() {
+			dispatcher_.dispatch([this, id, f]() {
+				auto pos = tasks_.find(id);
+				if (pos != tasks_.end())
+				{
+					f(true, (*pos).second->stop());
+					tasks_.erase(pos);
+				}
+				else {
+					f(false, 0);
+				}
+			});
+			return true;
+		}
+
+		bool mux::stop(std::string const& name)
+		{
+			if (shutdown_)	return false;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			dispatcher_.dispatch([this, name]() {
+				for (auto pos = tasks_.begin(); pos != tasks_.end(); /* empty */)
+				{
+					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
+					{
+						(*pos).second->stop();
+						pos = tasks_.erase(pos);
+					}
+					else {
+						++pos;
+					}
+				}
+			});
+
+			return true;
+		}
+
+		bool mux::stop(std::string const& name, std::function<void(std::size_t)> f)
+		{
+			if (shutdown_)	return false;
+			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+			dispatcher_.dispatch([this, name, f]() {
 				std::size_t counter{ 0 };
 				for (auto pos = tasks_.begin(); pos != tasks_.end(); /* empty */)
 				{
@@ -229,20 +236,18 @@ namespace cyng
 						pos = tasks_.erase(pos);
 						++counter;
 					}
-					else
-					{
+					else {
 						++pos;
 					}
 				}
 
 				//
-				//	set future value
+				//	callback
 				//
-				result.set_value(counter);
+				f(counter);
 			});
 
-			f.wait();
-			return f.get();
+			return true;
 		}
 
 		bool mux::insert(shared_task stp, sync)
@@ -288,47 +293,12 @@ namespace cyng
 			//
 			//	thread safe access to task list
 			//
-			std::promise<bool> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, stp, &result](){
-// 				std::cout << "insert-none: " << stp->get_id() << std::endl;	
-				result.set_value(tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end());
+			dispatcher_.dispatch([this, stp]() {
+				tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
 			});
-			f.wait();
-			return f.get();
+			return true;
 		}
 		
-		bool mux::send(std::size_t id, std::size_t slot, tuple_t&& msg) const
-		{
-			if (shutdown_)	return false;
-			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
-			
-			//
-			//	move the content of the message 
-			//
-			parameter param(std::move(msg));
-
-			std::promise<bool> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, id, slot, param, &result](){
-				auto pos = tasks_.find(id);
-				if (pos != tasks_.end())
-				{
-					//
-					//	async dispatching
-					//
-					(*pos).second->dispatch(slot, param.msg_);
-					result.set_value(true);
-				}
-				else 
-				{
-					result.set_value(false);
-				}
-			});
-			
-			f.wait();
-			return f.get();
-		}
 
 		void mux::post(std::size_t id, std::size_t slot, tuple_t&& msg) const
 		{
@@ -352,40 +322,6 @@ namespace cyng
 			});
 		}
 		
-		std::size_t mux::send(std::string name, std::size_t slot, tuple_t&& msg) const
-		{
-			if (shutdown_)	return 0u;
-			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
-
-			//
-			//	move the content of the message 
-			//
-			parameter param(std::move(msg));
-
-			std::promise<std::size_t> result;
-			auto f = result.get_future();
-			dispatcher_.dispatch([this, name, slot, param, &result]() {
-				std::size_t counter{ 0 };
-				for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
-				{
-					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
-					{
-						(*pos).second->dispatch(slot, param.msg_);
-						++counter;
-					}
-				}
-
-				//
-				//	set future value
-				//
-				result.set_value(counter);
-			});
-
-			f.wait();
-			return f.get();
-
-		}
-
 		void mux::post(std::string name, std::size_t slot, tuple_t&& msg) const
 		{
 			if (shutdown_)	return;

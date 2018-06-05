@@ -62,22 +62,25 @@ namespace cyng
 			virtual ~mux();
 			
 			/**
-			 * @return count of running tasks
+			 * @param f function object that is called with the result.
+			 * @return true if task list is accessible
 			 */
-			std::size_t size() const;
+			bool size(std::function<void(std::size_t)> f) const;
 
 			/**
 			 * The class name is the the demangled name.
 			 *
-			 * @return count of running tasks with the specified
-			 * class name.
+			 * @param f function object that is called with the 
+			 * count of running tasks with the specified class name.
+			 * @return true if task list is accessible
 			 */
-			std::size_t size(std::string const&) const;
+			bool size(std::string const&, std::function<void(std::size_t)> f) const;
 
 			/**
-			 * @return true if task exists
+			 * @param f function object that is called with true if task exists.
+			 * @return true if task list is accessible
 			 */
-			bool is_task(std::size_t id) const;
+			bool is_task(std::size_t id, std::function<void(bool)> f) const;
 			
 			/**
 			 * This function may be used to obtain the io_service object 
@@ -108,35 +111,37 @@ namespace cyng
 			 * It's no guaranty that the specified task exists and will be stopped.
 			 */
 			bool stop(std::size_t);
-			
+			bool stop(std::size_t, std::function<void(bool, std::size_t)>);
+
 			/**
 			 * Stop all tasks with the specified class name. 
 			 * Works asynchronously.
 			 *
 			 * @return number of found tasks with the specified class name.
 			 */
-			std::size_t stop(std::string const&);
+			bool stop(std::string const&);
+			bool stop(std::string const&, std::function<void(std::size_t)>);
 
-			/**
+			/** @brief deprecated
 			 * Works asynchronously but waits until message is dispatched.
 			 *
 			 * @return true if message could be delivered
 			 */
-			bool send(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
+			//bool send(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
 
 			/**
 			 * Works complete asynchronously.
 			 */
 			void post(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
 
-			/**
+			/** @brief deprecated
 			 * Deliver message to all tasks with the specified class name.
 			 * Works asynchronously but waits until message is dispatched
 			 * to all targets.
 			 *
 			 * @return number of found tasks with the specified class name.
 			 */
-			std::size_t send(std::string id, std::size_t slot, tuple_t&& tpl) const;
+			//std::size_t send(std::string id, std::size_t slot, tuple_t&& tpl) const;
 
 			/**
 			 * Deliver message to all tasks with the specified class name.

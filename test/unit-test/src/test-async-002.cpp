@@ -97,13 +97,13 @@ namespace cyng
 		}
 		
 		std::cout << "wait..." << std::endl;
-		task_manager.send(2, 0, tuple_factory(100, std::string("event-1")));
-		task_manager.send(3, 0, tuple_factory(100, "event-3"));
+		task_manager.post(2, 0, tuple_factory(100, std::string("event-1")));
+		task_manager.post(3, 0, tuple_factory(100, "event-3"));
 		
 		for (int idx = 0; idx < 10; idx++)
 		{
 			std::this_thread::sleep_for(std::chrono::seconds(1));
-			task_manager.send(idx, 1, tuple_factory(boost::uuids::random_generator()()));
+			task_manager.post(idx, 1, tuple_factory(boost::uuids::random_generator()()));
 		}
 		
 		std::this_thread::sleep_for(std::chrono::seconds(20));
