@@ -141,6 +141,14 @@ namespace cyng
 			 */
 			std::size_t loop(std::function<bool(cyng::table::record const&)> f) const;
 
+			/**
+			 * Return record of the first row that matches the specified criteria
+			 *
+			 * @return the matching record. If no match was found the record is empty
+			 */
+			cyng::table::record find_first(attr_t&& attr) const;
+			cyng::table::record find_first(param_t&& param) const;
+
 		private:
 			/**
 			 * This method is potential unsafe, since record data are unlocked

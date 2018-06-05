@@ -62,6 +62,7 @@ namespace cyng
 			 * as parameter name.
 			 */
 			tuple_t convert() const;
+			tuple_t convert(param_map_t const&) const;
 
 		private:
 			object get(std::size_t idx) const;

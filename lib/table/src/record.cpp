@@ -119,6 +119,30 @@ namespace cyng
 				, cyng::param_factory("gen", generation_));
 		}
 
+		tuple_t record::convert(param_map_t const& pm) const
+		{
+			param_map_t key, data;
+			meta_->loop([&](column&& col) {
+				if (col.pk_) {
+					key[col.name_] = get(col.pos_);
+				}
+				else {
+					data[col.name_] = get(col.pos_);
+				}
+			});
+
+			//
+			//	additional parameters
+			//
+			std::for_each(pm.begin(), pm.end(), [&data](param_map_value const& val) {
+				data[val.first] = val.second;
+			});
+
+			return cyng::tuple_factory(cyng::param_factory("key", key)
+				, cyng::param_factory("data", data)
+				, cyng::param_factory("gen", generation_));
+		}
+
 	}	//	table	
 }
 

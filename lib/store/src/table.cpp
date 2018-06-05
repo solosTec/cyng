@@ -197,6 +197,57 @@ namespace cyng
 			}
 			return counter;
 		}
+
+		cyng::table::record table::find_first(attr_t&& attr) const
+		{
+			//	empty record
+			cyng::table::record result(meta_);
+
+			//
+			//	check range
+			//
+			if (meta_->size() < attr.first)	return result;
+
+			//
+			//	search first matching record
+			//
+			loop([&](cyng::table::record const& rec)->bool {
+
+				if (rec[attr.first] == attr.second)
+				{
+					result = rec;
+					return false;
+				}
+				return true;
+			});
+			return result;
+		}
+
+		cyng::table::record table::find_first(param_t&& param) const
+		{
+			//	empty record
+			cyng::table::record result(meta_);
+
+			//
+			//	ToDo: check column name
+			//
+			//if (meta_->size() < attr.first)	return result;
+
+			//
+			//	search first matching record
+			//
+			loop([&](cyng::table::record const& rec)->bool {
+
+				if (rec[param.first] == param.second)
+				{
+					result = rec;
+					return false;
+				}
+				return true;
+			});
+			return result;
+		}
+
 	}	//	store
 	
 	std::size_t erase(store::table* tbl, table::key_list_t const& keys, boost::uuids::uuid source)
