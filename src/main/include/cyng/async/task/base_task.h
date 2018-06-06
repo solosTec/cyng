@@ -69,11 +69,12 @@ namespace cyng
 			{
 				if (shutdown_)	return;
 
+				auto ptr = get_shared();
 				timer_.expires_from_now(d);
-				timer_.async_wait([this](boost::system::error_code const& ec){
+				timer_.async_wait([ptr](boost::system::error_code const& ec){
 					if (ec != boost::asio::error::operation_aborted)
 					{
-						this->run();
+						ptr->run();
 					}
 				});
 			}
