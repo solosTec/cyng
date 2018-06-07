@@ -185,6 +185,22 @@ namespace cyng
 				}
 			}
 
+			virtual void loop_key(std::function<void(column&&)> cb) const
+			{
+				for (std::size_t pos = 0; pos < KEY_SIZE; ++pos)
+				{
+					cb(column(pos, get_name(pos), get_type(pos), pos < KEY_SIZE, get_width(pos)));
+				}
+			}
+
+			virtual void loop_body(std::function<void(column&&)> cb) const
+			{
+				for (std::size_t pos = KEY_SIZE; pos < KEY_SIZE + BODY_SIZE; ++pos)
+				{
+					cb(column(pos - KEY_SIZE, get_name(pos), get_type(pos), pos < KEY_SIZE, get_width(pos)));
+				}
+			}
+
 			/**
 			 * @return true if table has a primary key
 			 */
