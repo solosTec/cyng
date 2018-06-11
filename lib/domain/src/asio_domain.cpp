@@ -64,11 +64,29 @@ namespace cyng
 		});
 
 		//
+		//	Get the local endpoint port of the socket.
+		//
+		vm.register_function("ip.tcp.socket.ep.local.port", 0, [&s](context& ctx) {
+			boost::system::error_code ec;
+			ctx.push(make_object(s.local_endpoint(ec).port()));
+			ctx.set_register(ec);
+		});
+
+		//
 		//	Get the remote endpoint of the socket.
 		//
 		vm.register_function("ip.tcp.socket.ep.remote", 0, [&s](context& ctx) {
 			boost::system::error_code ec;
 			ctx.push(make_object(s.remote_endpoint(ec)));
+			ctx.set_register(ec);
+		});
+
+		//
+		//	Get the remote endpoint of the socket.
+		//
+		vm.register_function("ip.tcp.socket.ep.remote.port", 0, [&s](context& ctx) {
+			boost::system::error_code ec;
+			ctx.push(make_object(s.remote_endpoint(ec).port()));
 			ctx.set_register(ec);
 		});
 

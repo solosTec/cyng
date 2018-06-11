@@ -103,7 +103,9 @@ namespace cyng
 			 * loop over all columns 
 			 */
 			virtual void loop(std::function<void(column&&)>) const = 0;
-			
+			virtual void loop_key(std::function<void(column&&)>) const = 0;
+			virtual void loop_body(std::function<void(column&&)>) const = 0;
+
 			/**
 			 * @return true if table has a primary key
 			 */
