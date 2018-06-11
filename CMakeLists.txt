@@ -426,16 +426,16 @@ set(${PROJECT_NAME}_MYSQL_INSTALLED OFF)
 set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
 
 #
-# pugixml-master (v1.8.1)
+# pugixml-master (v1.9)
 # On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
 # Included as 3party software
 #
-set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/3party/pugixml-181")
+set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/3party/pugixml-190")
 message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
 set(${PROJECT_NAME}_PUGIXML_INSTALLED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_PUGIXML_INSTALLED" )
 include_directories(${PUGIXML_INCLUDE_DIR})
-
+set(${PROJECT_NAME}_PUGIXML_VERSION 190)
 
 #
 # include directories for all C/C++ projects

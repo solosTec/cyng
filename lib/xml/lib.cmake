@@ -4,7 +4,7 @@
 set (xml_lib)
 
 set (xml_cpp
-	${PROJECT_SOURCE_DIR}/3party/pugixml-181/pugixml.cpp
+    ${PROJECT_SOURCE_DIR}/3party/pugixml-190/pugixml.cpp
   	lib/xml/src/xml.cpp
   	lib/xml/src/serializer.cpp
 )
