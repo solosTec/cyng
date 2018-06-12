@@ -263,7 +263,7 @@ namespace cyng
 						std::string input((const char*)ptr, size);
 
 						//	call mac parser
-						const r = cyng::parse_mac48(input);
+						const auto r = cyng::parse_mac48(input);
 						return (r.second)
 							? make_object(r.first)
 							: make_object()
@@ -284,7 +284,7 @@ namespace cyng
 						std::string input((const char*)ptr, size);
 
 						//	call mac parser
-						const r = cyng::parse_mac64(input);
+						const auto r = cyng::parse_mac64(input);
 						return (r.second)
 							? make_object(r.first)
 							: make_object()

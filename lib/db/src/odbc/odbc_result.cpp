@@ -424,7 +424,7 @@ namespace cyng
 					if (str.size() > 17)
 					{
 						//	call mac parser
-						const r = cyng::parse_mac48(str);
+						const auto r = cyng::parse_mac48(str);
 						return (r.second)
 							? make_object(r.first)
 							: make_object()
@@ -442,7 +442,7 @@ namespace cyng
 					if (str.size() > 18)
 					{
 						//	call mac parser
-						const r = cyng::parse_mac64(str);
+						const auto r = cyng::parse_mac64(str);
 						return (r.second)
 							? make_object(r.first)
 							: make_object()
