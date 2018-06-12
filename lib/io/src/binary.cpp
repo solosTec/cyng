@@ -184,7 +184,7 @@ namespace cyng
 			//	type - length - value
 			//
 			serialize_type_tag<mac48>(os);
-			serialize_length(os, std::tuple_size<mac48::address_type>::value);
+			serialize_length(os, sizeof(mac48::address_type));
 			write_binary(os, v.get_octets());
 			return os;
 		}
@@ -197,7 +197,7 @@ namespace cyng
 			//	type - length - value
 			//
 			serialize_type_tag<mac64>(os);
-			serialize_length(os, std::tuple_size<mac64::address_type>::value);
+			serialize_length(os, sizeof(mac64::address_type));
 			write_binary(os, v.get_words());
 			return os;
 		}

@@ -143,6 +143,7 @@ namespace cyng
 			//mac48,
 			io::serialize_binary(f, make_object(cyng::mac48(0x00, 0xFF, 0xB0, 0x4B, 0xBE, 0xAA)));
 			//mac64,
+			io::serialize_binary(f, make_object(cyng::mac64(0x00, 0xFF, 0xB0, 0x4B, 0xBE, 0xAA, 0xBB, 0xCC)));
 			//color_8,
 			//color_16,
 		
