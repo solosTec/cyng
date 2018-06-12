@@ -9,6 +9,7 @@
 #include "sqlite_result.h"
 #include <cyng/factory.h>
 #include <cyng/parser/chrono_parser.h>
+#include <cyng/parser/mac_parser.h>
 #include <cyng/intrinsics/traits/tag.hpp>
 
 #include <utility>
@@ -262,11 +263,11 @@ namespace cyng
 						std::string input((const char*)ptr, size);
 
 						//	call mac parser
-						//const auto r = cyng::io::parse_mac48(input);
-						//return (r.second)
-						//	? make_object(r.first)
-						//	: make_object()
-						//	;
+						const r = cyng::parse_mac48(input);
+						return (r.second)
+							? make_object(r.first)
+							: make_object()
+							;
 					}
 					return make_object();
 				}
@@ -283,11 +284,11 @@ namespace cyng
 						std::string input((const char*)ptr, size);
 
 						//	call mac parser
-						//const auto r = cyng::io::parse_mac64(input);
-						//return (r.second)
-						//	? make_object(r.first)
-						//	: make_object()
-						//	;
+						const r = cyng::parse_mac64(input);
+						return (r.second)
+							? make_object(r.first)
+							: make_object()
+							;
 					}
 					return make_object();
 				}

@@ -10,6 +10,7 @@
 
 #include <cyng/factory.h>
 #include <cyng/parser/chrono_parser.h>
+#include <cyng/parser/mac_parser.h>
 #include <cyng/object.h>
 #include <cyng/value_cast.hpp>
 #include <cyng/chrono.h>
@@ -423,11 +424,11 @@ namespace cyng
 					if (str.size() > 17)
 					{
 						//	call mac parser
-						//const auto r = cyng::io::parse_mac48(str);
-						//return (r.second)
-						//	?make_object(r.first)
-						//	:make_object()
-						//	;
+						const r = cyng::parse_mac48(str);
+						return (r.second)
+							? make_object(r.first)
+							: make_object()
+							;
 					}
 					return make_object();
 				}
@@ -441,11 +442,11 @@ namespace cyng
 					if (str.size() > 18)
 					{
 						//	call mac parser
-						//const auto r = cyng::io::parse_mac48(str);
-						//return (r.second)
-						//	?make_object(r.first)
-						//	:make_object()
-						//	;
+						const r = cyng::parse_mac64(str);
+						return (r.second)
+							? make_object(r.first)
+							: make_object()
+							;
 					}
 					return make_object();
 				}
