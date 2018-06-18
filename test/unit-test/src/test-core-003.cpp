@@ -52,7 +52,10 @@ namespace cyng
 // 		std::cout << "op-1: " << std::boolalpha << op1.get_class().is_enum() << std::endl;
 // 		value_cast<code>(op1);
 // 		
-		auto a4 = make_object(std::make_pair(1ul, "one"));
+#if defined(CYNG_LEGACY_MODE_ON)
+        long unsigned int idx{1ul};
+		auto a4 = make_object(std::make_pair(idx, "one"));
+#endif
 // 		//	doesn't create an attribute for obvious reasons
 // // 		auto a5 = make_object(std::make_pair(2, "two"));
 // 		auto p1 = make_object(std::make_pair(std::string("one"), 1));

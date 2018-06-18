@@ -156,11 +156,11 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "6.1")
 		add_definitions(-std=c++11)	
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
-		message(STATUS "** C++ support     : C++14")
+		message(STATUS "** C++ support     : C++11")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "7.0")
 		add_definitions(-std=c++17)	
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_OFF)
-		message(STATUS "** C++ support     : C++14")
+		message(STATUS "** C++ support     : C++17")
 	else()
 		add_definitions(-std=c++17)	
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_OFF)
@@ -325,41 +325,47 @@ if(OPENSSL_FOUND)
 endif()
 
 #
+#	Don't use a possibly installed SQLite3 library. Instead use 
+#   version shipped with the repository 3rd library path.
+#	SQLite3 library is part of this project
+#
+include (3party/sqlite.cmake)
+add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
+
+#
+#
+#	SQLite3 shell
+include (3party/shell.cmake)
+add_executable(sqlite3 ${shell})
+if (WIN32)
+    target_link_libraries(sqlite3 lib_sqlite3)
+else()
+    target_link_libraries(sqlite3 lib_sqlite3 pthread dl)
+endif()
+
+
+#
+#
+#	Link this library
+set(${PROJECT_NAME}_SQLITE3_INSTALLED ON)
+set(SQLite3_LIBRARY ${lib_sqlite3})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
+
+# data comes from sqlite.cmake
+message(STATUS "** SQLite3 Version   : ${SQLite3_VERSION}")
+message(STATUS "** SQLite3 Include   : ${SQLite3_INCLUDE_DIR}")
+message(STATUS "** SQLite3 Libraries : ${SQLite3_LIBRARY}")
+
+
+#
 #	The path to cmake modules
 #
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/src/modules/")
 
 #
-#	Find SQLite3/UnixODBC library
+#	Find UnixODBC library
 #
 if (UNIX)
-
-	#
-	#	SQLite3
-	#
-	find_package(SQLite3)
-	if(SQLite3_FOUND)
-
-		include_directories(${SQLite3_INCLUDE_DIR})
-		link_directories(${SQLITE3_LIBRARY})
-  
-		message(STATUS "** SQLite3 Version   : ${SQLite3_VERSION}")
-		message(STATUS "** SQLite3 Include   : ${SQLite3_INCLUDE_DIR}")
-		message(STATUS "** SQLite3 Libraries : ${SQLite3_LIBRARY}")
-	
-		#
-		#	define this compile flag if SQLite3 library is available
-		#
-		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
-		set(${PROJECT_NAME}_SQLITE3_INSTALLED ON)
-
-	else()
-
-		message(WARNING "** SQLite3 not found")
-#		set(SQLite3_LIBRARY "")
-		set(${PROJECT_NAME}_SQLITE3_INSTALLED OFF)
-
-	endif()
 
 	#
 	#	Find unixODBC library
@@ -390,32 +396,10 @@ if (UNIX)
 elseif(WIN32)
 
 	#
-	#	SQLite3 library is part of this project
-	#
-	include (3party/sqlite.cmake)
-	add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
-
-	#
-	#
-	#	SQLite3 shell
-	include (3party/shell.cmake)
-	add_executable(sqlite3 ${shell})
-	target_link_libraries(sqlite3 lib_sqlite3)
-
-	#
-	#
-	#	Link this library
-	set(${PROJECT_NAME}_SQLITE3_INSTALLED ON)
-	set(SQLite3_LIBRARY ${lib_sqlite3})
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
-
-	#
 	#	ODBC is always available on windows
 	#
 	set(${PROJECT_NAME}_ODBC_INSTALLED ON)
 	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
-
-	message(STATUS "** SQlite3 Version       : ${SQLite3_VERSION}")
 
 else()
 	message(WARNING "** platform not supported")
@@ -599,13 +583,14 @@ if (${PROJECT_NAME}_ODBC_INSTALLED)
 		list(APPEND db_link_libs ${UnixODBC_LIBRARIES})
 	endif(WIN32)
 endif()
-if (${PROJECT_NAME}_SQLITE3_INSTALLED)
-	if(WIN32)
-		list(APPEND db_link_libs lib_sqlite3)
-else()
-		list(APPEND db_link_libs ${SQLite3_LIBRARY})
-	endif(WIN32)
-endif()
+list(APPEND db_link_libs lib_sqlite3)
+# if (${PROJECT_NAME}_SQLITE3_INSTALLED)
+# 	if(WIN32)
+# 		list(APPEND db_link_libs lib_sqlite3)
+# else()
+# 		list(APPEND db_link_libs ${SQLite3_LIBRARY})
+# 	endif(WIN32)
+# endif()
 target_link_libraries(cyng_db ${db_link_libs})
 #message(STATUS "** db link library : ${db_link_libs}")
 

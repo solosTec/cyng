@@ -71,7 +71,6 @@ namespace cyng
 
 			//
 			//	serialize instruction to build a set
-			//	ToDo: define VM op codes
 			//
 			serialize_binary(os, make_object(code::ASSEMBLE_SET));
 			return os;

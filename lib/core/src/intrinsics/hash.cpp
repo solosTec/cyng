@@ -131,7 +131,7 @@ namespace std
 	}
 	
 #if defined(CYNG_LEGACY_MODE_ON)
-	size_t hash<std::pair<long unsigned int, const char*>>::operator()(std::pair<long unsigned int, const char*> const& v) const noexcept
+	size_t hash<std::pair<long unsigned int, const char*> >::operator()(std::pair<long unsigned int, const char*> const& v) const noexcept
 	{
 		std::size_t seed = 0;
 		boost::hash_combine(seed, v.first);

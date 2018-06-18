@@ -10,7 +10,6 @@
 #include <cyng/store/db.h>
 #include <cyng/vm/context.h>
 #include <cyng/vm/generator.h>
-#include <cyng/value_cast.hpp>
 #include <cyng/tuple_cast.hpp>
 #include <algorithm>
 #ifdef _DEBUG

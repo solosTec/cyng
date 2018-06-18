@@ -20,11 +20,13 @@ set (sqlite_lib
   ${sqlite_h}
 )
 
-#
-# find include file
-#
-include_directories(3party/sqlite-amalgamation-3240000)
 
 # 3210000
 set(SQLite3_VERSION "3.24.0")
+set(SQLite3_INCLUDE_DIR 3party/sqlite-amalgamation-3240000)
 set(SQLite3_FOUND ON)
+
+#
+# find include file
+#
+include_directories(${SQLite3_INCLUDE_DIR})

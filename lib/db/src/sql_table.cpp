@@ -7,6 +7,7 @@
 
 
 #include <cyng/db/sql_table.h>
+#include <cyng/value_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 			
 namespace cyng

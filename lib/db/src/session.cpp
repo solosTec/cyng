@@ -8,7 +8,6 @@
 
 #include <cyng/db/session.h>
 #include <cyng/db/interface_session.h>
-#include <cyng/value_cast.hpp>
 #include <cyng/set_cast.h>
 #include "session_wrapper.hpp"
 

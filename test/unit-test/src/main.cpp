@@ -53,6 +53,9 @@ BOOST_AUTO_TEST_SUITE_END()	//	CORE
 #include "test-async-004.h"
 #include "test-async-005.h"
 
+//	Start with:
+//	./unit_test --run_test=ASYNC/async_001
+
 BOOST_AUTO_TEST_SUITE(ASYNC)
 BOOST_AUTO_TEST_CASE(async_001)
 {
