@@ -17,12 +17,26 @@ namespace cyng
 	param_map_t to_param_map(tuple_t const& tpl)
 	{
 		param_map_t pmap;
-		std::for_each(tpl.begin(), tpl.end(), [&pmap](tuple_t::value_type const& obj) {
-			if (obj.get_class().tag() == TC_PARAM)
-			{ 
-				pmap.insert(value_cast(obj, param_t()));
+		param_t param;
+		std::for_each(tpl.begin(), tpl.end(), [&pmap, &param](tuple_t::value_type const& obj) {
+			if (obj.get_class().tag() == TC_PARAM) { 
+				pmap.insert(value_cast(obj, param));
 			}
 		});
+		return pmap;
+	}
+
+	param_map_t to_param_map(vector_t const& vec)
+	{
+		param_map_t pmap;
+		tuple_t tpl;
+		param_t param;
+		for (auto const& obj : vec) {
+			tpl = value_cast(obj, tpl);
+			if (!tpl.empty()) {
+				pmap.insert(value_cast(tpl.front(), param));
+			}
+		}
 		return pmap;
 	}
 

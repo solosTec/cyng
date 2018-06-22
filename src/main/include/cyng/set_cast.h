@@ -20,6 +20,13 @@ namespace cyng
 	param_map_t to_param_map(tuple_t const&);
 
 	/**
+	 * @brief vector to parameter map.
+	 *
+	 * No check for duplicates
+	 */
+	param_map_t to_param_map(vector_t const&);
+
+	/**
 	 * @brief tuple to attribute map.
 	 *
 	 * No check for duplicates
