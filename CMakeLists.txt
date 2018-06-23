@@ -331,6 +331,7 @@ endif()
 #
 include (3party/sqlite.cmake)
 add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
+set_property(TARGET lib_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 #
 #
@@ -471,7 +472,8 @@ target_link_libraries(cyng_io ${io_link_libs})
 #
 include (lib/io/mail/lib.cmake)
 add_library(cyng_mail ${GLOBAL_LIBRARY_TYPE} ${mail_lib})
-
+target_link_libraries(cyng_mail
+	${OPENSSL_LIBRARIES})
 #
 #	cyng VM library
 #
@@ -581,16 +583,10 @@ if (${PROJECT_NAME}_ODBC_INSTALLED)
 		list(APPEND db_link_libs odbc32.lib)
 	else()
 		list(APPEND db_link_libs ${UnixODBC_LIBRARIES})
-	endif(WIN32)
+#        set_property(TARGET cyng_db PROPERTY POSITION_INDEPENDENT_CODE ON)
+ 	endif(WIN32)
 endif()
 list(APPEND db_link_libs lib_sqlite3)
-# if (${PROJECT_NAME}_SQLITE3_INSTALLED)
-# 	if(WIN32)
-# 		list(APPEND db_link_libs lib_sqlite3)
-# else()
-# 		list(APPEND db_link_libs ${SQLite3_LIBRARY})
-# 	endif(WIN32)
-# endif()
 target_link_libraries(cyng_db ${db_link_libs})
 #message(STATUS "** db link library : ${db_link_libs}")
 
