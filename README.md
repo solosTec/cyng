@@ -48,8 +48,8 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
     
 ## Introduction ##
 
-* Current version is 0.5. Interfaces are stable now. 
-* Linux (64 bit) are supported
+* Current version is 0.6. Interfaces are stable now. 
+* Linux (32/64 bit) are supported
 * Windows 7 (64 bit) or higher are supported.
 * Crosscompiling for Raspberry 3 is supported
 * Requires [g++](https://gcc.gnu.org/) >= 4.8 or cl 19.00.24215.1 (this is VS 14.0) and [boost](http://www.boost.org/) >= 1.61.0
