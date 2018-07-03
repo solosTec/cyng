@@ -35,6 +35,7 @@ set (core_h
     src/main/include/cyng/vector_cast.hpp
     src/main/include/cyng/set_cast.h
     src/main/include/cyng/tuple_cast.hpp
+    src/main/include/cyng/numeric_cast.hpp
 	src/main/include/cyng/tracker.h
 	src/main/include/cyng/reference.h
 #     src/main/include/cyng/core/deleter.hpp
