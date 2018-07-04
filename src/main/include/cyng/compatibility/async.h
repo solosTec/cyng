@@ -52,7 +52,7 @@ namespace cyng
 	}
 }
 
-#else // defined(CYNG_STD_SHARED_MUTEX_OFF)
+#elif defined(CYNG_STD_SHARED_MUTEX_ON)
 
 
 #include <shared_mutex>
@@ -93,6 +93,10 @@ namespace cyng
 		
 	}
 }
+#else 
+
+#error CYNG_STD_SHARED_MUTEX_... undefined
+
 #endif
 #endif 	//	CYNG_ASYNC_H
 

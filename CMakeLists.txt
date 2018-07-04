@@ -586,6 +586,9 @@ if (${PROJECT_NAME}_ODBC_INSTALLED)
 #        set_property(TARGET cyng_db PROPERTY POSITION_INDEPENDENT_CODE ON)
  	endif(WIN32)
 endif()
+if(UNIX)
+    list(APPEND db_link_libs dl)
+endif(UNIX)
 list(APPEND db_link_libs lib_sqlite3)
 target_link_libraries(cyng_db ${db_link_libs})
 #message(STATUS "** db link library : ${db_link_libs}")
@@ -619,6 +622,7 @@ add_executable(demo ${demo})
 #
 # test unit using Boost.Test
 # BOOST_TEST_DYN_LINK is required to build a main() function
+# cmake -DCYNG_BUILD_TEST:bool=ON ..
 #
 if(${PROJECT_NAME}_BUILD_TEST)
 include (test/unit-test/unit-test.cmake)

@@ -294,7 +294,8 @@ namespace cyng
 			/**
 			 * A sync object for this database
 			 */
-			mutable cyng::async::shared_mutex m_;
+// 			mutable cyng::async::shared_mutex m_;
+            mutable mutex_t m_;
 			
 		};
 		

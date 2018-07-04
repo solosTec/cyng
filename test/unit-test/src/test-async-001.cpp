@@ -28,6 +28,15 @@ namespace cyng
 
 	bool test_async_001()
 	{
+#if defined(CYNG_STD_SHARED_MUTEX_OFF)
+		std::cout << "CYNG_STD_SHARED_MUTEX_OFF" << std::endl;
+#elif defined(CYNG_STD_SHARED_MUTEX_ON)    
+		std::cout << "CYNG_STD_SHARED_MUTEX_ON" << std::endl;
+#else 
+
+#error CYNG_STD_SHARED_MUTEX_... undefined
+
+#endif    
 		using tpl = std::tuple<int, char, long, std::string>;
 		std::cout << meta::size<tpl>::value << std::endl;
 		BOOST_CHECK_EQUAL(meta::size<tpl>::value, std::tuple_size<tpl>::value);

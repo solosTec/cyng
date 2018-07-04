@@ -31,10 +31,11 @@ namespace cyng
 		//	<< std::get<1>(tpl)
 		//	;
 		auto obj32 = make_object(42);
-		BOOST_CHECK_EQUAL(numeric_cast<std::int8_t>(obj32), 42);
-		BOOST_CHECK_EQUAL(numeric_cast<std::int16_t>(obj32), 42);
-		BOOST_CHECK_EQUAL(numeric_cast<std::int32_t>(obj32), 42);
-		BOOST_CHECK_EQUAL(numeric_cast<std::int64_t>(obj32), 42);
+        auto i1 = numeric_cast<std::int8_t>(obj32, 0);
+		BOOST_CHECK_EQUAL(i1, 42);
+		BOOST_CHECK_EQUAL(numeric_cast<std::int16_t>(obj32, 0), 42);
+		BOOST_CHECK_EQUAL(numeric_cast<std::int32_t>(obj32, 0), 42);
+		BOOST_CHECK_EQUAL(numeric_cast<std::int64_t>(obj32, 0), 42);
 		return true;
 	}
 }
