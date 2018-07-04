@@ -66,7 +66,7 @@ namespace cyng
 			//	write buffer
 			for (const char c : buffer)
 			{
-				if (c > 31 && c < 127)
+				if ((c > 31) && (c < 127))
 				{
 					ss << c;
 				}
