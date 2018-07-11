@@ -271,7 +271,7 @@ namespace cyng
 
 	/**
 	 * post function.
-	 * Scan vector for vectors and enoll them.
+	 * Scan vector for vectors and enroll them.
 	 * Work recursively.
 	 */
 	class unwind_vec

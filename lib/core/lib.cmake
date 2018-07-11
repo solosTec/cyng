@@ -83,6 +83,7 @@ set (core_intrinsics
 
  	lib/core/src/intrinsics/sets.cpp
  	lib/core/src/intrinsics/version.cpp
+ 	lib/core/src/intrinsics/buffer.cpp
   	lib/core/src/intrinsics/op.cpp
   	lib/core/src/intrinsics/label.cpp
   	lib/core/src/intrinsics/mac.cpp
