@@ -68,6 +68,14 @@ namespace cyng
 		return os;
 	}
 	
+	template <typename R, typename P>
+	std::string to_str(std::chrono::duration<R, P> const& v)
+	{
+		std::stringstream ss;
+		ss << v;
+		return ss.str();
+	}
+
 }
 
 #endif // CYNG_IO_CHRONO_HPP
