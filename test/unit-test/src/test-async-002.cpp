@@ -46,7 +46,7 @@ namespace cyng
 			return continuation::TASK_CONTINUE;
 		}
 		
-		void run()
+		continuation run()
 		{
 			counter_++;
 			std::cout << "simple::run(" << base_->get_id() << ", #" << counter_ << ")" << std::endl;
@@ -63,6 +63,7 @@ namespace cyng
 				base_->suspend(std::chrono::milliseconds(counter_));
 // 				base_->suspend(std::chrono::duration<double, std::milli>(1.0/counter_));
 			}
+			return continuation::TASK_CONTINUE;
 		}
 		void stop()
 		{

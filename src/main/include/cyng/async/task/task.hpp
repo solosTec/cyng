@@ -49,9 +49,22 @@ namespace cyng
 			virtual void run() override
 			{
 				if (shutdown_)	return;
-				auto sp = get_shared();
+				auto sp{ this->shared_from_this() };
 				dispatcher_.post([this, sp](){
-					impl_.run();					
+					switch (impl_.run())
+					{
+					case continuation::TASK_STOP:
+						this->shutdown_ = true;
+						impl_.stop();
+						sp->cancel_timer();
+						remove_this();
+						break;
+					case continuation::TASK_YIELD:
+						std::this_thread::yield();
+						break;
+					default:
+						break;
+					}
 				});
 			}
 			

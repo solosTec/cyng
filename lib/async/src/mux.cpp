@@ -169,7 +169,7 @@ namespace cyng
 			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 			
-			dispatcher_.dispatch([this, id](){
+			dispatcher_.post([this, id](){
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())
 				{
@@ -185,7 +185,7 @@ namespace cyng
 			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 
-			dispatcher_.dispatch([this, id, f]() {
+			dispatcher_.post([this, id, f]() {
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())
 				{

@@ -33,7 +33,6 @@ namespace cyng
 
 		void base_task::remove_this()
 		{
-			//mux_.stop(id_);
 			mux_.remove(id_);
 		}
 
