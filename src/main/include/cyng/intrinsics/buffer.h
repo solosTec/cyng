@@ -8,6 +8,7 @@
 #define CYNG_INTRINSICS_BUFFER_H
 
 #include <vector>
+#include <cstdint>
 
 namespace cyng 
 {
