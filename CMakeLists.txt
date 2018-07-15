@@ -240,6 +240,30 @@ else()
 endif()
 
 #
+# BOOST_VER is "1_67" or "1_68"
+#
+function(windows_boost_fix BOOST_VER)
+#  SET(${varName} ${${varName}}${${varName}} PARENT_SCOPE)
+  set(BOOST_ROOT "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
+  set(BOOST_LIBRARYDIR "C:/local/boost_${BOOST_VER}_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
+  set(BOOST_INCLUDE_DIR "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
+  set(BOOST_DIR "C:/local/boost_${BOOST_VER}" CACHE PATH "BOOST_ROOT")
+  message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+  set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/boost_program_options-vc141-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+
+endfunction()
+
+#
 #	setup Boost library 1.68.0, 1.67.0 or 1.66.0
 #
 if(UNIX)
@@ -718,25 +742,3 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 endif()
 target_link_libraries(docc ${docc_link_libs})
 
-#
-# BOOST_VER is "1_67" or "1_68"
-#
-function(windows_boost_fix BOOST_VER)
-#  SET(${varName} ${${varName}}${${varName}} PARENT_SCOPE)
-  set(BOOST_ROOT "C:/local/boost_{BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
-  set(BOOST_LIBRARYDIR "C:/local/boost_${BOOST_VER}_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
-  set(BOOST_INCLUDE_DIR "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
-  set(BOOST_DIR "C:/local/boost_${BOOST_VER}" CACHE PATH "BOOST_ROOT")
-  message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
-  set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-  set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
-
-endfunction()
