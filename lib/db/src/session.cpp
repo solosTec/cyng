@@ -19,7 +19,7 @@
 #include "sqlite/sqlite_session.h"
 #endif
 			
-#if CYNG_ODBC_INSTALLED == 1 == 1
+#if CYNG_ODBC_INSTALLED == 1
 #include "odbc/odbc_session.h"
 #endif
 
