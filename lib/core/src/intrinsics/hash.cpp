@@ -221,7 +221,7 @@ namespace std
 		return boost::hash<std::string>()(v.to_string());
 	}
 
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 	size_t hash<SQL_TIMESTAMP_STRUCT>::operator()(SQL_TIMESTAMP_STRUCT const& ts) const noexcept
 	{
 		std::size_t seed = 0;

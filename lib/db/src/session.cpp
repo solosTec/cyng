@@ -11,19 +11,19 @@
 #include <cyng/set_cast.h>
 #include "session_wrapper.hpp"
 
-#if defined(CYNG_MYSQL_INSTALLED)
+#if CYNG_MYSQL_INSTALLED == 1
 #include "mysql/mysql_session.h"
 #endif
 			
-#if defined(CYNG_SQLITE3_INSTALLED)
+#if CYNG_SQLITE3_INSTALLED == 1
 #include "sqlite/sqlite_session.h"
 #endif
 			
-#if defined(CYNG_ODBC_INSTALLED)
+#if CYNG_ODBC_INSTALLED == 1 == 1
 #include "odbc/odbc_session.h"
 #endif
 
-#if defined(CYNG_OLEDB_INSTALLED)
+#if CYNG_OLEDB_INSTALLED == 1
 #include "oldedb/oledb_session.h"
 #endif
 
@@ -115,23 +115,23 @@ namespace cyng
 
 		session_ptr session::reset(connection_type type)
 		{
-#if defined(CYNG_MYSQL_INSTALLED) || defined(CYNG_SQLITE3_INSTALLED) || defined(CYNG_ODBC_INSTALLED) || defined(CYNG_OLEDB_INSTALLED)
+#if (CYNG_MYSQL_INSTALLED == 1) || (CYNG_SQLITE3_INSTALLED == 1) || (CYNG_ODBC_INSTALLED == 1) || (CYNG_OLEDB_INSTALLED == 1)
 			switch (type)
 			{
 			
-#if defined(CYNG_MYSQL_INSTALLED)
+#if CYNG_MYSQL_INSTALLED == 1
 				case CONNECTION_MYSQL:	return session_wrapper< mysql::session >::factory();
 #endif
 			
-#if defined(CYNG_SQLITE3_INSTALLED)
+#if CYNG_SQLITE3_INSTALLED == 1
 				case CONNECTION_SQLITE:	return session_wrapper< sqlite::session >::factory();
 #endif
 			
-#if defined(CYNG_ODBC_INSTALLED)
+#if CYNG_ODBC_INSTALLED == 1
 				case CONNECTION_ODBC:	return session_wrapper< odbc::session >::factory();
 #endif
 
-#if defined(CYNG_OLEDB_INSTALLED)
+#if CYNG_OLEDB_INSTALLED == 1
 				case CONNECTION_OLEDB:	return session_wrapper< oledb::session >::factory();
 #endif
 				default:

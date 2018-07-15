@@ -86,7 +86,7 @@ namespace cyng
 		boost::asio::ip::udp::endpoint,
 		boost::asio::ip::icmp::endpoint,
 		boost::asio::ip::address,
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 		SQL_TIMESTAMP_STRUCT,
 #else
 		dummy_SQL_TIMESTAMP_STRUCT,
@@ -263,7 +263,7 @@ namespace cyng
 		TC_IP_ICMP_ENDPOINT = type_tag_traits<boost::asio::ip::icmp::endpoint>(),
 		TC_IP_ADDRESS = type_tag_traits<boost::asio::ip::address>(),
 
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 		TC_SQL_TIMESTAMP = type_tag_traits<SQL_TIMESTAMP_STRUCT>(),
 #else
 		TC_SQL_TIMESTAMP = type_tag_traits<dummy_SQL_TIMESTAMP_STRUCT>(),

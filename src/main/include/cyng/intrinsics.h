@@ -26,7 +26,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
 
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 
 #include <sql.h> 
 #include <functional>

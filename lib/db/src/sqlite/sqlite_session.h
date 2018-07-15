@@ -5,7 +5,7 @@
 *
 */
 
-#if ! defined CYNG_DB_SQLITE_SESSION_H && CYNG_SQLITE3_INSTALLED
+#if ! defined CYNG_DB_SQLITE_SESSION_H && (CYNG_SQLITE3_INSTALLED == 1)
 #define CYNG_DB_SQLITE_SESSION_H
 
 #include "sqlite_defs.h"

@@ -7,7 +7,7 @@
 
 #include <cyng/factory/chrono_factory.h>
 #include <cyng/chrono.h>
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 #include <sql.h> 
 #endif
 
@@ -69,7 +69,7 @@ namespace cyng
 		return make_object(chrono::days(n));
 	}
 	
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 	object make_odbc_ts(std::chrono::system_clock::time_point tp)
 	{
 

@@ -240,10 +240,14 @@ else()
 endif()
 
 #
-#	setup Boost library 1.67.0 or 1.66.0
+#	setup Boost library 1.68.0, 1.67.0 or 1.66.0
 #
 if(UNIX)
-    if(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
+    if(EXISTS "$ENV{HOME}/projects/boost_1_68_0/install")
+        set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_68_0/install" CACHE PATH "BOOST_ROOT")
+        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_68_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+    elseif(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
         set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_67_0/install" CACHE PATH "BOOST_ROOT")
         set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_67_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
         message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
@@ -253,22 +257,25 @@ if(UNIX)
         message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
     endif()
 elseif(WIN32)
-    if(EXISTS "C:/local/boost_1_67_0")
-        set(BOOST_ROOT "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
-        set(BOOST_LIBRARYDIR "C:/local/boost_1_67_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
-        set(BOOST_INCLUDE_DIR "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
-        set(BOOST_DIR "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
-        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
-		set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-x64-1_67.lib")
-		set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc141-mt-gd-x64-1_67.lib")
-		set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc141-mt-gd-x64-1_67.lib")
+    if(EXISTS "C:/local/boost_1_68_0")
+        windows_boost_fix("1_68")
+    elseif(EXISTS "C:/local/boost_1_67_0")
+        windows_boost_fix("1_67")
+#        set(BOOST_ROOT "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
+#        set(BOOST_LIBRARYDIR "C:/local/boost_1_67_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
+#        set(BOOST_INCLUDE_DIR "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
+#        set(BOOST_DIR "C:/local/boost_1_67_0" CACHE PATH "BOOST_ROOT")
+#        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+#		set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-x64-1_67.lib")
+#		set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc141-mt-gd-x64-1_67.lib")
+#		set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc141-mt-gd-x64-1_67.lib")
 	endif()
 endif(UNIX)
 
@@ -325,9 +332,9 @@ if(OPENSSL_FOUND)
 endif()
 
 #
-#	Don't use a possibly installed SQLite3 library. Instead use 
+#   Don't use a possibly installed SQLite3 library. Instead use
 #   version shipped with the repository 3rd library path.
-#	SQLite3 library is part of this project
+#   SQLite3 library is part of this project
 #
 include (3party/sqlite.cmake)
 add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
@@ -406,7 +413,45 @@ else()
 	message(WARNING "** platform not supported")
 endif()
 
-set(${PROJECT_NAME}_MYSQL_INSTALLED OFF)
+if (UNIX)
+#
+#   how to use MySQL Connector on linux:
+#   sudo apt-get install libmysqlcppconn7v5
+#
+# https://dev.mysql.com/doc/connector-cpp/8.0/en/connector-cpp-source-configuration-options.html#option_cmake_cmake_install_prefix
+# git clone https://github.com/mysql/mysql-connector-cpp
+# cd mysql-connector-cpp/
+# mkdir build && cd build
+# cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_CONCPP=/usr/local/lib -DBOOST_ROOT=$HOME/projects/boost_1_68_0/install
+# sudo cmake --build . --target install
+#
+# includes: /usr/local/mysql/connector-c++-8.0/include/
+# lib:
+#
+#   try: cmake -DMYSQL_CONNECTOR_ROOT_DIR:PATH=../mysql-connector-cpp/build ..
+#
+    if(NOT MYSQL_CONNECTOR_ROOT_DIR)
+        set(${PROJECT_NAME}_MYSQL_INSTALLED OFF CACHE BOOl "MySQL Connector")
+        message(WARNING "** MySQL Connector not available")
+    else()
+        set(${PROJECT_NAME}_MYSQL_INSTALLED ON CACHE BOOl "MySQL Connector")
+        set(${PROJECT_NAME}_MYSQL_ROOT ${MYSQL_CONNECTOR_ROOT_DIR} CACHE PATH "MYSQL_CONNECTOR_ROOT_DIR")
+        message(STATUS "** MySQL Connector available at ${${PROJECT_NAME}_MYSQL_ROOT}")
+
+        set(${PROJECT_NAME}_MYSQL_INCLUDE "${MYSQL_CONNECTOR_ROOT_DIR}/include")
+        set(${PROJECT_NAME}_MYSQL_LIB "${MYSQL_CONNECTOR_ROOT_DIR}/build")
+        include_directories(${PROJECT_NAME}_MYSQL_INCLUDE)
+        link_directories(${PROJECT_NAME}_MYSQL_LIB)
+    endif()
+else()
+    set(${PROJECT_NAME}_MYSQL_INSTALLED OFF CACHE BOOl "MySQL Connector")
+    message(STATUS "** MySQL Connector not available")
+endif()
+
+
+#
+#   OLEDB is not supported yet
+#
 set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
 
 #
@@ -588,6 +633,11 @@ if (${PROJECT_NAME}_ODBC_INSTALLED)
 endif()
 if(UNIX)
     list(APPEND db_link_libs dl)
+    if (${PROJECT_NAME}_MYSQL_INSTALLED)
+        #    libmysqlcppconn8.so
+        message(STATUS "** add mysql library")
+        #list(APPEND db_link_libs mysqlcppconn8)
+    endif()
 endif(UNIX)
 list(APPEND db_link_libs lib_sqlite3)
 target_link_libraries(cyng_db ${db_link_libs})
@@ -667,3 +717,26 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
     endif()
 endif()
 target_link_libraries(docc ${docc_link_libs})
+
+#
+# BOOST_VER is "1_67" or "1_68"
+#
+function(windows_boost_fix BOOST_VER)
+#  SET(${varName} ${${varName}}${${varName}} PARENT_SCOPE)
+  set(BOOST_ROOT "C:/local/boost_{BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
+  set(BOOST_LIBRARYDIR "C:/local/boost_${BOOST_VER}_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
+  set(BOOST_INCLUDE_DIR "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
+  set(BOOST_DIR "C:/local/boost_${BOOST_VER}" CACHE PATH "BOOST_ROOT")
+  message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+  set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc141-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+  set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+
+endfunction()

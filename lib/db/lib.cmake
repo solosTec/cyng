@@ -36,14 +36,39 @@ set (db_lib
 #
 # MySQL
 #
+#include_directories(${PROJECT_NAME}_MYSQL_INCLUDE)
+#link_directories(${PROJECT_NAME}_MYSQL_LIB)
+
 if (CYNG_MYSQL_INSTALLED)
 	set (db_mysql
-		lib/sql/src/mysql/mydb_error.cpp
-		lib/sql/src/mysql/mydb_error.hpp
-		lib/sql/src/mysql/mydb_session.h
-		lib/sql/src/mysql/mydb_session.cpp
-		lib/sql/src/mysql/mydb_command.h
-		lib/sql/src/mysql/mydb_command.cpp)
+        lib/db/src/mysql/mysql_session.h
+        lib/db/src/mysql/mysql_session.cpp
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common_constants.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/xapi.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/xdevapi.h
+
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/collection_crud.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/crud.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/document.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/executable.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/mysql_collations.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/row.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/table_crud.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/collations.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/common.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/error.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/mysql_charsets.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/result.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/devapi/settings.h
+
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common/api.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common/error.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common/op_if.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common/settings.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common/util.h
+#        ${${PROJECT_NAME}_MYSQL_INCLUDE}/mysqlx/common/value.h
+    )
 
 	list(APPEND db_lib ${db_mysql})
 	source_group("mysql" FILES ${db_mysql})

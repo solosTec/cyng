@@ -35,6 +35,14 @@ namespace @PROJECT_NAME@
 #define	${PROJECT_NAME}_BOOST_LIBRARY_FOUND
 #define	${PROJECT_NAME}_BOOST_VERSION 	${Boost_VERSION}
 #define ${PROJECT_NAME}_PUGIXML_VERSION ${${PROJECT_NAME}_PUGIXML_VERSION}
+#cmakedefine SQLite3_VERSION "@SQLite3_VERSION@"
+
+#cmakedefine01 CYNG_SQLITE3_INSTALLED
+#cmakedefine01 CYNG_ODBC_INSTALLED
+#cmakedefine01 CYNG_MYSQL_INSTALLED
+#cmakedefine01 CYNG_OLEDB_INSTALLED
+
+#cmakedefine01 CYNG_PUGIXML_INSTALLED
 
 #include <cstdint>
 
@@ -43,35 +51,8 @@ namespace @PROJECT_NAME@
 	constexpr std::uint64_t null_hash = ${${PROJECT_NAME}_NULL_HASH}ul;
 	constexpr std::uint64_t eod_hash = ${${PROJECT_NAME}_EOD_HASH}ul;
 
-#if	${PROJECT_NAME}_ODBC_INSTALLED
-	constexpr bool odbc_installed = true;
-#else
-	constexpr bool odbc_installed = false;
+#if	${PROJECT_NAME}_ODBC_INSTALLED == 0
 	constexpr std::uint64_t sql_timestruct_dummy_hash = ${${PROJECT_NAME}_DUMMY_HASH}ul;
-#endif
-
-#if	${PROJECT_NAME}_SQLITE3_INSTALLED
-	constexpr bool sqlite3_installed = true;
-#else
-	constexpr bool sqlite3_installed = false;
-#endif
-
-#if	${PROJECT_NAME}_MYSQL_INSTALLED
-	constexpr bool mysql_installed = true;
-#else
-	constexpr bool mysql_installed = false;
-#endif
-
-#if	${PROJECT_NAME}_OLEDB_INSTALLED
-	constexpr bool oldedb_installed = true;
-#else
-	constexpr bool oldedb_installed = false;
-#endif
-
-#if	${PROJECT_NAME}_PUGIXML_INSTALLED
-	constexpr bool pugixml_installed = true;
-#else
-	constexpr bool pugixml_installed = false;
 #endif
 
 }

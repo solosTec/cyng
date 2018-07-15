@@ -77,7 +77,7 @@ namespace cyng
 			"ip:icmp:endpoint",	//	boost::asio::ip::icmp::endpoint
 			"ip:address",		//	boost::asio::ip::address
 
-#if CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
 			"sql::tp",
 #else
 			"sql::dummy",
