@@ -23,6 +23,7 @@ set (io_h
     src/main/include/cyng/io/hex_dump.hpp
     src/main/include/cyng/io/io_chrono.hpp
     src/main/include/cyng/io/io_buffer.h
+    src/main/include/cyng/io/io_bytes.hpp
     src/main/include/cyng/io/serializer/plain.hpp
     src/main/include/cyng/io/serializer/binary.hpp
     src/main/include/cyng/io/serializer/typed.hpp
