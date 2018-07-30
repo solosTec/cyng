@@ -30,6 +30,9 @@ namespace cyng
 				template <typename ...Args>
 				continuation operator()(Args&&...  args)
 				{
+					//
+					//	that's why process(...) have to be declared as public
+					//
 					return tsk_.process(std::forward<Args>(args)...);
 				}
 			};

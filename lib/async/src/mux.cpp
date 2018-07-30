@@ -266,9 +266,9 @@ namespace cyng
 			return false;
 		}
 		
-		void mux::insert(shared_task stp, detach)
+		bool mux::insert(shared_task stp, detach)
 		{
-			if (shutdown_)	return;
+			if (shutdown_)	return false;
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 			
 			//
@@ -283,6 +283,7 @@ namespace cyng
 					stp->run();
 				}
 			});
+			return true;
 		}
 		
 		bool mux::insert(shared_task stp, none)

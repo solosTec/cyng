@@ -47,8 +47,10 @@ namespace cyng
 		std::size_t start_task_detached(mux& m, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
-			m.insert(tp, detach());
-			return tp->get_id();
+			return (m.insert(tp, detach()))
+				? tp->get_id()
+				: NO_TASK
+				;
 		}
 
 		template < typename T, typename R, typename P, typename ...Args >

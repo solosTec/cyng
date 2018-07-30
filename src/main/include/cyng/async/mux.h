@@ -122,26 +122,10 @@ namespace cyng
 			bool stop(std::string const&);
 			bool stop(std::string const&, std::function<void(std::size_t)>);
 
-			/** @brief deprecated
-			 * Works asynchronously but waits until message is dispatched.
-			 *
-			 * @return true if message could be delivered
-			 */
-			//bool send(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
-
 			/**
 			 * Works complete asynchronously.
 			 */
 			void post(std::size_t id, std::size_t slot, tuple_t&& tpl) const;
-
-			/** @brief deprecated
-			 * Deliver message to all tasks with the specified class name.
-			 * Works asynchronously but waits until message is dispatched
-			 * to all targets.
-			 *
-			 * @return number of found tasks with the specified class name.
-			 */
-			//std::size_t send(std::string id, std::size_t slot, tuple_t&& tpl) const;
 
 			/**
 			 * Deliver message to all tasks with the specified class name.
@@ -167,7 +151,7 @@ namespace cyng
 			/**
 			 * Insert task into task list but don't wait.
 			 */
-			void insert(shared_task, detach);
+			bool insert(shared_task, detach);
 			
 			/**
 			 * Insert task into task but don't call run()
