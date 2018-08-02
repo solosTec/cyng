@@ -103,31 +103,34 @@ namespace cyng
 				//	stop all tasks
 				//
 				task_lst zombi_tasks;
-				dispatcher_.dispatch([this, &zombi_tasks](){
-					
-					//
-					//	reverse order - latest entries first
-					//
-					for (auto pos = tasks_.rbegin(); pos != tasks_.rend(); /* empty */) 
-					{
+				if (!tasks_.empty())
+				{
+					dispatcher_.dispatch([this, &zombi_tasks]() {
+
 						//
-						//	call stop()
-						//	This call is sync.
+						//	reverse order - latest entries first
 						//
-						(*pos).second->stop();
-						
-						//
-						//	move to zombi task
-						//
-						zombi_tasks.push_back((*pos).second);
-						
-						//
-						//	remove from active task list
-						//
-						pos = decltype(pos){ tasks_.erase(std::next(pos).base()) };
-						
-					}
-				});
+						for (auto pos = tasks_.rbegin(); pos != tasks_.rend(); /* empty */)
+						{
+							//
+							//	call stop()
+							//	This call is sync.
+							//
+							(*pos).second->stop();
+
+							//
+							//	move to zombi task
+							//
+							zombi_tasks.push_back((*pos).second);
+
+							//
+							//	remove from active task list
+							//
+							pos = decltype(pos){ tasks_.erase(std::next(pos).base()) };
+
+						}
+					});
+				}
 
 				//
 				//	wait for pending references
@@ -334,13 +337,11 @@ namespace cyng
 			parameter param(std::move(msg));
 
 			dispatcher_.dispatch([this, name, slot, param]() {
-				std::size_t counter{ 0 };
 				for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
 				{
 					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
 					{
 						(*pos).second->dispatch(slot, param.msg_);
-						++counter;
 					}
 				}
 
@@ -349,9 +350,12 @@ namespace cyng
 
 		void mux::remove(std::size_t id)
 		{
-			dispatcher_.dispatch([this, id]() {
-				tasks_.erase(id);
-			});
+			if (!shutdown_)
+			{
+				dispatcher_.dispatch([this, id]() {
+					tasks_.erase(id);
+				});
+			}
 		}
 
 		mux::parameter::parameter(tuple_t&& msg)

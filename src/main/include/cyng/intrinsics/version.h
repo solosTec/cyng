@@ -66,6 +66,11 @@ namespace cyng
 					: (this->major() < other.major())
 					;
 			}
+
+			double to_double() const 
+			{
+				return (double)major() / (double)minor();
+			}
 						
 		};
 	}

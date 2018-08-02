@@ -102,17 +102,10 @@ namespace cyng
 			, vm_call proc);
 
 	private:
-#ifdef CYNG_VM_SIMPLE_LOCK
-		/**
-		 * Boost.Asio dispatcher for async calls
-		 */
-		io_service_t& dispatcher_;
-#else
 		/**
 		 * Strand to dispatch and synchronize work load
 		 */
 		mutable dispatcher_t dispatcher_;
-#endif
 
 		/**
 		 * VM implementation

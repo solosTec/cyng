@@ -49,14 +49,13 @@ namespace cyng
 
 	controller const& controller::access(std::function<void(vm&)> cb) const
 	{
-		if (!halt_)
-		{
-
+		if (!halt_ ||
 #if (BOOST_ASIO_VERSION < 101200)
-			BOOST_ASSERT_MSG(!dispatcher_.get_io_service().stopped(), "service not running");
+			!dispatcher_.get_io_service().stopped()
 #else
-			BOOST_ASSERT_MSG(!dispatcher_.get_io_context().stopped(), "service not running");
+			!dispatcher_.get_io_context().stopped()
 #endif
+			) {
 
 			dispatcher_.post([this, cb]() {
 
@@ -69,17 +68,14 @@ namespace cyng
 
 	controller const& controller::async_run(vector_t&& prg) const
 	{
-		if (!halt_)	
-		{
-#ifdef CYNG_VM_SIMPLE_LOCK
-			BOOST_ASSERT_MSG(!dispatcher_.stopped(), "service not running");
-#else
+		if (!halt_ || 
 #if (BOOST_ASIO_VERSION < 101200)
-			BOOST_ASSERT_MSG(!dispatcher_.get_io_service().stopped(), "service not running");
+			!dispatcher_.get_io_service().stopped()
 #else
-			BOOST_ASSERT_MSG(!dispatcher_.get_io_context().stopped(), "service not running");
+			!dispatcher_.get_io_context().stopped()
 #endif
-#endif
+		) 	{
+
 			//
 			//	grab the content of the code vector 
 			//
