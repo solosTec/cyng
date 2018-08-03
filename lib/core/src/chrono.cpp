@@ -217,6 +217,11 @@ namespace cyng
 			return s.substr(0, s.size() - 1);	//	remove NL
 		}
 		
+		std::tm make_utc_tm(std::chrono::system_clock::time_point tp)
+		{
+			return convert_utc(std::chrono::system_clock::to_time_t(tp));
+		}
+
 	}
 }
 

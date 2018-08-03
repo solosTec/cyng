@@ -84,7 +84,7 @@ namespace cyng
 		/**
 		 * Create a time stamp with fractional seconds
 		 */
-		std::chrono::system_clock::time_point init_tp(std::uint16_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, double);
+		std::chrono::system_clock::time_point init_tp(std::uint16_t year, std::uint8_t month, std::uint8_t day, std::uint8_t hour, std::uint8_t min, double sec);
         
 		/**
 		 * Convert a tm struct into a std::time format.
@@ -135,7 +135,8 @@ namespace cyng
 		 * Example: Sat Mar 28 00:48:09 2015
 		 */
 		std::string to_string(std::chrono::system_clock::time_point const&);
-		
+	
+		std::tm make_utc_tm(std::chrono::system_clock::time_point tp);
 	}
 }
 

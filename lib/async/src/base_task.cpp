@@ -36,6 +36,21 @@ namespace cyng
 			mux_.remove(id_);
 		}
 
+		void base_task::suspend_until(std::chrono::system_clock::time_point tp)
+		{
+			if (shutdown_)	return;
+
+			auto ptr = get_shared();
+			timer_.expires_from_now(tp - std::chrono::system_clock::now());
+			timer_.async_wait([ptr](boost::system::error_code const& ec) {
+				if (ec != boost::asio::error::operation_aborted)
+				{
+					ptr->run();
+				}
+			});
+
+		}
+
 
 	}	// async
 }

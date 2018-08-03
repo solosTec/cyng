@@ -79,6 +79,8 @@ namespace cyng
 				});
 			}
 			
+			void suspend_until(std::chrono::system_clock::time_point);
+
 		protected:
 			/**
 			 * @return The number of asynchronous operations that were cancelled.
