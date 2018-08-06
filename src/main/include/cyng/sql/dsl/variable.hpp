@@ -23,15 +23,9 @@ namespace cyng
 			: v_(v)
 			{}
 			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
 			{
-				os << *this;
-			}
-			
-			friend std::ostream& operator<<(std::ostream& os, variable const& v)
-			{
-				os << v.v_;
-				return os;
+				os << v_;
 			}
 			
 			T& v_;
@@ -43,12 +37,9 @@ namespace cyng
 		template <>
 		struct variable < std::string >
 		{
-			variable(std::string& v);
-			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const;
-
-			friend std::ostream& operator<<(std::ostream& os, variable const& c);
-			
+			variable(std::string& v);	
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const;
+		
 			std::string& v_;
 		};
 
@@ -58,14 +49,24 @@ namespace cyng
 		template <>
 		struct variable < bool >
 		{
-			variable(bool& b);
-			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const;
-			
-			friend std::ostream& operator<<(std::ostream& os, variable const& c);
-			
+			variable(bool& b);	
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const;
+						
 			bool& b_;
 		};
+
+		/**
+		 * timepoint
+		 */
+		template <>
+		struct variable < std::chrono::system_clock::time_point >
+		{
+			variable(std::chrono::system_clock::time_point& tp);
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const;
+			
+			std::chrono::system_clock::time_point& tp_;
+		};
+
 
 		/**
 		 * factory

@@ -6,6 +6,7 @@
  */ 
 
 #include <cyng/sql/dsl/constant.hpp>
+#include <cyng/io/io_chrono.hpp>
 
 namespace cyng 
 {
@@ -18,17 +19,10 @@ namespace cyng
 		: c_(c)
 		{}
 			
-		void constant < std::string >::serialize(std::ostream& os, meta_table_ptr, dialect dia) const
+		void constant < std::string >::serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
 		{
-			os << *this;
-		}
-			
-		std::ostream& operator<<(std::ostream& os, constant< std::string > const& c)
-		{
-			os << '\'' << c.c_ << '\'';
-			return os;
-		}
-			
+			os << '\'' << c_ << '\'';
+		}	
 		
 		/**
 		 * boolean
@@ -37,24 +31,38 @@ namespace cyng
 		: b_(b)
 		{}
 			
-		void constant < bool >::serialize(std::ostream& os, meta_table_ptr, dialect dia) const
+		void constant < bool >::serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
 		{
-			if (dia == SQLITE)
-			{
-			os << (b_ ? "1" : "0");
+			if (dia == SQLITE) 	{
+				os << (b_ ? "1" : "0");
 			}
-			else 
-			{
-				os << *this;
+			else {
+				//	However, the values TRUE and FALSE are merely aliases for 1 and 0.
+				os << (b_ ? "TRUE" : "FALSE");
 			}
 		}
 			
-		std::ostream& operator<<(std::ostream& os, constant< bool > const& c)
+		/**
+		 * timepoint
+		 */
+		constant < std::chrono::system_clock::time_point >::constant (std::chrono::system_clock::time_point tp)
+		: tp_(tp)
+		{}
+			
+		void constant < std::chrono::system_clock::time_point >::serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
 		{
-			//	However, the values TRUE and FALSE are merely aliases for 1 and 0.
-			os << (c.b_ ? "TRUE" : "FALSE");
-			return os;
+			if (!has_feature(dia, DATE_TIME_SUPPORT)) {
+				os
+					<< "julianday('"
+					<< to_str(tp_)
+					<< "')"
+					;
+			}
+			else {
+				os << to_str(tp_);
+			}
 		}
+
 	}	
 }
 

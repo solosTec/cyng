@@ -5,7 +5,8 @@
 *
 */
 
-#if ! defined CYNG_DB_ODBC_DEFS_H && CYNG_ODBC_INSTALLED
+#if CYNG_ODBC_INSTALLED == 1
+#ifndef CYNG_DB_ODBC_DEFS_H
 #define CYNG_DB_ODBC_DEFS_H
 
 #if defined(_WIN32) || defined(__CYGWIN__)
@@ -36,3 +37,4 @@ namespace cyng
 }	// cyng
 
 #endif	//	CYNG_DB_ODBC_DEFS_H
+#endif

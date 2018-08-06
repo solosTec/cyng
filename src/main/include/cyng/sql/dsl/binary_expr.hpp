@@ -68,13 +68,13 @@ namespace cyng
 			, rhe_(rhexp)
 			{}
 			
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool) const
 			{
 				os 
 				<< '('
 				;
 				
-				lhe_.serialize(os, tbl, dia);
+				lhe_.serialize(os, tbl, dia, true);
 				
 				os 
 				<< ' '
@@ -82,27 +82,13 @@ namespace cyng
 				<< ' '
 				;
 				
-				rhe_.serialize(os, tbl, dia);
+				rhe_.serialize(os, tbl, dia, false);
 				
 				os 
 				<< ')'
 				;
 			}
 			
-			friend std::ostream& operator<<(std::ostream& os, binary_expression const& expr)
-			{ 
-				os 
-					<< '('
-					<< expr.lhe_
-					<< ' '
-					<< expr.bop_
-					<< ' '
-					<< expr.rhe_
-					<< ')'
-					;
-				return os;
-			} 
-
 		private:
 			const BOP	bop_;
 			const LHE_type lhe_;

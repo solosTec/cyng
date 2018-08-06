@@ -5,7 +5,8 @@
 *
 */
 
-#if ! defined CYNG_DB_ODBC_STATEMENT_H && CYNG_ODBC_INSTALLED
+#if (CYNG_ODBC_INSTALLED == 1)
+#ifndef CYNG_DB_ODBC_STATEMENT_H
 #define CYNG_DB_ODBC_STATEMENT_H
 
 #include "odbc_defs.h"
@@ -15,8 +16,6 @@
 #include <cyng/intrinsics/version.h>
 #include <cyng/intrinsics/sets.h>
 #include <cyng/chrono.h>
-//#include <noddy/m2m/intrinsics/obis.h>
-//#include <noddy/m2m/intrinsics/ctrl_address.h>
 
 namespace cyng	
 {
@@ -171,4 +170,4 @@ namespace cyng
 }
 
 #endif	//	CYNG_DB_ODBC_STATEMENT_H
-
+#endif

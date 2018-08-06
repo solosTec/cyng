@@ -23,7 +23,11 @@ namespace cyng
 		struct column
 		{
 			column(std::size_t index);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+
+			/**
+			 * @param lhe don't apply conversion rules on left hand expressions
+			 */
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			
 			const std::size_t index_;
 		};

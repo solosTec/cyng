@@ -1,11 +1,12 @@
 /*
-* The MIT License (MIT)
-*
-* Copyright (c) 2018 Sylko Olzscher
-*
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Sylko Olzscher
+ *
+ */
 
-#if ! defined CYNG_DB_ODBC_EXCEPTION_HPP && CYNG_ODBC_INSTALLED
+#if (CYNG_ODBC_INSTALLED == 1)
+#ifndef CYNG_DB_ODBC_EXCEPTION_HPP
 #define CYNG_DB_ODBC_EXCEPTION_HPP
 
 #include "odbc_defs.h"
@@ -46,3 +47,4 @@ namespace cyng
 
 
 #endif	//	CYNG_DB_ODBC_EXCEPTION_HPP
+#endif

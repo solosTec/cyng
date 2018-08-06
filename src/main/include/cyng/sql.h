@@ -24,9 +24,9 @@ namespace cyng
 // 		class sql_select_count;
 		class sql_from;
 		class sql_where;
-// 		class sql_group;
+ 		class sql_group;
 // 		class sql_having;
-// 		class sql_order;
+ 		class sql_order;
 		class sql_update;
 		class sql_insert;
 		class sql_create;
@@ -52,6 +52,35 @@ namespace cyng
 		};
 
 		/**
+		 * ... ORDER BY ...
+		 */
+		class sql_order
+		{
+		public:
+			sql_order(meta_table_ptr, dialect, std::ostream&);
+			
+		private:
+			meta_table_ptr meta_;
+			dialect dialect_;
+			std::ostream& stream_;
+		};
+
+		/**
+		 * ... GROUP BY ...
+		 */
+		class sql_group
+		{
+		public:
+			sql_group(meta_table_ptr, dialect, std::ostream&);
+			sql_order order_by(std::string const& term);
+
+		private:
+			meta_table_ptr meta_;
+			dialect dialect_;
+			std::ostream& stream_;
+		};
+
+		/**
 		 * ... WHERE ...
 		 */
 		class sql_where
@@ -59,7 +88,18 @@ namespace cyng
 		public:
 			sql_where(meta_table_ptr, dialect, std::ostream&);
 			
-			
+			template < typename EXPR >
+			sql_group group_by(EXPR const& expr)
+			{
+				stream_
+					<< "GROUP BY "
+					;
+				expr.serialize(stream_, meta_, dialect_, false);
+				return sql_group(meta_, dialect_, stream_);
+			}
+
+			sql_order order_by(std::string const& term);
+
 		private:
 			meta_table_ptr meta_;
 			dialect dialect_;
@@ -77,7 +117,8 @@ namespace cyng
 				stream_ 
 				<< "WHERE "
 				;
-				expr.serialize(stream_, meta_, dialect_);
+				expr.serialize(stream_, meta_, dialect_, true);
+				stream_ << ' ';
 				return sql_where(meta_, dialect_, stream_);
 			}
 
@@ -102,21 +143,31 @@ namespace cyng
 			template < typename LIST >
 			sql_from operator[](LIST const& list)
 			{
- 				list.serialize(stream_, meta_, dialect_);
+ 				list.serialize(stream_, meta_, dialect_, false);
 				stream_ << ' ';
  				return sql_from(meta_, dialect_, stream_);
 			}
 			
 			sql_from all();
 
+
 			//
 			//	aggregate functions
 			//
-// 			void count();
-// 			void sum();
-// 			void avg();
+ 			void count(std::size_t);
+ 			void sum(std::size_t);
+ 			void avg(std::size_t);
 			
+			/**
+			 * inner join of two tables over all columns.
+			 * ToDo: implement ON function on result.
+			 */
+			sql_from inner_join_all_on_pk(meta_table_ptr);
 			
+		private:
+			void write_columns(meta_table_ptr, bool& init_flag);
+			void write_pks(meta_table_ptr, meta_table_ptr);
+
 		private:
 			meta_table_ptr meta_;
 			dialect dialect_;

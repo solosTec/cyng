@@ -1,11 +1,12 @@
 /*
-* The MIT License (MIT)
-*
-* Copyright (c) 2018 Sylko Olzscher
-*
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Sylko Olzscher
+ *
+ */
 
-#if ! defined CYNG_DB_ODBC_ERROR_HPP && CYNG_ODBC_INSTALLED
+#if (CYNG_ODBC_INSTALLED == 1)
+#ifndef CYNG_DB_ODBC_ERROR_HPP
 #define CYNG_DB_ODBC_ERROR_HPP
 
 #include <boost/system/error_code.hpp>
@@ -184,3 +185,4 @@ namespace cyng
 }
 
 #endif	//	CYNG_DB_ODBC_ERROR_HPP
+#endif

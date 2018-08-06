@@ -23,17 +23,11 @@ namespace cyng
 			: c_(c)
 			{}
 			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
 			{
-				os << *this;
+				os << c_;
 			}
-			
-			friend std::ostream& operator<<(std::ostream& os, constant const& c)
-			{
-				os << c.c_;
-				return os;
-			}
-			
+						
 			const T c_;
 		};
 		
@@ -56,19 +50,11 @@ namespace cyng
 			static_assert(N > 0, "N to small" );
 			constant (const char (&c)[N])
 			: c_(c, N - 1)
-			{
-//				std::cout << typeid(c_).name() << std::endl;
-			}
+			{}
 			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
 			{
-				os << *this;
-			}
-			
-			friend std::ostream& operator<<(std::ostream& os, constant const& c)
-			{
-				os << '\'' << c.c_ << '\'';
-				return os;
+				os << '\'' << c_ << '\'';
 			}
 			
 			const std::string c_;
@@ -80,12 +66,9 @@ namespace cyng
 		template <>
 		struct constant < std::string >
 		{
-			constant(std::string const& c);
-			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const;
-
-			friend std::ostream& operator<<(std::ostream& os, constant const& c);
-			
+			constant(std::string const& c);		
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const;
+		
 			const std::string c_;
 		};
 		
@@ -96,14 +79,23 @@ namespace cyng
 		struct constant < bool >
 		{
 			constant(bool b);
-			
-			void serialize(std::ostream& os, meta_table_ptr, dialect dia) const;
-			
-			friend std::ostream& operator<<(std::ostream& os, constant const& c);
-			
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const;
+						
 			const bool b_;
 		};
 		
+		/**
+		 * timepoint
+		 */
+		template <>
+		struct constant < std::chrono::system_clock::time_point >
+		{
+			constant(std::chrono::system_clock::time_point b);			
+			void serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const;			
+			
+			const std::chrono::system_clock::time_point tp_;
+		};
+
 		template < typename T >
 		inline constant< T > make_constant(T const& c)
 		{

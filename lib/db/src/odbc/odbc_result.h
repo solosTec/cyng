@@ -1,11 +1,12 @@
 /*
-* The MIT License (MIT)
-*
-* Copyright (c) 2018 Sylko Olzscher
-*
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Sylko Olzscher
+ *
+ */
 
-#if ! defined CYNG_DB_ODBC_RESULT_H && CYNG_ODBC_INSTALLED
+#if (CYNG_ODBC_INSTALLED == 1)
+#ifndef CYNG_DB_ODBC_RESULT_H
 #define CYNG_DB_ODBC_RESULT_H
 
 #include <cyng/db/interface_result.h>
@@ -36,4 +37,5 @@ namespace cyng
 	}
 }
 
-#endif	//	NODDY_DB_ODBC_RESULT_H
+#endif	
+#endif
