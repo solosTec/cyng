@@ -448,20 +448,18 @@ namespace cyng
 			{
 				switch (state_)
 				{
-					case READY:
-						//	assumes that execute() doesn't changed the state to DONE
-						return (execute() && state_ == RUNNING)
-							? sqlite_result::factory(shared_from_this())
-							: result_ptr()
-						;
-					case RUNNING:
+					//	assumes that execute() doesn't changed the state to DONE
+				case READY:
 						//	invoke sqlite3_step() again, to get next row
-						return (execute() && state_ == RUNNING)
+				case RUNNING:
+					if (execute()) {
+						return (state_ == RUNNING)
 							? sqlite_result::factory(shared_from_this())
 							: result_ptr()
-						;
-					default:
-						break;
+							;
+					}
+				default:
+					break;
 				}
 				return result_ptr();
 			}
