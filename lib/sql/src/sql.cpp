@@ -170,7 +170,10 @@ namespace cyng
 				<< " ON "
 				;
 
-			write_pks(meta_, join);
+			//
+			//	only one PK is supported
+			//
+			write_pk(meta_, join);
 			return sql_from(meta_, dialect_, stream_);
 		}
 
@@ -206,7 +209,7 @@ namespace cyng
 			});
 		}
 
-		void sql_select::write_pks(meta_table_ptr meta1, meta_table_ptr meta2)
+		void sql_select::write_pk(meta_table_ptr meta1, meta_table_ptr meta2)
 		{
 			BOOST_ASSERT(meta1->has_pk());
 			BOOST_ASSERT(meta2->has_pk());

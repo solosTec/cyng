@@ -166,7 +166,7 @@ namespace cyng
 			
 		private:
 			void write_columns(meta_table_ptr, bool& init_flag);
-			void write_pks(meta_table_ptr, meta_table_ptr);
+			void write_pk(meta_table_ptr, meta_table_ptr);
 
 		private:
 			meta_table_ptr meta_;
