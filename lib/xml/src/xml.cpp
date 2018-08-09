@@ -58,12 +58,12 @@ namespace cyng
 			if (p != nullptr)	serial_t::out(node, *p);
 		}
 
-		pugi::xml_node write(pugi::xml_node node, object const& obj)
+		void write(pugi::xml_node node, object const& obj)
 		{
 			//
 			//	no meta data available
 			//
-			if (!obj)	return node;
+			if (!obj)	return;
 
 			//
 			//	convert from runtime to compile time
@@ -218,8 +218,14 @@ namespace cyng
 				//do_write_custom<S>(os, obj);
 				break;
 			}
-			return node;
+			return;
 		}
+
+		void write(pugi::xml_node node, tuple_t const& tpl) {
+			using serial_t = serializer<tuple_t>;
+			serial_t::out(node, tpl);
+		}
+
 	}
 }
 

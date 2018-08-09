@@ -114,9 +114,11 @@ namespace cyng
 				}
 			});
 
+			data["gen"] = make_object(generation_);
+
 			return cyng::tuple_factory(cyng::param_factory("key", key)
-				, cyng::param_factory("data", data)
-				, cyng::param_factory("gen", generation_));
+				, cyng::param_factory("data", data));
+				//, cyng::param_factory("gen", generation_));
 		}
 
 		tuple_t record::convert(param_map_t const& pm) const

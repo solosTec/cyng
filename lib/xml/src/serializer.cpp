@@ -18,6 +18,14 @@ namespace cyng
 {
 	namespace xml
 	{
+		void write_param(pugi::xml_node node, cyng::object obj)
+		{
+			auto p = object_cast<param_t>(obj);
+			if (p != nullptr) {
+				write(node.append_child(p->first.c_str()), p->second);
+			}
+		}
+
 		void serializer <null>::out(pugi::xml_node node, null)
 		{
 			node.append_attribute("xsi:nil");
@@ -64,7 +72,6 @@ namespace cyng
 				;
 
 			const std::string type_name = ss.str();
-			//pugi::xml_node child = node.append_child(type_name.c_str());
 			node.append_attribute("type").set_value(cyng::traits::get_tag_name<vector_t>());
 			node.append_attribute("size").set_value(std::to_string(v.size()).c_str());
 
@@ -80,6 +87,9 @@ namespace cyng
 					case TC_ATTR_MAP:
 					case TC_PARAM_MAP:
 						write(node.append_child(type_name.c_str()), obj);
+						break;
+					case type_code::TC_PARAM:
+						write_param(node, obj);
 						break;
 					default:
 						write(node.append_child("value"), obj);
@@ -97,6 +107,9 @@ namespace cyng
 				case TC_ATTR_MAP:
 				case TC_PARAM_MAP:
 					write(node.append_child(type_name.c_str()), v.at(0));
+					break;
+				case type_code::TC_PARAM:
+					write_param(node, v.at(0));
 					break;
 				default:
 					write(node.append_child("value"), v.at(0));
@@ -136,6 +149,9 @@ namespace cyng
 					case TC_PARAM_MAP:
 						write(node.append_child(type_name.c_str()), obj);
 						break;
+					case type_code::TC_PARAM:
+						write_param(node, obj);
+						break;
 					default:
 						write(node.append_child("value"), obj);
 						break;
@@ -152,6 +168,9 @@ namespace cyng
 				case TC_ATTR_MAP:
 				case TC_PARAM_MAP:
 					write(node.append_child(type_name.c_str()), v.front());
+					break;
+				case type_code::TC_PARAM:
+					write_param(node, obj);
 					break;
 				default:
 					write(node.append_child("value"), v.front());
@@ -189,6 +208,9 @@ namespace cyng
 				case TC_PARAM_MAP:
 					write(child, obj);
 					break;
+				case type_code::TC_PARAM:
+					write_param(node, obj);
+					break;
 				default:
 					write(child.append_child("value"), obj);
 					break;
@@ -198,7 +220,6 @@ namespace cyng
 
 		void serializer <param_t>::out(pugi::xml_node node, param_t const& v)
 		{
-			//	ToDo: special handling of set types
 			pugi::xml_node child = node.append_child(v.first.c_str());
 			write(child, v.second);
 		}
