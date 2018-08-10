@@ -32,11 +32,11 @@ namespace cyng
 				: param_(std::forward<Args>(args)...)
 			{}
 
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 			{
-				std::get<0>(param_).serialize(os, tbl, dia);
+				std::get<0>(param_).serialize(os, tbl, dia, false);
 				os << ", ";
-				std::get<1>(param_).serialize(os, tbl, dia);
+				std::get<1>(param_).serialize(os, tbl, dia, false);
 			}
 		};
 

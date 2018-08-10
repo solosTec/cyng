@@ -136,7 +136,25 @@ namespace cyng
 		 */
 		std::string to_string(std::chrono::system_clock::time_point const&);
 	
+		/**
+		 * Convert a time point into a tm struct.
+		 * 
+		 * @param tp time point to convert.
+		 */
 		std::tm make_utc_tm(std::chrono::system_clock::time_point tp);
+
+		/**
+		 * Add/sub one or multiple month with full accuracy.
+		 * Current implementation of std::chrono lacks full callendar support. There are libraries like
+		 * https://howardhinnant.github.io/date/date.html that will be integrated in the near future.
+		 * But for current purposes this approach should be sufficient.
+		 */
+		std::chrono::system_clock::time_point add_month(std::chrono::system_clock::time_point const&, int month);
+
+		/**
+		 * Calulate the number of days for a specific month
+		 */
+		days days_of_month(std::chrono::system_clock::time_point);
 	}
 }
 

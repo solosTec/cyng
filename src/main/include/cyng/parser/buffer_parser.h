@@ -52,7 +52,7 @@ namespace cyng
 		 * Requires exactly two digits
 		 * T, Radix, MinDigits, MaxDigits
 		 */
-		boost::spirit::qi::uint_parser<char, 16, 2, 2>		r_hex2;
+		boost::spirit::qi::uint_parser<unsigned int, 16, 2, 2>		r_hex2;
 	};
 
 	template <typename Iterator>
@@ -65,7 +65,7 @@ namespace cyng
 		 * Requires exactly two digits
 		 *	T, Radix, MinDigits, MaxDigits
 		 */
-		boost::spirit::qi::uint_parser<char, 16, 2, 2>		r_hex2;
+		boost::spirit::qi::uint_parser<unsigned int, 16, 2, 2>		r_hex2;
 	};
 
 	template <typename Iterator>
@@ -95,7 +95,7 @@ namespace cyng
 	{
 		log_parser();
 		boost::spirit::qi::rule<Iterator, buffer_t()> r_buffer;
-		boost::spirit::qi::uint_parser<char, 16, 2, 2>		r_hex2;
+		boost::spirit::qi::uint_parser<unsigned int, 16, 2, 2>		r_hex2;
 	};
 
 }

@@ -230,7 +230,7 @@ namespace cyng
 				stream_
 					<< "WHERE "
 					;
-				expr.serialize(stream_, meta_, dialect_);
+				expr.serialize(stream_, meta_, dialect_, false);
 				return sql_where(meta_, dialect_, stream_);
 			}
 

@@ -63,7 +63,7 @@ namespace cyng
         std::tm init_tm(int year, int month, int day, int hour, int min, int sec)
         {
             BOOST_ASSERT_MSG(year > 1900, "year is out of range");
-			BOOST_ASSERT_MSG(month > 0 && month < 13, "month is out of range");
+			BOOST_ASSERT_MSG(month > 0, "month is out of range");
 #ifdef _MSC_VER
 			//	MSC does not support aggregate initialisation of struct
 			std::tm t;
@@ -220,6 +220,70 @@ namespace cyng
 		std::tm make_utc_tm(std::chrono::system_clock::time_point tp)
 		{
 			return convert_utc(std::chrono::system_clock::to_time_t(tp));
+		}
+
+		std::chrono::system_clock::time_point add_month(std::chrono::system_clock::time_point const& tp, int month)
+		{
+			auto tt = std::chrono::system_clock::to_time_t(tp);
+
+			//
+			//	calulate lost accuracy
+			//
+			dbl_seconds sec = tp - std::chrono::system_clock::from_time_t(tt);
+			auto tm = convert_utc(tt);
+
+			//
+			//	add/sub one or multiple months.
+			//
+			while (month > 0) {
+				if (tm.tm_mon == 11) {
+					tm.tm_mon = 0;
+					tm.tm_year++;
+				}
+				else {
+					tm.tm_mon++;
+				}
+				month--;
+			}
+			while (month < 0) {
+				if (tm.tm_mon == 0) {
+					tm.tm_mon = 11;
+					tm.tm_year--;
+					BOOST_ASSERT_MSG(tm.tm_year > 1900, "year is out of range");
+				}
+				else {
+					tm.tm_mon--;
+				}
+				month++;
+			}
+			return std::chrono::system_clock::from_time_t(tm_to_tt(tm))
+				+ std::chrono::duration_cast<std::chrono::microseconds>(dbl_seconds(sec));
+		}
+
+		days days_of_month(std::chrono::system_clock::time_point tp)
+		{
+			auto tm = make_utc_tm(tp);
+
+			auto begin = cyng::chrono::init_tp(cyng::chrono::year(tm)
+				, cyng::chrono::month(tm)
+				, 1 //	1. day
+				, 0	//	hour
+				, 0	//	minute
+				, 0.0); //	this day
+
+			//
+			//	begin of next month
+			//
+			tp = add_month(tp, 1);
+			tm = make_utc_tm(tp);
+			auto end = cyng::chrono::init_tp(cyng::chrono::year(tm)
+				, cyng::chrono::month(tm)
+				, 1 //	1. day
+				, 0	//	hour
+				, 0	//	minute
+				, 0.0); //	this day
+
+			return std::chrono::duration_cast<days>(end - begin);
 		}
 
 	}

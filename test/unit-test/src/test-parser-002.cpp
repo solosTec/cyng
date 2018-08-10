@@ -51,6 +51,11 @@ namespace cyng
 		io::serialize_typed(std::cout, r2.first);
 		
 		
+		std::pair<buffer_t, bool > r3 = parse_hex_string("ff0100010800");
+		//std::pair<buffer_t, bool > r3 = parse_hex_string("0100010800ff");
+		BOOST_CHECK(r3.second);
+		BOOST_CHECK_EQUAL(r3.first.size(), 6);
+
 		return true;
 	}
 	
