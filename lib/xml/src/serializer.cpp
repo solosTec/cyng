@@ -170,7 +170,7 @@ namespace cyng
 					write(node.append_child(type_name.c_str()), v.front());
 					break;
 				case type_code::TC_PARAM:
-					write_param(node, obj);
+					write_param(node, v.front());
 					break;
 				default:
 					write(node.append_child("value"), v.front());
