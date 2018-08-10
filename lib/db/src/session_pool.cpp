@@ -169,7 +169,7 @@ namespace cyng
 			{
 				s.close();
 			}
-
+			pool_.clear();
 		}
 
 		std::size_t session_pool::get_pool_size() const

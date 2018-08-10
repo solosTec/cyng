@@ -121,13 +121,13 @@ namespace cyng
 	 */
 	object find(object const&, std::string const&);
 	
-	template <typename C, typename T>
+	template <typename T, typename C>
 	T find_value(C const& c, std::string const& key, T const& def)
 	{
 		return value_cast<T>(find(c, key), def);
 	}
 
-	template <typename C, typename T>
+	template <typename T, typename C>
 	T find_value(C const& c, std::size_t key, T const& def)
 	{
 		return value_cast<T>(find(c, key), def);
