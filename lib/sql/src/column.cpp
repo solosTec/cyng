@@ -58,10 +58,10 @@ namespace cyng
 			BOOST_ASSERT_MSG(index_ != 0, "index out of range");
 		}
 
-		void distinct::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void distinct::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
-			if (b)
+			if (b && !lhe)
 			{
 				os << "datetime(";
 			}
@@ -71,7 +71,7 @@ namespace cyng
 				<< tbl->get_name(index_ - 1)
 				;
 
-			if (b)
+			if (b && !lhe)
 			{
 				os << ")";
 			}

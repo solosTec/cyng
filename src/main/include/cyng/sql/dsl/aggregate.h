@@ -22,7 +22,7 @@ namespace cyng
 		struct  count
 		{
 			count(std::size_t index = 0);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			const std::size_t index_;
 		};
 
@@ -32,7 +32,7 @@ namespace cyng
 		struct  sum
 		{
 			sum(std::size_t index);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			const std::size_t index_;
 		};
 
@@ -42,7 +42,7 @@ namespace cyng
 		struct  average
 		{
 			average(std::size_t index);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			const std::size_t index_;
 		};
 
@@ -52,7 +52,7 @@ namespace cyng
 		struct  maximum
 		{
 			maximum(std::size_t index);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			const std::size_t index_;
 		};
 
@@ -62,7 +62,7 @@ namespace cyng
 		struct  minimum
 		{
 			minimum(std::size_t index);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			const std::size_t index_;
 		};
 	}	

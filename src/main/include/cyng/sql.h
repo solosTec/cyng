@@ -206,7 +206,7 @@ namespace cyng
 				stream_ 
 				<< "WHERE "
 				;
-				expr.serialize(stream_, meta_, dialect_);
+				expr.serialize(stream_, meta_, dialect_, false);
 				return sql_where(meta_, dialect_, stream_);
 			}
 		
@@ -284,7 +284,7 @@ namespace cyng
 				<< " SET "
 				;
 				
- 				list.serialize(stream_, meta_, dialect_);
+ 				list.serialize(stream_, meta_, dialect_, false);
 				stream_ << ' ';
 				
  				return sql_update(meta_, dialect_, stream_);

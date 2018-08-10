@@ -24,7 +24,7 @@ namespace cyng
 		struct placeholder
 		{
 			placeholder();
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 		};
 		
 		

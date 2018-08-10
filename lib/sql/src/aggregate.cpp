@@ -16,7 +16,7 @@ namespace cyng
 			: index_(index)
 		{}
 
-		void count::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void count::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			if (index_ == 0)
 			{
@@ -36,7 +36,7 @@ namespace cyng
 			: index_(index)
 		{}
 
-		void sum::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void sum::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			os
 				<< "sum("
@@ -49,7 +49,7 @@ namespace cyng
 			: index_(index)
 		{}
 
-		void average::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void average::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			os
 				<< "avg("
@@ -62,10 +62,10 @@ namespace cyng
 		maximum::maximum(std::size_t index)
 			: index_(index)
 		{}
-		void maximum::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void maximum::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
-			if (b)
+			if (b && !lhe)
 			{
 				os << "datetime(";
 			}
@@ -76,7 +76,7 @@ namespace cyng
 				<< ")"
 				;
 
-			if (b)
+			if (b && !lhe)
 			{
 				os << ")";
 			}
@@ -85,10 +85,10 @@ namespace cyng
 		minimum::minimum(std::size_t index)
 			: index_(index)
 		{}
-		void minimum::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void minimum::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
-			if (b)
+			if (b && !lhe)
 			{
 				os << "datetime(";
 			}
@@ -99,7 +99,7 @@ namespace cyng
 				<< ")"
 				;
 
-			if (b)
+			if (b && !lhe)
 			{
 				os << ")";
 			}

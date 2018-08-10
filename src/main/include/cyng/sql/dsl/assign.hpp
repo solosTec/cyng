@@ -32,12 +32,11 @@ namespace cyng
 				, val_(val)
 			{}
 
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 			{
-				col_.serialize(os, tbl, dia);
+				col_.serialize(os, tbl, dia, true);
 				os << " = ";
-				val_.serialize(os, tbl, dia);
-				//os << *this;
+				val_.serialize(os, tbl, dia, false);
 			}
 			
 			const column col_;

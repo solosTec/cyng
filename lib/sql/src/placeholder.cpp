@@ -14,7 +14,7 @@ namespace cyng
 		placeholder::placeholder()
 		{}
 		
-		void placeholder::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const
+		void placeholder::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
 			os << *this;
 		}

@@ -41,7 +41,7 @@ namespace cyng
 		struct distinct
 		{
 			distinct(std::size_t index);
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia) const;
+			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 
 			const std::size_t index_;
 		};
