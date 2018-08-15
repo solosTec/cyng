@@ -9,7 +9,6 @@
 #define NODE_XML_H
 
 
-//#include <cyng/core/object_interface_fwd.h>
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/sets.h>
 #include <string>
@@ -29,9 +28,9 @@ namespace cyng
 		void write(pugi::xml_node, object const&);
 		void write(pugi::xml_node, tuple_t const&);
 
+		object read_file(std::string const&);
 		//object read(std::string const&);
 		//object read(buffer_t const&);
-		//object read_file(std::string const&);
 	}
 }
 #endif

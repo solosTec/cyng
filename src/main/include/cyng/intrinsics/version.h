@@ -88,6 +88,7 @@ namespace cyng
 	class revision : public details::ver<std::uint32_t, std::uint64_t>
 	{
 	public:
+		revision(std::uint16_t a, std::uint16_t b, std::uint16_t c, std::uint16_t d);
 		revision(std::uint32_t, std::uint32_t);
 		revision(version, version);
 		revision(std::uint64_t);

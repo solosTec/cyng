@@ -11,6 +11,7 @@
 #include <cyng/xml.h>
 #include <cyng/object.h>
 #include <cyng/factory.h>
+#include <cyng/io/serializer.h>
 #include <boost/uuid/random_generator.hpp>
 #include <boost/filesystem.hpp>
 
@@ -19,7 +20,7 @@ namespace cyng
 
 	bool test_xml_001()
 	{
-#if	CYNG_PUGIXML_INSTALLED
+#if	CYNG_PUGIXML_INSTALLED == 1
 		const boost::filesystem::path tmp = boost::filesystem::temp_directory_path();
 		const boost::filesystem::path pwd = boost::filesystem::current_path();
 		boost::uuids::random_generator rgen;
@@ -84,6 +85,7 @@ namespace cyng
 				, cyng::param_factory("targets", cyng::vector_factory({ "data.sink.1", "data.sink.2" }))	//	list of targets
 			)
 		});
+		//std::cout << io::to_str(conf) << std::endl;
 
 		pugi::xml_document doc;
 		auto declarationNode = doc.append_child(pugi::node_declaration);
@@ -106,6 +108,12 @@ namespace cyng
 
 			doc.reset();
 		}
+
+		//
+		//	deserialize from XML
+		//
+		object obj = xml::read_file(p.string());
+		//std::cout << io::to_str(obj) << std::endl;
 
 #endif
 		return true;

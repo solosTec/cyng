@@ -186,9 +186,20 @@ namespace cyng
 			= r_time[boost::spirit::_val = make_intrinsic_tp(boost::spirit::_1)]
 			;
 
-		//	2015.04.24 08:29:9.5853489
+		//	2018-04-24 08:29:9.5853489
+		//	2018-08-13 18:37:08
 		r_time
-			%= (r_uint16 >> '.' >> r_uint8 >> '.' >> r_uint8 >> ' ' >> r_uint8 >> ':' >> r_uint8 >> ':' >> boost::spirit::qi::double_)
+			%= (r_uint16 
+				>> boost::spirit::qi::lit(L'-') 
+				>> r_uint8 
+				>> boost::spirit::qi::lit(L'-')
+				>> r_uint8
+				>> boost::spirit::qi::lit(L' ')
+				>> r_uint8
+				>> boost::spirit::qi::lit(L':')
+				>> r_uint8
+				>> boost::spirit::qi::lit(L':')
+				>> boost::spirit::qi::double_)
 			;
 	}
 

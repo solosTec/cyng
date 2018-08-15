@@ -154,6 +154,7 @@ namespace cyng
 		| r_numeric	//	after r_chrono to avoid ambiguity over int_ default
 		| r_quote	//	utf-8 string
 		| r_buffer
+		| r_version
 		| r_set
 		| ('{' > (r_tuple | boost::spirit::eps[boost::spirit::_val = make_object(tuple_t())]) > '}')	//	automatic conversion 
  		| ('%' > r_map)

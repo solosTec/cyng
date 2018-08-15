@@ -18,6 +18,8 @@ set (parser_cpp
  	lib/parser/src/buffer_parser.hpp
  	lib/parser/src/mac_parser.cpp
  	lib/parser/src/mac_parser.hpp
+ 	lib/parser/src/version_parser.cpp
+ 	lib/parser/src/version_parser.hpp
  	lib/parser/src/bom_parser.cpp
 )
     
@@ -30,6 +32,7 @@ set (parser_h
     src/main/include/cyng/parser/chrono_parser.h
     src/main/include/cyng/parser/buffer_parser.h
     src/main/include/cyng/parser/mac_parser.h
+    src/main/include/cyng/parser/version_parser.h
     src/main/include/cyng/parser/bom_parser.h
 )
 

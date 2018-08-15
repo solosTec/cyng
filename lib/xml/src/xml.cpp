@@ -10,45 +10,13 @@
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/core/class_interface.h>
 #include <cyng/xml/serializer.hpp>
+#include <cyng/factory.h>
+#include <cyng/xml/reader.hpp>
 
 namespace cyng 
 {
 	namespace xml 
 	{
-		//object read(std::string const& inp)
-		//{
-		//	std::pair<object, bool> r = parse_json(inp);
-		//	return (r.second)
-		//	? r.first
-		//	: make_object()
-		//	;
-		//}
-		//
-		//object read(buffer_t const& inp)
-		//{
-		//	std::pair<object, bool> r = parse_json(inp);
-		//	return (r.second)
-		//	? r.first
-		//	: make_object()
-		//	;
-		//}
-		//
-		//object read_file(std::string const& p)
-		//{
-		//	std::ifstream fs(p);
-		//	if (fs.is_open())	
-		//	{
-		//		fs.unsetf(std::ios::skipws);
-		//		
-		//		//
-		//		//	The double parenthesis are required to stop compiler see the string inp
-		//		//	as a function.
-		//		//
-		//		const std::string inp((std::istream_iterator<char>(fs)), (std::istream_iterator<char>()));
-		//		return read(inp);
-		//	}
-		//	return make_object();
-		//}
 		
 		template <typename T>
 		void do_write(pugi::xml_node node, object const& obj)
@@ -224,6 +192,78 @@ namespace cyng
 		void write(pugi::xml_node node, tuple_t const& tpl) {
 			using serial_t = serializer<tuple_t>;
 			serial_t::out(node, tpl);
+		}
+
+		//object read(std::string const& inp)
+		//{
+		//	std::pair<object, bool> r = parse_json(inp);
+		//	return (r.second)
+		//	? r.first
+		//	: make_object()
+		//	;
+		//}
+		//
+		//object read(buffer_t const& inp)
+		//{
+		//	std::pair<object, bool> r = parse_json(inp);
+		//	return (r.second)
+		//	? r.first
+		//	: make_object()
+		//	;
+		//}
+		//
+		object read_file(std::string const& p)
+		{
+			pugi::xml_document doc;
+			pugi::xml_parse_result result = doc.load_file(p.c_str());
+			if (result) {
+	
+				auto root = doc.first_child();
+				auto type = root.attribute("type").as_string();
+
+				return read_root(root);
+				//if (boost::algorithm::equals(type, "vec")) {
+				//	std::cout
+				//		<< root.name()
+				//		<< " type: "
+				//		<< type
+				//		<< " size: "
+				//		<< root.attribute("size").as_int()
+				//		<< std::endl;
+
+				//	vector_t vec;
+				//	vec.reserve(root.attribute("size").as_int());
+				//	for (pugi::xml_node elem : root) {
+				//		std::cout << elem.name() << std::endl;
+				//		vec.push_back(read(elem));
+				//	}
+
+				//	return make_object(vec);
+
+				//}
+				//else {
+				//	std::cout
+				//		<< root.name()
+				//		<< " type: "
+				//		<< type
+				//		<< std::endl;
+
+				//}
+				//return read(root.begin(), root.end());
+
+			}
+
+			std::stringstream ss;
+			ss
+				<< "XML [" 
+				<< p 
+				<< "] parsed with errors: [" 
+				<< result.description()
+				<< "]\n"
+				<< "Error offset: " 
+				<< result.offset
+				;
+			return make_object(ss.str());
 		}
 
 	}

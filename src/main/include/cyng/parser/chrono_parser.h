@@ -85,7 +85,7 @@ namespace cyng
 
 	/**
 	 * Parse a raw timepoint string
-	 * example: 2015.04.24 08:29:9.5853489
+	 * example: 2015-04-24 08:29:9.5853489
 	 */
 	template <typename Iterator, typename Skipper = boost::spirit::qi::standard_wide::space_type>
 	struct timepoint_basic_parser
@@ -100,8 +100,8 @@ namespace cyng
 	};
 
 	/**
-		* parse a basic timestamp like 30.09.2016 13:34:26
-		*/
+	 * parse a basic timestamp like 30.09.2016 13:34:26
+	 */
 	std::pair<object, bool > parse_basic_timestamp(std::string const&);
 
 	/**
@@ -144,8 +144,8 @@ namespace cyng
 		boost::spirit::qi::rule<Iterator, std::chrono::system_clock::time_point()> 	r_start;
 
 		/**
-			* read parts of timestamp string
-			*/
+		 * read parts of timestamp string
+		 */
 		boost::spirit::qi::uint_parser<std::uint16_t, 10, 2, 4> 	r_uint16;
 		boost::spirit::qi::uint_parser<std::uint8_t, 10, 1, 2>		r_uint8;
 		boost::spirit::qi::rule<Iterator, boost::fusion::vector< std::uint16_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t>()> r_time_1;

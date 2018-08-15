@@ -18,11 +18,15 @@ namespace cyng
 {
 	namespace xml
 	{
+		//
 		void write_param(pugi::xml_node node, cyng::object obj)
 		{
 			auto p = object_cast<param_t>(obj);
 			if (p != nullptr) {
-				write(node.append_child(p->first.c_str()), p->second);
+				auto child = node.append_child(cyng::traits::get_tag_name<param_t>());
+				child.append_attribute("name").set_value(p->first.c_str());
+				write(child, p->second);
+				//write(node.append_child(p->first.c_str()), p->second);
 			}
 		}
 
@@ -60,61 +64,34 @@ namespace cyng
 
 		void serializer <vector_t>::out(pugi::xml_node node, vector_t const& v)
 		{
-			//
-			//	construct a unique node name
-			//
-			std::stringstream ss;
-			ss
-				<< cyng::traits::get_tag_name<vector_t>()
-				<< '_'
-				<< std::hex 
-				<< std::hash<uintptr_t>()(reinterpret_cast<uintptr_t>(&v))
-				;
-
-			const std::string type_name = ss.str();
 			node.append_attribute("type").set_value(cyng::traits::get_tag_name<vector_t>());
 			node.append_attribute("size").set_value(std::to_string(v.size()).c_str());
 
-			if (v.size() > 1)
+			std::size_t index{ 0 };
+			for (auto const& obj : v)
 			{
-				for (auto const& obj : v)
-				{
-					switch (obj.get_class().tag())
-					{
-					case TC_TUPLE:
-					case TC_VECTOR:
-					case TC_SET:
-					case TC_ATTR_MAP:
-					case TC_PARAM_MAP:
-						write(node.append_child(type_name.c_str()), obj);
-						break;
-					case type_code::TC_PARAM:
-						write_param(node, obj);
-						break;
-					default:
-						write(node.append_child("value"), obj);
-						break;
-					}
-				}
-			}
-			else if (v.size() == 1)
-			{
-				switch (v.at(0).get_class().tag())
+				switch (obj.get_class().tag())
 				{
 				case TC_TUPLE:
 				case TC_VECTOR:
 				case TC_SET:
 				case TC_ATTR_MAP:
 				case TC_PARAM_MAP:
-					write(node.append_child(type_name.c_str()), v.at(0));
+					//write(node.append_child(node_name.c_str()), obj);
+				{
+					auto sub = node.append_child("element");
+					sub.append_attribute("index").set_value(index);
+					write(sub, obj);
+				}
 					break;
 				case type_code::TC_PARAM:
-					write_param(node, v.at(0));
+					write_param(node, obj);
 					break;
 				default:
-					write(node.append_child("value"), v.at(0));
+					write(node.append_child("value"), obj);
 					break;
 				}
+				++index;
 			}
 		}
 

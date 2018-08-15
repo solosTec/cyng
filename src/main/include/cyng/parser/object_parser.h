@@ -20,6 +20,7 @@
 #include <cyng/parser/numeric_parser.h>
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/buffer_parser.h>
+#include <cyng/parser/version_parser.h>
 #include <cyng/intrinsics/sets.h>
 
 namespace cyng	
@@ -39,6 +40,7 @@ namespace cyng
 		chrono_parser<Iterator, Skipper>		r_chrono;
 		numeric_parser<Iterator>	r_numeric;
 		buffer_parser<Iterator>		r_buffer;
+		version_parser<Iterator>		r_version;	// parse both: version and revision
 		utf::string_parser<Iterator>	r_string;
 		utf::obj_quote_parser<Iterator>	r_quote;
 		
