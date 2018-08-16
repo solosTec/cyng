@@ -11,6 +11,7 @@
 
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/sets.h>
+#include <cyng/table/record.h>
 #include <string>
 #include <pugixml.hpp>
 
@@ -29,7 +30,21 @@ namespace cyng
 		void write(pugi::xml_node, tuple_t const&);
 
 		object read_file(std::string const&);
-		//object read(std::string const&);
+
+		/**
+		 * Generic way to read a record.
+		 * Example:
+		 * @code
+		 pugi::xpath_node_set data = doc.select_nodes("root/record");
+		 for (pugi::xpath_node_set::const_iterator it = data.begin(); it != data.end(); ++it)
+		 {
+			counter++;
+			pugi::xml_node node = it->node();
+			auto rec = read(node, meta);
+		 }
+		 * @endcode
+		 */
+		cyng::table::record read(pugi::xml_node, cyng::table::meta_table_ptr);
 		//object read(buffer_t const&);
 	}
 }

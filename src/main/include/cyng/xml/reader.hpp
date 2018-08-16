@@ -20,6 +20,8 @@ namespace cyng
 		cyng::object read(pugi::xml_node);
 		cyng::object produce_object(std::string type, std::string value);
 		bool is_set(std::string);
+		cyng::object read(pugi::xml_node);
+
 	}
 }
 #endif

@@ -62,7 +62,14 @@ namespace cyng
 			 * as parameter name.
 			 */
 			tuple_t convert() const;
-			tuple_t convert(param_map_t const&) const;
+
+			/**
+			 * Same as convert() but with the option to add more
+			 * parameters.
+			 *
+			 * @param pm addition parameters
+			 */
+			tuple_t convert(param_map_t const& pm) const;
 
 		private:
 			object get(std::size_t idx) const;
