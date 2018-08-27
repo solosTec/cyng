@@ -8,10 +8,10 @@
 #define CYNG_ASYNC_MUX_H
 
 #include <cyng/async/scheduler.h>
-#include <cyng/async/task_fwd.h>
 #include <cyng/intrinsics/sets.h>
 #include <cyng/object.h>
 #include <cyng/compatibility/io_service.h>
+#include <cyng/async/task/task.hpp>
 
 namespace cyng 
 {
@@ -93,13 +93,13 @@ namespace cyng
 			
 			/**
 			 * Gracefull shutdown of the internal scheduler.
-			 * @return true if shutdown was successfull
+			 * @return true if shutdown was successful
 			 */
 			void shutdown();
 			
 			/**
 			 * Terminate all tasks. Doesn't stop the scheduler.
-			 * @return true if stop was successfull
+			 * @return true if stop was successful
 			 */
 			bool stop();
 			
