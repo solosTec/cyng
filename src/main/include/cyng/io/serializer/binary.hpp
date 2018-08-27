@@ -44,29 +44,30 @@ namespace cyng
 		 * 
 		 * @tparam T object to write
 		 * @tparam N bytes to write
+		 * @tparam O Offset
 		 */
-		template < typename T, std::size_t N = sizeof(T) >
+		template < typename T, std::size_t N = sizeof(T), std::size_t OFFSET = 0 >
 		void write_binary(std::ostream& os, T const& v)
 		{
 			static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
-			static_assert(N <= sizeof(T), "type size exceeded");
-			os.write(reinterpret_cast<const std::ostream::char_type*>(&v), N);
+			static_assert(N + OFFSET <= sizeof(T), "type size exceeded");
+			os.write(reinterpret_cast<const std::ostream::char_type*>(&v) + OFFSET, N);
 		}
 		
-		template < typename T, std::size_t N >
+		template < typename T, std::size_t N, std::size_t OFFSET = 0 >
 		void write_binary(std::ostream& os, std::array< T, N > const& a)
 		{
 			using array_type = std::array< T, N >;
 			static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
-			static_assert(N == std::tuple_size<array_type>::value, "invalid template parameters");
-			os.write(reinterpret_cast<const std::ostream::char_type*>(a.data()), N * sizeof(T));
+			static_assert(N + OFFSET == std::tuple_size<array_type>::value, "invalid template parameters");
+			os.write(reinterpret_cast<const std::ostream::char_type*>(a.data()) + (OFFSET * sizeof(T)), N * sizeof(T));
 		}
 
-		template < typename T, std::size_t N >
+		template < typename T, std::size_t N, std::size_t OFFSET = 0 >
 		void write_binary(std::ostream& os, T const(&p)[N])
 		{
 			static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
-			os.write(reinterpret_cast<const std::ostream::char_type*>(p), sizeof(T) * N);
+			os.write(reinterpret_cast<const std::ostream::char_type*>(p) + (OFFSET * sizeof(T)), sizeof(T) * N);
 		}
 
 		/**

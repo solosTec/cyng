@@ -76,21 +76,18 @@ namespace cyng
 		bool shutdown_;
 	};
 
+	//
+	//	initialize static slot names
+	//
+	template <>
+	std::map<std::string, std::size_t> async::task<simple>::slot_names_({ {"slot-0", 0} });
 
 	bool test_async_002()
 	{
-// 		async::scheduler s;
-// 		std::cout << "threads: " << s.get_pool_size() << std::endl;	
-// 		s.stop();
-		
-		
+	
 		async::mux task_manager;
 		
-// 		auto tp_1 = async::make_task<simple>(task_manager, 1, "welcome-1");
-		
-// 		template < typename T, typename S, typename ...Args >
-// 		void start_task(mux& m, Args &&... args)
-		
+	
 		for (int idx = 0; idx < 100; )
 		{
 			async::start_task_delayed<simple>(task_manager, std::chrono::seconds(idx), idx++, "welcome-" + std::to_string(idx));
@@ -99,7 +96,17 @@ namespace cyng
 		
 		std::cout << "wait..." << std::endl;
 		task_manager.post(2, 0, tuple_factory(100, std::string("event-1")));
-		task_manager.post(3, 0, tuple_factory(100, "event-3"));
+		task_manager.post(3, 0, tuple_factory(101, "event-3"));
+
+		//
+		//	slot by name
+		//
+		task_manager.post(4, "slot-0", tuple_factory(102, "event-4"));
+
+		//
+		//	compiler selects slot
+		//
+		task_manager.send<simple, 0>(tuple_factory(200, "event-5"));
 		
 		for (int idx = 0; idx < 10; idx++)
 		{

@@ -51,20 +51,7 @@ namespace cyng
 				if (shutdown_)	return;
 				auto sp{ this->shared_from_this() };
 				dispatcher_.post([this, sp](){
-					switch (impl_.run())
-					{
-					case continuation::TASK_STOP:
-						this->shutdown_ = true;
-						impl_.stop();
-						sp->cancel_timer();
-						remove_this();
-						break;
-					case continuation::TASK_YIELD:
-						std::this_thread::yield();
-						break;
-					default:
-						break;
-					}
+					eval_rc(impl_.run());
 				});
 			}
 			
@@ -99,27 +86,32 @@ namespace cyng
 			 */
 			virtual void dispatch(std::size_t slot, tuple_t msg) override
 			{
-				if (shutdown_)	return;
+				if (shutdown_ || (slot == NO_SLOT))	return;
 				auto sp{ this->shared_from_this() };
 				dispatcher_.post([this, sp, slot, msg]() {
-					switch (select_signature<signatures_t>::invoke(impl_, slot, msg))
-					{
-					case continuation::TASK_STOP:
-						this->shutdown_ = true;
-						impl_.stop();
-						sp->cancel_timer();
-						remove_this();
-						break;
-					case continuation::TASK_YIELD:
-						std::this_thread::yield();
-						break;
-					case continuation::TASK_CONTINUE:
-					case continuation::TASK_UNDEFINED:
-					default:
-						break;
-					}
-
+					eval_rc(select_signature<signatures_t>::invoke(impl_, slot, msg));
 				});
+			}
+
+			/**
+			 * dispatch() receive messages and dispatch each message 
+			 * to the appropriate slot.
+			 */
+			virtual void dispatch(std::string slot, tuple_t msg) override
+			{
+				if (shutdown_)	return;
+				dispatch(resolve_name(slot), msg);
+			}
+
+			/**
+			 * Compiler selects the SLOT. 
+			 * This is faster at runtime but doesn't work as virtual function.
+			 */
+			template <std::size_t SLOT>
+			void post(tuple_t msg)
+			{
+				if (shutdown_)	return;
+				eval_rc(invoke_slot<impl_type, SLOT>(impl_, msg));
 			}
 			
 			virtual shared_task get_shared() override
@@ -129,21 +121,84 @@ namespace cyng
 			
 			virtual std::string get_class_name() const
 			{
+				return get_class_name_impl();
+			}
+
+			static std::string get_class_name_impl()
+			{
 				//	class node::xxxxxxx
 				std::vector<std::string> parts;
 				auto name = boost::core::demangle(typeid(impl_type).name());
 				boost::split(parts, name, boost::is_any_of("\t "));
-				
+
 				return parts.empty()
 					? "TASK"
-					: ((parts.size() > 1) ? parts.at(1)	: parts.at(0));
+					: parts.back()
+					;
 			}
+
+		private:
+			/**
+			 * Support for named slots.
+			 * Takes a given name and returns the according slot ID.
+			 */
+			static std::size_t resolve_name(std::string const& name)
+			{
+				auto pos = slot_names_.find(name);
+				return (pos != slot_names_.end())
+					? pos->second
+					: NO_SLOT
+					;
+			}
+
+			/**
+			 * Evaluates the return code of an applied task function.
+			 */
+			void eval_rc(continuation rc)
+			{
+				switch (rc)
+				{
+				case continuation::TASK_STOP:
+					this->shutdown_ = true;
+					impl_.stop();
+					this->cancel_timer();
+					remove_this();
+					break;
+				case continuation::TASK_YIELD:
+					std::this_thread::yield();
+					break;
+				case continuation::TASK_CONTINUE:
+				case continuation::TASK_UNDEFINED:
+				default:
+					break;
+				}
+			}
+
+		public:
+			/**
+			 * Optional support for named slots.
+			 * Takes a given name and returns the according slot ID.
+			 * All you have to do is to add an static initializer for this map
+			 *
+			 * example:
+			 * @code
+			 template <>
+			 std::map<std::string, std::size_t> async::task<simple>::slot_names_({ {"slot-0", 0} });
+			 * @endcode
+			 */
+			static std::map<std::string, std::size_t>	slot_names_;
 
 		private:
 			impl_type	impl_;
 			
 		};
 		
+		//
+		//	initialize static member
+		//
+		template <typename T>
+		std::map<std::string, std::size_t> task<T>::slot_names_({});
+
 		/**
 		 * This cast enables access to the embedded task object
 		 */

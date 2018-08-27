@@ -15,10 +15,10 @@ namespace cyng
 	{
 		base_task::base_task(mux& m)
 		: mux_(m)
-		, id_(mux_.next_id())
-		, timer_(m.get_io_service())
-		, dispatcher_(m.get_io_service())
-		, shutdown_(false)
+			, id_(mux_.next_id())
+			, timer_(m.get_io_service())
+			, dispatcher_(m.get_io_service())
+			, shutdown_(false)
 		{}
 			
 		std::size_t base_task::get_id() const
@@ -50,7 +50,6 @@ namespace cyng
 			});
 
 		}
-
 
 	}	// async
 }

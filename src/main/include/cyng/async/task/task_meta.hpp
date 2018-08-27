@@ -135,6 +135,28 @@ namespace cyng
 			}
 		};
 
+		/**
+		 * direct call - compiler selects slot
+		 */
+		template <typename TSK, std::size_t SLOT>
+		continuation invoke_slot(TSK& tsk, tuple_t const& msg)
+		{
+			//
+			//	extract signature
+			//
+			using signatures_t = typename TSK::signatures_t;
+			using signature_t = typename std::tuple_element<SLOT, signatures_t>::type;
+
+			//
+			//	converter from tuple_t to std::tuple<...>
+			//
+			using converter_t = meta::converter_factory<signature_t>;
+			static_assert(std::is_same<signature_t, typename converter_t::return_type>::value, "invalid message type");
+			typename converter_t::return_type tpl = converter_t::copy(msg.begin(), msg.end());
+			detail::functor<TSK> f(tsk);
+			return meta::apply(f, tpl);
+
+		}
 	}
 }
 

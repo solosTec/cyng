@@ -135,6 +135,54 @@ namespace cyng
 			 */
 			void post(std::string id, std::size_t slot, tuple_t&& tpl) const;
 
+			/**
+			 * A task can maintain an optional list of named slots
+			 */
+			void post(std::size_t id, std::string slot, tuple_t&& tpl) const;
+
+			/**
+			 * Deliver message to all tasks that support the specified slot name.
+			 * Works complete asynchronously.
+			 *
+			 * @return number of found tasks with the specified class name.
+			 */
+			void post(std::string slot, tuple_t&& tpl) const;
+
+			/**
+			 * Send a message to all instances of type task<T>.
+			 * 
+			 * Take advantage of faster message dispatching when slot is selected
+			 * during compile time instead of runtime.
+			 */
+			template <typename T, std::size_t SLOT>
+			void send(tuple_t&& msg)
+			{
+				using TSK = task<T>;
+
+				if (shutdown_)	return;
+				BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
+
+				//
+				//	move the content of the message 
+				//
+				parameter param(std::move(msg));
+
+				dispatcher_.dispatch([this, param]() {
+
+					auto class_name = TSK::get_class_name_impl();
+					for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
+					{
+						if (boost::algorithm::equals(class_name, (*pos).second->get_class_name()))
+						{
+							auto ptr = std::dynamic_pointer_cast< TSK >((*pos).second);
+							if (ptr != nullptr) {
+								ptr->post<SLOT>(param.msg_);
+							}
+						}
+					}
+				});
+			}
+
 		private:
 			/**
 			 * Non-blocking function.

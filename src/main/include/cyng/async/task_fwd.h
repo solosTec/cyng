@@ -12,6 +12,7 @@
 #include <map>
 #include <list>
 #include <memory>
+#include <limits>
 
 namespace cyng 
 {
@@ -21,7 +22,8 @@ namespace cyng
 		 * 0 is an invalid task id
 		 */
 		constexpr std::size_t NO_TASK = 0;
-		
+		constexpr std::size_t NO_SLOT = std::numeric_limits<std::size_t>::max();
+
 		//	some forward definitions
 		class mux;
  		class base_task;

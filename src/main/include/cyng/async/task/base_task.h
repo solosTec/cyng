@@ -45,7 +45,8 @@ namespace cyng
 			 * process() and expands the tuple to a parameter pack with correct data types.
 			 */
 			virtual void dispatch(std::size_t slot, tuple_t msg) = 0;
-			
+			virtual void dispatch(std::string slot, tuple_t msg) = 0;
+
 			/**
 			 * gcc requires an implementation even though this
 			 * function is virtual. On the other side, this is a 
@@ -91,7 +92,7 @@ namespace cyng
 			 * remove this task from task list.
 			 */
 			void remove_this();
-			
+
 		public:
 			mux& mux_;
 
@@ -100,6 +101,7 @@ namespace cyng
  			boost::asio::steady_timer timer_;
 			dispatcher_t dispatcher_;
 			bool shutdown_;
+
 		};
 		
 
