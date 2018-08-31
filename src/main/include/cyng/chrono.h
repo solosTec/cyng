@@ -152,9 +152,14 @@ namespace cyng
 		std::chrono::system_clock::time_point add_month(std::chrono::system_clock::time_point const&, int month);
 
 		/**
-		 * Calulate the number of days for a specific month
+		 * Calculate how many days the month of the specified time point has.
 		 */
 		days days_of_month(std::chrono::system_clock::time_point);
+
+		/**
+		 * @return true if both time stamps from the same day.
+		 */
+		bool same_day(std::chrono::system_clock::time_point, std::chrono::system_clock::time_point);
 	}
 }
 

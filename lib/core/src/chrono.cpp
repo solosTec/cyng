@@ -286,6 +286,13 @@ namespace cyng
 			return std::chrono::duration_cast<days>(end - begin);
 		}
 
+		bool same_day(std::chrono::system_clock::time_point tp1, std::chrono::system_clock::time_point tp2)
+		{
+			const auto tm1 = make_utc_tm(tp1);
+			const auto tm2 = make_utc_tm(tp2);
+			return (year(tm1) == year(tm2)) && (day_of_year(tm1) == day_of_year(tm2));
+		}
+
 	}
 }
 

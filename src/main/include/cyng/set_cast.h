@@ -40,6 +40,13 @@ namespace cyng
 	 */
 	vector_t to_vector(tuple_t const&);
 
+	/**
+	 * @brief copy tuple into vector
+	 *
+	 * No check for duplicates
+	 */
+	 tuple_t to_tuple(vector_t const&);
+
 }
 
 #endif 

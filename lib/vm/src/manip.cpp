@@ -11,19 +11,6 @@
 
 namespace cyng 
 {
-	namespace detail 
-	{
-		//stream_policy<vector_t>::stream_policy(vector_t& vec)
-		//: vec_(vec)
-		//{}
-		//	
-		//vector_t& stream_policy<vector_t>::operator()(vector_t&& v)
-		//{
-		//	vec_.insert(vec_.end(), v.begin(), v.end());
-		//	return vec_;
-		//}
-	}
-
 	invoke::invoke(std::string const& name)
 	: name_(name)
 	{}

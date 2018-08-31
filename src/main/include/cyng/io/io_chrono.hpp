@@ -34,6 +34,11 @@ namespace cyng
 	std::string to_str(std::chrono::system_clock::time_point const&);
 
 	/**
+	 * yyyy-mm-dd only date without time information
+	 */
+	std::string date_to_str(std::chrono::system_clock::time_point const&);
+
+	/**
 	 * Write a timespan in hh::mm::ss.ffff format.
 	 * 
 	 * @tparam R an arithmetic type representing the number of ticks
@@ -73,6 +78,32 @@ namespace cyng
 	{
 		std::stringstream ss;
 		ss << v;
+		return ss.str();
+	}
+
+	/**
+	 * Format timespan without fractional data
+	 */
+	template <typename R, typename P>
+	std::string ts_to_str(std::chrono::duration<R, P> const& v)
+	{
+		const std::chrono::hours h = std::chrono::duration_cast<std::chrono::hours>(v);
+		const std::chrono::minutes m = std::chrono::duration_cast<std::chrono::minutes>(v - h);
+		const std::chrono::seconds s = std::chrono::duration_cast<std::chrono::seconds>(v - h - m);
+
+
+		std::stringstream ss;
+		ss
+			<< std::setfill('0')
+			<< std::setw(2)
+			<< h.count()
+			<< ':'
+			<< std::setw(2)
+			<< (m.count() % 60ULL)	//	minutes
+			<< ':'
+			<< std::setw(2)
+			<< (s.count() & 60ULL)
+			;
 		return ss.str();
 	}
 
