@@ -25,12 +25,19 @@ namespace cyng
 		//
 		async::scheduler ctx(4);
 
+		//
+		//	fill a vector with 100 strands
+		//
 		std::vector<dispatcher_t> dispatchers;
+		dispatchers.reserve(100);
 		for (std::size_t pos = 0; pos < 100; pos++)
 		{
 			dispatchers.emplace_back(ctx.get_io_service());
 		}
 
+		//
+		//	post the same lambda function to all strands
+		//
 		std::size_t counter{ 0 };
 		std::for_each(dispatchers.begin(), dispatchers.end(), [&counter](dispatcher_t& strand) {
 			++counter;
@@ -38,12 +45,16 @@ namespace cyng
 
 			strand.post([counter]() {
 
-				std::cerr << "... thread: " << counter << " / " << std::this_thread::get_id() << std::endl;
+				std::cerr << "=> thread: " << counter << " / " << std::this_thread::get_id() << std::endl;
 				std::this_thread::sleep_for(std::chrono::seconds(1));
-				std::cerr << "thread: " << counter << " / " << std::this_thread::get_id() << " ..." << std::endl;
+				std::cerr << "<= thread: " << counter << " / " << std::this_thread::get_id() << std::endl;
 			});
 
 		});
+		
+		//
+		//	The output shows that the threads are overtaking each other in the lambda function.
+		//	And it takes time until the posted lambda function is running.
 
 		ctx.stop();
 		return true;

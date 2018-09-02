@@ -134,6 +134,13 @@ set (${PROJECT_NAME}_NULL_HASH "0x${__RND_VALUE_NULL}")
 set (${PROJECT_NAME}_EOD_HASH "0x${__RND_VALUE_EOD}")
 set (${PROJECT_NAME}_DUMMY_HASH "0x${__RND_VALUE_DUMMY}")
 
+#
+# manage unit test: CYNG_BUILD_TEST
+# default is OFF
+#
+if(NOT DEFINED ${PROJECT_NAME}_BUILD_TEST)
+	set(${PROJECT_NAME}_BUILD_TEST OFF CACHE BOOL "build unit test")
+endif()
 
 #
 #	setup C++ compiler
