@@ -22,21 +22,33 @@ namespace cyng
 		class reader;
 
 		/**
-		* Controls the process of reading, compiling and generating of docsript files.
-		*/
+		 * Driver class for docscript parser.
+		 * Controls the process of reading, compiling and generating of docsript files.
+		 */
 		class driver
 		{
 			friend class reader;
 
 		public:
+			/**
+			 * Constructor
+			 *
+			 * @param inc vector of include paths
+			 * @param verbose verbose level. The higher the number, the more will be logged.
+			 */
 			driver(std::vector< std::string >const& inc, int verbose);
 			virtual ~driver();
 
 			/**
-			* @param master master file
-			* @param tmp temporary intermediate file
-			* @param out output file (html)
-			*/
+			 * In a first step the compiler generates an intermediate file from all
+			 * input files that contains instructions to generate the output file.
+			 * In a second step a special VM executes the instructions to generate the
+			 * requested output file (HTML, PDF, ...)
+			 *
+			 * @param master master file
+			 * @param tmp temporary intermediate file. 
+			 * @param out output file (html)
+			 */
 			int run(boost::filesystem::path const& master
 				, boost::filesystem::path const& tmp
 				, boost::filesystem::path const& out
@@ -50,28 +62,28 @@ namespace cyng
 
 		private:
 			/**
-			* Manage a list of include directories.
-			* If the driver opens a file it searches in all given directories
-			* until the spcified file is found.
-			*/
+			 * Manage a list of include directories.
+			 * If the driver opens a file it searches in all given directories
+			 * until the spcified file is found.
+			 */
 			const std::vector< boost::filesystem::path > includes_;
 
 			/**
-			* verbosity level. 
-			* 0 == print only errors
-			*/
+			 * verbosity level. 
+			 * 0 == print only errors
+			 */
 			const int verbose_;
 
 			/**
-			* meta data
-			*/
+			 * meta data
+			 */
 			std::chrono::system_clock::time_point last_write_time_;
 			uintmax_t file_size_;
 
 			/**
-			* Frequency table. Used to calculate shannon entropy 
-			* of the text.
-			*/
+			 * Frequency table. Used to calculate shannon entropy 
+			 * of the text.
+			 */
 			frequency_t	stats_;
 
 			/**
@@ -100,11 +112,15 @@ namespace cyng
 
 		};
 
-		/*
-		* @return last write time and file size of the specified file
-		*/
+		/**
+		 * @return last write time and file size of the specified file. If file does not exist 
+		 * the file size is 0.
+		 */
 		std::tuple<std::chrono::system_clock::time_point, uintmax_t> read_meta_data(boost::filesystem::path);
 		
+		/**
+		 * Sets the specified extension if the file name doesn't contains one.
+		 */
 		boost::filesystem::path verify_extension(boost::filesystem::path p, std::string const& ext);
 	}
 }

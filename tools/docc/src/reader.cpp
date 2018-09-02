@@ -47,7 +47,7 @@ namespace cyng
 						{
 							std::cout
 								<< "***info: "
-								<< source_
+								<< source_.filename()
 								<< " contains UTF-8 signature (BOM)"
 								<< std::endl
 								;
@@ -58,7 +58,7 @@ namespace cyng
 						}
 					}
 
-					//	increase line counter
+					//	increase local line counter
 					line_++;
 
 					//	trim content
@@ -71,27 +71,33 @@ namespace cyng
 					//	Todo: Implement detector for recursive includes
 					//
 
-					//
-					//	The include command has to be handled before
-					//	the compiler is running. So this is implemented
-					//	as preprocessor function.
-					//
 					if (boost::algorithm::starts_with(line, ";"))
 					{
 						//	skip comments
+						//	The compiler doesn't see any comments.
 						;
 					}
 					else if (boost::algorithm::starts_with(line, ".include"))
 					{
+						//
+						//	The include command has to be handled before
+						//	the compiler is running. So this is implemented
+						//	as preprocessor function.
+						//
 						const boost::filesystem::path p = parse_include(line);
 						driver_.open_and_run(p, ++depth);
 					}
 					else
 					{
-						tokenize("\n");
+						//	virtual "new line" at the beginning
+						tokenize("\n");	
 						tokenize(line);
 					}
 				}
+
+				//
+				//	emit last character
+				//
 				driver_.tokenizer_.flush();
 				return true;
 			}

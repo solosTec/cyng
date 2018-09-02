@@ -10,6 +10,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <boost/predef.h>
 
 namespace cyng	
 {
@@ -63,20 +64,27 @@ namespace cyng
 			}
 			else
 			{
-				if (tok.value_ == '\n')
-				{
+				if (tok.value_ == '\n')	{
 					std::cout << "NL";
 				}
-				else if (tok.value_ == ' ')
-				{
+				else if (tok.value_ == ' ')	{
 					std::cout << "SP";
 				}
-				else if (tok.value_ < 0xff)
-				{
+#if BOOST_OS_WINDOWS
+				else if (tok.value_ == 0xbd) {
+					std::cout << "1/2";
+				}
+				else if (tok.value_ == 0xbe) {
+					std::cout << "3/4";
+				}
+				else if (tok.value_ == 0xbc) {
+					std::cout << "1/4";
+				}
+#endif
+				else if (tok.value_ < 0xff)	{
 					std::cout << (char)tok.value_;
 				}
-				else
-				{
+				else {
 					std::cout << tok.value_;
 				}
 				os

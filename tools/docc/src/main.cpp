@@ -8,6 +8,7 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/config.hpp>
+#include <boost/predef.h>
 #include <fstream>
 #include <iostream>
 #include <CYNG_project_info.h>
@@ -53,8 +54,8 @@ int main(int argc, char* argv[]) {
 		boost::program_options::options_description compiler("compiler");
 		compiler.add_options()
 
-			("source,s", boost::program_options::value(&inp_file)->default_value(inp_file), "main source file")
-			("output,o", boost::program_options::value(&out_file)->default_value(out_file), "output file")
+			("source,S", boost::program_options::value(&inp_file)->default_value(inp_file), "main source file")
+			("output,O", boost::program_options::value(&out_file)->default_value(out_file), "output file")
 			("include-path,I", boost::program_options::value< std::vector<std::string> >()->default_value(std::vector<std::string>(1, cwd.string()), cwd.string()), "include path")
 			//	verbose level
 			("verbose,V", boost::program_options::value<int>()->default_value(0)->implicit_value(1), "verbose level")
@@ -185,20 +186,31 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		auto incp = vm["include-path"].as< std::vector<std::string>>();
+		//
+		//	read specified include paths
+		//
+		auto inc_paths = vm["include-path"].as< std::vector<std::string>>();
 
 		//
-		//	Add a default and empty (.) path
+		//	Add the path of the input file as include path, if it is not already specified
 		//
-		incp.push_back(boost::filesystem::path(inp_file).parent_path().string());
-		incp.push_back("");
+		auto path = boost::filesystem::path(inp_file).parent_path();
+		auto pos = std::find(inc_paths.begin(), inc_paths.end(), path);
+		if (pos == inc_paths.end()) {
+			inc_paths.push_back(path.string());
+		}
+
+		//
+		//	last entry is empty
+		//
+		inc_paths.push_back("");
 		if (verbose > 0)
 		{
 			std::cout
 				<< "Include paths are: "
 				<< std::endl
 				;
-			std::copy(incp.begin(), incp.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+			std::copy(inc_paths.begin(), inc_paths.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
 		}
 
 #if BOOST_OS_WINDOWS
@@ -216,11 +228,18 @@ int main(int argc, char* argv[]) {
 
 		}
 #endif
-//  		cyng::docscript::driver d(incp, verbose);
-// 		return d.run(boost::filesystem::path(inp_file).filename()
-// 			, tmp
-// 			, cyng::verify_extension(out_file, "html")
-// 			, vm["body"].as< bool >());
+		//
+		//	Construct driver instance
+		//
+  		cyng::docscript::driver d(inc_paths, verbose);
+
+		//
+		//	Start driver with the main/input file
+		//
+ 		return d.run(boost::filesystem::path(inp_file).filename()
+ 			, tmp
+ 			, cyng::docscript::verify_extension(out_file, "html")
+ 			, vm["body"].as< bool >());
 
 	}
 	catch (std::exception& e)

@@ -9,7 +9,6 @@
 #include <cyng/docscript/compiler.h>
 #include <cyng/vm/generator.h>
 #include <cyng/factory.h>
-// #include <cyng/io/format/bytes_format.h>
 
 namespace cyng	
 {
@@ -34,22 +33,12 @@ namespace cyng
 			//	call initial functions and open the "generate"
 			//	call frame
 			//
+			param_map_t params;
+			params["last-write-time"] = make_object(last_write_time);
+			params["file-size"] = make_object(file_size);
 			prg_
-				//	meta data
-				<< code::ESBA
-// 				<< code::param(param_factory("last-write-time", last_write_time))
-				<< param_factory("last-write-time", last_write_time)
-				<< make_object<std::uint64_t>(file_size)
-				<< make_object("file-size")
-				<< code::ASSEMBLE_PARAM
-				<< make_object<std::size_t>(2)	//	2 parameters
-// 				<< index(2)	//	2 parameters
-				<< code::ASSEMBLE_PARAM_MAP
-				<< make_object(true)	//	simulate call of a global function
-				<< make_object<std::size_t>(1)	//	parameter count
-// 				<< index(1)		//	parameter count
-				<< invoke("meta")
-				<< code::REBA
+				//	true ==> global function
+				<< generate_invoke_unwinded("meta", std::size_t(1), true, params)
 
 				//	build a call frame generate function
 				<< code::ESBA
@@ -488,7 +477,11 @@ namespace cyng
 
 		void compiler::init_library()
 		{
-
+			//
+			//	Substitute short cuts with full function name.
+			//	example: "em", "italic" and "i" are all the same and translate 
+			//	to "emphasise".
+			//
 			insert(library_, std::make_shared<function>("bold", 1, WS_), { "b" });
 			insert(library_, std::make_shared<function>("emphasise", 1, WS_), { "i", "italic", "em" });
 			insert(library_, std::make_shared<function>("color", 1, WS_), { "col" });

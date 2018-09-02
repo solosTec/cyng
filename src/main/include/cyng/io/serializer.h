@@ -12,7 +12,6 @@
 #include <cyng/intrinsics.h>
 #include <cyng/io/io_chrono.hpp>
 #include <cyng/io/io_buffer.h>
-//#include <CYNG_project_info.h>
 #include <ostream>
 
 namespace cyng 

@@ -9,8 +9,8 @@
 #include <cyng/vm/generator.h>
 #include <cyng/factory.h>
 #include <cyng/value_cast.hpp>
-// #include <cyng/json/json_io.h>
 #include <cyng/crypto/base64.h>
+#include <cyng/io/serializer.h>
 
 #include <iostream>
 #include <boost/algorithm/string/predicate.hpp>
@@ -27,7 +27,6 @@ namespace cyng
 			, body_only_(body_only)
 			, uuid_gen_()
 			, name_gen_(uuid_gen_())
-			//, name_gen_({ 0x34, 0x49, 0x58, 0x5e, 0x83, 0x7d, 0x4b, 0x9a, 0x81, 0x6e, 0x90, 0x4f, 0x94, 0x70, 0x9b, 0x02 })
 			, scheduler_()
 			, vm_(scheduler_.get_io_service(), uuid_gen_(), std::cout, std::cerr)
 			, meta_()
@@ -62,22 +61,27 @@ namespace cyng
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-				//	[1idx,true,%(("author":"Sylko Olzscher"),("released":"2017.10.22 12:57:35.78909010"ts))]
+				//	[%(("file-size":2962),("last-write-time":2017-10-23 18:19:32.00000000)),true,1])
 				std::cout
 					<< "\n***info: meta("
-					//<< cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 
 #endif
-				const cyng::vector_reader reader(frame);
+				const auto reader = make_reader(frame);
 				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
 // 				const std::size_t size = reader.get_index(0);
  				param_map_t data;
 //  				data = reader.get(2, data);
 				data = value_cast<param_map_t>(reader.get(2), data);
- 				BOOST_ASSERT_MSG(size == 1, "internal error (meta)");
- 				this->update_meta(data);
+ 				//BOOST_ASSERT_MSG(size == 1, "internal error (meta)");
+				if (size == 1) {
+					this->update_meta(data);
+				}
+				else {
+
+				}
 
 				//
 				// function meta has no return values

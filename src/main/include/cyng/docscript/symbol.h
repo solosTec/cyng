@@ -58,8 +58,8 @@ namespace cyng
 	{
 
 		/**
-		*	helper class to read the linearized symbol input
-		*/
+		 *	helper class to read the linearized symbol input
+		 */
 		class symbol_reader
 		{
 		public:

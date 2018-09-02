@@ -13,6 +13,7 @@
 #include <cyng/io/serializer.h>
 #include <cyng/factory.h>
 #include <cyng/io/parser/parser.h>
+#include <cyng/io/io_chrono.hpp>
 
 #include <iostream>
 
@@ -30,16 +31,7 @@ namespace cyng
 			, stats_()
 			, parentheses_(0)
 			, buffer_()
-			//, doc_()
 			, tokenizer_([this](docscript::token&& tok) {
-
-				//if (verbose_ > 4)
-				//{
-				//	std::cout
-				//		<< "***info: TOKEN "
-				//		<< tok
-				//		<< std::endl;
-				//}
 
 				//	update frequency
 				stats_[tok.value_]++;
@@ -78,10 +70,7 @@ namespace cyng
 				if (verbose_ > 3)
 				{ 
 					std::cout 
-					<< "SYMBOL " 
-					//<< std::setw(4)
-					//<< buffer_.size()
-					<< ' '
+					<< "SYMBOL  " 
 					<< sym 
 					<< std::endl;
 				}
@@ -143,13 +132,11 @@ namespace cyng
 			{
 				std::cout
 					<< "***info: compilation took "
-					<< cyng::io::to_str(cyng::make_object(delta))
-// 					<< cyng::timespan_format(delta)
+					<< to_str(delta)
 					<< std::endl
 					;
 			}
 
-			//buffer_.clear();
 			if (!out.empty())
 			{
 				std::cout
@@ -303,6 +290,9 @@ namespace cyng
 				docscript::compiler c(buffer_, /*doc, */verbose_);
 				c.run(last_write_time_, file_size_, out);
 
+				//
+				//	get program out of compiler
+				//
 				cyng::vector_t prg = docscript::move_program(c);
 				std::cout
 					<< "***info: write "
@@ -313,20 +303,20 @@ namespace cyng
 					;
 
 
-	#ifdef _DEBUG
+#ifdef _DEBUG
 				for (auto obj : prg)
 				{
-					//std::cout
-						//<< cyng::to_literal(obj)
-						//<< ((cyng::type_test< cyng::op >(obj)) ? "\n" : " ")
+					std::cout
+						<< cyng::io::to_str(obj)
+						<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
 						;
 				}
-	#endif
+#endif
 				//
 				//	serialize as program not as data (reverse on stack)
 				//
 				std::for_each(prg.begin(), prg.end(), [&file](cyng::object const& obj) {
-// 					cyng::serialize_native(file, obj, cyng::io::custom_callback());
+					cyng::io::serialize_binary(file, obj);
 				});
 			}
 
