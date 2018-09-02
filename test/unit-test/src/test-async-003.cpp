@@ -89,7 +89,7 @@ namespace cyng
 	bool test_impl(std::uint32_t granularity)
 	{
 		//
-		//	thread pool
+		//	thread pool of size 2
 		//
 		async::scheduler ctx(2);
 

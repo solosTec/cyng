@@ -7,7 +7,6 @@
 #include "test-async-002.h"
 #include <iostream>
 #include <boost/test/unit_test.hpp>
-#include <cyng/async/mux.h>
 #include <cyng/async/task/task_builder.hpp>
 #include <cyng/factory/set_factory.h>
 #include <boost/uuid/uuid.hpp>
@@ -106,7 +105,10 @@ namespace cyng
 		//
 		//	compiler selects slot
 		//
-		task_manager.send<simple, 0>(tuple_factory(200, "event-5"));
+#if !BOOST_COMP_GNUC
+		//	doesn't compile with g++
+		task_manager.send<simple, 0ul>(tuple_factory(200, "event-5"));
+#endif
 		
 		for (int idx = 0; idx < 10; idx++)
 		{

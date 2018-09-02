@@ -12,6 +12,7 @@
 #include <cyng/object.h>
 #include <cyng/compatibility/io_service.h>
 #include <cyng/async/task/task.hpp>
+#include <boost/predef.h>	//	requires Boost 1.55
 
 namespace cyng 
 {
@@ -148,6 +149,12 @@ namespace cyng
 			 */
 			void post(std::string slot, tuple_t&& tpl) const;
 
+#if !BOOST_COMP_GNUC
+			
+			//
+			//	doesn't compile with g++
+			//
+			
 			/**
 			 * Send a message to all instances of type task<T>.
 			 * 
@@ -175,14 +182,14 @@ namespace cyng
 						if (boost::algorithm::equals(class_name, (*pos).second->get_class_name()))
 						{
 							auto ptr = std::dynamic_pointer_cast< TSK >((*pos).second);
-							if (ptr != nullptr) {
-								ptr->post<SLOT>(param.msg_);
+							if (ptr) {
+								static_cast<TSK*>(ptr.get())->post< SLOT >(param.msg_);
 							}
 						}
 					}
 				});
 			}
-
+#endif
 		private:
 			/**
 			 * Non-blocking function.
