@@ -19,18 +19,7 @@
 #elif BOOST_OS_LINUX
 
 #include <cyng/parser/mac_parser.h>
-// #include "sys/types.h"
-// #include "sys/sysinfo.h"
-//#include "stdlib.h"
-//#include "stdio.h"
-//#include "string.h"
-//#include "sys/times.h"
-//#include "sys/vtimes.h"
-//#include <cstdlib>
 #include <fstream> 
-//#include <array>
-//#include <cstdint>
-//#include <numeric>
 #include <boost/filesystem.hpp>
 #else
 #warning unknow OS
@@ -75,8 +64,8 @@ namespace cyng
 			std::vector<mac48> result;
 #if BOOST_OS_WINDOWS
 
-			// Allocate information for up to 16 NICs
-			IP_ADAPTER_ADDRESSES AdapterInfo[16];
+			// Allocate information for up to 8 NICs
+			IP_ADAPTER_ADDRESSES AdapterInfo[8];
 
 			// Save memory size of buffer
 			DWORD dwBufLen = sizeof(AdapterInfo);
@@ -87,22 +76,24 @@ namespace cyng
 			// [in] size of receive data buffer
 
 			// Verify return value is valid, no buffer overflow
-			BOOST_ASSERT(dwStatus == ERROR_SUCCESS);
+			//BOOST_ASSERT(dwStatus == ERROR_SUCCESS);
+			//	Have seen error code 111 here
 
-			// Contains pointer to current adapter info
-			PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
+			if (dwStatus == ERROR_SUCCESS) {
+				// Contains pointer to current adapter info
+				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
 
-			do {
-				result.push_back(mac48(pAdapterInfo->PhysicalAddress[0]
-					, pAdapterInfo->PhysicalAddress[1]
-					, pAdapterInfo->PhysicalAddress[2]
-					, pAdapterInfo->PhysicalAddress[3]
-					, pAdapterInfo->PhysicalAddress[4]
-					, pAdapterInfo->PhysicalAddress[5]));
+				do {
+					result.push_back(mac48(pAdapterInfo->PhysicalAddress[0]
+						, pAdapterInfo->PhysicalAddress[1]
+						, pAdapterInfo->PhysicalAddress[2]
+						, pAdapterInfo->PhysicalAddress[3]
+						, pAdapterInfo->PhysicalAddress[4]
+						, pAdapterInfo->PhysicalAddress[5]));
 
-				pAdapterInfo = pAdapterInfo->Next;                      // Progress through linked list
-			} while (pAdapterInfo && (dwStatus == NO_ERROR));
-
+					pAdapterInfo = pAdapterInfo->Next;                      // Progress through linked list
+				} while (pAdapterInfo && (dwStatus == NO_ERROR));
+			}
 #elif BOOST_OS_LINUX
 
 			//		ls /sys/class/net/
