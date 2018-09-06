@@ -70,7 +70,17 @@ namespace cyng
 
 		private:
 			constexpr static std::size_t size_{ sizeof(std::uint64_t) + 1 };
-			alignas(std::size_t) unsigned char source_[size_];
+			union {
+				unsigned char source_[size_];
+				struct {
+					char dummy_;
+					std::uint16_t l_;
+				} l16_;
+				struct {
+					char dummy_;
+					std::uint64_t l_;
+				} l64_;
+			} u_;
 			std::size_t pos_;
 		};
 
@@ -106,7 +116,11 @@ namespace cyng
 
 		private:
 			constexpr static std::size_t size_{ sizeof(std::uint32_t) };
-			alignas(std::uint32_t) unsigned char source_[size_];
+// 			alignas(std::uint32_t) unsigned char source_[size_];
+			union {
+				unsigned char source_[size_];
+				std::uint32_t l_;
+			} u_;
 			std::size_t pos_;
 		};
 

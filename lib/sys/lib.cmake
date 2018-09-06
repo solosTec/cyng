@@ -8,6 +8,7 @@ set (sys_cpp
   	lib/sys/src/cpu.cpp
   	lib/sys/src/process.cpp
   	lib/sys/src/mac.cpp
+  	lib/sys/src/info.cpp
 )
     
 set (sys_h
@@ -15,6 +16,7 @@ set (sys_h
 	src/main/include/cyng/sys/cpu.h
 	src/main/include/cyng/sys/process.h
 	src/main/include/cyng/sys/mac.h
+	src/main/include/cyng/sys/info.h
 )
 
 # define the sys lib

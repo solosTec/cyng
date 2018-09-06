@@ -214,22 +214,24 @@ namespace cyng
 		//
 
 		length_field::length_field()
-			: source_{ 0 }
+			: u_()
 			, pos_(0)
-		{}
+		{
+			reset();
+		}
 
 		std::size_t length_field::size_of_length_field() const
 		{
 			BOOST_ASSERT_MSG(pos_ != 0, "no length field available");
 
-			if (source_[0] == 126)
+			if (u_.source_[0] == 126)
 			{
 				//	16 bit length
 				//	the following 2 bytes interpreted as a 16
 				//	bit unsigned integer are the payload length
 				return 3u;
 			}
-			else if (source_[0] == 127)
+			else if (u_.source_[0] == 127)
 			{
 				//	64 bit length
 				//	the following 8 bytes interpreted as a 64 - bit unsigned integer(the
@@ -244,7 +246,7 @@ namespace cyng
 		bool length_field::put(char c)
 		{
 			BOOST_ASSERT(pos_ != size_);
-			source_[pos_++] = c;
+			u_.source_[pos_++] = c;
 #ifdef DEBUG_CYNG_IO
 			if (is_complete())
 			{
@@ -263,23 +265,23 @@ namespace cyng
 
 		void length_field::reset()
 		{
-			std::fill(std::begin(source_), std::end(source_), '\0');
+			std::fill(std::begin(u_.source_), std::end(u_.source_), '\0');
 			pos_ = 0;
 		}
 
 		std::uint64_t length_field::length() const
 		{
-			if (source_[0] == 126)
+			if (u_.source_[0] == 126)
 			{
 				//	16 bit length
-				return *reinterpret_cast<std::uint16_t const*>(&source_[1]);
+				return u_.l16_.l_;
 			}
-			else if (source_[0] == 127)
+			else if (u_.source_[0] == 127)
 			{
 				//	64 bit length
-				return *reinterpret_cast<std::uint64_t const*>(&source_[1]);
+				return u_.l64_.l_;
 			}
-			return source_[0];
+			return u_.source_[0];
 		}
 
 		bool length_field::is_complete() const
@@ -289,29 +291,29 @@ namespace cyng
 
 		bool length_field::is_null() const
 		{
-			return source_[0] == 0;
+			return u_.source_[0] == 0;
 		}
 
 		void length_field::set(std::size_t size)
 		{
 			if (size < 126)
 			{
-				source_[0] = static_cast<unsigned char>(size & 0xff);
+				u_.source_[0] = static_cast<unsigned char>(size & 0xff);
 				pos_ = 1;
 			}
 			else if (size < 0xffff)
 			{
 				//	little hackish
-				source_[0] = 126;
+				u_.source_[0] = 126;
 				pos_ = 5;
-				*reinterpret_cast<std::uint16_t*>(&source_[1]) = size;
+				u_.l16_.l_ = size;
 			}
 			else
 			{
 				//	little hackish
-				source_[0] = 127;
+				u_.source_[0] = 127;
 				pos_ = 9;
-				*reinterpret_cast<std::uint64_t*>(&source_[1]) = size;
+				u_.l64_.l_ = size;
 			}
 		}
 
@@ -320,9 +322,11 @@ namespace cyng
 		//
 
 		type_field::type_field()
-			: source_{ 0 }
+			: u_()
 			, pos_(0)
-		{}
+		{
+			reset();
+		}
 
 		bool type_field::put(char c)
 		{
@@ -330,13 +334,13 @@ namespace cyng
 			{
 				return true;
 			}
-			source_[pos_++] = c;
+			u_.source_[pos_++] = c;
 			return is_complete();
 		}
 
 		void type_field::reset()
 		{
-			std::fill(std::begin(source_), std::end(source_), '\0');
+			std::fill(std::begin(u_.source_), std::end(u_.source_), '\0');
 			pos_ = 0;
 		}
 
@@ -348,7 +352,7 @@ namespace cyng
 		std::size_t type_field::type() const
 		{
 			//	32 bit length
-			return *reinterpret_cast<std::uint32_t const*>(source_);
+			return u_.l_;
 		}
 
 
