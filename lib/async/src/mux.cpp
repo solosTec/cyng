@@ -17,26 +17,30 @@ namespace cyng
 	{
 		mux::mux()
 		: scheduler_()
-		, dispatcher_(scheduler_.get_io_service())
-		, next_tag_(NO_TASK)
-		, tasks_()
-		, shutdown_(false)
+			, dispatcher_(scheduler_.get_io_service())
+			, next_tag_(NO_TASK)
+			, tasks_()
+			, shutdown_(false)
+			, shutdown_counter_(0)
 		{
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 		}
 		
 		mux::mux(unsigned int count)
 		: scheduler_(count)
-		, dispatcher_(scheduler_.get_io_service())
-		, next_tag_(NO_TASK)
-		, tasks_()
-		, shutdown_(false)
+			, dispatcher_(scheduler_.get_io_service())
+			, next_tag_(NO_TASK)
+			, tasks_()
+			, shutdown_(false)
+			, shutdown_counter_(0)
 		{
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");			
 		}
 
 		mux::~mux()
-		{}
+		{
+			BOOST_ASSERT(shutdown_counter_ == 0u);
+		}
 		
 		bool mux::size(std::function<void(std::size_t)> f) const
 		{
@@ -100,65 +104,48 @@ namespace cyng
 			if (!shutdown_.exchange(true))
 			{
 				//
-				//	stop all tasks
+				//	Stop all tasks.
 				//
-				task_lst zombi_tasks;
-				if (!tasks_.empty())
+
+				if (tasks_.empty())
 				{
-					dispatcher_.dispatch([this, &zombi_tasks]() {
-
-						//
-						//	reverse order - latest entries first
-						//
-						for (auto pos = tasks_.rbegin(); pos != tasks_.rend(); /* empty */)
-						{
-							//
-							//	call stop()
-							//	This call is sync.
-							//
-							(*pos).second->stop();
-
-							//
-							//	move to zombi task
-							//
-							zombi_tasks.push_back((*pos).second);
-
-							//
-							//	remove from active task list
-							//
-							pos = decltype(pos){ tasks_.erase(std::next(pos).base()) };
-
-						}
-					});
+					return true;
 				}
+
+				//
+				//	When shutdown flag is set, the tasks are not longer allowed to access the tasks_ list.
+				//	Instead an (atomic) counter is initialized to track the shutdown process.
+				//
+				shutdown_counter_.exchange(tasks_.size());
+
+				//
+				//	send stop message to all remaining tasks in a separate thread
+				//
+				dispatcher_.dispatch([this]() {
+
+					//
+					//	reverse order - latest entries first
+					//
+					for (auto pos = tasks_.rbegin(); pos != tasks_.rend(); ++pos) {
+						//
+						//	call stop()
+						//	This call is sync.
+						//
+						(*pos).second->stop(true);
+
+					}
+				});
 
 				//
 				//	wait for pending references
 				//
-				while (true)
+				std::this_thread::yield();
+				while (shutdown_counter_.load() != 0u)
 				{
-					bool b = std::any_of(zombi_tasks.begin(), zombi_tasks.end(), [](weak_task wtp) {
-						return !wtp.expired();
-					});
-
-					if (b)
-					{
-						std::cerr << "MUST WAIT FOR SHUTDOWN "
-							<< std::count_if(zombi_tasks.begin(), zombi_tasks.end(), [this](weak_task wtp) {
-							auto tp = wtp.lock();
-							if (tp)
-							{
-								std::cerr << "task $" << tp->get_id() << " is still alive" << std::endl;
-								scheduler_.get_io_service().poll();
-							}
-							return !wtp.expired();
-						})
-							<< std::endl;
-						std::this_thread::sleep_for(std::chrono::seconds(1));
-					}
-					else {
-						break;
-					}
+#ifdef _DEBUG
+					std::cerr << "MUST WAIT FOR SHUTDOWN of " << shutdown_counter_.load() << " task(s)" << std::endl;
+#endif
+					std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 
 				return true;
@@ -176,7 +163,7 @@ namespace cyng
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())
 				{
-					(*pos).second->stop();
+					(*pos).second->stop(false);
 					tasks_.erase(pos);
 				}
 			});
@@ -191,7 +178,7 @@ namespace cyng
 			dispatcher_.post([this, id, f]() {
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())	{
-					f(true, (*pos).second->stop());
+					f(true, (*pos).second->stop(false));
 					tasks_.erase(pos);
 				}
 				else {
@@ -210,7 +197,7 @@ namespace cyng
 				for (auto pos = tasks_.begin(); pos != tasks_.end(); /* empty */)
 				{
 					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))	{
-						(*pos).second->stop();
+						(*pos).second->stop(false);
 						pos = tasks_.erase(pos);
 					}
 					else {
@@ -233,7 +220,7 @@ namespace cyng
 				{
 					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
 					{
-						(*pos).second->stop();
+						(*pos).second->stop(false);
 						pos = tasks_.erase(pos);
 						++counter;
 					}
@@ -295,7 +282,7 @@ namespace cyng
 			//
 			//	thread safe access to task list
 			//
-			dispatcher_.dispatch([this, stp]() {
+			dispatcher_.dispatch([this, stp]()->void {
 				tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
 			});
 			return true;
@@ -392,6 +379,10 @@ namespace cyng
 				dispatcher_.dispatch([this, id]() {
 					tasks_.erase(id);
 				});
+			}
+			else {
+				BOOST_ASSERT(shutdown_counter_ != 0u);
+				--shutdown_counter_;
 			}
 		}
 

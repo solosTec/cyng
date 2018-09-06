@@ -36,9 +36,11 @@ namespace cyng
 			/**
 			 * stop() is called to shutdown a task.
 			 *
+			 * @param shutdown true if mux is in shutdown mode and task has to signal if termination
+			 *	process is complete
 			 * @return The number of asynchronous operations that were cancelled.
 			 */
-			virtual std::size_t stop() = 0;
+			virtual std::size_t stop(bool shutdown) = 0;
 
 			/**
 			 * Dispatch message to specified slot. It effectively calls the member function

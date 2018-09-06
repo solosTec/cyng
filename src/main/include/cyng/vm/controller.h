@@ -40,14 +40,6 @@ namespace cyng
 		controller(io_service_t&, boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
 		
 		/**
-		 * Execute the specified instructions asynchonously
-		 * but wait for the result code (register)
-		 * 
-		 * @param prg instructions to execute
-		 */
-		//controller const& run(vector_t&& prg) const;
-
-		/**
 		 * The callback function will be executed asynchronous in a different thread.
 		 *
 		 * @param cb callback that provides thread safe (exclusive) access to VM.

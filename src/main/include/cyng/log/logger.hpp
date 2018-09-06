@@ -258,6 +258,18 @@ namespace cyng
 				init(ss.str());
 			}
 			
+			virtual ~logger()
+			{
+				if (terminal_seq_enabled_) {
+					//	reset terminal
+					std::cerr
+						<< "\033[0m"	//	reset
+						<< std::endl
+						;
+
+				}
+			}
+
 			/**
 			 * append a new log entry synchronously 
 			 */

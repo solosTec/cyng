@@ -22,7 +22,7 @@ namespace cyng
 		std::cerr << "\t" << c << std::endl;
 		s1.post([&s2, c]() {
 			std::cerr << "\t\t" << c << std::endl;
-			std::this_thread::yield();
+			//std::this_thread::yield();
 			s2.post([c]{
 				std::cerr << "\t\t\t" << c << std::endl;
 			});
@@ -39,9 +39,10 @@ namespace cyng
 		dispatcher_t s1(ctx.get_io_service());
 		dispatcher_t s2(ctx.get_io_service());
 
-		for (auto c = 'a'; c < 'z'; ++c) {
+		//for (auto c = 'a'; c < 'z'; ++c) {
+		for (auto c = '0'; c < '9'; ++c) {
 			overtake(s1, s2, c);
-			std::this_thread::yield();
+			//std::this_thread::yield();
 		}
 		
 		ctx.stop();
