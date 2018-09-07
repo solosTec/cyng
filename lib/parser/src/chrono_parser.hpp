@@ -13,7 +13,8 @@
 
 #include <boost/spirit/home/support/attributes.hpp>	//	transform_attribute
 #include <boost/spirit/include/phoenix.hpp>	//	enable assignment of values like cyng::object
-	
+#include <boost/core/ignore_unused.hpp>
+
 namespace cyng	
 {
 	namespace	
@@ -95,6 +96,7 @@ namespace cyng
 				auto day = boost::fusion::at_c< 2 >(arg);
 				auto month = boost::fusion::at_c< 1 >(arg);
 				auto year = boost::fusion::at_c< 0 >(arg);
+				boost::ignore_unused(offset);
 
 				return chrono::init_tp(year, month, day, hour, minute, sec);
 // 				return cyng::chrono::create(year, month, day, hour, minute + offset, sec);

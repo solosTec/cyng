@@ -39,7 +39,7 @@ namespace cyng
 				//
 				//	build up symbols
 				//
-				for (auto idx = 0; idx < tok.count_; ++idx)
+				for (auto idx = decltype(tok.count_){0}; idx < tok.count_; ++idx)
 				{
 					if (verbose_ > 4)
 					{

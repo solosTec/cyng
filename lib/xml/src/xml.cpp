@@ -13,6 +13,7 @@
 #include <cyng/factory.h>
 #include <cyng/xml/reader.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 namespace cyng 
 {
@@ -221,6 +222,7 @@ namespace cyng
 	
 				auto root = doc.first_child();
 				auto type = root.attribute("type").as_string();
+				boost::ignore_unused(type);
 
 				return read_root(root);
 				//if (boost::algorithm::equals(type, "vec")) {

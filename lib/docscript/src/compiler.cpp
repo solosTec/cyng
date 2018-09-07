@@ -514,7 +514,7 @@ namespace cyng
 		{
 			auto fp = lookup(name);
 			BOOST_ASSERT(!!fp);	//	it's guaranteed to get a valid pointer
-			for (auto idx = 0; idx < fp->rvs_; ++idx)
+			for (auto idx = decltype(fp->rvs_){0}; idx < fp->rvs_; ++idx)
 			{
 				prg_ << code::ASP;	//	return value
 			}
