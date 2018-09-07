@@ -17,6 +17,9 @@
 #include <memory>
 #include <functional>
 
+ //	set packing alignment to 1 (dense)
+#pragma pack( push, 1 )
+
 namespace cyng 
 {
 	namespace io
@@ -296,5 +299,8 @@ namespace cyng
 	};
 	
 }	//	cyng
+
+#pragma pack( pop )	//	reset packing alignment
+
 
 #endif // CYNG_IO_NATIVE_PARSER_H

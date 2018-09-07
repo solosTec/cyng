@@ -13,6 +13,7 @@
 #if BOOST_OS_WINDOWS
 
 #include <windows.h>
+#include <VersionHelpers.h>
 #include <sstream>
 
 #elif BOOST_OS_LINUX
@@ -51,17 +52,83 @@ namespace cyng
 #if BOOST_OS_WINDOWS
 		std::string	get_os_name()
 		{
-			return "windows";
+
+			std::stringstream ss;
+			ss << "windows ";
+
+			if (::IsWindowsXPOrGreater()) {
+				if (::IsWindowsXPSP1OrGreater()) {
+					if (::IsWindowsXPSP2OrGreater()) {
+						if (::IsWindowsXPSP3OrGreater()) {
+							if (::IsWindowsVistaOrGreater()) {
+								if (::IsWindowsVistaSP1OrGreater()) {
+									if (::IsWindowsVistaSP2OrGreater()) {
+										if (::IsWindows7OrGreater()) {
+											if (::IsWindows7SP1OrGreater()) {
+												if (::IsWindows8OrGreater()) {
+													if (::IsWindows8Point1OrGreater()) {
+														if (::IsWindows10OrGreater()) {
+															ss << "10.x";
+														}
+														else {
+															ss << "8.1";
+														}
+													}
+													else {
+														ss << "8.0";
+													}
+												}
+												else {
+													ss << "7 SP1";
+												}
+											}
+											else {
+												ss << "7";
+											}
+										}
+										else {
+											ss << "Vista SP2";
+										}
+									}
+									else {
+										ss << "Vista SP1";
+									}
+								}
+								else {
+									ss << "Vista";
+								}
+							}
+							else {
+								ss << "XP SP3";
+							}
+						}
+						else {
+							ss << "XP SP2";
+						}
+					}
+					else {
+						ss << "XP SP1";
+					}
+				}
+				else {
+					ss << "XP";
+				}
+			}
+
+			if (::IsWindowsServer()) {
+				ss << " server";
+			}
+
+			return ss.str();
 		}
 		
 		std::string	get_os_release()
 		{
-			OSVERSIONINFOW info;
-			::ZeroMemory(&info, sizeof(OSVERSIONINFOW));
-			info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOW);
+			OSVERSIONINFO info;
+			::ZeroMemory(&info, sizeof(OSVERSIONINFO));
+			info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 			
-			LPOSVERSIONINFOW lp_info = &info;
-			::GetVersionEx(lp_info);
+			::GetVersionEx(&info);
 			
 			std::stringstream ss;
 			ss << info.dwMajorVersion << '.' << info.dwMinorVersion;

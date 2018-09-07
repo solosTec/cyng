@@ -64,8 +64,8 @@ namespace cyng
 			std::vector<mac48> result;
 #if BOOST_OS_WINDOWS
 
-			// Allocate information for up to 8 NICs
-			IP_ADAPTER_ADDRESSES AdapterInfo[8];
+			// Allocate information for up to 128 NICs
+			IP_ADAPTER_ADDRESSES AdapterInfo[128];
 
 			// Save memory size of buffer
 			DWORD dwBufLen = sizeof(AdapterInfo);
@@ -77,7 +77,7 @@ namespace cyng
 
 			// Verify return value is valid, no buffer overflow
 			//BOOST_ASSERT(dwStatus == ERROR_SUCCESS);
-			//	Have seen error code 111 here
+			//	Have seen error code 111 (ERROR_BUFFER_OVERFLOW) here
 
 			if (dwStatus == ERROR_SUCCESS) {
 				// Contains pointer to current adapter info

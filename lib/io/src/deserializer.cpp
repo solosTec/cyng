@@ -25,7 +25,6 @@ namespace cyng
 		
 		object deserialize(std::istream& is, std::size_t tag, std::uint64_t size)
 		{
-			BOOST_ASSERT_MSG(size != 0, "invalid size");
 			switch (tag)
 			{
 				case TC_NULL:
@@ -40,18 +39,30 @@ namespace cyng
 					BOOST_ASSERT(size == sizeof(long double));
 					return deserialize_object<TC_FLOAT80>(is);
 // 		// 		const char*,
-				case TC_UINT8:			return deserialize_object<TC_UINT8>(is);
+				case TC_UINT8:			
+					BOOST_ASSERT(size == sizeof(std::uint8_t));
+					return deserialize_object<TC_UINT8>(is);
 				case TC_UINT16:			
 					BOOST_ASSERT(size == sizeof(std::uint16_t));
 					return deserialize_object<TC_UINT16>(is);
 				case TC_UINT32:			
 					BOOST_ASSERT(size == sizeof(std::uint32_t));
 					return deserialize_object<TC_UINT32>(is);
-				case TC_UINT64:			return deserialize_object<TC_UINT64>(is);
-				case TC_INT8:			return deserialize_object<TC_INT8>(is);
-				case TC_INT16:			return deserialize_object<TC_INT16>(is);
-				case TC_INT32:			return deserialize_object<TC_INT32>(is);
-				case TC_INT64:			return deserialize_object<TC_INT64>(is);
+				case TC_UINT64:			
+					BOOST_ASSERT(size == sizeof(std::uint64_t));
+					return deserialize_object<TC_UINT64>(is);
+				case TC_INT8:			
+					BOOST_ASSERT(size == sizeof(std::int8_t));
+					return deserialize_object<TC_INT8>(is);
+				case TC_INT16:			
+					BOOST_ASSERT(size == sizeof(std::int16_t));
+					return deserialize_object<TC_INT16>(is);
+				case TC_INT32:			
+					BOOST_ASSERT(size == sizeof(std::int32_t));
+					return deserialize_object<TC_INT32>(is);
+				case TC_INT64:			
+					BOOST_ASSERT(size == sizeof(std::int64_t));
+					return deserialize_object<TC_INT64>(is);
 				case TC_STRING:			return deserialize_object<TC_STRING>(is);
 				case TC_TIME_POINT:		
 					BOOST_ASSERT(size == sizeof(chrono::dbl_time_point));
@@ -66,8 +77,12 @@ namespace cyng
  				case TC_DBL_TP:			
 					BOOST_ASSERT(size == sizeof(chrono::dbl_time_point));
 					return deserialize_object<TC_DBL_TP>(is);
- 				case TC_VERSION:		return deserialize_object<TC_VERSION>(is);
- 				case TC_REVISION:		return deserialize_object<TC_REVISION>(is);
+ 				case TC_VERSION:		
+					BOOST_ASSERT(size == sizeof(version));
+					return deserialize_object<TC_VERSION>(is);
+ 				case TC_REVISION:		
+					BOOST_ASSERT(size == sizeof(revision));
+					return deserialize_object<TC_REVISION>(is);
  				case TC_CODE:			return deserialize_object<TC_CODE>(is);
 				case TC_SEVERITY:		return deserialize_object<TC_SEVERITY>(is);
  				case TC_BUFFER:			return deserialize_object<TC_BUFFER>(is);
