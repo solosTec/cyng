@@ -734,3 +734,17 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 endif()
 target_link_libraries(docc ${docc_link_libs})
 
+#
+# unlog - decrypt log files
+#
+include (tools/unlog/prg.cmake)
+add_executable(unlog ${unlog})
+set(unlog_link_libs cyng_core cyng_io)
+if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+	list(APPEND unlog_link_libs "${Boost_LIBRARIES}")
+    if (UNIX)
+        list(APPEND unlog_link_libs pthread)
+    endif()
+endif()
+target_link_libraries(unlog ${unlog_link_libs})
+

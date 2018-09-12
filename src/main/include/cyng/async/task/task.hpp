@@ -10,10 +10,11 @@
 
 #include <cyng/async/task/base_task.h>
 #include <cyng/async/task/task_meta.hpp>
-#include <boost/core/demangle.hpp>
-#include <boost/algorithm/string.hpp>
 #include <memory>
 #include <typeinfo>
+#include <boost/core/demangle.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 namespace cyng 
 {
@@ -74,7 +75,9 @@ namespace cyng
 				try {
 					impl_.stop();
 				}
-				catch(std::exception const& ex) {}
+				catch(std::exception const& ex) {
+					boost::ignore_unused(ex);
+				}
 
 				//
 				//	signal that termination process is complete

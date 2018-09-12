@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2017 Sylko Olzscher 
+ * Copyright (c) 2018 Sylko Olzscher 
  * 
  */ 
 
@@ -9,20 +9,26 @@
 #include <boost/filesystem.hpp>
 #include <boost/config.hpp>
 #include <boost/predef.h>
+#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <CYNG_project_info.h>
-#include "driver.h"
+#include "filters/hexdump.h"
+#include "filters/hexdump_cpp.h"
 #if BOOST_OS_WINDOWS
+#define NOMINMAX
 #include <windows.h>
 #endif
 
 /**
- * The first version generates HTML only. Future version generate hopefully PDF too.
+ * Decrypt log files.
+ * Read a log file of several formats and convert into different formats include 
+ * the original binary file.
  *
  * Start with
  * @code
- * build/docc "C:\Users\Pyrx\Source\Repos\cyx\lib\docscript\src\doc\intro.docscript"
+ * build/unlog -hexdump app0.log
  * @endcode
  */
 int main(int argc, char* argv[]) {
@@ -32,8 +38,13 @@ int main(int argc, char* argv[]) {
 		const boost::filesystem::path cwd = boost::filesystem::current_path();
 
 		std::string config_file;
-		std::string inp_file = "main.docscript";
-		std::string out_file = (cwd / "out.html").string();
+#ifdef _DEBUG
+		std::string inp_file = std::string(CYNG_SOURCE_DIRECTORY) + "/tools/unlog/examples/app0.log";
+#else 
+		std::string inp_file = "input.log";
+#endif
+		std::string out_file = (cwd / "out.bin").string();
+		std::string filter = "hexdump";
 
 		//
 		//	generic options
@@ -44,29 +55,30 @@ int main(int argc, char* argv[]) {
 			("help,h", "print usage message")
 			("version,v", "print version string")
 			("build,b", "last built timestamp and platform")
-			("config,C", boost::program_options::value<std::string>(&config_file)->default_value("docscript.cfg"), "configuration file")
+			("config,C", boost::program_options::value<std::string>(&config_file)->default_value("unlog.cfg"), "configuration file")
 
 			;
 
 		//
-		//	all compiler options
+		//	all unlog options
 		//
-		boost::program_options::options_description compiler("compiler");
-		compiler.add_options()
+		boost::program_options::options_description unlog("unlog");
+		unlog.add_options()
 
-			("source,S", boost::program_options::value(&inp_file)->default_value(inp_file), "main source file")
+			("source,S", boost::program_options::value(&inp_file)->default_value(inp_file), "source file")
 			("output,O", boost::program_options::value(&out_file)->default_value(out_file), "output file")
-			("include-path,I", boost::program_options::value< std::vector<std::string> >()->default_value(std::vector<std::string>(1, cwd.string()), cwd.string()), "include path")
 			//	verbose level
 			("verbose,V", boost::program_options::value<int>()->default_value(0)->implicit_value(1), "verbose level")
-			("body", boost::program_options::bool_switch()->default_value(false), "generate only HTML body")
+			("filter,F", boost::program_options::value(&filter)->default_value(filter), "the filter to apply")
+			("begin,B", boost::program_options::value<std::size_t>()->default_value(std::numeric_limits<std::size_t>::min())->implicit_value(std::numeric_limits<std::size_t>::min()), "line to start")
+			("end,E", boost::program_options::value<std::size_t>()->default_value(std::numeric_limits<std::size_t>::max())->implicit_value(std::numeric_limits<std::size_t>::max()), "max. line number")
 			;
 
 		//
 		//	all you can grab from the command line
 		//
 		boost::program_options::options_description cmdline_options;
-		cmdline_options.add(generic).add(compiler);
+		cmdline_options.add(generic).add(unlog);
 
 		//
 		//	positional arguments
@@ -90,11 +102,8 @@ int main(int argc, char* argv[]) {
 		if (vm.count("version"))
 		{
 			std::cout
-				<< "docScript compiler v"
+				<< "unlog v"
 				<< CYNG_VERSION
-				<< " (based on cyng v"
-				<< CYNG_VERSION
-				<< ")"
 				<< std::endl
 				;
 			return EXIT_SUCCESS;
@@ -166,14 +175,9 @@ int main(int argc, char* argv[]) {
 		}
 		else
 		{
-			boost::program_options::store(boost::program_options::parse_config_file(ifs, compiler), vm);
+			boost::program_options::store(boost::program_options::parse_config_file(ifs, unlog), vm);
 			boost::program_options::notify(vm);
 		}
-
-		//
-		//	generate some temporary file names for intermediate files
-		//
-		boost::filesystem::path tmp = boost::filesystem::temp_directory_path() / (boost::filesystem::path(inp_file).filename().string() + ".bin");
 
 		const int verbose = vm["verbose"].as< int >();
 		if (verbose > 0)
@@ -186,32 +190,6 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		//
-		//	read specified include paths
-		//
-		auto inc_paths = vm["include-path"].as< std::vector<std::string>>();
-
-		//
-		//	Add the path of the input file as include path, if it is not already specified
-		//
-		auto path = boost::filesystem::path(inp_file).parent_path();
-		auto pos = std::find(inc_paths.begin(), inc_paths.end(), path);
-		if (pos == inc_paths.end()) {
-			inc_paths.push_back(path.string());
-		}
-
-		//
-		//	last entry is empty
-		//
-		inc_paths.push_back("");
-		if (verbose > 0)
-		{
-			std::cout
-				<< "Include paths are: "
-				<< std::endl
-				;
-			std::copy(inc_paths.begin(), inc_paths.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
-		}
 
 #if BOOST_OS_WINDOWS
 		//
@@ -219,7 +197,6 @@ int main(int argc, char* argv[]) {
 		//	requires a TrueType font like Lucida 
 		//
 		if (::SetConsoleOutputCP(65001) == 0)
-			//if (::SetConsoleOutputCP(12000) == 0)		//	UTF-32	
 		{
 			std::cerr
 				<< "Cannot set console code page"
@@ -229,17 +206,16 @@ int main(int argc, char* argv[]) {
 		}
 #endif
 		//
-		//	Construct driver instance
+		//	Construct selected filter
 		//
-  		cyng::docscript::driver d(inc_paths, verbose);
+		if (boost::algorithm::equals("hexdump", filter)) {
+			return cyng::hexdump(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+		}
+		else if (boost::algorithm::equals("hexdumcpp", filter)) {
+			return cyng::hexdump_cpp(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+		}
 
-		//
-		//	Start driver with the main/input file
-		//
- 		return d.run(boost::filesystem::path(inp_file).filename()
- 			, tmp
- 			, cyng::docscript::verify_extension(out_file, "html")
- 			, vm["body"].as< bool >());
+		std::cerr << "unknown filter: " << filter << std::endl;
 
 	}
 	catch (std::exception& e)
