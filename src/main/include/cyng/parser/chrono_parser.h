@@ -85,7 +85,9 @@ namespace cyng
 
 	/**
 	 * Parse a raw timepoint string
-	 * example: 2015-04-24 08:29:9.5853489
+	 * examples: 
+	 *	2015-04-24 08:29:9.5853489
+	 *	2018-09-12T11:46:18.117665
 	 */
 	template <typename Iterator, typename Skipper = boost::spirit::qi::standard_wide::space_type>
 	struct timepoint_basic_parser

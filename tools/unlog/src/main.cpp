@@ -16,6 +16,7 @@
 #include <CYNG_project_info.h>
 #include "filters/hexdump.h"
 #include "filters/hexdump_cpp.h"
+#include "filters/cu.h"
 #if BOOST_OS_WINDOWS
 #define NOMINMAX
 #include <windows.h>
@@ -36,6 +37,7 @@ int main(int argc, char* argv[]) {
 	try
 	{
 		const boost::filesystem::path cwd = boost::filesystem::current_path();
+		const boost::filesystem::path temp = boost::filesystem::temp_directory_path();
 
 		std::string config_file;
 #ifdef _DEBUG
@@ -187,7 +189,6 @@ int main(int argc, char* argv[]) {
 				<< verbose
 				<< std::endl
 				;
-
 		}
 
 
@@ -205,6 +206,7 @@ int main(int argc, char* argv[]) {
 
 		}
 #endif
+
 		//
 		//	Construct selected filter
 		//
@@ -212,7 +214,44 @@ int main(int argc, char* argv[]) {
 			return cyng::hexdump(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
 		}
 		else if (boost::algorithm::equals("hexdumcpp", filter)) {
+			if (vm["output"].defaulted()) {
+				//
+				//	Derive an output name from the input name
+				//	if no name was explicitely defined.
+				//
+				boost::filesystem::path tmp = inp_file;
+				out_file = tmp.replace_extension(".cpp").string();
+
+				if (verbose > 1)
+				{
+					std::cout
+						<< "***info: output file is: "
+						<< out_file
+						<< std::endl
+						;
+				}
+			}
 			return cyng::hexdump_cpp(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+		}
+		else if (boost::algorithm::equals("cu", filter)) {
+			if (vm["output"].defaulted()) {
+				//
+				//	Derive an output name from the input name
+				//	if no name was explicitely defined.
+				//temp
+				boost::filesystem::path tmp = inp_file;
+				out_file = tmp.parent_path().string();
+
+				if (verbose > 1)
+				{
+					std::cout
+						<< "***info: output path is: "
+						<< out_file
+						<< std::endl
+						;
+				}
+			}
+			return cyng::cu(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
 		}
 
 		std::cerr << "unknown filter: " << filter << std::endl;

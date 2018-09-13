@@ -196,7 +196,7 @@ namespace cyng
 				>> r_uint8 
 				>> boost::spirit::qi::lit(L'-')
 				>> r_uint8
-				>> boost::spirit::qi::lit(L' ')
+				>> (boost::spirit::qi::lit(L' ') || boost::spirit::qi::lit(L'T'))
 				>> r_uint8
 				>> boost::spirit::qi::lit(L':')
 				>> r_uint8
