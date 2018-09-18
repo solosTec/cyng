@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <ios>
+#include <boost/numeric/conversion/cast.hpp>
 
 namespace cyng 
 {
@@ -306,7 +307,7 @@ namespace cyng
 				//	little hackish
 				u_.source_[0] = 126;
 				pos_ = 5;
-				u_.l16_.l_ = size;
+				u_.l16_.l_ = boost::numeric_cast<std::uint16_t>(size);
 			}
 			else
 			{

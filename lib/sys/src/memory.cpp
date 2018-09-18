@@ -7,7 +7,8 @@
 
 #include <cyng/sys/memory.h>
 #include <boost/predef.h>
-// #include <boost/assert.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 #if BOOST_OS_WINDOWS
 
@@ -101,11 +102,22 @@ namespace cyng
 		
 		std::uint8_t get_used_virtual_memory_in_percent()
 		{
-			auto const total = cyng::sys::get_total_virtual_memory();
-			return (total == 0)
-				? 100
-				: ((cyng::sys::get_used_virtual_memory() * 100) / total)
-				;
+			try {
+				auto const total = cyng::sys::get_total_virtual_memory();
+				return (total == 0)
+					? 100u
+					: boost::numeric_cast<std::uint8_t>(((cyng::sys::get_used_virtual_memory() * 100) / total))
+					;
+			}
+			catch (std::exception const& ex) {
+				//numeric::bad_numeric_cast
+#ifdef _DEBUG
+				std::cerr << ex.what() << std::endl;
+#else
+				boost::ignore_unused(ex);
+#endif
+			}
+			return 0u;
 		}
 
 		std::uint64_t get_used_virtual_memory_by_process()
@@ -180,11 +192,20 @@ namespace cyng
 		std::uint8_t get_used_physical_memory_in_percent()
 		{
 #if BOOST_OS_WINDOWS
-
-			MEMORYSTATUSEX memInfo;
-			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-			GlobalMemoryStatusEx(&memInfo);
-			return memInfo.dwMemoryLoad;
+			try {
+				MEMORYSTATUSEX memInfo;
+				memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+				GlobalMemoryStatusEx(&memInfo);
+				return boost::numeric_cast<std::uint8_t>(memInfo.dwMemoryLoad);
+			}
+			catch (std::exception const& ex) {
+#ifdef _DEBUG
+				std::cerr << ex.what() << std::endl;
+#else
+				boost::ignore_unused(ex);
+#endif
+			}
+			return 0;
 
 #elif BOOST_OS_LINUX			
 

@@ -91,7 +91,7 @@ namespace cyng
 				template <>
 				object get_value<std::uint64_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::uint64_t result = boost::numeric::converter<std::uint64_t, int>::convert(::sqlite3_column_int64(stmt, index));
+					const auto result = boost::numeric_cast<std::uint64_t>(::sqlite3_column_int64(stmt, index));
 					return make_object(result);
 				}
 
@@ -154,49 +154,49 @@ namespace cyng
 				template <>
 				object get_value<std::chrono::nanoseconds>(sqlite3_stmt* stmt, int index)
 				{
-					const std::chrono::nanoseconds::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_nanoseconds(result);
 				}
 				
 				template <>
 				object get_value<std::chrono::microseconds>(sqlite3_stmt* stmt, int index)
 				{
-					const std::chrono::microseconds::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_microseconds(result);
 				}
 				
 				template <>
 				object get_value<std::chrono::milliseconds>(sqlite3_stmt* stmt, int index)
 				{
-					const std::chrono::milliseconds::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_milliseconds(result);
 				}
 				
 				template <>
 				object get_value<std::chrono::seconds>(sqlite3_stmt* stmt, int index)
 				{
-					const std::chrono::seconds::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_seconds(result);
 				}
 				
 				template <>
 				object get_value<std::chrono::minutes>(sqlite3_stmt* stmt, int index)
 				{
-					const std::chrono::minutes::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_minutes(result);
 				}
 				
 				template <>
 				object get_value<std::chrono::hours>(sqlite3_stmt* stmt, int index)
 				{
-					const std::chrono::hours::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_hours(result);
 				}
 				
 				template <>
 				object get_value<cyng::chrono::days>(sqlite3_stmt* stmt, int index)
 				{
-					const cyng::chrono::days::rep result = ::sqlite3_column_int64(stmt, index);
+					const auto result = ::sqlite3_column_int64(stmt, index);
 					return make_days(result);
 				}
 				
@@ -210,8 +210,8 @@ namespace cyng
 				template <>
 				object get_value<revision>(sqlite3_stmt* stmt, int index)
 				{
-					const auto result = boost::numeric::converter<std::uint32_t, int>::convert(::sqlite3_column_int64(stmt, index));
-					return make_object<version>(result);
+					const auto result = boost::numeric_cast<std::uint64_t>(::sqlite3_column_int64(stmt, index));
+					return make_object<revision>(result);
 				}
 				
 				template <>

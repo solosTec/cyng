@@ -42,6 +42,8 @@ int main(int argc, char* argv[]) {
 		std::string inp_file = "input.log";
 #endif
 		std::string address = "127.0.0.1";
+		std::size_t chunk_size{ 128 };
+		std::size_t wait{ 1000 };
 
 		//
 		//	generic options
@@ -67,8 +69,8 @@ int main(int argc, char* argv[]) {
 			("port,P", boost::program_options::value<std::uint16_t>()->default_value(80)->implicit_value(8080), "ip port")
 			//	verbose level
 			("verbose,V", boost::program_options::value<int>()->default_value(0)->implicit_value(1), "verbose level")
-			//("begin,B", boost::program_options::value<std::size_t>()->default_value(std::numeric_limits<std::size_t>::min())->implicit_value(std::numeric_limits<std::size_t>::min()), "line to start")
-			//("end,E", boost::program_options::value<std::size_t>()->default_value(std::numeric_limits<std::size_t>::max())->implicit_value(std::numeric_limits<std::size_t>::max()), "max. line number")
+			("chunk,L", boost::program_options::value(&chunk_size)->default_value(chunk_size)->implicit_value(128), "chunk size")
+			("wait,W", boost::program_options::value(&wait)->default_value(0)->implicit_value(std::numeric_limits<std::size_t>::max()), "delay between send operations in milliseconds")
 			;
 
 		//
@@ -215,7 +217,7 @@ int main(int argc, char* argv[]) {
 				<< std::endl
 				;
 		}
-		return cyng::play(inp_file, verbose).run(ep);
+		return cyng::play(inp_file, verbose, chunk_size).run(ep, wait);
 
 
 	}

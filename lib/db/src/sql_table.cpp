@@ -9,7 +9,8 @@
 #include <cyng/db/sql_table.h>
 #include <cyng/value_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-			
+#include <boost/numeric/conversion/cast.hpp>
+
 namespace cyng
 {
 	attr_map_t to_attr_map(table::meta_table_ptr meta, db::result_ptr result)
@@ -48,7 +49,7 @@ namespace cyng
 		{
 			meta->loop([meta, result, &pmap](table::column&& col) {
 
-				const auto r = result->get(col.pos_ + 1, col.type_, col.width_);
+				const auto r = result->get(boost::numeric_cast<int>(col.pos_ + 1), col.type_, col.width_);
 				if (!r)
 				{
 					std::cerr
@@ -76,7 +77,7 @@ namespace cyng
 		{
 			meta->loop([meta, result, &tpl](table::column&& col) {
 
-				const auto r = result->get(col.pos_ + 1, col.type_, col.width_);
+				const auto r = result->get(boost::numeric_cast<int>(col.pos_ + 1), col.type_, col.width_);
 				if (!r)
 				{
 					std::cerr
@@ -105,7 +106,7 @@ namespace cyng
 			std::uint64_t generation{ 0 };
 			meta->loop([meta, result, &key, &data, &generation](cyng::table::column&& col) {
 
-				const auto obj = result->get(col.pos_ + 1, col.type_, col.width_);
+				const auto obj = result->get(boost::numeric_cast<int>(col.pos_ + 1), col.type_, col.width_);
 				if (!obj)
 				{
 					std::cerr

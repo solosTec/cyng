@@ -7,25 +7,23 @@
 
 
 #include "play.h"
-#include <cyng/parser/bom_parser.h>
-#include <cyng/util/split.h>
-#include <cyng/io/serializer/binary.hpp>
+#include <cyng/io/hex_dump.hpp>
 #include <iostream>
 #include <fstream>
-#include <boost/uuid/nil_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/algorithm/string.hpp>
 
 namespace cyng
 {
-	play::play(boost::filesystem::path const& inp, int verbose)
+	play::play(boost::filesystem::path const& inp, int verbose, std::size_t size)
 		: inp_(inp)
 		, verbose_(verbose)
-	{}
-		
-	int play::run(boost::asio::ip::tcp::endpoint ep)
+		, buffer_()
 	{
-		std::ifstream finp(inp_.string(), std::ios::binary | std::ios::ate);
+		buffer_.resize(size);
+	}
+		
+	int play::run(boost::asio::ip::tcp::endpoint ep, std::size_t ms)
+	{
+		std::ifstream finp(inp_.string(), std::ios::binary);
 		if (finp.is_open())
 		{
 
@@ -41,10 +39,18 @@ namespace cyng
 				<< std::endl
 				;
 
-			std::array<char, 128> buffer;
-			while (finp.read(buffer.data(), buffer.size())) {
-				auto size = finp.tellg();
-				if (verbose_ > 2)
+			//std::array<char, 128> buffer;
+			while (!finp.read(buffer_.data(), buffer_.size()).fail()) {
+				auto size = finp.gcount();
+				if (verbose_ > 3)
+				{
+					io::hex_dump hd;
+					hd(std::cout, buffer_.data(), buffer_.data() + size);
+					std::cout
+						<< std::endl
+						;
+				}
+				else if (verbose_ > 2)
 				{
 					std::cout
 						<< "***info: send: "
@@ -55,7 +61,10 @@ namespace cyng
 				}
 
 				boost::system::error_code ec;
-				socket.write_some(boost::asio::buffer(buffer, size), ec);
+				auto sent = socket.write_some(boost::asio::buffer(buffer_, size), ec);
+				BOOST_ASSERT(sent == size);
+
+				std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 			}
 
 			socket.close();
