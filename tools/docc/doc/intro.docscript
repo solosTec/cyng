@@ -1,0 +1,75 @@
+﻿.meta(author:"Sylko Olzscher", released: .now())
+.title(Introduction into docScript)
+;.debug(on)
+
+; recursion!
+;.include(intro)
+.contents(depth: 4)
+
+.header(title: "Basics", level: 1, tag: "79bf3ba0-2362-4ea5-bcb5-ed93844ac59a")
+; .h1(Basics)
+
+DocScript  is    intended for programmers to write documentation, blog posts and any other kinds of reports and papers. DocScript is designed in the spirit of .link(text: "LaTeX", 
+url: "https://www.latex-project.org/") and .link(text: "troff/nroff", url: "https://en.wikipedia.org/wiki/Troff", title: "text-formatting program from the 1960") an ancient document processing system with roots
+back to the first UNIX systems. The main idea is to write the content .b .color(red: "spiced up") with some semantic hints. The typesetting system transforms this into a proper document. 
+And since the underlying markup language is Turing complete you do not write the text, you .bold program it. If required you can use functions, recursion, loops and all kinds of algorithm. 
+And this is the reason it's the perfect fit for programmers like you. With this versatile instrument in your hand you have a tool that gives you more power.
+
+And here is an example: -> <- => <= 1/2 1/3 1/4 3/4 2/3 1/5 2/5 3/5 4/5 1/6 5/6 1/8 3/8 5/8 7/8 <-> <=> != == ∑  :-) :-( :-D ;-) :-3 
+
+.h2(Examples of DocScript)
+;.include(examples.docscript)
+
+On the other hand, Νες φαβυλας αππαρεατ μαιεσθατις θε. 毎元大類止紙想激価案務首図乗者分断
+These are 3 numbers: one, two, three. .bold EOL .ref 79bf3ba0-2362-4ea5-bcb5-ed93844ac59a .i .ref b3fc0bdc-5d95-45e9-b66c-f0c541f1592c
+.bold EOP
+.bold(everything bold here).
+.figure(source: "LogoSmall.jpg", caption: "figure with caption" )
+
+.h1(Reference)
+.h2(title: "Basic Rules", tag: b3fc0bdc-5d95-45e9-b66c-f0c541f1592c)
+
+.list(type: ordered, style: "upper-roman")
+.entry("Change the list style type")
+.entry("See the result")
+.entry("Some of the list types does not work in IE or Opera")
+.end()
+
+a
+b
+c .(.)
+d .(()
+e .( .)
+
+.h2(Tables)
+.include(snippet.docscript)
+
+
+.h2(Source Listings)
+
+.+(filter: "JavaScript", process: false)
+function myfunction(txt) { 
+    document.getElementById("Νες").innerHTML = txt
+} 
+.-
+
+.+(filter: "C++", boundary: "9b2ba500-cacc-49d3-bb72-e325330e8b10", process: "K&R", linenumbers: false)
+# include <cerrno>
+class symbol_reader {
+	public:
+		symbol_reader(std::list<symbol> const& sl);
+		symbol const& get();
+		void set(std::string v = "default");
+		void put(char c = 'a');
+
+	private:
+		std::list<symbol>::const_iterator begin_, end_;
+		// comment
+		const symbol back_;	};
+
+.-("9b2ba500-cacc-49d3-bb72-e325330e8b10")
+
+.h2(Final Considerations)
+.quote(source:"Earl Wilson", url: "https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html")
+Science may never come up with a better office communication system, than the coffee break.
+.end()

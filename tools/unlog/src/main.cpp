@@ -220,7 +220,7 @@ int main(int argc, char* argv[]) {
 				//	if no name was explicitely defined.
 				//
 				boost::filesystem::path tmp = inp_file;
-				out_file = tmp.replace_extension(".cpp").string();
+				out_file = tmp.replace_extension(".ipp").string();
 
 				if (verbose > 1)
 				{

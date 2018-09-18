@@ -134,7 +134,8 @@ namespace cyng
 	void stack::setr(object const& obj, std::size_t idx)
 	{
 		BOOST_ASSERT_MSG(bp_ > 0, "bp out of range (setr)");
-		c[(bp_ -  1) + idx] = obj;
+		BOOST_ASSERT_MSG(idx < bp_, "idx out of range (setr)");
+		c[bp_ - (1 + idx)] = obj;
 	}
 	
 	void stack::setr()

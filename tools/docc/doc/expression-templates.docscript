@@ -1,0 +1,40 @@
+.meta( author : "Sylko Olzscher", released: now())
+.title(Gentle introduction into expression templates)
+
+.h1(Gentle introduction into expression templates)
+I want to write about C++ expression templates for the following reasons:
+
+.list(type: unordered)
+.entry("I stumbled upon this topic recently and found it rather interesting.")
+.entry(There is not much .link(text: "topical", url: "http://www.angelikalanger.com/Articles/Cuj/ExpressionTemplates/ExpressionTemplates.htm", title: "AngelikaLanger.com - Expression Templates - Angelika Langer Training/Consulting") information about expression templates available.)
+.entry(I'm tired of reading articels which describe how awesome functional programming with Haskell or Lisp is. And that languages like C++ will surely never reach such elegance and beauty. An infinite repeated point is the ability to create .link(text: "ASTs", url: "http://en.wikipedia.org/wiki/Abstract_syntax_tree", title: "abstract syntax trees")  and to work on them. I hope to demonstrate how to do this in C++.)
+.end()
+
+First a short definition of  to know exactly what we are talking about:
+
+.quote(source:"osy", url: "https://www.codeproject.com/Articles/998366/Gentle-introduction-into-expression-templates")
+C++ expression templates are a meta programming technique based on templates which represent expressions. Spiced up with operator overloading it's possible to create .link(text: "DSLs", url: "http://martinfowler.com/books/dsl.html", title: "Domain Specific Languages"). It is important to know that an expression template can be passed as function parameter and evaluated later (at runtime). We can refine this definition once we have reached a better understanding of this topic.
+.end()
+
+Not to be confused with compile-time computation (which is much more easier today with the constexpr keyword, but that is another topic).
+
+Lets climb up the the three steps to expression heaven:
+
+.h2(the classic)
+
+Let's consider a simple expression in the following form:
+
+The classic way to express this in C/C++ is the following method:
+
+.+(filter: "C++", process: false)
+inline int expr(int n) {
+    return n + 42;
+}
+.-
+
+This is straight forward, but has nothing to do with expression templates. The compiler generates the AST during compile time and transforms this to maschine code. The only way to access this expression is to call this function. (Since C++14 you can declare the function as constexpr.)
+
+.h2(function pointer)
+.h2(heaven)
+.h2(and beyond)
+.h1(Conclusion)

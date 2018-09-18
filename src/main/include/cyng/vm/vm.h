@@ -66,6 +66,11 @@ namespace cyng
 		void execute(code, memory&);
 		
 		/**
+		 * push relative, mem[--sp] = mem[bp + s]
+		 */
+		void pr();
+
+		/**
 		 * Push return address to the stack and transfers control
 		 * to the specified function.
 		 */

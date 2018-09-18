@@ -90,13 +90,13 @@ namespace cyng
 				<< code::REBA
 				;
 
-			if (verbose_ > 1)
-			{
-				std::cout
-					<< "***info: EOF"
-					<< std::endl
-					;
-			}
+			//if (verbose_ > 1)
+			//{
+			//	std::cout
+			//		<< "***info: EOF"
+			//		<< std::endl
+			//		;
+			//}
 
 		}
 
@@ -150,17 +150,19 @@ namespace cyng
 				arg(name, true, look_ahead_->value_);
 				break;
 			case SYM_FUN_WS:
-				name = set_preamble(name);
+			{
+				//	overwrite name
+				trailer tr(set_preamble(name));
 				fun_ws(look_ahead_->value_);
 				match(SYM_FUN_CLOSE);
 
-				prg_
-					//	we asume that the function produced 1 return value
-					<< make_object<std::size_t>(1)
-// 					<< index_factory(1)
-					<< invoke(name)
-					<< code::REBA
-					;
+				//prg_
+				//	//	we asume that the function produced 1 return value
+				//	<< make_object<std::size_t>(1)
+				//	<< invoke(name)
+				//	<< code::REBA
+				//	;
+			}
 				break;
 			case SYM_FUN_CLOSE:
 				//	no arguments
@@ -171,14 +173,14 @@ namespace cyng
 					<< "() - without arguments"
 					<< std::endl
 					;
+				trailer tr(set_preamble(name));
+			//prg_
+			//	<< make_object(true)		//	global function
+			//	<< make_object<std::size_t>(0)	//	no parameters
+			//	<< invoke(name)
+			//	<< code::REBA
+			//	;
 			}
-			name = set_preamble(name);
-			prg_
-				<< make_object(true)		//	global function
-				<< make_object<std::size_t>(0)	//	no parameters
-				<< invoke(name)
-				<< code::REBA
-				;
 			match(SYM_FUN_CLOSE);
 			break;
 			default:
@@ -204,7 +206,8 @@ namespace cyng
 				arg(name, false, look_ahead_->value_);
 				break;
 			case SYM_FUN_WS:
-				name = set_preamble(name);
+			{
+				trailer tr(set_preamble(name));
 				fun_ws(look_ahead_->value_);
 
 				//
@@ -216,14 +219,13 @@ namespace cyng
 				//if (look_ahead_ == SYM_FUN_WS)	...
 				match(SYM_FUN_CLOSE);
 
-				prg_
-					<< make_object(false)		//	local function
-// 					<< false_factory()		//	local function
-					<< make_object(lookup(name)->rvs_)
-// 					<< index_factory(lookup(name)->rvs_)
-					<< invoke(name)
-					<< code::REBA
-					;
+				//prg_
+				//	<< make_object(false)		//	local function
+				//	<< make_object(lookup(name)->rvs_)
+				//	<< invoke(name)
+				//	<< code::REBA
+				//	;
+			}
 				break;
 			case SYM_FUN_CLOSE:
 				//	no arguments
@@ -236,13 +238,16 @@ namespace cyng
 						<< std::endl
 						;
 				}
-				name = set_preamble(name);
-				prg_
-					<< make_object<std::size_t>(0)
-					<< invoke(name)
-					<< code::REBA
-					;
-				match(SYM_FUN_CLOSE);
+				{
+					trailer tr(set_preamble(name));
+					//prg_
+					//	<< make_object<std::size_t>(0)
+					//	<< invoke(name)
+					//	<< code::REBA
+					//	;
+
+					match(SYM_FUN_CLOSE);
+				}
 				break;
 			default:
 				std::cerr
@@ -254,7 +259,7 @@ namespace cyng
 			}
 		}
 
-		void compiler::fun_par(std::string name)
+		void compiler::fun_par(trailer&& tr)
 		{
 			match(SYM_FUN_PAR);
 			std::size_t counter{ 0 };
@@ -289,16 +294,16 @@ namespace cyng
 					<< std::endl
 					;
 			}
-			prg_
-				<< make_object<std::size_t>(counter)
-				<< invoke(name)
-				<< code::REBA
-				;
+			//prg_
+			//	<< make_object<std::size_t>(counter)
+			//	<< invoke(name)
+			//	<< code::REBA
+			//	;
 		}
 
 		void compiler::key(std::string name, bool nl, std::string key)
 		{
-			name = set_preamble(name);
+			trailer tr(set_preamble(name));
 
 			//
 			//	iterate until SYM_FUN_CLOSE
@@ -411,24 +416,22 @@ namespace cyng
 
 			prg_
 				<< make_object(counter)	//	parameters
-// 				<< index(counter)	//	parameters
 				<< code::ASSEMBLE_PARAM_MAP
 
 				//
 				//	close call frame and call function
 				//
 				<< make_object(nl)
-				<< make_object<std::size_t>(1)	//	one parameter map
-// 				<< index_factory(1)	//	one parameter map
-				<< invoke(name)
-				<< code::REBA
+				//<< make_object<std::size_t>(1)	//	one parameter map
+				//<< invoke(name)
+				//<< code::REBA
 				;
 
 		}
 
 		void compiler::arg(std::string name, bool nl, std::string value)
 		{
-			name = set_preamble(name);
+			trailer tr(set_preamble(name));
 
 			//
 			//	iterate until SYM_FUN_CLOSE
@@ -466,12 +469,12 @@ namespace cyng
 			//
 			//	close call frame and call function
 			//
-			prg_
-				<< make_object(nl)
-				<< make_object(counter)
-				<< invoke(name)
-				<< code::REBA
-				;
+			//prg_
+			//	<< make_object(nl)
+			//	<< make_object(counter)
+			//	<< invoke(name)
+			//	<< code::REBA
+			//	;
 
 		}
 
@@ -505,26 +508,55 @@ namespace cyng
 			insert(library_, std::make_shared<function>("env.close", 1, ENV_), { "-" });
 		}
 
-		std::shared_ptr<function const> compiler::lookup(std::string const& name) const
+		compiler::fp compiler::lookup(std::string const& name) const
 		{
 			return cyng::docscript::lookup(library_, name);
 		}
 
-		std::string compiler::set_preamble(std::string const& name)
+		compiler::trailer compiler::set_preamble(std::string const& name)
 		{
 			auto fp = lookup(name);
 			BOOST_ASSERT(!!fp);	//	it's guaranteed to get a valid pointer
 			for (auto idx = decltype(fp->rvs_){0}; idx < fp->rvs_; ++idx)
 			{
-				prg_ << code::ASP;	//	return value
+				prg_ << code::ASP;	//	return value(s)
 			}
 			prg_ << code::ESBA;
-			return fp->name_;
+			return trailer(prg_, fp);
 		}
 
 		vector_t move_program(compiler& c)
 		{
 			return std::move(c.prg_);
+		}
+
+
+		compiler::trailer::trailer(vector_t& prg, fp f)
+			: prg_(prg)
+			, fp_(f)
+		{}
+
+		compiler::trailer::trailer(trailer&& tr)
+			: prg_(tr.prg_)
+			, fp_(tr.fp_)
+		{}
+
+		compiler::trailer::~trailer()
+		{
+			for (auto idx = decltype(fp_->rvs_){0}; idx < fp_->rvs_; ++idx)
+			{
+				//	set return value
+				prg_
+					<< idx
+					<< code::PR
+					;	
+			}
+
+			prg_
+				<< fp_->rvs_	//	parameter count
+				<< invoke(fp_->name_)
+				<< code::REBA
+				;
 		}
 
 	}	//	docscript

@@ -159,13 +159,14 @@ namespace cyng
 // 				pc();
 				break;
 			case code::PR: 	//	push relative, mem[--sp] = mem[bp + s]
-// 				pr();
+ 				pr();
 				break;
 			case code::CORA: 	
 				//	convert rel addr, mem[--sp] = (bp + s)
 				break;
 			case code::ASP: 	
 				//	add to sp, sp = (sp + s)
+				stack_.push(make_object());	//	push null on stack
 				break;
 			case code::CALL: 	
 				//	call, mem[--sp] = pc; pc = x
@@ -278,6 +279,13 @@ namespace cyng
 		}
 	}
 	
+	void vm::pr()
+	{
+		const auto idx = value_cast<std::size_t>(stack_.top(), 0u);
+		stack_.setr(stack_.top(), idx);
+		stack_.pop();
+	}
+
 	void vm::call(memory& mem)
 	{
 		//	Push the address that physically follows the call instruction
