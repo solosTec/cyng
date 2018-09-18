@@ -49,7 +49,8 @@ namespace cyng
 
 	controller const& controller::access(std::function<void(vm&)> cb) const
 	{
-		if (!halt_ ||
+		if (halt_)	return *this;
+		if (
 #if (BOOST_ASIO_VERSION < 101200)
 			!dispatcher_.get_io_service().stopped()
 #else
@@ -68,7 +69,8 @@ namespace cyng
 
 	controller const& controller::async_run(vector_t&& prg) const
 	{
-		if (!halt_ || 
+		if (halt_)	return *this;
+		if (
 #if (BOOST_ASIO_VERSION < 101200)
 			!dispatcher_.get_io_service().stopped()
 #else
@@ -109,6 +111,7 @@ namespace cyng
 		, std::size_t arity
 		, vm_call proc)
 	{
+		if (halt_)	return *this;
 		dispatcher_.post([this, name, arity, proc]() {
 
 			this->vm_.lib_.insert(name, arity, proc);

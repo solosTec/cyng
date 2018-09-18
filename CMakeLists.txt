@@ -748,3 +748,17 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 endif()
 target_link_libraries(unlog ${unlog_link_libs})
 
+#
+# play - send files to ip address
+#
+include (tools/play/prg.cmake)
+add_executable(play ${play})
+set(play_link_libs cyng_core cyng_io)
+if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+	list(APPEND play_link_libs "${Boost_LIBRARIES}")
+    if (UNIX)
+        list(APPEND play_link_libs pthread)
+    endif()
+endif()
+target_link_libraries(play ${play_link_libs})
+
