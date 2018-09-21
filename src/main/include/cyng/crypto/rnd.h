@@ -41,6 +41,11 @@ namespace cyng
 		 */
 		rnd make_rnd_alnum();
 
+		/**
+		 * Generator for numeric strings
+		 */
+		rnd make_rnd_num();
+
 		template <typename T>
 		class rnd_num
 		{
