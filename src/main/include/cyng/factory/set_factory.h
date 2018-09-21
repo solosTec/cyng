@@ -94,16 +94,6 @@ namespace cyng
 	 */
 	object set_factory();
 	
-	/**
-	 * create empty attribute map
-	 */
-	object attr_map_factory();
-
-	/**
-	 * create empty parameter map
-	 */
-	object param_map_factory();
-
 	//
 	//	tuple builder
 	//
@@ -209,6 +199,70 @@ namespace cyng
 		}
 		return vec;
 	}	
+
+	/**
+	 * example
+	 * @code
+	 attr_map_t m = attr_map_factory(1, "1")(2, "2");
+	 * @endcode
+	 */
+	class attr_map_factory
+	{
+	public:
+		attr_map_factory();
+
+		template < typename T >
+		attr_map_factory(std::string const& key, T&& v)
+			: map_()
+		{
+			map_.emplace(key, make_object(v));
+		}
+
+		template < typename T >
+		attr_map_factory operator()(std::size_t key, T&& v)
+		{
+			map_.emplace(key, make_object(v));
+			return *this;
+		}
+
+		object operator()() const;
+		operator attr_map_t() const;
+
+	private:
+		attr_map_t map_;
+	};
+
+	/**
+	 * example
+	 * @code
+	 param_map_t m = param_map_factory("1", 1)("2", 2);
+	 * @endcode
+	 */
+	class param_map_factory
+	{
+	public:
+		param_map_factory();
+
+		template < typename T >
+		param_map_factory(std::string const& key, T&& v)
+			: map_()
+		{
+			map_.emplace(key, make_object(v));
+		}
+
+		template < typename T >
+		param_map_factory operator()(std::string const& key, T&& v)
+		{
+			map_.emplace(key, make_object(v));
+			return *this;
+		}
+
+		object operator()() const;
+		operator param_map_t() const;
+
+	private:
+		param_map_t map_;
+	};
 }
 
 #endif 	//	CYNG_SET_FACTORY_H

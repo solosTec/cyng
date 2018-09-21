@@ -25,14 +25,34 @@ namespace cyng
 		return make_object(set_t());
 	}
 
-	object attr_map_factory()
+
+	attr_map_factory::attr_map_factory()
+		: map_()
+	{}
+
+	object attr_map_factory::operator()() const
 	{
-		return make_object(attr_map_t());
+		return make_object(map_);
 	}
 
-	object param_map_factory()
+	attr_map_factory::operator attr_map_t() const
 	{
-		return make_object(param_map_t());
+		return map_;
+	}
+
+
+	param_map_factory::param_map_factory()
+		: map_()
+	{}
+
+	object param_map_factory::operator()() const
+	{
+		return make_object(map_);
+	}
+
+	param_map_factory::operator param_map_t() const
+	{
+		return map_;
 	}
 
 }
