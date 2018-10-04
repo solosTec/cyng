@@ -364,7 +364,7 @@ add_executable(sqlite3 ${shell})
 if (WIN32)
     target_link_libraries(sqlite3 lib_sqlite3)
 else()
-    target_link_libraries(sqlite3 lib_sqlite3 pthread dl)
+    target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS})
 endif()
 
 
@@ -618,6 +618,11 @@ target_link_libraries(cyng_json
 if (${PROJECT_NAME}_PUGIXML_INSTALLED)
 	include (lib/xml/lib.cmake)
 	add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
+	
+	if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+		target_link_libraries(cyng_xml cyng_parser)
+	endif()
+
 endif()
 
 #
@@ -646,7 +651,7 @@ endif()
 #
 include (lib/db/lib.cmake)
 add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
-set(db_link_libs )
+set(db_link_libs lib_sqlite3)
 if (${PROJECT_NAME}_ODBC_INSTALLED)
 	if(WIN32)
 		list(APPEND db_link_libs odbc32.lib)
@@ -656,16 +661,15 @@ if (${PROJECT_NAME}_ODBC_INSTALLED)
  	endif(WIN32)
 endif()
 if(UNIX)
-    list(APPEND db_link_libs dl)
+    list(APPEND db_link_libs ${CMAKE_DL_LIBS} cyng_parser)
     if (${PROJECT_NAME}_MYSQL_INSTALLED)
         #    libmysqlcppconn8.so
         message(STATUS "** add mysql library")
         #list(APPEND db_link_libs mysqlcppconn8)
     endif()
 endif(UNIX)
-list(APPEND db_link_libs lib_sqlite3)
 target_link_libraries(cyng_db ${db_link_libs})
-#message(STATUS "** db link library : ${db_link_libs}")
+message(STATUS "** db link library   : ${db_link_libs}")
 
 #
 #	platform specific libraries
@@ -724,7 +728,7 @@ else()
 #	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
 endif()
 
-message(STATUS "** unit-test libs  : ${unittest_link_libs}")
+message(STATUS "** unit-test libs    : ${unittest_link_libs}")
 target_link_libraries(unit_test ${unittest_link_libs})
 endif()
 
