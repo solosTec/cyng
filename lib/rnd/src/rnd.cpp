@@ -5,7 +5,7 @@
  * 
  */ 
 
-#include <cyng/crypto/rnd.h>
+#include <cyng/rnd.h>
 
 namespace cyng
 {

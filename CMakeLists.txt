@@ -590,6 +590,14 @@ target_link_libraries(cyng_crypto
 	${OPENSSL_LIBRARIES})
 
 #
+#	cyng random library
+#
+include (lib/rnd/lib.cmake)
+add_library(cyng_rnd ${GLOBAL_LIBRARY_TYPE} ${rnd_lib})
+target_link_libraries(cyng_rnd
+	${Boost_LIBRARIES})
+
+#
 #	cyng parser library
 #
 include (lib/parser/lib.cmake)
@@ -725,7 +733,7 @@ endif()
 #
 include (tools/docc/prg.cmake)
 add_executable(docc ${docc})
-set(docc_link_libs cyng_io cyng_vm cyng_async cyng_docscript)
+set(docc_link_libs cyng_io cyng_vm cyng_async cyng_rnd cyng_docscript)
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	list(APPEND docc_link_libs "${Boost_LIBRARIES}")
     if (UNIX)

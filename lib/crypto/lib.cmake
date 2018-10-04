@@ -11,7 +11,6 @@ set (crypto_cpp
 	lib/crypto/src/base64.cpp
 	lib/crypto/src/aes.cpp
 	lib/crypto/src/x509.cpp
-	lib/crypto/src/rnd.cpp
 )
     
 set (crypto_h
@@ -27,7 +26,6 @@ set (crypto_h
     src/main/include/cyng/crypto/aes_keys.h
     src/main/include/cyng/crypto/aes.h
     src/main/include/cyng/crypto/x509.h
-    src/main/include/cyng/crypto/rnd.h
 )
 
 # define the crypto lib
