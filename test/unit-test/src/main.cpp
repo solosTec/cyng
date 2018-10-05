@@ -257,3 +257,12 @@ BOOST_AUTO_TEST_CASE(xml_001)
 #endif
 }
 BOOST_AUTO_TEST_SUITE_END()	//	XML
+
+#include "test-chrono-001.h"
+BOOST_AUTO_TEST_SUITE(CHRONO)
+BOOST_AUTO_TEST_CASE(chrono_001)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_chrono_001());
+}
+BOOST_AUTO_TEST_SUITE_END()	//	CHRONO

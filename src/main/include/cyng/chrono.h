@@ -145,6 +145,10 @@ namespace cyng
 
 		/**
 		 * Add/sub one or multiple month with full accuracy.
+		 *
+		 * Note that the result can be the month after next. e.g. Adding one month to october 31st has
+		 * no corresponding counterpart. So the result is december 1st.
+		 *
 		 * Current implementation of std::chrono lacks full callendar support. There are libraries like
 		 * https://howardhinnant.github.io/date/date.html that will be integrated in the near future.
 		 * But for current purposes this approach should be sufficient.

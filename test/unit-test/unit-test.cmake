@@ -30,6 +30,7 @@ set (unit_test_cpp
 	test/unit-test/src/test-json-001.cpp
 	test/unit-test/src/test-crypto-001.cpp
 	test/unit-test/src/test-xml-001.cpp
+	test/unit-test/src/test-chrono-001.cpp
 )
     
 set (unit_test_h
@@ -61,6 +62,7 @@ set (unit_test_h
 	test/unit-test/src/test-json-001.h
 	test/unit-test/src/test-crypto-001.h
 	test/unit-test/src/test-xml-001.h
+	test/unit-test/src/test-chrono-001.h
 )
 
 # define the unit test

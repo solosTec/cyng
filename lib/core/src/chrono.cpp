@@ -12,6 +12,9 @@
 #include <iostream>
 #include <boost/assert.hpp>
 #include <boost/core/ignore_unused.hpp>
+#ifdef _DEBUG
+#include <cyng/io/io_chrono.hpp>
+#endif
 
 namespace cyng 
 {
@@ -262,8 +265,14 @@ namespace cyng
 
 		days days_of_month(std::chrono::system_clock::time_point tp)
 		{
+#ifdef _DEBUG
+			//std::cout << "tp   : " << to_str(tp) << std::endl;
+#endif
+			//
+			//	convert to tm struct and cut out all other information than
+			//	year and month positioned to the first day in this month
+			//
 			auto tm = make_utc_tm(tp);
-
 			auto begin = cyng::chrono::init_tp(cyng::chrono::year(tm)
 				, cyng::chrono::month(tm)
 				, 1 //	1. day
@@ -271,10 +280,24 @@ namespace cyng
 				, 0	//	minute
 				, 0.0); //	this day
 
+#ifdef _DEBUG
+			//std::cout << "begin: " << to_str(begin) << std::endl;
+#endif
+
 			//
-			//	begin of next month
+			//	Calculate begin of next month.
+			//	To use "begin" guaranties that we skip not
+			//	to the month after.
 			//
-			tp = add_month(tp, 1);
+			tp = add_month(begin, 1);
+#ifdef _DEBUG
+			//std::cout << "tp   : " << to_str(tp) << std::endl;
+#endif
+
+			//
+			//	Cut out again all other information than year and month
+			//	and use the first day of the next month.
+			//
 			tm = make_utc_tm(tp);
 			auto end = cyng::chrono::init_tp(cyng::chrono::year(tm)
 				, cyng::chrono::month(tm)
@@ -283,6 +306,12 @@ namespace cyng
 				, 0	//	minute
 				, 0.0); //	this day
 
+#ifdef _DEBUG
+			//std::cout << "end  : " << to_str(end) << std::endl;
+#endif
+			//
+			//	Calculate the diff and convert it into days
+			//
 			return std::chrono::duration_cast<days>(end - begin);
 		}
 
