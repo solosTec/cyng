@@ -66,7 +66,30 @@ namespace cyng
 						<< "): "
 						<< ex.what()
 						;
-					const std::string msg = ss.str();
+					std::string msg = ss.str();
+					if (!try_error_log(ctx, msg))
+					{
+						//
+						//	print to standard error output if no logger available.
+						//
+						std::cerr
+							<< "\n\n"
+							<< msg
+							<< "\n\n"
+							<< std::endl;
+					}
+
+					//	reset
+					ss.str("");
+
+					//	print program to execute
+					ss
+						<< "*** program("
+						<< ctx.mem_.level()
+						<< "%): "
+						<< ctx.mem_;
+
+					msg = ss.str();
 					if (!try_error_log(ctx, msg))
 					{
 						//

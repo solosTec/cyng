@@ -24,19 +24,23 @@ cmake_minimum_required (VERSION 3.5)
 #            *      ****                  *******  **  
 #                                        *     ****    
 #                                                      
-# set project name
-project(CYNG)
+# get timestamp and build a patch level from the year and
+# the day of the year. This is a unique number to distinguish
+# different builds
+string(TIMESTAMP THIS_YEAR "%Y")
+# Patch level as year + day of the year
+string(TIMESTAMP PATCH_LEVEL "%j")	# day of the year
+math(EXPR PATCH_LEVEL "(${THIS_YEAR} * 1000) + ${PATCH_LEVEL}")
 
-# Add a version number
-set (${PROJECT_NAME}_VERSION_MAJOR 0)
-set (${PROJECT_NAME}_VERSION_MINOR 6)
+#
+# set project name/properties
+#
+project(CYNG 
+	VERSION 0.6.${PATCH_LEVEL}.1
+	LANGUAGES CXX)
 
 string(TIMESTAMP THIS_YEAR "%Y")
 set (${PROJECT_NAME}_COPYRIGHT_YEAR ${THIS_YEAR})
-
-# Patch level as year + day of the year
-string(TIMESTAMP PATCH_LEVEL "%j")	# day of the year
-math(EXPR ${PROJECT_NAME}_PATCH_LEVEL "(${THIS_YEAR} * 1000) + ${PATCH_LEVEL}")
 
 
 message(STATUS "**   ")  

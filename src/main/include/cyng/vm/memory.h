@@ -68,6 +68,13 @@ namespace cyng
 		 * @return percentage of instructions already processed
 		 */
 		double level() const;
+
+		/**
+		 * Stream operator for memory. Generates a textual description of the content
+		 * with the current op in square brackets.
+		 */
+		friend std::ostream& operator<< (std::ostream& os, const memory& mem);
+
 		
 	private:
 		vector_t	mem_;	//!< program

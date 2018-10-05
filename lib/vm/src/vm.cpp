@@ -344,7 +344,6 @@ namespace cyng
 		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_STRING, "invoke requires a string with an function name");
 		const std::string fname = value_cast< std::string >(obj, "---no function name---");
 		stack_.pop();
-		//out_ << "procname := " << fname << std::endl;
 	
 		//
 		//	call procedure
@@ -352,7 +351,6 @@ namespace cyng
 		context ctx(*this, mem);
 		if (!lib_.invoke(fname, ctx))
 		{
-#ifdef _DEBUG
 			std::stringstream ss;
 			ss
 				<< "***Warning: function ["
@@ -360,11 +358,7 @@ namespace cyng
 				<< "] is not registered in VM "
 				<< tag_
 				;
-			//ss
-			//	<< "***Warning: function ["
-			//	<< name
-			//	<< "] not registered"
-			//	;
+
 			const std::string msg = ss.str();
 			if (!lib_.try_error_log(ctx, msg))
 			{
@@ -376,7 +370,6 @@ namespace cyng
 					;
 			}
 
-#endif
 			//	set error register
 // 			ctx.set_register(boost::system::errc::operation_canceled);
 // 			return false;

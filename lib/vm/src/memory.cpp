@@ -8,6 +8,7 @@
 #include <cyng/vm/memory.h>
 #include <cyng/intrinsics/op.h>
 #include <cyng/factory.h>
+#include <cyng/io/serializer.h>
 
 namespace cyng 
 {
@@ -81,6 +82,15 @@ namespace cyng
 		return mem;
 	}
 
+	std::ostream& operator<< (std::ostream& os, const memory& mem) {
+		for (std::size_t idx = 0u; idx < mem.mem_.size(); idx++) {
+			if (idx > 0)	os << ", ";
+			if (idx == mem.pc_) os << '[';
+			os << io::to_str(mem.mem_.at(idx));
+			if (idx == mem.pc_) os << ']';
+		}
+		return os;
+	}
 
 }
 
