@@ -359,6 +359,7 @@ endif()
 include (3party/sqlite.cmake)
 add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
 set_property(TARGET lib_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET lib_sqlite3 PROPERTY LINKER_LANGUAGE CXX)
 
 #
 #
@@ -370,7 +371,7 @@ if (WIN32)
 else()
     target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS})
 endif()
-
+set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE CXX)
 
 #
 #
