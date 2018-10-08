@@ -375,8 +375,9 @@ if (WIN32)
     target_link_libraries(sqlite3 lib_sqlite3)
 else()
     target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS})
+	target_compile_options(sqlite3 PRIVATE -DHAVE_READLINE)
 endif()
-set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE CXX)
+set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
 
 #
 #
