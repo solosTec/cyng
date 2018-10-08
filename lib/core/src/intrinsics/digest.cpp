@@ -66,16 +66,16 @@ namespace cyng
 	}
 
 	/**
-	* Compare digests
-	*/
-	bool operator==(crypto::digest_sha512 const&, crypto::digest_sha512 const&)
+	 * Compare digests
+	 */
+	bool operator==(crypto::digest_sha512 const& d1, crypto::digest_sha512 const& d2)
 	{
-		return false;
+		return d1.data_ == d2.data_;
 	}
 
-	bool operator!=(crypto::digest_sha512 const&, crypto::digest_sha512 const&)
+	bool operator!=(crypto::digest_sha512 const& d1, crypto::digest_sha512 const& d2)
 	{
-		return false;
+		return !(d1.data_ == d2.data_);
 	}
 }
 
@@ -100,5 +100,26 @@ namespace std
 	{
 		return c1.data_ == c2.data_;
 	}
+
+	bool less<cyng::crypto::digest_md5>::operator()(cyng::crypto::digest_md5 const& c1, cyng::crypto::digest_md5 const& c2) const noexcept
+	{
+		return c1.data_ < c2.data_;
+	}
+
+	bool less<cyng::crypto::digest_sha1>::operator()(cyng::crypto::digest_sha1 const& c1, cyng::crypto::digest_sha1 const& c2) const noexcept
+	{
+		return c1.data_ < c2.data_;
+	}
+
+	bool less<cyng::crypto::digest_sha256>::operator()(cyng::crypto::digest_sha256 const& c1, cyng::crypto::digest_sha256 const& c2) const noexcept
+	{
+		return c1.data_ < c2.data_;
+	}
+
+	bool less<cyng::crypto::digest_sha512>::operator()(cyng::crypto::digest_sha512 const& c1, cyng::crypto::digest_sha512 const& c2) const noexcept
+	{
+		return c1.data_ < c2.data_;
+	}
+
 }
 

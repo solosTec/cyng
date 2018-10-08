@@ -49,6 +49,7 @@ namespace cyng
 		friend void swap(object&, object&) noexcept;
 		friend bool equal_by_instance(object const&, object const&) noexcept;
 		friend bool equal_by_value(object const&, object const&) noexcept;
+		friend bool less_by_value(object const&, object const&) noexcept;
 		template <typename T>
 		friend class core::wrapper;
 		template <typename T>
@@ -170,6 +171,20 @@ namespace cyng
 	 */
 	bool operator==(object const&, object const&);
 	bool operator!=(object const&, object const&);
+
+	/** @brief Compare objects by value
+	 * 
+	 * If objects o1 and o2 of different types the function returns false.
+	 *
+	 *	@return true if value of o1 is less than value of o2 if both
+	 *	objects of the same type.
+	 */
+	bool less_by_value(object const& o1, object const& o2) noexcept;
+
+	/**
+	 * @see less_by_value()
+	 */
+	bool operator<(object const&, object const&);
 }
  
 namespace std 

@@ -123,6 +123,47 @@ namespace std
 
 		bool operator()(cyng::crypto::digest_sha512 const& c1, cyng::crypto::digest_sha512 const& c2) const noexcept;
 	};
+
+	template<>
+	struct less<cyng::crypto::digest_md5>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::digest_md5;
+		using second_argument_type = cyng::crypto::digest_md5;
+
+		bool operator()(cyng::crypto::digest_md5 const& c1, cyng::crypto::digest_md5 const& c2) const noexcept;
+	};
+
+	template<>
+	struct less<cyng::crypto::digest_sha1>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::digest_sha1;
+		using second_argument_type = cyng::crypto::digest_sha1;
+
+		bool operator()(cyng::crypto::digest_sha1 const& c1, cyng::crypto::digest_sha1 const& c2) const noexcept;
+	};
+
+	template<>
+	struct less<cyng::crypto::digest_sha256>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::digest_sha256;
+		using second_argument_type = cyng::crypto::digest_sha256;
+
+		bool operator()(cyng::crypto::digest_sha256 const& c1, cyng::crypto::digest_sha256 const& c2) const noexcept;
+	};
+
+	template<>
+	struct less<cyng::crypto::digest_sha512>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::digest_sha512;
+		using second_argument_type = cyng::crypto::digest_sha512;
+
+		bool operator()(cyng::crypto::digest_sha512 const& c1, cyng::crypto::digest_sha512 const& c2) const noexcept;
+	};
+
 }
 
 #endif	//	CYNG_CRYPTO_DIGEST_H

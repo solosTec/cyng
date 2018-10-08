@@ -83,6 +83,18 @@ namespace std
 			return false;
 		}
 	};
+	template<>
+	struct less<cyng::custom>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::custom;
+		using second_argument_type = cyng::custom;
+
+		inline bool operator()(cyng::custom const& s1, cyng::custom const& s2) const noexcept
+		{
+			return false;
+		}
+	};
 }
 
 namespace cyng

@@ -23,6 +23,12 @@ namespace cyng
 	{
 		return true;
 	}
+
+	constexpr bool operator<(eod, eod)
+	{
+		return false;
+	}
+
 }
 
 #endif 	// CYNG_INTRINSICS_EOD_H

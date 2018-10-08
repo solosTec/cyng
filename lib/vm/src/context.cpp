@@ -119,4 +119,9 @@ namespace std
 		return get_target_address(c1) == get_target_address(c2);
 	}
 
+	bool less<cyng::vm_call>::operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept
+	{
+		return get_target_address(c1) < get_target_address(c2);
+	}
+
 }

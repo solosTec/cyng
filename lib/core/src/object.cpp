@@ -100,6 +100,17 @@ namespace cyng
 	{
 		return !equal_by_value(o1, o2);
 	}
+
+	bool less_by_value(object const& o1, object const& o2) noexcept
+	{
+		return o1.value_->less(o2);
+	}
+
+	bool operator<(object const& o1, object const& o2)
+	{
+		return less_by_value(o1, o2);
+	}
+
 }
 
 namespace std 

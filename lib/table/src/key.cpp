@@ -27,17 +27,3 @@ namespace cyng
 
 }
 
-namespace std
-{
-// 	size_t hash<cyng::store::key>::operator()(cyng::store::key pk) const noexcept
-// 	{
-// 		return hash<cyng::table::key_type>()(pk.pk_);
-// 	}
-// 
-// 	bool equal_to<cyng::store::key>::operator()(cyng::store::key const& c1, cyng::store::key const& c2) const noexcept
-// 	{
-// 		return c1.pk_ == c2.pk_;
-// 	}
-
-}
-

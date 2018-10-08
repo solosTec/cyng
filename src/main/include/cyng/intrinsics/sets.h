@@ -41,7 +41,28 @@ namespace cyng
 	
 }
 
+namespace std
+{
+	template<>
+	struct less<cyng::tuple_t>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::tuple_t;
+		using second_argument_type = cyng::tuple_t;
 
+		bool operator()(cyng::tuple_t const& c1, cyng::tuple_t const& c2) const noexcept;
+	};
 
+	template<>
+	struct less<cyng::vector_t>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::vector_t;
+		using second_argument_type = cyng::vector_t;
+
+		bool operator()(cyng::vector_t const& c1, cyng::vector_t const& c2) const noexcept;
+	};
+
+}
 
 #endif 	// CYNG_INTRINSICS_SETS_H

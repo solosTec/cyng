@@ -95,6 +95,23 @@ namespace cyng
 			}
  			
 			
+			/**
+			 * Reiteration of std::less
+			 */
+			virtual bool less(object const& obj) const noexcept override
+			{
+				if (typeid(T) == obj.get_class().type())
+				{
+					auto wp = std::dynamic_pointer_cast< this_type >(obj.value_);
+					if (wp)
+					{
+						return std::less<T>()(this->held_, wp->held_);
+					}
+					return true;
+				}
+				return false;
+			}
+
 		private:
 			/**
 			 * The hidden value 
@@ -184,9 +201,21 @@ namespace cyng
 				return 0;
 			}
 			
- 			virtual bool equal_to(object const&) const noexcept override
+ 			virtual bool equal_to(object const& obj) const noexcept override
  			{
 				//	ToDo: implement for arrays
+				if (obj.get_class().is_array()) {
+
+				}
+				return false;
+			}
+
+			virtual bool less(object const& obj) const noexcept override
+			{
+				//	ToDo: implement for arrays
+				if (obj.get_class().is_array()) {
+
+				}
 				return false;
 			}
 

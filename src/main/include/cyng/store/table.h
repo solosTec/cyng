@@ -149,6 +149,18 @@ namespace cyng
 			cyng::table::record find_first(attr_t&& attr) const;
 			cyng::table::record find_first(param_t&& param) const;
 
+			/**
+			* Finds the smallest key in the table and returns the record
+			* of this key. Record is empty if table is empty.
+			*/
+			cyng::table::record min_record() const;
+
+			/**
+			 * Finds the greatest key in the table and returns the record
+			 * of this key. Record is empty if table is empty.
+			 */
+			cyng::table::record max_record() const;
+
 		private:
 			/**
 			 * This method is potential unsafe, since record data are unlocked
@@ -215,6 +227,17 @@ namespace std
 		
 		bool operator()(cyng::store::table const& t1, cyng::store::table const& t2) const noexcept;
 	};	
+
+	template<>
+	struct less<cyng::store::table>
+	{
+		//	pre C++17
+		using result_type = bool;
+		using first_argument_type = cyng::store::table;
+		using second_argument_type = cyng::store::table;
+
+		bool operator()(cyng::store::table const& t1, cyng::store::table const& t2) const noexcept;
+	};
 }
 
 #endif	//	CYNG_STORE_TABLE_H

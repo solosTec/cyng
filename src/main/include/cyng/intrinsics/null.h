@@ -27,6 +27,14 @@ namespace cyng
 		return false;
 	}
 	
+	/**
+	 * Cannot compare two nothings
+	 */
+	constexpr bool operator<(null, null)
+	{
+		return false;
+	}
+
 }
 
 #endif 	// CYNG_INTRINSICS_NULL_H

@@ -261,12 +261,19 @@ namespace std
 		}
 	};
 
-	//template<>
-	//struct hash<param_map_t>
-	//{
-	//	size_t operator()(param_map_t const&) const noexcept;
-	//};
-	
+	template<typename R, typename ...Args>
+	struct less<function<R(Args...)>>
+	{
+		using result_type = bool;
+		using first_argument_type = function<R(Args...)>;
+		using second_argument_type = function<R(Args...)>;
+
+		inline bool operator()(function<R(Args...)> const& c1, function<R(Args...)> const& c2) const noexcept
+		{
+			return get_target_address(c1) < get_target_address(c2);
+		}
+	};
+
 }
 
 namespace cyng

@@ -57,6 +57,12 @@ namespace cyng
 			 * Reiteration of std::equal_to
 			 */
  			virtual bool equal_to(object const&) const noexcept = 0;
+
+			/**
+			 * Reiteration of std::less
+			 */
+ 			virtual bool less(object const&) const noexcept = 0;
+
 		};
 	}
 }

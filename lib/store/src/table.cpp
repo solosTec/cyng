@@ -248,6 +248,46 @@ namespace cyng
 			return result;
 		}
 
+		cyng::table::record table::min_record() const
+		{
+			auto pos = std::min_element(data_.begin(), data_.end(), [](table_type::value_type const& lhs, table_type::value_type const& rhs) {
+				BOOST_ASSERT(lhs.first.size() == rhs.first.size());
+				auto p1 = lhs.first.begin();
+				auto p2 = rhs.first.begin();
+				for (; p1 != lhs.first.end() && p2 != rhs.first.end(); ++p1, ++p2) {
+					if (*p1 < *p2)	return true;
+					if (*p2 < *p1)	return false;
+				}
+				return false;
+			});
+
+			if (pos != data_.end()) {
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
+				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
+			}
+			return cyng::table::record(meta_);
+		}
+
+		cyng::table::record table::max_record() const
+		{
+			auto pos = std::max_element(data_.begin(), data_.end(), [](table_type::value_type const& lhs, table_type::value_type const& rhs) {
+				BOOST_ASSERT(lhs.first.size() == rhs.first.size());
+				auto p1 = lhs.first.begin();
+				auto p2 = rhs.first.begin();
+				for (; p1 != lhs.first.end() && p2 != rhs.first.end(); ++p1, ++p2) {
+					if (*p1 < *p2)	return true;
+					if (*p2 < *p1)	return false;
+				}
+				return false;
+			});
+
+			if (pos != data_.end()) {
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
+				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
+			}
+			return cyng::table::record(meta_);
+		}
+
 	}	//	store
 	
 	std::size_t erase(store::table* tbl, table::key_list_t const& keys, boost::uuids::uuid source)
@@ -283,6 +323,12 @@ namespace std
 	{
 		return t1.meta().get_name() == t2.meta().get_name();
 	}
+
+	bool less<cyng::store::table>::operator()(cyng::store::table const& t1, cyng::store::table const& t2) const noexcept
+	{
+		return t1.meta().get_name() < t2.meta().get_name();
+	}
+
 }
 
 

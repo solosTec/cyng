@@ -52,6 +52,31 @@ namespace std
 	
 		}
 	};
+
+	template<>
+	struct less<SQL_TIMESTAMP_STRUCT>
+	{
+		using result_type = bool;
+		using first_argument_type = SQL_TIMESTAMP_STRUCT;
+		using second_argument_type = SQL_TIMESTAMP_STRUCT;
+
+		inline bool operator()(SQL_TIMESTAMP_STRUCT const& ts1, SQL_TIMESTAMP_STRUCT const& ts2) const noexcept
+		{
+			return (ts1.year == ts2.year)
+				? ((ts1.month == ts2.month)
+					? ((ts1.day == ts2.day)
+						? ((ts1.hour == ts2.hour)
+							? ((ts1.minute == ts2.minute)
+								? ((ts1.second == ts2.second) ? ts1.fraction < ts2.fraction : false)
+								: ts1.minute < ts2.minute)
+							: ts1.hour < ts2.hour)
+						: ts1.day < ts2.day)
+					: ts1.month < ts2.month)
+				: ts1.year < ts2.year
+				;
+		}
+};
+
 }
 #else
 namespace cyng

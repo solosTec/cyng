@@ -154,6 +154,18 @@ namespace std
 		
 		bool operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept;
 	};	
+
+	template<>
+	struct less<cyng::vm_call>
+	{
+		//	pre C++17
+		using result_type = bool;
+		using first_argument_type = cyng::vm_call;
+		using second_argument_type = cyng::vm_call;
+
+		bool operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept;
+	};
+
 }
 
 #endif	//	CYNG_VM_CONTEXT_H
