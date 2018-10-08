@@ -37,7 +37,7 @@ math(EXPR PATCH_LEVEL "(${THIS_YEAR} * 1000) + ${PATCH_LEVEL}")
 #
 project(CYNG 
 	VERSION 0.6.${PATCH_LEVEL}.1
-	LANGUAGES CXX)
+	LANGUAGES CXX C)
 
 string(TIMESTAMP THIS_YEAR "%Y")
 set (${PROJECT_NAME}_COPYRIGHT_YEAR ${THIS_YEAR})
@@ -205,6 +205,12 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	
 	set(GLOBAL_LIBRARY_TYPE SHARED)
 
+	#
+	# C files
+	#
+	#SET(CMAKE_C_FLAGS "-O3 -lpthread")
+
+
 elseif(MSVC)
 
 	#
@@ -359,7 +365,6 @@ endif()
 include (3party/sqlite.cmake)
 add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
 set_property(TARGET lib_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET lib_sqlite3 PROPERTY LINKER_LANGUAGE CXX)
 
 #
 #
