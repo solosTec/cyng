@@ -149,7 +149,7 @@ endif()
 #
 #	setup C++ compiler
 #
-if (CMAKE_COMPILER_IS_GNUCC)
+if (CMAKE_COMPILER_IS_GNUCXX)
 
 	#
 	# gnu C++
@@ -204,12 +204,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE SHARED)
-
-	#
-	# C files
-	#
-	#SET(CMAKE_C_FLAGS "-O3 -lpthread")
-
 
 elseif(MSVC)
 
@@ -374,8 +368,8 @@ add_executable(sqlite3 ${shell})
 if (WIN32)
     target_link_libraries(sqlite3 lib_sqlite3)
 else()
-    target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS})
 	target_compile_options(sqlite3 PRIVATE -DHAVE_READLINE)
+    target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
 endif()
 set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
 
