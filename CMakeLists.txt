@@ -599,8 +599,6 @@ target_link_libraries(cyng_crypto
 #
 include (lib/rnd/lib.cmake)
 add_library(cyng_rnd ${GLOBAL_LIBRARY_TYPE} ${rnd_lib})
-target_link_libraries(cyng_rnd
-	${Boost_LIBRARIES})
 
 #
 #	cyng parser library
@@ -733,7 +731,7 @@ else()
 #	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
 endif()
 
-message(STATUS "** unit-test libs    : ${unittest_link_libs}")
+#message(STATUS "** unit-test libs    : ${unittest_link_libs}")
 target_link_libraries(unit_test ${unittest_link_libs})
 endif()
 
@@ -744,11 +742,11 @@ include (tools/docc/prg.cmake)
 add_executable(docc ${docc})
 set(docc_link_libs cyng_io cyng_vm cyng_async cyng_rnd cyng_docscript)
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-#	list(APPEND docc_link_libs "${Boost_LIBRARIES}")
     if (UNIX)
         list(APPEND docc_link_libs pthread "${Boost_LIBRARIES}")
     endif()
 endif()
+#message(STATUS "** docc libs         : ${docc_link_libs}")
 target_link_libraries(docc ${docc_link_libs})
 
 #
