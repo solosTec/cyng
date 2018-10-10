@@ -7,6 +7,7 @@
 #ifndef CYNG_VM_CONTROLLER_H
 #define CYNG_VM_CONTROLLER_H
 
+#include <cyng/vm/controller_fwd.h>
 #include <cyng/compatibility/io_service.h>
 #include <cyng/vm/vm.h>
 #include <cyng/async/policy.h>
@@ -110,11 +111,6 @@ namespace cyng
 		std::atomic<bool>	halt_;
 		
 	};
-
-	/**
-	 * @return occurence count of specified op
-	 */
-	std::size_t op_counter(vector_t const& prg, code op);
 }
 
 #endif	//	CYNG_VM_CONTROLLER_H

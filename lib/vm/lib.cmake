@@ -20,6 +20,7 @@ set (vm_h
     src/main/include/cyng/intrinsics/op.h
     src/main/include/cyng/vm/vm.h
     src/main/include/cyng/vm/controller.h
+    src/main/include/cyng/vm/controller_fwd.h
     src/main/include/cyng/vm/manip.h
     src/main/include/cyng/vm/memory.h
     src/main/include/cyng/vm/stack.h

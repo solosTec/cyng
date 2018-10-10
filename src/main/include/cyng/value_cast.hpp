@@ -23,7 +23,7 @@ namespace cyng
 	 *
 	 * @tparam T cast object 
 	 * @param def default value
-	 * @return a const reference const& of the value or the default value if 
+	 * @return the value or the default value if 
 	 */
 	template < typename T >
 	T value_cast(object const& obj, T const& def) noexcept
@@ -38,6 +38,28 @@ namespace cyng
 		: p->held_
 		;
 	}	
+
+	/**
+	 * Get the hidden value of type U to call constructor of type T.
+	 *
+	 * @tparam T result type
+	 * @tparam U hidden type
+	 * @param def default value
+	 * @return a value of type T
+	 */
+	template < typename T, typename U >
+	T construct_cast(object const& obj, U const& def) noexcept
+	{
+		using value_type = core::wrapper< U >;
+
+		//	cast to the (hopefully) correct shared value pointer
+		auto p = std::dynamic_pointer_cast< value_type >(obj.value_);
+
+		return (!p)
+			? T(def)
+			: T(p->held_)
+			;
+	}
 }
 
 #endif //	CYNG_VALUE_CAST_HPP
