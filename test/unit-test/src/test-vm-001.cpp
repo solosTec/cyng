@@ -80,6 +80,12 @@ namespace cyng
 		io::serialize_plain(std::cout, make_object(prg));
 
 		//
+		//	concatenate
+		//
+		ctrl.async_run(generate_invoke("log.msg.trace", 42) << generate_invoke_unwinded("log.msg.trace", 43));
+
+		ctrl.async_run({ generate_invoke("log.msg.trace", 44), generate_invoke("log.msg.info", 45) });
+		//
 		//	halt VM, stop execution engine
 		//
 		//ctrl.halt();

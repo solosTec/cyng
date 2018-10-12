@@ -12,6 +12,7 @@
 #include <cyng/vm/vm.h>
 #include <cyng/async/policy.h>
 #include <cyng/compatibility/async.h>
+#include <initializer_list>
 
 namespace cyng 
 {
@@ -31,6 +32,7 @@ namespace cyng
 		struct parameter
 		{
 			mutable vector_t prg_;
+			parameter();
 			parameter(vector_t&&);
 			parameter(parameter const&);
 			parameter(parameter&&);
@@ -56,7 +58,26 @@ namespace cyng
 		 * @return this object - allows function chaining
 		 */
 		controller const& async_run(vector_t&& prg) const;
-		
+
+		/**
+		 * example:
+		 @code
+		 async_run(generate_invoke("log.msg.trace", 42) << generate_invoke_unwinded("log.msg.trace", 43));
+		 @endcode
+		 */
+		controller const& async_run(vector_t& prg) const;
+
+		/**
+		 * Use an initializer list leads to copies of all parameters.
+		 *
+		 * example:
+		 * 
+		 @code
+		 async_run({generate_invoke("log.msg.trace", 42), generate_invoke("log.msg.trace", 43)});
+		 @endcode
+		 */
+		controller const& async_run(std::initializer_list<vector_t> prg) const;
+
 		/**
 		 * Halt engine.
 		 */

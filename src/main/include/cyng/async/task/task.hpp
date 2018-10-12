@@ -52,7 +52,7 @@ namespace cyng
 				if (shutdown_)	return;
 				auto sp{ this->shared_from_this() };
 				dispatcher_.post([this, sp](){
-					eval_rc(impl_.run());
+					if (!shutdown_)	eval_rc(impl_.run());
 				});
 			}
 			
@@ -102,7 +102,7 @@ namespace cyng
 				if (shutdown_ || (slot == NO_SLOT))	return;
 				auto sp{ this->shared_from_this() };
 				dispatcher_.post([this, sp, slot, msg]() {
-					eval_rc(select_signature<signatures_t>::invoke(impl_, slot, msg));
+					if (!shutdown_)	eval_rc(select_signature<signatures_t>::invoke(impl_, slot, msg));
 				});
 			}
 
@@ -112,8 +112,7 @@ namespace cyng
 			 */
 			virtual void dispatch(std::string slot, tuple_t msg) override
 			{
-				if (shutdown_)	return;
-				dispatch(resolve_name(slot), msg);
+				if (!shutdown_)	dispatch(resolve_name(slot), msg);
 			}
 
 			/**
@@ -123,8 +122,7 @@ namespace cyng
 			template <std::size_t SLOT>
 			void post(tuple_t msg)
 			{
-				if (shutdown_)	return;
-				eval_rc(invoke_slot<impl_type, SLOT>(impl_, msg));
+				if (!shutdown_)	eval_rc(invoke_slot<impl_type, SLOT>(impl_, msg));
 			}
 			
 			virtual shared_task get_shared() override

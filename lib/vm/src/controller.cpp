@@ -91,6 +91,24 @@ namespace cyng
 		return *this;
 	}
 
+	controller const& controller::async_run(vector_t& prg) const
+	{
+		return async_run(std::move(prg));
+	}
+
+
+	controller const& controller::async_run(std::initializer_list<vector_t> prgs) const
+	{
+		//
+		//	collect all 
+		//
+		vector_t vec;
+		for (auto const& prg : prgs)	{
+			std::move(prg.begin(), prg.end(), std::back_inserter(vec));
+		}
+		return async_run(std::move(vec));
+	}
+
 	std::size_t controller::hash() const noexcept
 	{
 		static boost::hash<boost::uuids::uuid> uuid_hasher;
@@ -120,6 +138,10 @@ namespace cyng
 
 		return *this;
 	}
+
+	controller::parameter::parameter()
+		: prg_()
+	{}
 
 	controller::parameter::parameter(vector_t&& prg)
 		: prg_(std::move(prg))

@@ -251,7 +251,9 @@ namespace cyng
 
 		friend vector_t& operator<<(vector_t& vec, unwind&& e)
 		{
-			vec.insert(vec.end(), e.container_.begin(), e.container_.end());
+			//	no overlapping allowed
+			std::move(e.container_.begin(), e.container_.end(), std::back_inserter(vec));
+			//vec.insert(vec.end(), e.container_.begin(), e.container_.end());
 			return vec;
 		}
 
