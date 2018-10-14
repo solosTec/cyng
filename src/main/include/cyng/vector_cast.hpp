@@ -12,6 +12,16 @@
  
 namespace cyng 
 {
+	template < typename T >
+	std::vector< T > vector_cast(cyng::vector_t const& vec, T const& def) noexcept
+	{
+		std::vector< T > result;
+		for (auto const& v : vec) {
+			result.push_back(value_cast<T>(v, def));
+		}
+		return result;
+	}
+
 	/**
 	 * Read a vector of the specified data type.
 	 * 
@@ -23,16 +33,10 @@ namespace cyng
 	template < typename T >
 	std::vector< T > vector_cast(object const& obj, T const& def) noexcept
 	{
-		std::vector< T > result;
 		vector_t vec;
-		vec = value_cast(obj, vec);
-		
-		for (auto v : vec)
-		{
-			result.push_back(value_cast<T>(v, def));
-		}
-		return result;
+		return vector_cast<T>(value_cast(vec, def));
 	}	
+
 }
 
 #endif //	CYNG_VALUE_CAST_HPP
