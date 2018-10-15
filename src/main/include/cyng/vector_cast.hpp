@@ -34,7 +34,7 @@ namespace cyng
 	std::vector< T > vector_cast(object const& obj, T const& def) noexcept
 	{
 		vector_t vec;
-		return vector_cast<T>(value_cast(vec, def));
+		return vector_cast<T>(value_cast(obj, vec), def);
 	}	
 
 }
