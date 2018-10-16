@@ -212,7 +212,7 @@ namespace cyng
 		attr_map_factory();
 
 		template < typename T >
-		attr_map_factory(std::string const& key, T&& v)
+		attr_map_factory(std::size_t key, T&& v)
 			: map_()
 		{
 			map_.emplace(key, make_object(v));
