@@ -82,7 +82,7 @@ namespace cyng
 		//
 		//	concatenate
 		//
-		ctrl.async_run(generate_invoke("log.msg.trace", 42) << generate_invoke_unwinded("log.msg.trace", 43));
+// 		ctrl.async_run(generate_invoke("log.msg.trace", 42) << generate_invoke_unwinded("log.msg.trace", 43));
 
 		ctrl.async_run({ generate_invoke("log.msg.trace", 44), generate_invoke("log.msg.info", 45) });
 		//

@@ -64,7 +64,7 @@ namespace cyng
 				auto sent = socket.write_some(boost::asio::buffer(buffer_, size), ec);
 				BOOST_ASSERT(sent == size);
 
-				std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+// 				std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 			}
 
 			socket.close();

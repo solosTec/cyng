@@ -94,10 +94,42 @@ namespace cyng
 	}
 }
 #else 
-
-#error CYNG_STD_SHARED_MUTEX_... undefined
-
+    #error CYNG_STD_SHARED_MUTEX_... undefined
 #endif
+
+
+//
+//  promise
+//
+
+#if defined(CYNG_STD_PROMISE_OFF)
+
+#include <boost/thread/future.hpp>
+namespace cyng 
+{
+	namespace async 
+	{
+		template < typename R >
+		using promise = boost::promise< R >;
+    }
+}
+
+#elif defined(CYNG_STD_PROMISE_ON)
+
+#include <future>
+namespace cyng 
+{
+	namespace async 
+	{
+		template < typename R >
+		using promise = std::promise< R >;
+    }
+}
+
+#else 
+    #error CYNG_STD_PROMISE_... undefined
+#endif
+
 #endif 	//	CYNG_ASYNC_H
 
 

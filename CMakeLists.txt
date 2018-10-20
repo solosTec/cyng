@@ -161,19 +161,24 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	# C++14 since 6.1
 	# C++17 since 7.0 (?)
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "4.8.1")
-		add_definitions(-std=c++98)	
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98") 
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
 		message(STATUS "** C++ support     : C++98")
+	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "5.5")
+	# crosscompile OECP with gcc 5.4.0 
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
+		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
+		message(STATUS "** C++ support     : C++11")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "6.1")
-		add_definitions(-std=c++11)	
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
 		message(STATUS "** C++ support     : C++11")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "7.0")
-		add_definitions(-std=c++17)	
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17") 
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_OFF)
 		message(STATUS "** C++ support     : C++17")
 	else()
-		add_definitions(-std=c++17)	
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17") 
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_OFF)
 		message(STATUS "** C++ support     : C++17")
 	endif()
@@ -201,6 +206,13 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     else()
 		set(${PROJECT_NAME}_STD_APPLY ${PROJECT_NAME}_STD_APPLY_ON)
 		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_ON)
+	endif()
+	
+	#  cross compile with g++ 5.4.0 
+	if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER  "5.4")
+		set(${PROJECT_NAME}_STD_PROMISE ${PROJECT_NAME}_STD_PROMISE_ON)
+    else()
+		set(${PROJECT_NAME}_STD_PROMISE ${PROJECT_NAME}_STD_PROMISE_OFF)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE SHARED)
@@ -257,8 +269,8 @@ function(windows_boost_fix BOOST_VER)
 #  SET(${varName} ${${varName}}${${varName}} PARENT_SCOPE)
   set(BOOST_ROOT "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
   set(BOOST_LIBRARYDIR "C:/local/boost_${BOOST_VER}_0/lib64-msvc-14.1" CACHE PATH "BOOST_LIBRARYDIR")
-  set(BOOST_INCLUDE_DIR "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_ROOT")
-  set(BOOST_DIR "C:/local/boost_${BOOST_VER}" CACHE PATH "BOOST_ROOT")
+  set(BOOST_INCLUDE_DIR "C:/local/boost_${BOOST_VER}_0" CACHE PATH "BOOST_INCLUDE_DIR")
+  set(BOOST_DIR "C:/local/boost_${BOOST_VER}" CACHE PATH "BOOST_DIR")
   message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
   set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
   set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc141-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
@@ -277,31 +289,33 @@ endfunction()
 #
 #	setup Boost library 1.68.0, 1.67.0 or 1.66.0
 #
-if(UNIX)
-    if(EXISTS "$ENV{HOME}/projects/boost_1_68_0/install")
-        set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_68_0/install" CACHE PATH "BOOST_ROOT")
-        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_68_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
-        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
-    elseif(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
-        set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_67_0/install" CACHE PATH "BOOST_ROOT")
-        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_67_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
-        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
-    elseif(EXISTS "$ENV{HOME}/projects/boost_1_66_0/install")
-        set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/install" CACHE PATH "BOOST_ROOT")
-        set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
-        message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
-    endif()
-elseif(WIN32)
-    if(EXISTS "C:/local/boost_1_68_0")
-        windows_boost_fix("1_68")
-    elseif(EXISTS "C:/local/boost_1_67_0")
-        windows_boost_fix("1_67")
-	endif()
-endif(UNIX)
+if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+    if(UNIX)
+        if(EXISTS "$ENV{HOME}/projects/boost_1_68_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_68_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_68_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+        elseif(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_67_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_67_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+        elseif(EXISTS "$ENV{HOME}/projects/boost_1_66_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+        endif()
+    elseif(WIN32)
+        if(EXISTS "C:/local/boost_1_68_0")
+            windows_boost_fix("1_68")
+        elseif(EXISTS "C:/local/boost_1_67_0")
+            windows_boost_fix("1_67")
+        endif()
+    endif(UNIX)
+endif()
 
 set(Boost_ADDITIONAL_VERSIONS "1.66.0" "1.67.0" "1.68.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
-find_package(Boost 1.66 REQUIRED COMPONENTS thread system date_time filesystem program_options random unit_test_framework regex)
+find_package(Boost 1.66 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework)
 
 if(Boost_FOUND)
 
@@ -328,27 +342,40 @@ else()
 	set(${PROJECT_NAME}_BOOST_LIBRARY ${PROJECT_NAME}_BOOST_LIBRARY_NOT_FOUND)
 endif(Boost_FOUND)
 
+
 #
 #	setup SSL library
 #
-message(STATUS "** Search openSSL   : ${OPENSSL_ROOT_DIR}")
-if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
-	find_package(OpenSSL 1.0.2 REQUIRED)
-else()
-	find_package(OpenSSL 1.0.1 REQUIRED)
+if(NOT DEFINED ${PROJECT_NAME}_SSL_SUPPORT)
+	set(${PROJECT_NAME}_SSL_SUPPORT ON CACHE BOOL "SSL support")
 endif()
-if(OPENSSL_FOUND)
 
-#	message(STATUS "** openSSL Found         : ${OPENSSL_FOUND}")
-	message(STATUS "** openSSL Version       : ${OPENSSL_VERSION}")
-	message(STATUS "** openSSL Include       : ${OPENSSL_INCLUDE_DIR}")
-	message(STATUS "** openSSL crypto library: ${OPENSSL_CRYPTO_LIBRARY}")
-	message(STATUS "** openSSL SSL library   : ${OPENSSL_SSL_LIBRARY}")
-	message(STATUS "** openSSL Libraries     : ${OPENSSL_LIBRARIES}")
- 
- 	include_directories(${OPENSSL_INCLUDE_DIR})
- 	link_directories(${OPENSSL_LIBRARIES})
-	
+if(${PROJECT_NAME}_SSL_SUPPORT)
+
+    message(STATUS "** Search openSSL   : ${OPENSSL_ROOT_DIR}")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
+        find_package(OpenSSL 1.0.2 REQUIRED)
+    else()
+        find_package(OpenSSL 1.0.1 REQUIRED)
+    endif()
+    if(OPENSSL_FOUND)
+
+    #	message(STATUS "** openSSL Found         : ${OPENSSL_FOUND}")
+        message(STATUS "** openSSL Version       : ${OPENSSL_VERSION}")
+        message(STATUS "** openSSL Include       : ${OPENSSL_INCLUDE_DIR}")
+        message(STATUS "** openSSL crypto library: ${OPENSSL_CRYPTO_LIBRARY}")
+        message(STATUS "** openSSL SSL library   : ${OPENSSL_SSL_LIBRARY}")
+        message(STATUS "** openSSL Libraries     : ${OPENSSL_LIBRARIES}")
+    
+        include_directories(${OPENSSL_INCLUDE_DIR})
+        link_directories(${OPENSSL_LIBRARIES})
+        
+    endif()
+    
+else()
+
+    message(WARNING "** no SSL support")
+
 endif()
 
 #
@@ -368,8 +395,12 @@ add_executable(sqlite3 ${shell})
 if (WIN32)
     target_link_libraries(sqlite3 lib_sqlite3)
 else()
-	target_compile_options(sqlite3 PRIVATE -DHAVE_READLINE)
-    target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
+    if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+        target_compile_options(sqlite3 PRIVATE -DHAVE_READLINE)
+        target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
+    else()
+        target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS})    
+    endif()
 endif()
 set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
 
@@ -536,10 +567,14 @@ target_link_libraries(cyng_io ${io_link_libs})
 #
 #	cyng mail library
 #
-include (lib/io/mail/lib.cmake)
-add_library(cyng_mail ${GLOBAL_LIBRARY_TYPE} ${mail_lib})
-target_link_libraries(cyng_mail
-	${OPENSSL_LIBRARIES})
+if(${PROJECT_NAME}_SSL_SUPPORT)
+    include (lib/io/mail/lib.cmake)
+    add_library(cyng_mail ${GLOBAL_LIBRARY_TYPE} ${mail_lib})
+    target_link_libraries(cyng_mail ${OPENSSL_LIBRARIES})
+else()
+    message(WARNING "** CYNG mail requires SSL support")
+endif()
+
 #
 #	cyng VM library
 #
@@ -589,10 +624,14 @@ target_link_libraries(cyng_sql
 #
 #	cyng crypto library
 #
-include (lib/crypto/lib.cmake)
-add_library(cyng_crypto ${GLOBAL_LIBRARY_TYPE} ${crypto_lib})
-target_link_libraries(cyng_crypto
-	${OPENSSL_LIBRARIES})
+if(${PROJECT_NAME}_SSL_SUPPORT)
+    include (lib/crypto/lib.cmake)
+    add_library(cyng_crypto ${GLOBAL_LIBRARY_TYPE} ${crypto_lib})
+    target_link_libraries(cyng_crypto
+        ${OPENSSL_LIBRARIES})
+else()
+    message(WARNING "** CYNG crypto requires SSL support")
+endif()
 
 #
 #	cyng random library
@@ -636,7 +675,7 @@ add_library(cyng_docscript ${GLOBAL_LIBRARY_TYPE} ${docscript_lib})
 target_link_libraries(cyng_docscript
 	cyng_core
 	cyng_async
-	cyng_crypto
+	cyng_rnd
 	cyng_vm)
 
 #
@@ -705,49 +744,51 @@ add_executable(demo ${demo})
 # BOOST_TEST_DYN_LINK is required to build a main() function
 # cmake -DCYNG_BUILD_TEST:bool=ON ..
 #
-if(${PROJECT_NAME}_BUILD_TEST)
-include (test/unit-test/unit-test.cmake)
-add_executable(unit_test ${unit_test})
-	
-# BOOST_TEST_DYN_LINK is required to build a main() function
-set_property(
-	TARGET unit_test
-	PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
+if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
+    include (test/unit-test/unit-test.cmake)
+    add_executable(unit_test ${unit_test})
+        
+    # BOOST_TEST_DYN_LINK is required to build a main() function
+    set_property(
+        TARGET unit_test
+        PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
+    set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
 
-if (${PROJECT_NAME}_PUGIXML_INSTALLED)
-	list(APPEND unittest_link_libs cyng_xml ${PUGIXML_LIBRARY})
-endif()
-
-if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
-    if (UNIX)
-        list(APPEND unittest_link_libs pthread)
+    if (${PROJECT_NAME}_PUGIXML_INSTALLED)
+        list(APPEND unittest_link_libs cyng_xml ${PUGIXML_LIBRARY})
     endif()
-else()
-	message(STATUS "** link unit-test        : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
-	list(APPEND unittest_link_libs ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-#	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
-endif()
 
-#message(STATUS "** unit-test libs    : ${unittest_link_libs}")
-target_link_libraries(unit_test ${unittest_link_libs})
+    if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+        list(APPEND unittest_link_libs ${Boost_LIBRARIES})
+        if (UNIX)
+            list(APPEND unittest_link_libs pthread)
+        endif()
+    else()
+        message(STATUS "** link unit-test        : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
+        list(APPEND unittest_link_libs ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+    #	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
+    endif()
+
+    #message(STATUS "** unit-test libs    : ${unittest_link_libs}")
+    target_link_libraries(unit_test ${unittest_link_libs})
 endif()
 
 #
 # docScript compiler
 #
-include (tools/docc/prg.cmake)
-add_executable(docc ${docc})
-set(docc_link_libs cyng_io cyng_vm cyng_async cyng_rnd cyng_docscript)
-if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-    if (UNIX)
-        list(APPEND docc_link_libs pthread "${Boost_LIBRARIES}")
+if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+    include (tools/docc/prg.cmake)
+    add_executable(docc ${docc})
+    set(docc_link_libs cyng_io cyng_vm cyng_async cyng_crypto cyng_docscript)
+    if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+        if (UNIX)
+            list(APPEND docc_link_libs pthread "${Boost_LIBRARIES}")
+        endif()
     endif()
+    #message(STATUS "** docc libs         : ${docc_link_libs}")
+    target_link_libraries(docc ${docc_link_libs})
 endif()
-#message(STATUS "** docc libs         : ${docc_link_libs}")
-target_link_libraries(docc ${docc_link_libs})
 
 #
 # unlog - decrypt log files

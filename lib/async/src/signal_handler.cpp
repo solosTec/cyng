@@ -6,6 +6,7 @@
  */ 
 
 #include <cyng/async/signal_handler.h>
+#include <cyng/compatibility/async.h>
 #include <future>
 #include <csignal>
 #if BOOST_OS_WINDOWS
@@ -25,7 +26,7 @@ namespace cyng
 
 	struct signal_handler
 	{
-		std::promise< int > result_;
+		async::promise< int > result_;
 		signal_handler()
 			: result_()
 		{   //  CTRL-C

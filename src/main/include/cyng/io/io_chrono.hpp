@@ -12,6 +12,7 @@
 #include <cyng/chrono.h>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <boost/io/ios_state.hpp>
 
 namespace cyng 
