@@ -23,7 +23,7 @@ namespace cyng
 	object make_minutes(std::uint64_t);
 	object make_hours(std::uint64_t);
 	object make_days(std::uint64_t);
-#if CYNG_ODBC_INSTALLED == 1
+#if defined(CYNG_ODBC_INSTALLED)
 	object make_odbc_ts(std::chrono::system_clock::time_point);
 #endif
 

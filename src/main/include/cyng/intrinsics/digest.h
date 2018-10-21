@@ -15,8 +15,15 @@
 
 #include <cstdint>
 #include <array>
+#if defined(CYNG_SSL_INSTALLED)
 #include <openssl/sha.h>
 #include <openssl/md5.h>
+#else
+# define MD5_DIGEST_LENGTH 16
+# define SHA_DIGEST_LENGTH 20
+# define SHA256_DIGEST_LENGTH    32
+# define SHA512_DIGEST_LENGTH    64
+#endif
 
 namespace cyng
 {

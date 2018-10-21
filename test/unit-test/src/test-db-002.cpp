@@ -29,7 +29,7 @@ namespace cyng
 
 	bool test_db_002()
 	{
-#if CYNG_ODBC_INSTALLED == 1
+#if defined(CYNG_ODBC_INSTALLED)
 		async::scheduler scheduler;
 		db::session_pool pool(scheduler.get_io_service(), db::CONNECTION_ODBC);
 		param_map_t cfg;

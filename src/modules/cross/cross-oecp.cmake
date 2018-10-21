@@ -4,7 +4,7 @@
 # Usage: 
 # cmake -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
 # cmake -DCYNG_BUILD_TEST:bool=OFF -DCYNG_CROSS_COMPILE:bool=ON -DCYNG_SSL_SUPPORT:bool=OFF -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
-# cmake -DNODE_BUILD_TEST:bool=OFF -DNODE_CROSS_COMPILE:bool=ON -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
+# cmake -DNODE_BUILD_TEST:bool=OFF -DNODE_CROSS_COMPILE:bool=ON -DNODE_SSL_SUPPORT:bool=OFF -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
 #
 
 #
@@ -46,16 +46,17 @@ link_directories(
 #
 # Boost support
 #
-set(BOOST_ROOT $HOME/projects/PPC/install)
+set(BOOST_ROOT  $ENV{HOME}/projects/PPC/install)
 set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include" CACHE PATH "BOOST_INCLUDEDIR")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib" CACHE PATH "BOOST_LIBRARYDIR")
 
 #
 # OpenSSL support
 #
-#set(OPEN_SSL_ROOT_DIR )
-#set(OPEN_SSL_CRYPTO_LIBRARY libcrypto.so)
-#set(OPEN_SLL_LIBRARY lbssl.so)
+set(OPENSSL_ROOT_DIR  $ENV{HOME}/projects/PPC/install/openssl)    
+set(OPENSSL_INCLUDE_DIR ${OPENSSL_ROOT_DIR}/include)
+set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_ROOT_DIR}/lib/libcrypto.so)
+set(OPENSLL_LIBRARY ${OPENSSL_ROOT_DIR}/lib/lbssl.so)
 
 #
 # Use our definitions for compiler tools

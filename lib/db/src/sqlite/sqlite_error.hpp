@@ -6,7 +6,7 @@
 */
 
 
-#if ! defined CYNG_DB_SQLITE_ERROR_HPP && (CYNG_SQLITE3_INSTALLED == 1)
+#if ! defined CYNG_DB_SQLITE_ERROR_HPP && defined(CYNG_SQLITE3_INSTALLED)
 #define CYNG_DB_SQLITE_ERROR_HPP
 
 #include <boost/system/error_code.hpp>

@@ -5,7 +5,7 @@
 *
 */
 
-#if ! defined CYNG_DB_SQLITE_RESULT_H && (CYNG_SQLITE3_INSTALLED == 1)
+#if ! defined CYNG_DB_SQLITE_RESULT_H && defined(CYNG_SQLITE3_INSTALLED)
 #define CYNG_DB_SQLITE_RESULT_H
 
 #include <cyng/db/interface_result.h>

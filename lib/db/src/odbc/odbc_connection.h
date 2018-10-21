@@ -8,7 +8,7 @@
 #ifndef CYNG_DB_ODBC_CONNECTION_H
 #define CYNG_DB_ODBC_CONNECTION_H
 
-#if CYNG_ODBC_INSTALLED == 1
+#if defined(CYNG_ODBC_INSTALLED)
 #include "odbc_handle.hpp"
 
 namespace cyng

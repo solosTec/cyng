@@ -15,11 +15,11 @@
 #include "mysql/mysql_session.h"
 #endif
 			
-#if CYNG_SQLITE3_INSTALLED == 1
+#if defined(CYNG_SQLITE3_INSTALLED)
 #include "sqlite/sqlite_session.h"
 #endif
 			
-#if CYNG_ODBC_INSTALLED == 1
+#if defined(CYNG_ODBC_INSTALLED)
 #include "odbc/odbc_session.h"
 #endif
 
@@ -115,7 +115,7 @@ namespace cyng
 
 		session_ptr session::reset(connection_type type)
 		{
-#if (CYNG_MYSQL_INSTALLED == 1) || (CYNG_SQLITE3_INSTALLED == 1) || (CYNG_ODBC_INSTALLED == 1) || (CYNG_OLEDB_INSTALLED == 1)
+#if (CYNG_MYSQL_INSTALLED == 1) || defined(CYNG_SQLITE3_INSTALLED) || defined(CYNG_ODBC_INSTALLED) || (CYNG_OLEDB_INSTALLED == 1)
 			switch (type)
 			{
 			
@@ -123,11 +123,11 @@ namespace cyng
 				case CONNECTION_MYSQL:	return session_wrapper< mysql::session >::factory();
 #endif
 			
-#if CYNG_SQLITE3_INSTALLED == 1
+#if defined(CYNG_SQLITE3_INSTALLED)
 				case CONNECTION_SQLITE:	return session_wrapper< sqlite::session >::factory();
 #endif
 			
-#if CYNG_ODBC_INSTALLED == 1
+#if defined(CYNG_ODBC_INSTALLED)
 				case CONNECTION_ODBC:	return session_wrapper< odbc::session >::factory();
 #endif
 

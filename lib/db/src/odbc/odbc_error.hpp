@@ -5,7 +5,7 @@
  *
  */
 
-#if (CYNG_ODBC_INSTALLED == 1)
+#if defined(CYNG_ODBC_INSTALLED)
 #ifndef CYNG_DB_ODBC_ERROR_HPP
 #define CYNG_DB_ODBC_ERROR_HPP
 

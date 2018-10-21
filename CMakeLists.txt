@@ -245,8 +245,8 @@ elseif(MSVC)
 	set(GLOBAL_LIBRARY_TYPE STATIC)
 
 	#	This is Windows 7 (and rules out windows vista)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE")	
-	add_definitions(/EHsc /bigobj /std:c++latest /MP)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /bigobj /std:c++latest /MP")	
+	add_definitions("-D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE")
 	
 	#
 	# help CMake to find OpenSSL
@@ -347,11 +347,13 @@ endif(Boost_FOUND)
 #	setup SSL library
 #
 if(NOT DEFINED ${PROJECT_NAME}_SSL_SUPPORT)
-	set(${PROJECT_NAME}_SSL_SUPPORT ON CACHE BOOL "SSL support")
+#	set(${PROJECT_NAME}_SSL_SUPPORT ON CACHE BOOL "SSL support")
+	option(${PROJECT_NAME}_SSL_SUPPORT "SSL support" ON)
 endif()
 
-if(${PROJECT_NAME}_SSL_SUPPORT)
 
+if(${PROJECT_NAME}_SSL_SUPPORT)
+    
     message(STATUS "** Search openSSL   : ${OPENSSL_ROOT_DIR}")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
         find_package(OpenSSL 1.0.2 REQUIRED)
@@ -360,6 +362,8 @@ if(${PROJECT_NAME}_SSL_SUPPORT)
     endif()
     if(OPENSSL_FOUND)
 
+        add_definitions(-D${PROJECT_NAME}_SSL_INSTALLED)
+        
     #	message(STATUS "** openSSL Found         : ${OPENSSL_FOUND}")
         message(STATUS "** openSSL Version       : ${OPENSSL_VERSION}")
         message(STATUS "** openSSL Include       : ${OPENSSL_INCLUDE_DIR}")
@@ -384,8 +388,8 @@ endif()
 #   SQLite3 library is part of this project
 #
 include (3party/sqlite.cmake)
-add_library(lib_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
-set_property(TARGET lib_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_library(cyng_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
+set_property(TARGET cyng_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 #
 #
@@ -393,13 +397,13 @@ set_property(TARGET lib_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
 include (3party/shell.cmake)
 add_executable(sqlite3 ${shell})
 if (WIN32)
-    target_link_libraries(sqlite3 lib_sqlite3)
+    target_link_libraries(sqlite3 cyng_sqlite3)
 else()
     if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
         target_compile_options(sqlite3 PRIVATE -DHAVE_READLINE)
-        target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
+        target_link_libraries(sqlite3 cyng_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
     else()
-        target_link_libraries(sqlite3 lib_sqlite3 pthread ${CMAKE_DL_LIBS})    
+        target_link_libraries(sqlite3 cyng_sqlite3 pthread ${CMAKE_DL_LIBS})    
     endif()
 endif()
 set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
@@ -407,9 +411,9 @@ set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
 #
 #
 #	Link this library
-set(${PROJECT_NAME}_SQLITE3_INSTALLED ON)
 set(SQLite3_LIBRARY ${lib_sqlite3})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
+add_definitions(-D${PROJECT_NAME}_SQLITE3_INSTALLED)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
 
 # data comes from sqlite.cmake
 message(STATUS "** SQLite3 Version   : ${SQLite3_VERSION}")
@@ -442,14 +446,15 @@ if (UNIX)
 		#
 		#	define this compile flag if ODBC C++ is available
 		#
-		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
-		set(${PROJECT_NAME}_ODBC_INSTALLED ON)
+		#set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
+		add_definitions(-D${PROJECT_NAME}_ODBC_INSTALLED)
+		#set(${PROJECT_NAME}_ODBC_INSTALLED ON)
 
 	else()
 
 		message(WARNING "** UnixODBC not found")
 #		set(UnixODBC_LIBRARIES "")
-		set(${PROJECT_NAME}_ODBC_INSTALLED OFF)
+		#set(${PROJECT_NAME}_ODBC_INSTALLED OFF)
 
 	endif()	
 
@@ -513,8 +518,7 @@ set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
 #
 set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/3party/pugixml-190")
 message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
-set(${PROJECT_NAME}_PUGIXML_INSTALLED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_PUGIXML_INSTALLED" )
+add_definitions(-D${PROJECT_NAME}_PUGIXML_INSTALLED)
 include_directories(${PUGIXML_INCLUDE_DIR})
 set(${PROJECT_NAME}_PUGIXML_VERSION 190)
 

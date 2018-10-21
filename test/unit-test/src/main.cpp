@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_SUITE_END()	//	SQL
 #if	CYNG_SQLITE3_INSTALLED
 #include "test-db-001.h"
 #endif
-#if	CYNG_ODBC_INSTALLED
+#if	defined(CYNG_ODBC_INSTALLED)
 #include "test-db-002.h"
 #endif
 
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE(db_001)
 BOOST_AUTO_TEST_CASE(db_002)
 {
 	using namespace cyng;
-#if	CYNG_ODBC_INSTALLED
+#if	defined(CYNG_ODBC_INSTALLED)
 	BOOST_CHECK(test_db_002());
 #endif
 }
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(crypto_001)
 }
 BOOST_AUTO_TEST_SUITE_END()	//	CRYPTO
 
-#if	CYNG_PUGIXML_INSTALLED
+#ifdef	CYNG_PUGIXML_INSTALLED
 #include "test-xml-001.h"
 #endif
 
@@ -258,7 +258,7 @@ BOOST_AUTO_TEST_SUITE(XML)
 BOOST_AUTO_TEST_CASE(xml_001)
 {
 	using namespace cyng;
-#if	CYNG_PUGIXML_INSTALLED
+#ifdef	CYNG_PUGIXML_INSTALLED
 	BOOST_CHECK(test_xml_001());
 #endif
 }

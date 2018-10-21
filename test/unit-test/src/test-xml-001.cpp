@@ -20,7 +20,7 @@ namespace cyng
 
 	bool test_xml_001()
 	{
-#if	CYNG_PUGIXML_INSTALLED == 1
+#ifdef	CYNG_PUGIXML_INSTALLED
 		const boost::filesystem::path tmp = boost::filesystem::temp_directory_path();
 		const boost::filesystem::path pwd = boost::filesystem::current_path();
 		boost::uuids::random_generator rgen;

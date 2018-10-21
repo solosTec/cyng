@@ -231,7 +231,7 @@ namespace std
 		size_t operator()(boost::asio::ip::address const&) const noexcept;
 	};
 
-#if CYNG_ODBC_INSTALLED == 1
+#if defined(CYNG_ODBC_INSTALLED)
 	template<>
 	struct hash<SQL_TIMESTAMP_STRUCT>
 	{
