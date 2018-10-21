@@ -661,26 +661,26 @@ target_link_libraries(cyng_json
 	cyng_io
 	cyng_parser)
 
-if (${PROJECT_NAME}_PUGIXML_INSTALLED)
-	include (lib/xml/lib.cmake)
-	add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
-	
-	if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-		target_link_libraries(cyng_xml cyng_parser)
-	endif()
+include (lib/xml/lib.cmake)
+add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
 
+if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+	target_link_libraries(cyng_xml cyng_parser)
 endif()
+
 
 #
 #	cyng docScript library
 #
-include (lib/docscript/lib.cmake)
-add_library(cyng_docscript ${GLOBAL_LIBRARY_TYPE} ${docscript_lib})
-target_link_libraries(cyng_docscript
-	cyng_core
-	cyng_async
-	cyng_rnd
-	cyng_vm)
+if(${PROJECT_NAME}_SSL_SUPPORT)
+	include (lib/docscript/lib.cmake)
+	add_library(cyng_docscript ${GLOBAL_LIBRARY_TYPE} ${docscript_lib})
+	target_link_libraries(cyng_docscript
+		cyng_core
+		cyng_async
+		cyng_crypto
+		cyng_vm)
+endif()
 
 #
 #	cyng system library
@@ -697,7 +697,7 @@ endif()
 #
 include (lib/db/lib.cmake)
 add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
-set(db_link_libs lib_sqlite3)
+set(db_link_libs cyng_sqlite3)
 if (${PROJECT_NAME}_ODBC_INSTALLED)
 	if(WIN32)
 		list(APPEND db_link_libs odbc32.lib)
@@ -757,11 +757,7 @@ if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
         TARGET unit_test
         PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-    set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table)
-
-    if (${PROJECT_NAME}_PUGIXML_INSTALLED)
-        list(APPEND unittest_link_libs cyng_xml ${PUGIXML_LIBRARY})
-    endif()
+    set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml ${PUGIXML_LIBRARY})
 
     if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
         list(APPEND unittest_link_libs ${Boost_LIBRARIES})
@@ -781,7 +777,7 @@ endif()
 #
 # docScript compiler
 #
-if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+if(${PROJECT_NAME}_SSL_SUPPORT)
     include (tools/docc/prg.cmake)
     add_executable(docc ${docc})
     set(docc_link_libs cyng_io cyng_vm cyng_async cyng_crypto cyng_docscript)

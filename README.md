@@ -101,15 +101,19 @@ in CMakeList.txt to the correct path.
 ## Hints for cross compiling ##
 ### Boost ###
 
-(1) download and extract library
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2)
 
+```
 wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2
 tar xjvf boost_1_68_0.tar.bz2
 cd boost_1_68_0
+```
 
 (2) bootstrap
 
+```
 ./bootstrap.sh --with-libraries=filesystem,program_options,system,thread,timer,random,test
+```
 
 (3) edit project-config.jam
 
@@ -120,46 +124,62 @@ with
 
 Select the required libraries (to save time):
 
+```
 libraries =  --with-filesystem --with-program_options --with-system --with-thread --with-timer --with-random --with-test;
+```
 
 Select a prefix:
 
+```
 option.set prefix : ${HOME}/projects/install ;
 option.set exec-prefix : ${HOME}/projects/install ;
 option.set libdir : ${HOME}/projects/install/lib ;
 option.set includedir : ${HOME}/projects/install/include ;
-
+```
 
 
 (4) set path (example):
+```
 export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized/bin/
+```
 
 
 (5) start generating
 
+```
 ./b2 install toolset=gcc-arm --prefix=${HOME}/projects/install
+```
 
 ### OpenSLL ###
 
-(1) download and extract library
+(1) download and extract latest [OpenSSL library](http://www.openssl.org/source/openssl-1.1.1.tar.gz)
 
+```
 wget http://www.openssl.org/source/openssl-1.1.1.tar.gz
 tar -xvzf openssl-1.1.1.tar.gz
 cd openssl-1.1.1
+```
 
 
 (2) config
+
+```
 ./Configure linux-generic32 shared --prefix=${HOME}/projects/install/openssl --openssldir=${HOME}/projects/install/openssl  --cross-compile-prefix=arm-v5te-linux-gnueabi- PROCESSOR=ARM
+```
 
 
 (3) set path (example):
+```
 export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized/bin/
+```
 
 
 (4) start generating
 
+```
 make
 make install
+```
 
 ### Set up cross compilation with CMake ###
 

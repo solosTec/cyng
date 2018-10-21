@@ -2,9 +2,9 @@
 # Setup cross compilation environment with CMake.
 #
 # Usage: 
-# cmake -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
-# cmake -DCYNG_BUILD_TEST:bool=OFF -DCYNG_CROSS_COMPILE:bool=ON -DCYNG_SSL_SUPPORT:bool=OFF -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
-# cmake -DNODE_BUILD_TEST:bool=OFF -DNODE_CROSS_COMPILE:bool=ON -DNODE_SSL_SUPPORT:bool=OFF -DCMAKE_TOOLCHAIN_FILE=~/projects/PPC/cross.cmake ..
+# cmake -DCMAKE_TOOLCHAIN_FILE=~/projects/cross.cmake ..
+# cmake -DCYNG_BUILD_TEST:bool=OFF -DCYNG_CROSS_COMPILE:bool=ON -DCYNG_SSL_SUPPORT:bool=OFF -DCMAKE_TOOLCHAIN_FILE=~/projects/cross.cmake ..
+# cmake -DNODE_BUILD_TEST:bool=OFF -DNODE_CROSS_COMPILE:bool=ON -DNODE_SSL_SUPPORT:bool=OFF -DCMAKE_TOOLCHAIN_FILE=~/projects/cross.cmake ..
 #
 
 #
