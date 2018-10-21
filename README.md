@@ -99,6 +99,9 @@ in CMakeList.txt to the correct path.
 
 
 ## Hints for cross compiling ##
+
+To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use the [rpi-newer-crosstools](https://github.com/rvagg/rpi-newer-crosstools) with support for a decent gcc version (6.3.1). The original [toolchain](https://github.com/raspberrypi/tools) seems a little bit outdated.
+
 ### Boost ###
 
 (1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2)
@@ -118,9 +121,16 @@ cd boost_1_68_0
 (3) edit project-config.jam
 
 replace
+
+```
     using gcc ; 
-with
+```
+
+with one of the following lines (depends from the target platform)
+```
+    using gcc : arm : arm-rpi-linux-gnueabihf-g++
     using gcc : arm : arm-v5te-linux-gnueabi-c++ ;
+```    
 
 Select the required libraries (to save time):
 
@@ -138,8 +148,10 @@ option.set includedir : ${HOME}/projects/install/include ;
 ```
 
 
-(4) set path (example):
+(4) set path (examples - take the appropriate):
+
 ```
+export PATH=$PATH:${HOME}/projects/rpi-newer-crosstools/x64-gcc-6.3.1/arm-rpi-linux-gnueabihf/bin/
 export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized/bin/
 ```
 
@@ -161,15 +173,19 @@ cd openssl-1.1.1
 ```
 
 
-(2) config
+(2) config (examples)
 
 ```
+./Configure linux-generic32 shared --prefix=${HOME}/projects/install/openssl --openssldir=${HOME}/projects/install/openssl  --cross-compile-prefix=arm-rpi-linux-gnueabihf- PROCESSOR=ARM
+
 ./Configure linux-generic32 shared --prefix=${HOME}/projects/install/openssl --openssldir=${HOME}/projects/install/openssl  --cross-compile-prefix=arm-v5te-linux-gnueabi- PROCESSOR=ARM
 ```
 
 
-(3) set path (example):
+(3) set path (examples - take the appropriate):
+
 ```
+export PATH=$PATH:${HOME}/projects/rpi-newer-crosstools/x64-gcc-6.3.1/arm-rpi-linux-gnueabihf/bin/
 export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized/bin/
 ```
 
@@ -202,6 +218,7 @@ set(CMAKE_FIND_ROOT_PATH ${CROSS_ROOT})
 
 #
 # cross compiler location
+# Example for OSELAS toolchain
 #
 set(CROSS_TOOLS /opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized)
 set(CMAKE_C_COMPILER ${CROSS_TOOLS}/bin/arm-v5te-linux-gnueabi-gcc)
