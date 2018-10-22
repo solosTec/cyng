@@ -234,19 +234,23 @@ elseif(MSVC)
 		#	Even 19.5 lacks support for std::apply()
 		set(${PROJECT_NAME}_STD_APPLY	${PROJECT_NAME}_STD_APPLY_OFF)
 		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_ON)
+		set(${PROJECT_NAME}_STD_PROMISE ${PROJECT_NAME}_STD_PROMISE_ON)
 	else()
 		set(${PROJECT_NAME}_LEGACY_MODE ${PROJECT_NAME}_LEGACY_MODE_ON)
 		set(${PROJECT_NAME}_STD_SHARED_MUTEX ${PROJECT_NAME}_STD_SHARED_MUTEX_OFF)
 		set(${PROJECT_NAME}_STD_STRING_VIEW	${PROJECT_NAME}_STD_STD_STRING_VIEW_OFF)
 		set(${PROJECT_NAME}_STD_APPLY	${PROJECT_NAME}_STD_APPLY_OFF)
 		set(${PROJECT_NAME}_STD_UNIQUE_PTR ${PROJECT_NAME}_STD_UNIQUE_PTR_OFF)
+		set(${PROJECT_NAME}_STD_PROMISE ${PROJECT_NAME}_STD_PROMISE_OFF)
 	endif()
 	
 	set(GLOBAL_LIBRARY_TYPE STATIC)
 
 	#	This is Windows 7 (and rules out windows vista)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /bigobj /std:c++latest /MP")	
-	add_definitions("-D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE")
+	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /bigobj /std:c++14 /MP")	
+	# When using /std:c++latest use _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING or _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS too
+	add_definitions(-D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
 	
 	#
 	# help CMake to find OpenSSL
@@ -390,6 +394,8 @@ endif()
 include (3party/sqlite.cmake)
 add_library(cyng_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
 set_property(TARGET cyng_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_definitions(-D${PROJECT_NAME}_SQLITE3_INSTALLED)
+set(${PROJECT_NAME}_SQLITE3_INSTALLED ON CACHE BOOl "SQLite3 Connector")
 
 #
 #
@@ -412,8 +418,6 @@ set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
 #
 #	Link this library
 set(SQLite3_LIBRARY ${lib_sqlite3})
-add_definitions(-D${PROJECT_NAME}_SQLITE3_INSTALLED)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_SQLITE3_INSTALLED" )
 
 # data comes from sqlite.cmake
 message(STATUS "** SQLite3 Version   : ${SQLite3_VERSION}")
@@ -446,15 +450,13 @@ if (UNIX)
 		#
 		#	define this compile flag if ODBC C++ is available
 		#
-		#set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
 		add_definitions(-D${PROJECT_NAME}_ODBC_INSTALLED)
-		#set(${PROJECT_NAME}_ODBC_INSTALLED ON)
+		set(${PROJECT_NAME}_ODBC_INSTALLED ON CACHE BOOl "ODBC Connector")
 
 	else()
 
 		message(WARNING "** UnixODBC not found")
-#		set(UnixODBC_LIBRARIES "")
-		#set(${PROJECT_NAME}_ODBC_INSTALLED OFF)
+		set(${PROJECT_NAME}_ODBC_INSTALLED OFF CACHE BOOl "ODBC Connector")
 
 	endif()	
 
@@ -463,8 +465,8 @@ elseif(WIN32)
 	#
 	#	ODBC is always available on windows
 	#
-	set(${PROJECT_NAME}_ODBC_INSTALLED ON)
 	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
+	set(${PROJECT_NAME}_ODBC_INSTALLED ON CACHE BOOl "ODBC Connector")
 
 else()
 	message(WARNING "** platform not supported")
