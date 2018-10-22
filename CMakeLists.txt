@@ -209,7 +209,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	endif()
 	
 	#  cross compile with g++ 5.4.0 
-	if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER  "5.4")
+	if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER  "5.5")
 		set(${PROJECT_NAME}_STD_PROMISE ${PROJECT_NAME}_STD_PROMISE_ON)
     else()
 		set(${PROJECT_NAME}_STD_PROMISE ${PROJECT_NAME}_STD_PROMISE_OFF)
@@ -319,7 +319,7 @@ endif()
 
 set(Boost_ADDITIONAL_VERSIONS "1.66.0" "1.67.0" "1.68.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
-find_package(Boost 1.66 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework)
+find_package(Boost 1.66 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework regex)
 
 if(Boost_FOUND)
 
