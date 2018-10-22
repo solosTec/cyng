@@ -12,6 +12,7 @@
 #include <cyng/async/task/task_meta.hpp>
 #include <memory>
 #include <typeinfo>
+#include <thread>
 #include <boost/core/demangle.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/core/ignore_unused.hpp>

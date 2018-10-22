@@ -24,9 +24,36 @@ namespace cyng
 				std::cerr << "Unable to create EVP_PKEY structure." << std::endl;
 				return NULL;
 			}
+#if OPENSSL_VERSION_NUMBER >= 0x0090800fL
+    
+            RSA  *rsa = RSA_new();
+            if (rsa == NULL) {
+                return NULL;
+            }
 
+            BIGNUM * e = BN_new();
+            if (e == NULL) {
+                RSA_free(rsa);
+                return NULL;
+            }
+
+            if (BN_set_word(e, RSA_F4) == 0) {
+                BN_free(e);
+                RSA_free(rsa);
+                return NULL;
+            }
+            
+            if (RSA_generate_key_ex(rsa, 2048, e, NULL) == 0) {
+                BN_free(e);
+                RSA_free(rsa);
+                return NULL;
+            }
+
+            BN_free(e);            
+#else
 			/* Generate the RSA key and assign it to pkey. */
 			RSA * rsa = RSA_generate_key(2048, RSA_F4, NULL, NULL);
+#endif
 			if (!EVP_PKEY_assign_RSA(pkey, rsa))
 			{
 				std::cerr << "Unable to generate 2048-bit RSA key." << std::endl;
