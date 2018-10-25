@@ -104,6 +104,7 @@ namespace cyng
 			param_map_t meta_;
 			std::vector<std::size_t> numeration_;
 			structure_t	structure_;
+			std::string language_;	//!< target language
 		};
 
 		//

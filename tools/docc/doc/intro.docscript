@@ -1,4 +1,4 @@
-﻿.meta(author:"Sylko Olzscher", released: .now())
+﻿.meta(author:"Sylko Olzscher", released: .now(), language: "en")
 .title(Introduction into docScript)
 ;.debug(on)
 

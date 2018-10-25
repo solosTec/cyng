@@ -32,6 +32,7 @@ namespace cyng
 			, meta_()
 			, numeration_()
 			, structure_()
+			, language_("en")
 		{
 			register_this();
 		}
@@ -60,12 +61,16 @@ namespace cyng
 				//ctx.set_return_value(cyng::make_object(std::chrono::system_clock::now()), 0);
             });
 
-            vm_.register_function("meta", 3, [this](context& ctx) {
+            vm_.register_function("meta", 2, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-				//	[%(("file-size":2962),("last-write-time":2017-10-23 18:19:32.00000000)),true,1])
+				//	[00000001,%(("file-size":106),("last-write-time":2018-10-25 22:17:08.00000000))]
+				//	
+				//	* function type
+				//	* parameter set
+				//
 				std::cout
 					<< "\n***info: meta("
 					<< cyng::io::to_str(frame)
@@ -74,18 +79,9 @@ namespace cyng
 
 #endif
 				const auto reader = make_reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				const std::size_t size = reader.get_index(0);
  				param_map_t data;
-//  				data = reader.get(2, data);
-				data = value_cast<param_map_t>(reader.get(2), data);
- 				//BOOST_ASSERT_MSG(size == 1, "internal error (meta)");
-				if (size == 1) {
-					this->update_meta(data);
-				}
-				else {
-
-				}
+				data = value_cast<param_map_t>(reader.get(1), data);
+				this->update_meta(data);
 
 				//
 				// function meta has no return values
@@ -346,24 +342,22 @@ namespace cyng
 // 				}
             });
 
-            vm_.register_function("paragraph", 1, [this](context& ctx) {
+            vm_.register_function("paragraph", 2, [this](context& ctx) {
 
-				//	[131idx,".","power","more","you", ..."]
+				//	[00000001,159,Lorem,ipsum,dolor,sit,amet,...sit,amet,.]
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 				std::cout
 					<< "\n***info: paragraph("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 #endif
 				const cyng::vector_reader reader(frame);
-
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				BOOST_ASSERT_MSG(size < frame.size(), "internal error (paragraph)");
-
-				const std::string node = "\n<p>" + accumulate(reader, size, 0) + "</p>";
-				ctx.set_return_value(make_object(node), 0);
+				const std::size_t size = value_cast<std::size_t>(reader.get(1), 0u);
+				BOOST_ASSERT(size == frame.size() - 2);
+				const std::string node = "<p>" + accumulate(reader, 2, size + 1) + "</p>";
+				ctx.push(cyng::make_object(node));
 
             });
 
@@ -643,13 +637,7 @@ namespace cyng
 					<< std::endl;
 
 #endif
-// 				if (!cyng::primary_type_test<boost::filesystem::path>(frame.at(0)))
-// 				{
-// 					std::cerr
-// 						<< "***error: input parameter for function generate() is not of type filesystem::path "
-// 						<< std::endl;
-// 
-// 				}
+
 				const boost::filesystem::path p = cyng::value_cast(frame.at(0), boost::filesystem::path());
 
 				if (verbosity_ > 1)
@@ -673,12 +661,8 @@ namespace cyng
 				else
 				{
 					this->generate(ofs, ++frame.begin(), frame.end());
-					//serialize(file, ++frame.begin(), frame.end());
 				}
-
             });
-
-
 		}
 
 		void generator::update_meta(cyng::param_map_t const& data)
@@ -686,9 +670,14 @@ namespace cyng
 			//
 			//	update meta data 
 			//
-			for (auto e : data)
+			for (auto const& e : data)
 			{
-				meta_.insert(e);
+				if (boost::algorithm::equals(e.first, "language") || boost::algorithm::equals(e.first, "lang"))	{ 
+					language_ = cyng::io::to_str(e.second);
+				}
+				else {
+					meta_.insert(e);
+				}
 			}
 		}
 
@@ -700,9 +689,11 @@ namespace cyng
 				//	generate complete HTML file
 				//	
 				os 
-					<< "<!DOCTYPE html>"
+					<< "<!doctype html>"
 					<< std::endl
-					<< "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+					<< "<html lang=\""
+					<< language_
+					<< "\">"
 					<< std::endl
 					<< "<head>"
 					<< std::endl
@@ -710,13 +701,13 @@ namespace cyng
 					<< std::endl
 					;
 
-				for (auto e : meta_)
+				for (auto const& e : meta_)
 				{
 					if (boost::algorithm::equals(e.first, "title"))
 					{
 						os
 							<< "\t<title>"
-// 							<< cyng::to_string(e.second)
+ 							<< cyng::io::to_str(e.second)
 							<< "</title>"
 							<< std::endl
 							;
@@ -728,7 +719,7 @@ namespace cyng
 							<< "\t<meta name=\""
 							<< e.first
 							<< "\" content=\""
-// 							<< cyng::to_string(e.second)
+ 							<< cyng::io::to_str(e.second)
 							<< "\" />"
 							<< std::endl
 							;
@@ -750,10 +741,11 @@ namespace cyng
 				<< std::endl
 				;
 			std::for_each(begin, end, [this, &os](cyng::object const& obj) {
-// 				os << cyng::to_string(obj);
+ 				os << cyng::io::to_str(obj);
 				//os << this->backpatch(cyng::to_string(obj));
 			});
 			os
+				<< std::endl
 				<< "</body>"
 				<< std::endl
 				;
@@ -932,11 +924,10 @@ namespace cyng
 		{
 			//BOOST_ASSERT_MSG(start < reader.size(), "out of range");
 			std::string str;
-			for (std::size_t idx = start; idx > end; idx--)
+			for (std::size_t idx = start; idx < end; ++idx)
 			{
 				const auto s = value_cast<std::string>(reader.get(idx), "");
-// 				const auto s = reader.get_string(idx);
-				if ((idx > 1) && (idx != start) && !(s == "." || s == "," || s == ":"))
+				if ((idx != start) && !(s == "." || s == "," || s == ":"))
 				{
 					str += " ";
 				}

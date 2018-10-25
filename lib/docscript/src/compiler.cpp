@@ -33,12 +33,11 @@ namespace cyng
 			//	call initial functions and open the "generate"
 			//	call frame
 			//
-			param_map_t params;
-			params["last-write-time"] = make_object(last_write_time);
-			params["file-size"] = make_object(file_size);
 			prg_
 				//	true ==> global function
-				<< generate_invoke_unwinded("meta", std::size_t(1), true, params)
+				<< generate_invoke_unwinded("meta"
+					, std::uint32_t(NL_)
+					, param_map_factory("last-write-time", last_write_time)("file-size", file_size)())
 
 				//	build a call frame generate function
 				<< code::ESBA
@@ -247,6 +246,16 @@ namespace cyng
 		void compiler::fun_par(trailer&& tr)
 		{
 			match(SYM_FUN_PAR);
+
+			//
+			//	Store program position to patch paragraph size at the end.
+			//
+			const auto prg_pos = prg_.size();
+			prg_ << make_object();
+
+			//
+			//	symbol counter
+			//
 			std::size_t counter{ 0 };
 
 			while (look_ahead_->type_ != SYM_FUN_PAR && look_ahead_->type_ != SYM_FUN_NL && look_ahead_->type_ != SYM_EOF)
@@ -279,11 +288,11 @@ namespace cyng
 					<< std::endl
 					;
 			}
-			//prg_
-			//	<< make_object<std::size_t>(counter)
-			//	<< invoke(name)
-			//	<< code::REBA
-			//	;
+
+			//
+			//	patch paragraph size as first parameter
+			//
+			prg_.at(prg_pos) = make_object<std::size_t>(counter);
 		}
 
 		void compiler::key(std::string name, bool nl, std::string key)
