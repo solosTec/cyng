@@ -19,7 +19,7 @@ namespace cyng
 {
 	namespace docscript
 	{
-		enum function_type {
+		enum function_type : std::uint32_t {
 			NONE_,	//	undefined
 			NL_,
 			WS_,

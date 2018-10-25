@@ -281,9 +281,12 @@ namespace cyng
 	
 	void vm::pr()
 	{
+		BOOST_ASSERT_MSG(!stack_.empty(), "stack is empty (PR)");
+		BOOST_ASSERT_MSG(stack_.top().get_class().tag() == TC_UINT64, "wrong parameter type (PR)");
 		const auto idx = value_cast<std::size_t>(stack_.top(), 0u);
-		stack_.setr(stack_.top(), idx);
 		stack_.pop();
+		stack_.setr(stack_.top(), idx);
+		//stack_.pop();
 	}
 
 	void vm::call(memory& mem)

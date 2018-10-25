@@ -34,13 +34,14 @@ namespace cyng
 			class trailer
 			{
 			public:
-				trailer(vector_t&, fp);
+				trailer(int, vector_t&, fp);
 				trailer(trailer&&);
 				virtual ~trailer();
 
 			public:
 				fp fp_;
 			private:
+				const int verbose_;
 				vector_t& prg_;
 			};
 

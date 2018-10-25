@@ -53,7 +53,11 @@ namespace cyng
 				//	<< ")"
 				//	<< std::endl;
 #endif
-				ctx.set_return_value(cyng::make_object(std::chrono::system_clock::now()), 0);
+				//
+				//	produce result value
+				//
+				ctx.push(cyng::make_now());
+				//ctx.set_return_value(cyng::make_object(std::chrono::system_clock::now()), 0);
             });
 
             vm_.register_function("meta", 3, [this](context& ctx) {
@@ -128,31 +132,30 @@ namespace cyng
 
             vm_.register_function("title", 1, [this](context& ctx) {
 
-				//	[1idx,true,"Introduction into docScript"]
+				//	[00000001,Introduction,into,docScript]
+				//	
+				//	* function type (0 ... 3)
+				//	* title chunks
+				//
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 				//	[3idx,true,"docScript","into","Introduction"]
 				std::cout
 					<< "\n***info: title("
-					//<< cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 
 #endif
 				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				const std::size_t size = reader.get_index(0);
-				BOOST_ASSERT_MSG(size + 2 == frame.size(), "internal error (title)");
 
 				std::string title;
-				for (std::size_t idx = size + 1; idx > 1; idx--)
+				for (std::size_t idx = 1u; idx < frame.size(); ++idx)
 				{
-					title += value_cast<std::string>(reader.get(idx), "");
-// 					title += reader.get_string(idx);
-					if (idx > 2)
-					{
+					if (idx > 1) {
 						title += " ";
 					}
+					title += value_cast<std::string>(reader.get(idx), "");
 				}
 
 				if (verbosity_ > 1)

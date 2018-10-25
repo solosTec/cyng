@@ -89,15 +89,6 @@ namespace cyng
 				<< invoke("generate")
 				<< code::REBA
 				;
-
-			//if (verbose_ > 1)
-			//{
-			//	std::cout
-			//		<< "***info: EOF"
-			//		<< std::endl
-			//		;
-			//}
-
 		}
 
 		bool compiler::match(symbol_type st)
@@ -174,12 +165,6 @@ namespace cyng
 					<< std::endl
 					;
 				trailer tr(set_preamble(name));
-			//prg_
-			//	<< make_object(true)		//	global function
-			//	<< make_object<std::size_t>(0)	//	no parameters
-			//	<< invoke(name)
-			//	<< code::REBA
-			//	;
 			}
 			match(SYM_FUN_CLOSE);
 			break;
@@ -521,8 +506,12 @@ namespace cyng
 			{
 				prg_ << code::ASP;	//	return value(s)
 			}
-			prg_ << code::ESBA;
-			return trailer(prg_, fp);
+			prg_ 
+				<< code::ESBA
+				<< static_cast<std::uint32_t>(fp->type_)	//	function type
+				//<< fp->rvs_	//	return value count
+				;
+			return trailer(verbose_, prg_, fp);
 		}
 
 		vector_t move_program(compiler& c)
@@ -531,32 +520,48 @@ namespace cyng
 		}
 
 
-		compiler::trailer::trailer(vector_t& prg, fp f)
-			: prg_(prg)
-			, fp_(f)
+		compiler::trailer::trailer(int verbose, vector_t& prg, fp f)
+			: fp_(f)
+			, verbose_(verbose)
+			, prg_(prg)
 		{}
 
 		compiler::trailer::trailer(trailer&& tr)
-			: prg_(tr.prg_)
-			, fp_(tr.fp_)
+			: fp_(std::move(tr.fp_))
+			, verbose_(tr.verbose_)
+			, prg_(std::move(tr.prg_))
 		{}
 
 		compiler::trailer::~trailer()
 		{
-			for (auto idx = decltype(fp_->rvs_){0}; idx < fp_->rvs_; ++idx)
+			if (verbose_ > 3)
 			{
-				//	set return value
-				prg_
-					<< idx
-					<< code::PR
-					;	
+				std::cout
+					<< "***info: generate function call "
+					<< fp_->name_
+					<< " with #"
+					<< fp_->rvs_
+					<< " return value(s)"
+					<< std::endl
+					;
 			}
 
 			prg_
-				<< fp_->rvs_	//	parameter count
+				//<< fp_->rvs_	//	return value count
 				<< invoke(fp_->name_)
-				<< code::REBA
 				;
+
+			//	set return value(s)
+			for (auto idx = decltype(fp_->rvs_){0}; idx < fp_->rvs_; ++idx)
+			{
+				prg_
+					<< (idx + 1)
+					<< code::PR
+					;
+			}
+
+			prg_ << code::REBA;
+
 		}
 
 	}	//	docscript
