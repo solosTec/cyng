@@ -47,6 +47,7 @@ namespace cyng
 		 */
 		struct SERIALIZE_XML {};
 
+
 		template <typename T, typename TAG>
 		struct serializer 
 		{		

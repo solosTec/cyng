@@ -313,12 +313,13 @@ namespace cyng
 					if (verbose_ > 3)
 					{
 						std::cout
-							<< "***info: compile function "
+							<< "***info: ["
 							<< name
-							<< " with "
+							<< "] assemble param "
 							<< key
-							<< " = "
+							<< " = \""
 							<< look_ahead_->value_
+							<< "\""
 							<< std::endl
 							;
 					}
@@ -333,17 +334,17 @@ namespace cyng
 					if (verbose_ > 3)
 					{
 						std::cout
-							<< "***info: compile function "
+							<< "***info: ["
 							<< name
-							<< " with "
+							<< "] assemble param "
 							<< key
 							<< " = "
-							<< look_ahead_->value_
+							<< std::stoull(look_ahead_->value_)
 							<< std::endl
 							;
 					}
 					prg_
-// 						<< index_from_str_factory(look_ahead_->value_)	//	value
+						<< make_object(std::stoull(look_ahead_->value_))	//	value (string => int)
 						<< make_object(key)	//	key
 						<< code::ASSEMBLE_PARAM
 						;

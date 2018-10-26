@@ -46,35 +46,25 @@ namespace cyng
 			std::for_each(v.begin(), v.end(), [&os](char c) {
 				switch (c)
 				{
-				case '\n':
-					os << "\\n";
-					break;
-				case '\t':
-					os << "\\t";
-					break;
-				case '\a':
-					os << "\\a";
-					break;
-				case '\f':
-					os << "\\f";
-					break;
-				case '"':
-					os << "\"";
-					break;
-				case '\\':
-					os << "\\\\";
-					break;
+				case '\a':	os << "\\a";	break;
+				case '\b':	os << "\\b";	break;
+				case '\f':	os << "\\f";	break;
+				case '\n':	os << "\\n";	break;
+				case '\r':	os << "\\r";	break;
+				case '\t':	os << "\\t";	break;
+				case '\v':	os << "\\v";	break;
+				case '\\':	os << "\\\\";	break;
+				case '\'':	os << "\\\'";	break;
+				case '"':	os << "\"";		break;
 				default:
-					if ((c > 31) && (c < 127))
-					{
+					if ((c > 31) && (c < 127))	{
 						os << c;
 					}
-					else
-					{
+					else	{
 						os
 							<< "\\u"
 							<< std::hex
-							<< std::setw(4)
+							<< std::setw(2)
 							<< +c
 							;
 					}
