@@ -34,6 +34,7 @@ namespace cyng
 		{
 			serializer_helper<SERIALIZE_JSON>::write(os, obj);
 		}
+
 		
 		std::string to_str(object const& obj)
 		{

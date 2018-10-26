@@ -44,13 +44,39 @@ namespace cyng
 		std::ostream& operator<<(std::ostream& os, crypto::digest_sha256 const&);
 		std::ostream& operator<<(std::ostream& os, crypto::digest_sha512 const&);
 
+		/**
+		 * serialization tag: SERIALIZE_PLAIN
+		 */
 		void serialize_plain(std::ostream&, object const&);
+
+		/**
+		 * serialization tag: SERIALIZE_TYPED
+		 */
 		void serialize_typed(std::ostream&, object const&);
+
+		/**
+		 * serialization tag: SERIALIZE_BINARY
+		 */
 		void serialize_binary(std::ostream& os, object const& obj);
+
+		/**
+		 * serialization tag: SERIALIZE_JSON
+		 */
 		void serialize_json(std::ostream& os, object const& obj);
 
+		/**
+		 * serialize an object with tag SERIALIZE_PLAIN
+		 */
 		std::string to_str(object const&);
+
+		/**
+		 * serialize a vector with tag SERIALIZE_PLAIN
+		 */
 		std::string to_str(vector_t const&);
+
+		/**
+		 * serialize a tuple with tag SERIALIZE_PLAIN
+		 */
 		std::string to_str(tuple_t const&);
 	}
 }

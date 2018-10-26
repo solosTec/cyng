@@ -194,46 +194,11 @@ namespace cyng
 		
 		std::ostream& serializer <std::string, SERIALIZE_PLAIN>::write(std::ostream& os, std::string const& v)
 		{
-			for (char c : v)
-			{
-				switch (c)
-				{
-				case '\a':
-					os << '\\' << 'a';
-					break;
-				case '\b':
-					os << '\\' << 'b';
-					break;
-				case '\f':
-					os << '\\' << 'f';
-					break;
-				case '\n':
-					os << '\\' << 'n';
-					break;
-				case '\r':
-					os << '\\' << 'r';
-					break;
-				case '\t':
-					os << '\\' << 't';
-					break;
-				case '\v':
-					os << '\\' << 'v';
-					break;
-				case '\\':
-					os << '\\' << '\\';
-					break;
-				case '\'':
-					os << '\\' << '\'';
-					break;
-				case '\"':
-					os << '\\' << '\"';
-					break;
-				default:
-					os << c;
-					//	ToDo: escape other non-printable characters
-					break;
-				}
-			}
+			//
+			//	To serialize with escaped values use tag SERIALIZE_TYPED
+			//
+
+			os << v;
 			return os;
 		}
 

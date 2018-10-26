@@ -11,6 +11,7 @@
 #include <cyng/value_cast.hpp>
 #include <cyng/crypto/base64.h>
 #include <cyng/io/serializer.h>
+#include <cyng/dom/reader.h>
 
 #include <iostream>
 #include <boost/algorithm/string/predicate.hpp>
@@ -186,61 +187,53 @@ namespace cyng
 				const cyng::vector_reader reader(frame);
             });
 
-            vm_.register_function("header", 3, [this](context& ctx) {
+            vm_.register_function("header", 2, [this](context& ctx) {
 
-				//	[1idx,true,%(("level":"1"),("tag":"79bf3ba0-2362-4ea5-bcb5-ed93844ac59a"),("title":"Basics"))]
+				//	[00000001,%(("level":user-defined),("tag":79bf3ba0-2362-4ea5-bcb5-ed93844ac59a),("title":Second Header)),true]
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
 				std::cout
 					<< "\n***info: header("
-					// << cyng::io::to_literal(frame)
+					 << cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 
 #endif
-				const cyng::vector_reader reader(frame);
+				const auto reader = cyng::make_reader(frame.at(1));
 
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				const std::string txt = value_cast<std::string>(reader[2].get("title"), "NO TITLE");
-				const std::size_t level = value_cast<std::size_t>(reader[2].get("level"), 0);
-				const std::string stag = value_cast<std::string>(reader[2].get("tag"), boost::uuids::to_string(uuid_gen_()));
+				const std::string txt = value_cast<std::string>(reader.get("title"), "NO TITLE");
+				const std::size_t level = value_cast<std::size_t>(reader.get("level"), 0);
+				const std::string stag = value_cast<std::string>(reader.get("tag"), boost::uuids::to_string(uuid_gen_()));
 				const boost::uuids::uuid tag = name_gen_(stag);
 
+
 				const std::string node = generate_header(level, txt, tag);
-				ctx.set_return_value(make_object(node), 0);
+				ctx.push(cyng::make_object(node));
             });
 
-            vm_.register_function("header.1", 3, [this](context& ctx) {
+            vm_.register_function("header.1", 1, [this](context& ctx) {
+
+				//	[00000001,First,Header]
+				//	
+				//	* function type
+				//	* params
+				//
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
 				std::cout
 					<< "\n***info: header.1("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 
 #endif
 				const cyng::vector_reader reader(frame);
+				const std::string txt = accumulate(reader, 1, frame.size());
+				const std::string node = generate_header(1, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
 
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				if (cyng::primary_type_test<cyng::param_map_t>(reader.get_object(2)))
-				{
-					BOOST_ASSERT(size == 1);
-					const std::string txt = value_cast<std::string>(reader[2].get("title"), "NO TITLE");
-					const std::string stag = value_cast<std::string>(reader[2].get("tag"), boost::uuids::to_string(uuid_gen_()));
-					const boost::uuids::uuid tag = name_gen_(stag);
-
-					const std::string node = generate_header(1, txt, tag);
-					ctx.set_return_value(make_object(node), 0);
-				}
-// 				else
-// 				{
-// 					const std::string txt = accumulate(reader, size + 1, 1);
-// 					const std::string node = generate_header(1, txt, uuid_gen_());
-// 					ctx.set_return_value(make_object(node), 0);
-// 				}
             });
 
             vm_.register_function("header.2", 3, [this](context& ctx) {
@@ -741,11 +734,10 @@ namespace cyng
 				<< std::endl
 				;
 			std::for_each(begin, end, [this, &os](cyng::object const& obj) {
- 				os << cyng::io::to_str(obj);
+				os << cyng::io::to_str(obj) << std::endl;
 				//os << this->backpatch(cyng::to_string(obj));
 			});
 			os
-				<< std::endl
 				<< "</body>"
 				<< std::endl
 				;
@@ -881,7 +873,6 @@ namespace cyng
 			{
 				std::stringstream ss;
 				ss
-					<< std::endl
 					<< "<h"
 					<< level
 					<< " class=\"header."
@@ -900,7 +891,6 @@ namespace cyng
 					std::cout
 						<< "***info: header("
 						<< pos.first->second.to_str()
-						//<< node
 						<< ")"
 						<< std::endl;
 				}
