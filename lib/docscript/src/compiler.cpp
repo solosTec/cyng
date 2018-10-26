@@ -538,7 +538,7 @@ namespace cyng
 		compiler::trailer::trailer(trailer&& tr)
 			: fp_(std::move(tr.fp_))
 			, verbose_(tr.verbose_)
-			, prg_(std::move(tr.prg_))
+			, prg_(tr.prg_)
 		{}
 
 		compiler::trailer::~trailer()

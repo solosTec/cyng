@@ -272,3 +272,13 @@ BOOST_AUTO_TEST_CASE(chrono_001)
 	BOOST_CHECK(test_chrono_001());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	CHRONO
+
+#include "test-sys-001.h"
+
+BOOST_AUTO_TEST_SUITE(SYS)
+BOOST_AUTO_TEST_CASE(sys_001)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_sys_001());
+}
+BOOST_AUTO_TEST_SUITE_END()	//	SYS
