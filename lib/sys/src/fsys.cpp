@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2017 Sylko Olzscher 
+ * Copyright (c) 2018 Sylko Olzscher 
  * 
  */ 
 
@@ -64,15 +64,19 @@ namespace cyng
 		{
 			std::vector<std::string> drives;
 			
-			char buffer[BUFSIZE];
+			constexpr DWORD buffer_size = 1024;
+			char buffer[buffer_size];
 			buffer[0] = '\0';
 
-			if (::GetLogicalDriveStrings(BUFSIZE-1, buffer)) {
+			if (::GetLogicalDriveStrings(buffer_size -1, buffer)) {
 				
 				char* p = buffer;
-				
-				// Go to the next NULL character.
-//  			while (*p++);
+				while (*p != '\0') {
+					drives.push_back(p);
+
+					// Go to the next NULL character.
+					while (*p++);
+				};
 			}
 			
 			return drives;
