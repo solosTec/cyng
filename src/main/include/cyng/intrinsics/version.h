@@ -69,7 +69,7 @@ namespace cyng
 
 			double to_double() const 
 			{
-				return (double)major() / (double)minor();
+				return major() + minor() / 10.0;
 			}
 						
 		};
