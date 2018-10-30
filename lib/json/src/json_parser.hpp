@@ -76,12 +76,10 @@ namespace cyng
 			template < typename A >
 			struct result { typedef object type; };
 
-// 			object operator()(boost::fusion::vector < std::string, object > arg) const
 			object operator()(boost::fusion::vector < utf::u32_string, object > arg) const
 			{
 				const utf::u32_string utf8_key = boost::fusion::front(arg);
 				std::string key = utf::u32_to_u8_string(utf8_key);
-// 				std::string key(boost::u32_to_u8_iterator<u32_string::const_iterator>(utf8_key.begin()), boost::u32_to_u8_iterator<u32_string::const_iterator>(utf8_key.end()));
 				
 				const object value = boost::fusion::back(arg);
 				return make_object(param_t(key, value));

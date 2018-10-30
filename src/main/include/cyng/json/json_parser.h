@@ -69,7 +69,7 @@ namespace cyng
 		//	auto detect UUIDs
 		boost::spirit::qi::rule<Iterator, object(), Skipper> 	r_uuid_obj;
  		boost::spirit::qi::rule<Iterator, buffer_t()> 	r_uuid;
-		boost::spirit::qi::uint_parser<char, 16, 2, 2>	r_hex2;
+		boost::spirit::qi::uint_parser<std::uint8_t, 16, 2, 2>	r_hex2;
 
 	};
 } 	//	cyng
