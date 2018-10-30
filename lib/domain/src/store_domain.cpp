@@ -50,7 +50,11 @@ namespace cyng
 			//
 			if (!db.insert(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl), ctx.tag()))
 			{
-				ctx.attach(generate_invoke("log.msg.warning", "db.req.insert - failed", std::get<0>(tpl), std::get<1>(tpl)));
+				ctx.attach(generate_invoke("log.msg.warning"
+					, "db.req.insert - failed"
+					, std::get<0>(tpl)
+					, std::get<1>(tpl)
+					, std::get<3>(tpl)));
 			}
 		}));
 
