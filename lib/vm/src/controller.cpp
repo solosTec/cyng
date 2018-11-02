@@ -139,6 +139,17 @@ namespace cyng
 		return *this;
 	}
 
+	void controller::halt()
+	{
+		if (halt_)	return;
+
+		access([this](cyng::vm& vm) {
+			this->vm_.lib_.try_debug_log(vm_, "HALT");
+			this->vm_.run(cyng::vector_t{ cyng::make_object(cyng::code::HALT) });
+		});
+		
+	}
+
 	controller::parameter::parameter()
 		: prg_()
 	{}

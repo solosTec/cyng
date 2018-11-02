@@ -115,6 +115,24 @@ namespace cyng
 			, std::size_t arity
 			, vm_call proc);
 
+		/**
+		 * Send HALT instruction to VM
+		 */
+		void halt();
+
+		/**
+		 * Wait for VM to stop.
+		 */
+		template <typename R, typename P>
+		bool wait(std::size_t counter, std::chrono::duration<R, P> const& d)
+		{
+			BOOST_ASSERT_MSG((d * counter) < std::chrono::minutes(5), "unrealistic long waiting time");
+			while (!is_halted() && (counter-- != 0)) {
+				std::this_thread::sleep_for(d);
+			}
+			return is_halted();
+		}
+
 	private:
 		/**
 		 * Strand to dispatch and synchronize work load
