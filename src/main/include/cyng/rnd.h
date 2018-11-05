@@ -55,7 +55,7 @@ namespace cyng
 				: rng_()
 				, monitor_dist_(min_arg, max_arg)
 			{
-				rng_.seed(std::time(nullptr));
+				rng_.seed(static_cast<std::uint32_t>(std::time(nullptr)));
 			}
 
 			T next()

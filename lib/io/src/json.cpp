@@ -7,11 +7,14 @@
 
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/io/serializer.h>
+#include <cyng/io/io_buffer.h>
 #include <cyng/object.h>
-#include <cmath>
 #include <cyng/core/class_interface.h>
 #include <cyng/intrinsics/traits/tag.hpp>
+
+#include <cmath>
 #include <algorithm>
+
 #include <boost/io/ios_state.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/regex/pending/unicode_iterator.hpp>
@@ -286,7 +289,6 @@ namespace cyng
 			<< '"'
 			<< v
 			<< '"'
-// 			<< ":UUID"
 			;
 			return os;
 		}		
@@ -294,20 +296,30 @@ namespace cyng
 		std::ostream& serializer <buffer_t, SERIALIZE_JSON>::write(std::ostream& os, buffer_t const& v)
 		{
 			os 
-			<< "ToDo: buffer_t"
-			;
+				<< '"'
+				<< to_hex(v)
+				<< '"'
+				;
 			return os;
 		}
 		
 		std::ostream& serializer <color_8, SERIALIZE_JSON>::write(std::ostream& os, color_8 const& v)
 		{
-			os << "color-8";
+			os 
+				<< '"'
+				<< "color-8"
+				<< '"'
+				;
 			return os;
 		}
 		
 		std::ostream& serializer <color_16, SERIALIZE_JSON>::write(std::ostream& os, color_16 const& v)
 		{
-			os << "color-16";
+			os 
+				<< '"'
+				<< "color-16"
+				<< '"'
+				;
 			return os;
 		}
 		
