@@ -342,6 +342,36 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& serializer <std::int8_t, SERIALIZE_JSON>::write(std::ostream& os, std::int8_t v)
+		{
+			boost::io::ios_flags_saver  ifs(os);
+			if ((v >= 0x20) && (v <= 0x7e)) {
+				os
+					<< '"'
+					<< v
+					<< '"'
+					;
+			}
+			else {
+				serializer<std::string, SERIALIZE_JSON>::write(os, std::string(1, v));
+			}
+			return os;
+		}
+
+		std::ostream& serializer <std::int16_t, SERIALIZE_JSON>::write(std::ostream& os, std::int16_t v)
+		{
+			boost::io::ios_flags_saver  ifs(os);
+			os << std::dec << v;
+			return os;
+		}
+
+		std::ostream& serializer <std::uint16_t, SERIALIZE_JSON>::write(std::ostream& os, std::uint16_t v)
+		{
+			boost::io::ios_flags_saver  ifs(os);
+			os << std::dec << v;
+			return os;
+		}
+
 		std::ostream& serializer <std::int32_t, SERIALIZE_JSON>::write(std::ostream& os, std::int32_t v)
 		{
 			boost::io::ios_flags_saver  ifs(os);
