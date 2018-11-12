@@ -8,6 +8,7 @@
 #define CYNG_SYS_INFO_H
 
 #include <string>
+#include <chrono>
 
 namespace cyng 
 {
@@ -18,6 +19,11 @@ namespace cyng
 		 */
 		std::string	get_os_name();
 		std::string	get_os_release();
+
+		/**
+		 * Get system uptime
+		 */
+		std::chrono::milliseconds get_uptime();
 	}
 }
 

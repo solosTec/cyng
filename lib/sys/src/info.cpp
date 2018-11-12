@@ -19,6 +19,7 @@
 #elif BOOST_OS_LINUX
 
 #include <sys/utsname.h>
+#include <sys/sysinfo.h>
 
 #else
 #warning unknow OS
@@ -137,6 +138,22 @@ namespace cyng
 		}
 #endif
 
+
+		std::chrono::milliseconds get_uptime()
+		{
+#if BOOST_OS_WINDOWS
+			return std::chrono::milliseconds(GetTickCount64());
+#elif BOOST_OS_LINUX
+			struct sysinfo x;
+			if (sysinfo(&x) == 0)	{
+				//	Seconds since boot
+				return std::chrono::milliseconds(static_cast<unsigned long long>(x.uptime) * 1000ULL);
+			}
+			return std::chrono::milliseconds(0u);
+#else
+			return std::chrono::milliseconds(0u);
+#endif
+		}
 
 	}
 }
