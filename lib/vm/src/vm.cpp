@@ -130,9 +130,29 @@ namespace cyng
 		}
 #endif
 #ifdef _DEBUG
-		if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
+		const auto delta = std::chrono::system_clock::now() - now;
+		if (delta > std::chrono::seconds(2))
 		{
-			std::cerr << "======> " << tag_ << " T I M E O U T" << std::endl;
+			std::stringstream ss;
+			ss
+				<< tag_ 
+				<< " *** "
+				<< to_str(delta)
+				<< " TIMEOUT ***"
+				;
+
+			const std::string msg = ss.str();
+			context ctx(*this, mem);
+			if (!lib_.try_error_log(ctx, msg))
+			{
+				std::cerr
+					<< "\n\n"
+					<< msg
+					<< "\n\n"
+					<< std::endl
+					;
+			}
+
 		}
 #endif
 	}

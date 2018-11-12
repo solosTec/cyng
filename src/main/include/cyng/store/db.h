@@ -73,11 +73,15 @@ namespace cyng
 				//
 				auto tbl_list = get_table_ptrs(std::forward<Tbls>(tbls)...);
 				
-// 				std::tuple<cyng::store::table const*, cyng::store::table*>
-// 				std::cout
-// 				<< boost::core::demangle(typeid(decltype(tbl_list)).name())
-// 				<< std::endl;
-				
+				//
+				//	ToDo: Return if tbl_list contains empty table pointers.
+				//	tbl_list is of type: (std::tuple<cyng::store::table *>)
+				//
+				if ((std::tuple_size<decltype(tbl_list)>::value == 1) && (std::get<0>(tbl_list) == nullptr))	return;
+				//if ((std::tuple_size<decltype(tbl_list)>::value == 2) && (std::get<1>(tbl_list) == nullptr))	return;
+				//if ((std::tuple_size<decltype(tbl_list)>::value == 3) && (std::get<2>(tbl_list) == nullptr))	return;
+				//	...
+
 				//
 				//	Generate a tuple with the appropriate lock types
 				//	read/write lock tables
