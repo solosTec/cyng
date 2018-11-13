@@ -59,7 +59,7 @@ namespace cyng
 			access(F f, Tbls&& ... tbls)
 #else
 			template <class F, typename ...Tbls>
-			constexpr decltype(auto)  
+  			constexpr decltype(auto)  
 			access(F&& f, Tbls&& ... tbls)
 #endif
 			{
@@ -77,7 +77,7 @@ namespace cyng
 				//	ToDo: Return if tbl_list contains empty table pointers.
 				//	tbl_list is of type: (std::tuple<cyng::store::table *>)
 				//
-				if ((std::tuple_size<decltype(tbl_list)>::value == 1) && (std::get<0>(tbl_list) == nullptr))	return;
+// 				if ((std::tuple_size<decltype(tbl_list)>::value == 1) && (std::get<0>(tbl_list) == nullptr))	return;
 				//if ((std::tuple_size<decltype(tbl_list)>::value == 2) && (std::get<1>(tbl_list) == nullptr))	return;
 				//if ((std::tuple_size<decltype(tbl_list)>::value == 3) && (std::get<2>(tbl_list) == nullptr))	return;
 				//	...
