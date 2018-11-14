@@ -635,8 +635,6 @@ namespace cyng
 				state_ = STATE_INITIALIZED;
 			}
 			
-		
-
 			//	initialize NULL data argument
 			SQLLEN	statement::null_data_ = SQL_NULL_DATA;
 			SQLLEN	statement::datetime_data_ = sizeof(SQL_TIMESTAMP_STRUCT);

@@ -66,7 +66,7 @@ namespace cyng
 				 * cleanup a complete table
 				 */
 				virtual void clear() override;
-				
+
 				virtual result_ptr get_result() override;
 				
 			public:

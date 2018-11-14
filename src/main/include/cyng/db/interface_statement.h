@@ -57,10 +57,10 @@ namespace cyng
 			virtual bool bind(const cyng::table::key_type&, cyng::table::data_type const&, cyng::table::meta_table_ptr) = 0;
 
 			/**
-			 * cleanup a complete table
+			 * unbound all parameters and reset a prepared statetent
 			 */
 			virtual void clear() = 0;
-				
+
 			virtual result_ptr get_result() = 0;
 		};
 		

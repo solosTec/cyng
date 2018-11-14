@@ -389,8 +389,11 @@ namespace cyng
 
 			std::pair<int, bool> statement::prepare(std::string const& sql)
 			{
-				BOOST_ASSERT_MSG(state_ == INITIAL, "INITIAL state expected");				
-				if (state_ == INITIAL)
+				//BOOST_ASSERT_MSG(state_ == INITIAL, "INITIAL state expected");	
+				if (state_ == RUNNING) {
+					int i = 0;
+				}
+				if (state_ == INITIAL || state_ == RUNNING)
 				{
 					const int rc = ::sqlite3_prepare_v2(connection_, sql.c_str(), static_cast<int>(sql.length()), &stmt_, &tail_);
 					if (!is_ok(rc))	
@@ -595,7 +598,7 @@ namespace cyng
 					{
 						connection_.show_diagnostics();
 					}
-					state_ = INITIAL;
+					//state_ = INITIAL;
 				}
 				else 
 				{
@@ -606,7 +609,6 @@ namespace cyng
 				static_data_.clear();
 			}
 			
-		
 			bool statement::is_valid() const
 			{
 				return stmt_ != nullptr;
