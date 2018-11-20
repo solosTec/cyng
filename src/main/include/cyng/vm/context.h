@@ -27,7 +27,7 @@ namespace cyng
 		context() = delete;
 		context(context const&) = delete;
 		context(context&&) = delete;
-		context(vm&, memory&);
+		context(vm&, memory&, std::string);
 		context(context&, memory&);
 
 		/**
@@ -93,9 +93,15 @@ namespace cyng
 		 */
 		context& attach(vector_t&& prg);
 
+		/**
+		 * return function name
+		 */
+		std::string const& get_name() const;
+
 	private:
 		vm& vm_;
 		memory& mem_;
+		const std::string name_;
 	};
 
 	/**
@@ -128,7 +134,7 @@ namespace cyng
 namespace std
 {
 	/**
-	 * helper function to obtai target address of function
+	 * helper function to obtain target address of function
 	 * @see: https://stackoverflow.com/questions/20833453/comparing-stdfunctions-for-equality
 	 */
 	template<typename T, typename... U>
@@ -152,7 +158,7 @@ namespace std
 		using first_argument_type = cyng::vm_call;
 		using second_argument_type = cyng::vm_call;
 		
-		bool operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept;
+		bool operator()(first_argument_type const& c1, second_argument_type const& c2) const noexcept;
 	};	
 
 	template<>
@@ -163,7 +169,7 @@ namespace std
 		using first_argument_type = cyng::vm_call;
 		using second_argument_type = cyng::vm_call;
 
-		bool operator()(cyng::vm_call const& c1, cyng::vm_call const& c2) const noexcept;
+		bool operator()(first_argument_type const& c1, second_argument_type const& c2) const noexcept;
 	};
 
 }

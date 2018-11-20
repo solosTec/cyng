@@ -11,14 +11,16 @@
 
 namespace cyng 
 {
-	context::context(vm& v, memory& mem)
+	context::context(vm& v, memory& mem, std::string name)
 	: vm_(v)
-	, mem_(mem)
+		, mem_(mem)
+		, name_(name)
 	{}
 	
 	context::context(context& ctx, memory& mem)
-		: vm_(ctx.vm_)
+	: vm_(ctx.vm_)
 		, mem_(mem)
+		, name_(ctx.name_)
 	{}
 
 	vector_t context::get_frame() const
@@ -96,6 +98,11 @@ namespace cyng
 	{
 		mem_ += std::move(prg);
 		return *this;
+	}
+
+	std::string const& context::get_name() const
+	{
+		return name_;
 	}
 
 	namespace traits

@@ -274,7 +274,7 @@ namespace cyng
 			//
 			activation a(v.stack_);
 			v.stack_.push(make_object(msg));
-			context ctx_log(v, mem);
+			context ctx_log(v, mem, "log.msg.debug");
 			(*pos).second(ctx_log);
 			return true;
 		}
@@ -296,7 +296,7 @@ namespace cyng
 			//	save and restore call stack 
 			//
 			activation a(v.stack_);
-			context ctx_halt(v, mem);
+			context ctx_halt(v, mem, "vm.halt");
 			(*pos).second(ctx_halt);
 			return true;
 		}

@@ -142,7 +142,7 @@ namespace cyng
 				;
 
 			const std::string msg = ss.str();
-			context ctx(*this, mem);
+			context ctx(*this, mem, "log.msg.error");
 			if (!lib_.try_error_log(ctx, msg))
 			{
 				std::cerr
@@ -371,7 +371,7 @@ namespace cyng
 		//
 		//	call procedure
 		//
-		context ctx(*this, mem);
+		context ctx(*this, mem, fname);
 		if (!lib_.invoke(fname, ctx))
 		{
 			std::stringstream ss;
