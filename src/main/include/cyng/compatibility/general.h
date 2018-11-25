@@ -13,6 +13,8 @@
 #include <boost/utility/string_view.hpp>
 #else
 #include <string_view>
+#include <string>
+using namespace std::string_literals; // enables s-suffix for std::string literals
 #endif
 
 namespace cyng 

@@ -75,6 +75,7 @@ namespace cyng
 		
 		//
 		//	Leveraging Boost.Fusion
+		//	Note: There is a restriction to max. 5 parameters in the sequence when using this boost version.
 		//
 		template <class F, class Sequence>
 		constexpr auto apply(F f, Sequence & s) -> typename  boost::fusion::result_of::invoke_function_object<F,Sequence>::type
