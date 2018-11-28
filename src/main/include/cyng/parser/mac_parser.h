@@ -38,7 +38,7 @@ namespace cyng
 	 	 * Requires exactly two digits
 		 *	T, Radix, MinDigits, MaxDigits
 		 */
-		boost::spirit::qi::uint_parser<std::uint8_t, 16, 2, 2>		r_hex2;
+		boost::spirit::qi::uint_parser<unsigned int, 16, 2, 2>		r_hex2;
 	};
 
 		
@@ -76,7 +76,7 @@ namespace cyng
 		 * Requires exactly two digits
 		 *	T, Radix, MinDigits, MaxDigits
 		 */
-		boost::spirit::qi::uint_parser<std::uint8_t, 16, 2, 2>		r_hex2;
+		boost::spirit::qi::uint_parser<unsigned int, 16, 2, 2>		r_hex2;
 
 		object mac48_helper(mac48 const& v);
 		object mac64_helper(mac64 const& v);

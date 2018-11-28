@@ -49,7 +49,7 @@ namespace cyng
 				case TC_FLOAT:		return static_cast<T>(value_cast<float>(obj, 0.0));
 				case TC_DOUBLE:		return static_cast<T>(value_cast<double>(obj, 0.0));
 				case TC_FLOAT80:	return static_cast<T>(value_cast<long double>(obj, 0.0));
-
+				case TC_STRING:		return string_to_numeric<T>(obj, def);
 				default:
 					break;
 			}
@@ -84,6 +84,23 @@ namespace cyng
 		}
 		return def;
 	}	
+
+	template < typename T >
+	T string_to_numeric(object const& obj, T const& def) noexcept
+	{
+		static_assert(std::is_arithmetic<T>::value, "only arithmetic types supported");
+		try {
+			const std::string defll = std::to_string(def);
+			const std::string inp = cyng::value_cast<std::string>(obj, defll);
+			return (std::is_unsigned_v <T>)
+				? std::stoull(inp)
+				: std::stoll(inp)
+				;
+		}
+		catch (std::exception const&) {
+		}
+		return def;
+	}
 }
 
 #endif //	CYNG_NUMERIC_CAST_HPP
