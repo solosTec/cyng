@@ -8,6 +8,8 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 #include <cyng/sys/fsys.h>
+#include <cyng/sys/mac.h>
+#include <cyng/io/serializer.h>
 
 namespace cyng 
 {
@@ -20,6 +22,15 @@ namespace cyng
 		}
 #endif
 		BOOST_CHECK(!drives.empty());
+
+        auto const macs = sys::retrieve_mac48();
+#ifdef _DEBUG
+        for (auto const& m : macs) {
+            using namespace io;
+            std::cout << m << std::endl;
+        }
+#endif
+
 		return true;
 	}
 	

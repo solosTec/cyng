@@ -46,7 +46,7 @@ namespace cyng
 			std::string line;
 			if (std::getline(infile, line, '\n'))
 			{
-				//			std::cout << "parse: " << line << std::endl;
+// 				std::cout << "parse: " << line << std::endl;
                 const std::pair<cyng::mac48, bool > r = cyng::parse_mac48(line);
 				if (r.second && !r.first.is_nil())
 				{
@@ -109,7 +109,7 @@ namespace cyng
 				{
 					const boost::filesystem::path name = adapter.stem();
                     const std::vector<mac48> al = retrieve_mac48(name.string());
-                    result.insert(result.end(), result.begin(), result.end());
+                    result.insert(result.end(), al.begin(), al.end());
 				}
 			});
 

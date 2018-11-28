@@ -14,6 +14,23 @@
  
 namespace cyng 
 {
+    template < typename T >
+    T string_to_numeric(object const& obj, T const& def) noexcept
+    {
+        static_assert(std::is_arithmetic<T>::value, "only arithmetic types supported");
+        try {
+            const std::string defll = std::to_string(def);
+            const std::string inp = cyng::value_cast<std::string>(obj, defll);
+            return (std::is_unsigned_v <T>)
+                ? std::stoull(inp)
+                : std::stoll(inp)
+                ;
+        }
+        catch (std::exception const&) {
+        }
+        return def;
+    }
+
 	/**
 	 * If the hidden value is not of type T the function returns the default value.
 	 *
@@ -84,23 +101,6 @@ namespace cyng
 		}
 		return def;
 	}	
-
-	template < typename T >
-	T string_to_numeric(object const& obj, T const& def) noexcept
-	{
-		static_assert(std::is_arithmetic<T>::value, "only arithmetic types supported");
-		try {
-			const std::string defll = std::to_string(def);
-			const std::string inp = cyng::value_cast<std::string>(obj, defll);
-			return (std::is_unsigned_v <T>)
-				? std::stoull(inp)
-				: std::stoll(inp)
-				;
-		}
-		catch (std::exception const&) {
-		}
-		return def;
-	}
 }
 
 #endif //	CYNG_NUMERIC_CAST_HPP
