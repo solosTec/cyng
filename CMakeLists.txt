@@ -277,7 +277,7 @@ else()
 endif()
 
 #
-# BOOST_VER is "1_67" or "1_68"
+# BOOST_VER is "1_67", "1_68"  or "1_69"
 #
 function(windows_boost_fix BOOST_VER)
 #  SET(${varName} ${${varName}}${${varName}} PARENT_SCOPE)
@@ -301,25 +301,31 @@ function(windows_boost_fix BOOST_VER)
 endfunction()
 
 #
-#	setup Boost library 1.68.0, 1.67.0 or 1.66.0
+#	setup Boost library 1.69.0, 1.68.0, 1.67.0 or 1.66.0
 #
 if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
     if(UNIX)
-        if(EXISTS "$ENV{HOME}/projects/boost_1_68_0/install")
+        if(EXISTS "$ENV{HOME}/projects/boost_1_69_0")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_69_0" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_69_0/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
+        elseif(EXISTS "$ENV{HOME}/projects/boost_1_68_0/install")
             set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_68_0/install" CACHE PATH "BOOST_ROOT")
             set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_68_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
-            message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         elseif(EXISTS "$ENV{HOME}/projects/boost_1_67_0/install")
             set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_67_0/install" CACHE PATH "BOOST_ROOT")
             set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_67_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
-            message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         elseif(EXISTS "$ENV{HOME}/projects/boost_1_66_0/install")
             set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_66_0/install" CACHE PATH "BOOST_ROOT")
             set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_66_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
-            message(STATUS "** Search Boost    : overwrite with ${BOOST_ROOT}")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         endif()
     elseif(WIN32)
-        if(EXISTS "C:/local/boost_1_68_0")
+        if(EXISTS "C:/local/boost_1_69_0")
+            windows_boost_fix("1_69")
+        elseif(EXISTS "C:/local/boost_1_68_0")
             windows_boost_fix("1_68")
         elseif(EXISTS "C:/local/boost_1_67_0")
             windows_boost_fix("1_67")
@@ -327,7 +333,7 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
     endif(UNIX)
 endif()
 
-set(Boost_ADDITIONAL_VERSIONS "1.66.0" "1.67.0" "1.68.0")
+set(Boost_ADDITIONAL_VERSIONS "1.66.0" "1.67.0" "1.68.0" "1.69.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
 find_package(Boost 1.66 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework regex)
 
