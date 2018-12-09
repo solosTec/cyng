@@ -74,17 +74,22 @@ namespace cyng
 
 				auto ptr = get_shared();
 				timer_.expires_from_now(d);
-				timer_.async_wait([ptr](boost::system::error_code const& ec){
-					if (ec != boost::asio::error::operation_aborted)
-					{
-						ptr->run();
+				timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, ptr](boost::system::error_code const& ec){
+					if (ec != boost::asio::error::operation_aborted && !this->shutdown_) {
+						ptr->timeout();
 					}
-				});
+				}));
 			}
 			
 			void suspend_until(std::chrono::system_clock::time_point);
 
 		protected:
+
+			/**
+			 * timeout() is called when timer expired
+			 */
+			virtual void timeout() = 0;
+
 			/**
 			 * @return The number of asynchronous operations that were cancelled.
 			 */

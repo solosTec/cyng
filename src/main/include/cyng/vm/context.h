@@ -91,7 +91,7 @@ namespace cyng
 		 * Append instructions to the running program
 		 * and executes it.
 		 */
-		context& attach(vector_t&& prg);
+		context& queue(vector_t&& prg);
 
 		/**
 		 * return function name

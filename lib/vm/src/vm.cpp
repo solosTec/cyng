@@ -53,6 +53,8 @@ namespace cyng
 	
 	void vm::run(vector_t&& vec)
 	{
+		if (vec.empty())	return;
+
 #ifdef _DEBUG		
 		auto now = std::chrono::system_clock::now();
 #endif

@@ -42,13 +42,12 @@ namespace cyng
 
 			auto ptr = get_shared();
 			timer_.expires_from_now(tp - std::chrono::system_clock::now());
-			timer_.async_wait([ptr](boost::system::error_code const& ec) {
-				if (ec != boost::asio::error::operation_aborted)
-				{
-					ptr->run();
-				}
-			});
 
+			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, ptr](boost::system::error_code const& ec) {
+				if (ec != boost::asio::error::operation_aborted && !this->shutdown_)	{
+					ptr->timeout();
+				}
+			}));
 		}
 
 	}	// async

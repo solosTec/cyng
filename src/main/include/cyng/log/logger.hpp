@@ -279,7 +279,11 @@ namespace cyng
 				if (!ptr->is_matching_severity(threshold_))	return false;
 				
 				dispatcher_.dispatch([this, ptr](){
-					if (ptr->is_matching_severity(severity::LEVEL_ERROR))
+					if (ptr->is_matching_severity(severity::LEVEL_FATAL))
+					{
+						print_fatal_msg(ptr);
+					}
+					else if (ptr->is_matching_severity(severity::LEVEL_ERROR))
 					{
 						print_error_msg(ptr);
 					}
@@ -313,6 +317,30 @@ namespace cyng
 			}
 
 		private:
+			void print_fatal_msg(typename log_base< R >::record_ptr ptr)
+			{
+				if (std::cerr.bad())
+				{
+					std::cerr.clear();
+				}
+				if (terminal_seq_enabled_)
+				{
+					std::cerr
+						<< "\033[1m\033[31m"	//	bold red
+						<< *ptr
+						<< "\033[0m"	//	reset
+						<< std::endl
+						;
+				}
+				else
+				{
+					std::cerr
+						<< *ptr
+						<< std::endl
+						;
+				}
+			}
+
 			void print_error_msg(typename log_base< R >::record_ptr ptr)
 			{
 				if (std::cerr.bad())

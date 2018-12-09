@@ -94,7 +94,7 @@ namespace cyng
 		vm_.sync_run(std::move(prg));
 	}
 
-	context& context::attach(vector_t&& prg)
+	context& context::queue(vector_t&& prg)
 	{
 		mem_ += std::move(prg);
 		return *this;

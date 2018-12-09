@@ -60,7 +60,7 @@ namespace cyng
 
 			dispatcher_.post([this, cb]() {
 
-				cb(this->vm_);
+				if (!halt_)	cb(this->vm_);
 
 			});
 		}
@@ -84,7 +84,7 @@ namespace cyng
 			parameter param(std::move(prg));
 			dispatcher_.post([this, param]() {
 
-				this->vm_.run(std::move(param.prg_));
+				if (!halt_)	this->vm_.run(std::move(param.prg_));
 
 			});
 		}

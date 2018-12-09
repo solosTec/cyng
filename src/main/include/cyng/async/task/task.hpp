@@ -149,6 +149,12 @@ namespace cyng
 					;
 			}
 
+		protected:
+			virtual void timeout() override
+			{
+				if (!shutdown_)	eval_rc(impl_.run());
+			}
+
 		private:
 			/**
 			 * Support for named slots.
