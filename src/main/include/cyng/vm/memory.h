@@ -58,8 +58,8 @@ namespace cyng
 		size_type jump(size_type addr);
 		
 		/**
-		 * Attach a program att the end.
-		 * Doens't change the pc.
+		 * Attach a program at the end.
+		 * Doesn't change the pc.
 		 */
 		friend memory& operator+=(memory&, vector_t const&);
 		friend memory& operator+=(memory&, vector_t&&);
