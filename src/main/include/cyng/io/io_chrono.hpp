@@ -37,7 +37,8 @@ namespace cyng
 	/**
 	 * yyyy-mm-dd only date without time information
 	 */
-	std::string date_to_str(std::chrono::system_clock::time_point const&);
+	std::ostream& date_to_str(std::ostream& os, std::chrono::system_clock::time_point, char sep);
+	std::string date_to_str(std::chrono::system_clock::time_point);
 
 	/**
 	 * Write a timespan in hh::mm::ss.ffff format.

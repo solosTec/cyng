@@ -18,6 +18,7 @@ namespace cyng
 	
 	std::pair<version, bool> parse_version(std::string);
 	std::pair<revision, bool> parse_revision(std::string);
+	std::pair<object, bool> parse_ver(std::string inp);
 
 	/**
 	 * Accept input of the the form uint16.uint16

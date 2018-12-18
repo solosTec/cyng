@@ -12,6 +12,7 @@
 #include <utility>
 #include <cstdint>
 #include <limits>
+#include <sstream>
 #include <boost/predef.h>
 #if defined(BOOST_OS_LINUX)
 #include <sys/types.h>
@@ -67,9 +68,24 @@ namespace cyng
 					;
 			}
 
+			/**
+			 * Convert a version into a representation as double value in the form
+			 * of major.minor. Doesn't work well for some combinations e.g. 
+			 * 0 + (7/10) is 0.69999999999999996
+			 */
 			double to_double() const 
 			{
-				return major() + minor() / 10.0;
+				std::stringstream ss;
+				ss
+					<< major()
+					<< '.'
+					<< minor()
+					;
+
+				double r{ 0.0 };
+				ss >> r;	//	read double from stream
+
+				return r;
 			}
 						
 		};

@@ -85,24 +85,34 @@ namespace cyng
 		return ss.str();
 	}
 
-	std::string date_to_str(std::chrono::system_clock::time_point const& tp)
+	std::ostream& date_to_str(std::ostream& os, std::chrono::system_clock::time_point tp, char sep)
+	{
+		const std::tm tm = chrono::convert_utc(std::chrono::system_clock::to_time_t(tp));
+
+		//	store and reset stream state
+		boost::io::ios_flags_saver  ifs(os);
+
+		os
+			<< std::setfill('0')
+			<< chrono::year(tm)
+			<< sep
+			<< std::setw(2)
+			<< chrono::month(tm)
+			<< sep
+			<< std::setw(2)
+			<< chrono::day(tm)
+			;
+
+		return os;
+	}
+
+	std::string date_to_str(std::chrono::system_clock::time_point tp)
 	{
 		const std::tm tm = chrono::convert_utc(std::chrono::system_clock::to_time_t(tp));
 
 		//	store and reset stream state
 		std::stringstream ss;
-
-		ss
-			<< std::setfill('0')
-			<< chrono::year(tm)
-			<< '-'
-			<< std::setw(2)
-			<< chrono::month(tm)
-			<< '-'
-			<< std::setw(2)
-			<< chrono::day(tm)
-			;
-
+		date_to_str(ss, tp, '-');
 		return ss.str();
 
 	}
