@@ -19,8 +19,6 @@ namespace cyng
 	template struct rev_parser <std::string::const_iterator>;
 	template struct rev_parser <utf::convert_u8_to_u32>;
 
-	template struct version_parser <std::string::const_iterator>;
-
 	std::pair<version, bool> parse_version(std::string inp)
 	{
 		version result(0, 0);
