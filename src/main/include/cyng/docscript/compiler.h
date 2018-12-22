@@ -73,7 +73,13 @@ namespace cyng
 			 */
 			void fun_par(trailer&&);
 			void key(std::string name, bool, std::string key);
-			void arg(std::string name, bool, std::string value);
+
+			/**
+			 * @param name function name
+			 * @param nl NL or WS function type
+			 * @return argument count
+			 */
+			std::size_t arg(std::string name, bool nl, std::string value);
 
 			void init_library();
 

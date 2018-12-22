@@ -220,14 +220,13 @@ namespace cyng
 				//	* params
 				//
 				const cyng::vector_t frame = ctx.get_frame();
-#ifdef _DEBUG
 
+#ifdef _DEBUG
 				std::cout
 					<< "\n***info: header.1("
 					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
-
 #endif
 				const cyng::vector_reader reader(frame);
 				const std::string txt = accumulate(reader, 1, frame.size());
@@ -238,102 +237,57 @@ namespace cyng
 
             vm_.register_function("header.2", 3, [this](context& ctx) {
 
-				//	[1idx,true,"Examples"]
-				//	[3idx, true, "DocScript", "of", "Examples"]
 				const cyng::vector_t frame = ctx.get_frame();
-#ifdef _DEBUG
 
+#ifdef _DEBUG
 				std::cout
 					<< "\n***info: header.2("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
-
 #endif
 				const cyng::vector_reader reader(frame);
+				const std::string txt = accumulate(reader, 1, frame.size());
+				const std::string node = generate_header(2, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
 
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				if (cyng::primary_type_test<cyng::param_map_t>(reader.get_object(2)))
-				{
-					BOOST_ASSERT(size == 1);
-					const std::string txt = value_cast<std::string>(reader[2].get("title"), "NO TITLE");
-					const std::string stag = value_cast<std::string>(reader[2].get("tag"), boost::uuids::to_string(uuid_gen_()));
-					const boost::uuids::uuid tag = name_gen_(stag);
-
-					const std::string node = generate_header(2, txt, tag);
-					ctx.set_return_value(make_object(node), 0);
-				}
-// 				else
-// 				{
-// 					const std::string txt = accumulate(reader, size + 1, 1);
-// 					const std::string node = generate_header(2, txt, uuid_gen_());
-// 					ctx.set_return_value(make_object(node), 0);
-// 				}
-            });
+			});
 
             vm_.register_function("header.3", 3, [this](context& ctx) {
-				const cyng::vector_t frame = ctx.get_frame();
-#ifdef _DEBUG
 
+				const cyng::vector_t frame = ctx.get_frame();
+
+#ifdef _DEBUG
 				std::cout
 					<< "\n***info: header.3("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
-
 #endif
 				const cyng::vector_reader reader(frame);
+				const std::string txt = accumulate(reader, 1, frame.size());
+				const std::string node = generate_header(3, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
 
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				if (cyng::primary_type_test<cyng::param_map_t>(reader.get_object(2)))
-				{
-					BOOST_ASSERT(size == 1);
-					const std::string txt = value_cast<std::string>(reader[2].get("title"), "NO TITLE");
-					const std::string stag = value_cast<std::string>(reader[2].get("tag"), boost::uuids::to_string(uuid_gen_()));
-					const boost::uuids::uuid tag = name_gen_(stag);
-
-					const std::string node = generate_header(3, txt, tag);
-					ctx.set_return_value(make_object(node), 0);
-				}
-// 				else
-// 				{
-// 					const std::string txt = accumulate(reader, size + 1, 1);
-// 					const std::string node = generate_header(3, txt, uuid_gen_());
-// 					ctx.set_return_value(make_object(node), 0);
-// 				}
-            });
+			});
 
             vm_.register_function("header.4", 3, [this](context& ctx) {
-				const cyng::vector_t frame = ctx.get_frame();
-#ifdef _DEBUG
 
+				const cyng::vector_t frame = ctx.get_frame();
+
+#ifdef _DEBUG
 				std::cout
-					<< "\n***info: header.4("
-					// << cyng::io::to_literal(frame)
+					<< "\n***info: header.3("
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
-
 #endif
 				const cyng::vector_reader reader(frame);
+				const std::string txt = accumulate(reader, 1, frame.size());
+				const std::string node = generate_header(4, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
 
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				if (cyng::primary_type_test<cyng::param_map_t>(reader.get_object(2)))
-				{
-					BOOST_ASSERT(size == 1);
-					const std::string txt = value_cast<std::string>(reader[2].get("title"), "NO TITLE");
-					const std::string stag = value_cast<std::string>(reader[2].get("tag"), boost::uuids::to_string(uuid_gen_()));
-					const boost::uuids::uuid tag = name_gen_(stag);
-
-					const std::string node = generate_header(4, txt, tag);
-					ctx.set_return_value(make_object(node), 0);
-				}
-// 				else
-// 				{
-// 					const std::string txt = accumulate(reader, size + 1, 1);
-// 					const std::string node = generate_header(4, txt, uuid_gen_());
-// 					ctx.set_return_value(make_object(node), 0);
-// 				}
-            });
+			});
 
             vm_.register_function("paragraph", 2, [this](context& ctx) {
 
@@ -354,102 +308,98 @@ namespace cyng
 
             });
 
-            vm_.register_function("bold", 3, [this](context& ctx) {
+            vm_.register_function("bold", 2, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-
-				//	[3idx,false,"here","bold","everything"]
+				//	[00000002,ipsum]
 				std::cout
 					<< "\n***info: bold("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
-
 #endif
 				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				//BOOST_ASSERT_MSG(size + 2 == frame.size(), "internal error (bold)");
+				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 
 				const std::string node = "<b>"
-					+ accumulate(reader, size + 1, 1)
+					+ accumulate(reader, 1, frame.size())
 					+ "</b>"
 					;
-				//if (verbosity_ > 2)
-				//{
-				//	std::cout
-				//		<< "***info: bold("
-				//		<< node
-				//		<< ")"
-				//		<< std::endl;
-				//}
 
-				ctx.set_return_value(make_object(node), 0);
+				if (verbosity_ > 3)
+				{
+					std::cout
+						<< "***info: bold("
+						<< node
+						<< ")"
+						<< std::endl;
+				}
+
+				ctx.push(cyng::make_object(node));
 
             });
 
-            vm_.register_function("emphasise", 3, [this](context& ctx) {
+            vm_.register_function("emphasise", 2, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
-
-				//	[1idx,"program"]
-				//std::cout
-				//	<< "\n***info: emphasise("
-				//	<< cyng::io::to_literal(frame)
-				//	<< ")"
-				//	<< std::endl;
-
+				//	[00000002,ipsum]
+				std::cout
+					<< "\n***info: emphasise("
+					<< cyng::io::to_str(frame)
+					<< ")"
+					<< std::endl;
 #endif
 				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				//BOOST_ASSERT_MSG(size + 2 == frame.size(), "internal error (italic)");
+				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 
 				const std::string node = "<em>"
-					+ accumulate(reader, size + 1, 1)
+					+ accumulate(reader, 1, frame.size())
 					+ "</em>"
 					;
-				//if (verbosity_ > 2)
-				//{
-				//	std::cout
-				//		<< "***info: italic("
-				//		<< node
-				//		<< ")"
-				//		<< std::endl;
-				//}
 
-				ctx.set_return_value(make_object(node), 0);
+				if (verbosity_ > 3)
+				{
+					std::cout
+						<< "***info: emphasise("
+						<< node
+						<< ")"
+						<< std::endl;
+				}
 
-            });
+				ctx.push(cyng::make_object(node));
+			});
 
             vm_.register_function("color", 3, [this](context& ctx) {
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-				//	[1idx,true,%(("red":"spiced up"))]
-				//std::cout
-				//	<< "\n***info: color("
-				//	<< cyng::io::to_literal(frame)
-				//	<< ")"
-				//	<< std::endl;
+				//	[00000002,%(("red":spiced up)),false]
+				std::cout
+					<< "\n***info: color("
+					<< cyng::io::to_str(frame)
+					<< ")"
+					<< std::endl;
 
 #endif
 				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				const auto map = value_cast<param_map_t>(reader.get(2), param_map_t());
-				//BOOST_ASSERT_MSG(map.size() == 1, "internal error (color)");
+				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				const auto map = value_cast(reader.get(1), param_map_t());
+				BOOST_ASSERT_MSG(map.size() == 1, "internal error (color)");
 
 				std::stringstream ss;
 				ss
 					<< "<span style=\"color:"
 					<< map.begin()->first
 					<< "\">"
-// 					<< cyng::to_string(map.begin()->second)
+ 					<< cyng::io::to_str(map.begin()->second)
 					<< "</span>"
 					;
 				const std::string node = ss.str();
-				if (verbosity_ > 2)
+				if (verbosity_ > 3)
 				{
 					std::cout
 						<< "***info: color("
@@ -458,8 +408,7 @@ namespace cyng
 						<< std::endl;
 				}
 
-				//ctx.set_return_value_invoke(make_object(node), 0);
-				ctx.set_return_value(make_object(node), 0);
+				ctx.push(cyng::make_object(node));
 
             });
 

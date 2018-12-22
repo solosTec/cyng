@@ -136,7 +136,7 @@ namespace cyng
 				key(name, true, look_ahead_->value_);
 				break;
 			case SYM_ARG:
-				//	single argument
+				//	NL function
 				arg(name, true, look_ahead_->value_);
 				break;
 			case SYM_FUN_WS:
@@ -186,7 +186,7 @@ namespace cyng
 				key(name, false, look_ahead_->value_);
 				break;
 			case SYM_ARG:
-				//	single argument
+				//	WS function
 				arg(name, false, look_ahead_->value_);
 				break;
 			case SYM_FUN_WS:
@@ -424,7 +424,7 @@ namespace cyng
 
 		}
 
-		void compiler::arg(std::string name, bool nl, std::string value)
+		std::size_t compiler::arg(std::string name, bool nl, std::string value)
 		{
 			trailer tr(set_preamble(name));
 
@@ -460,17 +460,7 @@ namespace cyng
 			}
 
 			match(SYM_FUN_CLOSE);
-
-			//
-			//	close call frame and call function
-			//
-			//prg_
-			//	<< make_object(nl)
-			//	<< make_object(counter)
-			//	<< invoke(name)
-			//	<< code::REBA
-			//	;
-
+			return counter;
 		}
 
 		void compiler::init_library()
