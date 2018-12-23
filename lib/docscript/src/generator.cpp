@@ -303,7 +303,7 @@ namespace cyng
 				const cyng::vector_reader reader(frame);
 				const std::size_t size = value_cast<std::size_t>(reader.get(1), 0u);
 				BOOST_ASSERT(size == frame.size() - 2);
-				const std::string node = "<p>" + accumulate(reader, 2, size + 1) + "</p>";
+				const std::string node = "<p>" + accumulate(reader, 2, size + 2) + "</p>";
 				ctx.push(cyng::make_object(node));
 
             });

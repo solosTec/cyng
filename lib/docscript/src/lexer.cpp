@@ -266,7 +266,11 @@ namespace cyng
 				emit(symbol(SYM_CHAR, c));
 				return std::make_pair(pop(), true);
 			case '\n':
-				emit(symbol(SYM_CHAR, 0x2424));
+				//
+				//	last symbol was a dot (.) that started a function. But after a new line
+				//	it is interpreted as SYM_CHAR.
+				emit(symbol(SYM_CHAR, '.'));
+				//emit(symbol(SYM_CHAR, 0x2424));
 				return std::make_pair(pop(), true);
 			default:
 				//
