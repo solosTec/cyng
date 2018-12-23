@@ -336,6 +336,9 @@ namespace cyng
 						<< std::endl;
 				}
 
+				//ctx.push(cyng::make_object("<b>"));
+				//ctx.push(cyng::make_object(accumulate(reader, 1, frame.size())));
+				//ctx.push(cyng::make_object("</b>"));
 				ctx.push(cyng::make_object(node));
 
             });
@@ -416,32 +419,27 @@ namespace cyng
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-
-				//	[1idx,false,%(("text":"LaTeX"),("url":"https://www.latex-project.org/"))]
+				//	[00000000,%(("text":LaTeX),("url":https://www.latex-project.org/)),false]
 				std::cout
 					<< "\n***info: link("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
-
 #endif
 				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				//const auto map = reader.get(2, cyng::param_map_t());
-				BOOST_ASSERT_MSG(size == 1, "internal error (link)");
+				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 
-				const std::string url = value_cast<std::string>(reader[2].get("url"), "");
+				const std::string url = value_cast<std::string>(reader[1].get("url"), "");
 				const std::string node = "<a href=\""
 					+ url
 					+ "\" title=\""
-					+ value_cast<std::string>(reader[2].get("title"), url)
+					+ value_cast<std::string>(reader[1].get("title"), url)
 					+ "\">"
-					+ value_cast<std::string>(reader[2].get("text"), "")
+					+ value_cast<std::string>(reader[1].get("text"), "")
 					+ "</a>"
 					;
 
-				ctx.set_return_value(make_object(node), 0);
-				//ctx.set_return_value_invoke(make_object(node), 0);
+				ctx.push(cyng::make_object(node));
 
             });
 
