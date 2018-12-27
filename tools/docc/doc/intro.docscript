@@ -24,7 +24,7 @@ On the other hand, Νες φαβυλας αππαρεατ μαιεσθατις �
 These are 3 numbers: one, two, three. .bold EOL .ref 79bf3ba0-2362-4ea5-bcb5-ed93844ac59a .i .ref b3fc0bdc-5d95-45e9-b66c-f0c541f1592c
 .bold EOP
 .bold(everything bold here).
-.figure(source: "LogoSmall.jpg", caption: "figure with caption" )
+.figure(source: "LogoSmall.jpg", caption: "figure with caption", alt: "Giovanni Bellini, Man wearing a turban")
 
 .h1(Reference)
 .h2(title: "Basic Rules", tag: b3fc0bdc-5d95-45e9-b66c-f0c541f1592c)

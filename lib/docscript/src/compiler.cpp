@@ -474,7 +474,8 @@ namespace cyng
 			insert(library_, std::make_shared<function>("emphasise", 1, WS_), { "i", "italic", "em" });
 			insert(library_, std::make_shared<function>("color", 1, WS_), { "col" });
 			insert(library_, std::make_shared<function>("reference", 1, WS_), { "ref" });
-			insert(library_, std::make_shared<function>("figure", 1, WS_), { "fig" });
+			//insert(library_, std::make_shared<function>("figure", 0, NL_), { "fig" });
+			insert(library_, std::make_shared<function>("figure", 1, NL_), { "fig" });
 
 			insert(library_, std::make_shared<function>("meta", 0, NL_), {});
 			insert(library_, std::make_shared<function>("title", 0, NL_), {});

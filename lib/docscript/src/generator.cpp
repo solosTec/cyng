@@ -303,9 +303,7 @@ namespace cyng
 				const cyng::vector_reader reader(frame);
 				const std::size_t size = value_cast<std::size_t>(reader.get(1), 0u);
 				BOOST_ASSERT(size == frame.size() - 2);
-				//const std::string node = "<p>" + accumulate(reader, 2, frame.size()) + "</p>";
 				const std::string node = accumulate(reader, 1, frame.size(), "p");
-
 				ctx.push(cyng::make_object(node));
 
             });
@@ -439,20 +437,21 @@ namespace cyng
 			//  <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
 			//</figure>
             vm_.register_function("figure", 3, [this](context& ctx) {
+
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-				//	[1idx,false,%(("caption":"figure with caption"),("source":"LogoSmall.jpg"))]
+				//	[00000001,%(("caption":figure with caption),("source":LogoSmall.jpg)),true]
 				std::cout
 					<< "\n***info: figure("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-				//BOOST_ASSERT_MSG(size + 2 == frame.size(), "internal error (quote)");
+				
+				const auto reader = make_reader(frame);
+				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 
-				const std::string source = value_cast<std::string>(reader[2].get("source"), "");
+				const std::string source = value_cast<std::string>(reader[1].get("source"), "");
 				const boost::filesystem::path p = resolve_path(source);
 				std::ifstream file(p.string(), std::ios::binary | std::ios::ate);
 				if (!file.is_open())
@@ -461,6 +460,7 @@ namespace cyng
 						<< "***error cannot open figure file "
 						<< source
 						<< std::endl;
+					ctx.push(cyng::make_object("cannot open file " + source));
 				}
 				else
 				{
@@ -480,41 +480,67 @@ namespace cyng
 					//
 					cyng::buffer_t buffer(size);
 					file.read(buffer.data(), size);
+					BOOST_ASSERT(file.gcount() == size);
 
 					//
 					//	encode image as base 64
 					//
-					const std::string alt = value_cast<std::string>(reader[2].get("alt"), "");
-					const std::string cap = value_cast<std::string>(reader[2].get("caption"), "");
+					std::string const alt = value_cast<std::string>(reader[1].get("alt"), "");
+					std::string const cap = value_cast<std::string>(reader[1].get("caption"), "");
+					auto const tag = value_cast(reader[1].get("tag"), uuid_gen_());
 
-					std::stringstream ss;
-					ss
-						<< std::endl
-						<< "<figure>"
-						<< "<img alt=\""
-						<< alt
-						<< "\" src=\"data:image/"
-						<< get_extension(p)
-						<< ";base64,"
- 						<< cyng::crypto::base64_encode(buffer.data(), buffer.size())
-						<< "\" />\n<figcaption>"
-						<< cap
-						<< "</figcaption>\n"
-						<< "</figure>"
-						;
+					auto pos = structure_.emplace(std::piecewise_construct,
+						std::forward_as_tuple(tag),
+						std::forward_as_tuple(element::FIGURE, cap, numeration_));
 
-					const std::string node = ss.str();
-					if (verbosity_ > 1)
+					if (pos.second)
 					{
-						std::cout
-							<< "***info: figure("
-							<< cap
-							<< " - "
-							<< size
-							<< " bytes)"
-							<< std::endl;
+
+						std::stringstream ss;
+						ss
+							<< std::endl
+							<< "<figure id=\""
+							<< tag
+							<< "\">"
+							<< std::endl
+							<< "<img alt=\""
+							<< alt
+							<< "\" src=\"data:image/"
+							<< get_extension(p)
+							<< ";base64,"
+							<< cyng::crypto::base64_encode(buffer.data(), buffer.size())
+							<< "\" />"
+							<< std::endl
+							<< "<figcaption>figure "
+							<< pos.first->second.to_str()
+							<< "</figcaption>"
+							<< std::endl
+							<< "</figure>"
+							;
+
+						const std::string node = ss.str();
+						if (verbosity_ > 1)
+						{
+							std::cout
+								<< "***info: figure("
+								<< cap
+								<< " - "
+								<< size
+								<< " bytes)"
+								<< std::endl;
+						}
+
+						ctx.push(cyng::make_object(node));
 					}
-					ctx.set_return_value(make_object(node), 0);
+					else {
+						std::cerr
+							<< "***error: cannot insert figure "
+							<< source
+							<< std::endl;
+
+						ctx.push(cyng::make_object("cannot insert figure " + source));
+
+					}
 				}
             });
 
@@ -933,6 +959,11 @@ namespace cyng
 
 		std::string element::to_str() const
 		{
+			switch (type_) {
+			case FIGURE: return level() + ": " + text_;
+			default:
+				break;
+			}
 			return level() + "&nbsp;" + text_;
 		}
 
