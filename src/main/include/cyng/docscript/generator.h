@@ -111,6 +111,10 @@ namespace cyng
 		//	free functions
 		//
 		std::string accumulate(cyng::vector_reader const& reader, std::size_t start, std::size_t end = 1);
+		std::string accumulate(cyng::vector_reader const& reader
+			, std::size_t start
+			, std::size_t end
+			, std::string tag);
 		std::string get_extension(boost::filesystem::path const& p);
 
 	}	//	docscript

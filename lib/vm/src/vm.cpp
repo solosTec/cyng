@@ -308,7 +308,7 @@ namespace cyng
 		const auto idx = value_cast<std::size_t>(stack_.top(), 0u);
 		stack_.pop();
 		stack_.setr(stack_.top(), idx);
-		//stack_.pop();
+		stack_.pop();
 	}
 
 	void vm::call(memory& mem)

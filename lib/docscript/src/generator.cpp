@@ -303,7 +303,9 @@ namespace cyng
 				const cyng::vector_reader reader(frame);
 				const std::size_t size = value_cast<std::size_t>(reader.get(1), 0u);
 				BOOST_ASSERT(size == frame.size() - 2);
-				const std::string node = "<p>" + accumulate(reader, 2, size + 2) + "</p>";
+				//const std::string node = "<p>" + accumulate(reader, 2, frame.size()) + "</p>";
+				const std::string node = accumulate(reader, 1, frame.size(), "p");
+
 				ctx.push(cyng::make_object(node));
 
             });
@@ -321,11 +323,7 @@ namespace cyng
 #endif
 				const cyng::vector_reader reader(frame);
 				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-
-				const std::string node = "<b>"
-					+ accumulate(reader, 1, frame.size())
-					+ "</b>"
-					;
+				const std::string node = accumulate(reader, 1, frame.size(), "b");
 
 				if (verbosity_ > 3)
 				{
@@ -336,9 +334,6 @@ namespace cyng
 						<< std::endl;
 				}
 
-				//ctx.push(cyng::make_object("<b>"));
-				//ctx.push(cyng::make_object(accumulate(reader, 1, frame.size())));
-				//ctx.push(cyng::make_object("</b>"));
 				ctx.push(cyng::make_object(node));
 
             });
@@ -357,11 +352,7 @@ namespace cyng
 #endif
 				const cyng::vector_reader reader(frame);
 				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-
-				const std::string node = "<em>"
-					+ accumulate(reader, 1, frame.size())
-					+ "</em>"
-					;
+				const std::string node = accumulate(reader, 1, frame.size(), "em");
 
 				if (verbosity_ > 3)
 				{
@@ -859,8 +850,9 @@ namespace cyng
 		//
 		std::string accumulate(cyng::vector_reader const& reader, std::size_t start, std::size_t end)
 		{
-			//BOOST_ASSERT_MSG(start < reader.size(), "out of range");
+			BOOST_ASSERT_MSG(start < reader.size(), "out of range");
 			std::string str;
+			str.reserve((end - start) * 5);	//	estimation
 			for (std::size_t idx = start; idx < end; ++idx)
 			{
 				const auto s = value_cast<std::string>(reader.get(idx), "");
@@ -871,6 +863,29 @@ namespace cyng
 				str += s;
 			}
 			return str;
+		}
+
+		std::string accumulate(cyng::vector_reader const& reader
+			, std::size_t start
+			, std::size_t end
+			, std::string tag)
+		{
+			BOOST_ASSERT_MSG(start < reader.size(), "out of range");
+			BOOST_ASSERT_MSG(start < end, "invalid range");
+			std::string str;
+			str.reserve((end - start) * 5);	//	estimation
+			str = '<' + tag + '>';
+			for (std::size_t idx = start; idx < end; ++idx)
+			{
+				const auto s = value_cast<std::string>(reader.get(idx), "");
+				if ((idx != start) && !(s == "." || s == "," || s == ":"))
+				{
+					str += " ";
+				}
+				str += s;
+			}
+			return str + '<' + '/' + tag + '>';
+
 		}
 
 		std::string get_extension(boost::filesystem::path const& p)
