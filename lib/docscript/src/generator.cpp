@@ -179,13 +179,14 @@ namespace cyng
 
 				std::cout
 					<< "\n***info: contents("
-					//<< cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 
 #endif
-				const cyng::vector_reader reader(frame);
-            });
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			});
 
             vm_.register_function("header", 2, [this](context& ctx) {
 
@@ -200,12 +201,12 @@ namespace cyng
 					<< std::endl;
 
 #endif
-				const auto reader = cyng::make_reader(frame.at(1));
-
-				const std::string txt = value_cast<std::string>(reader.get("title"), "NO TITLE");
-				const std::size_t level = value_cast<std::size_t>(reader.get("level"), 0);
-				const std::string stag = value_cast<std::string>(reader.get("tag"), boost::uuids::to_string(uuid_gen_()));
-				const boost::uuids::uuid tag = name_gen_(stag);
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const level = value_cast<std::size_t>(reader[1].get("level"), 0);
+				auto const stag = value_cast<std::string>(reader[1].get("tag"), boost::uuids::to_string(uuid_gen_()));
+				auto const txt = value_cast<std::string>(reader[1].get("title"), "NO TITLE");
+				auto const tag = name_gen_(stag);
 
 
 				const std::string node = generate_header(level, txt, tag);
@@ -228,9 +229,10 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::string txt = accumulate(reader, 1, frame.size());
-				const std::string node = generate_header(1, txt, uuid_gen_());
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const txt = accumulate(reader, 1, frame.size());
+				auto const node = generate_header(1, txt, uuid_gen_());
 				ctx.push(cyng::make_object(node));
 
             });
@@ -246,9 +248,10 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::string txt = accumulate(reader, 1, frame.size());
-				const std::string node = generate_header(2, txt, uuid_gen_());
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const txt = accumulate(reader, 1, frame.size());
+				auto const node = generate_header(1, txt, uuid_gen_());
 				ctx.push(cyng::make_object(node));
 
 			});
@@ -264,9 +267,10 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::string txt = accumulate(reader, 1, frame.size());
-				const std::string node = generate_header(3, txt, uuid_gen_());
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const txt = accumulate(reader, 1, frame.size());
+				auto const node = generate_header(1, txt, uuid_gen_());
 				ctx.push(cyng::make_object(node));
 
 			});
@@ -282,9 +286,10 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::string txt = accumulate(reader, 1, frame.size());
-				const std::string node = generate_header(4, txt, uuid_gen_());
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const txt = accumulate(reader, 1, frame.size());
+				auto const node = generate_header(1, txt, uuid_gen_());
 				ctx.push(cyng::make_object(node));
 
 			});
@@ -300,8 +305,9 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(1), 0u);
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const size = value_cast<std::size_t>(reader.get(1), 0u);
 				BOOST_ASSERT(size == frame.size() - 2);
 				const std::string node = accumulate(reader, 1, frame.size(), "p");
 				ctx.push(cyng::make_object(node));
@@ -319,8 +325,8 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 				const std::string node = accumulate(reader, 1, frame.size(), "b");
 
 				if (verbosity_ > 3)
@@ -348,8 +354,8 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 				const std::string node = accumulate(reader, 1, frame.size(), "em");
 
 				if (verbosity_ > 3)
@@ -377,8 +383,8 @@ namespace cyng
 					<< std::endl;
 
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 				const auto map = value_cast(reader.get(1), param_map_t());
 				BOOST_ASSERT_MSG(map.size() == 1, "internal error (color)");
 
@@ -415,8 +421,8 @@ namespace cyng
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 
 				const std::string url = value_cast<std::string>(reader[1].get("url"), "");
 				const std::string node = "<a href=\""
@@ -448,8 +454,8 @@ namespace cyng
 					<< std::endl;
 #endif
 				
-				const auto reader = make_reader(frame);
-				const std::uint32_t ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 
 				const std::string source = value_cast<std::string>(reader[1].get("source"), "");
 				const boost::filesystem::path p = resolve_path(source);
@@ -548,19 +554,18 @@ namespace cyng
             vm_.register_function("quote", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-				//	[1idx,true,%(("source":"Earl Wilson"),("url":"https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html"))]
+				//	[00000003,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),true]
 				std::cout
 					<< "\n***info: quote("
-					// << cyng::io::to_literal(frame)
+					<< cyng::io::to_str(frame)
 					<< ")"
 					<< std::endl;
 #endif
-				const cyng::vector_reader reader(frame);
-				const std::size_t size = value_cast<std::size_t>(reader.get(0), 0);
-// 				const std::size_t size = reader.get_index(0);
-
-				const std::string source = value_cast<std::string>(reader[size + 1].get("source"), "source");
-				const std::string url = value_cast<std::string>(reader[size + 1].get("url"), "");
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				std::string const source = value_cast<std::string>(reader[1].get("source"), "");
+				std::string const url = value_cast<std::string>(reader[1].get("url"), "https://example.org");
+				auto const tag = value_cast(reader[1].get("tag"), uuid_gen_());
 
 				std::stringstream ss;
 				ss
@@ -568,7 +573,7 @@ namespace cyng
 					<< "<blockquote cite=\""
 					<< url
 					<< "\">"
-					<< accumulate(reader, size, 1)
+					<< accumulate(reader, 1, frame.size())
 					<< std::endl
 					<< "<footer>- <cite>"
 					<< source
@@ -578,7 +583,7 @@ namespace cyng
 					;
 
 				const std::string node = ss.str();
-				ctx.set_return_value(cyng::make_object(node), 0);
+				ctx.push(cyng::make_object(node));
 
             });
 

@@ -88,6 +88,17 @@ namespace cyng
 				<< invoke("generate")
 				<< code::REBA
 				;
+
+			if (verbose_ > 2)
+			{
+				std::cout
+					<< "***info: "
+					<< prg_.size()
+					<< " ops generated"
+					<< std::endl
+					;
+			}
+
 		}
 
 		bool compiler::match(symbol_type st)
@@ -103,10 +114,9 @@ namespace cyng
 					;
 
 				//
-				//	skip unmatching symbols
+				//	try to recover and skip unmatching symbols
 				//
-				while (look_ahead_->type_ != st && look_ahead_->type_ != SYM_EOF)
-				{
+				while (look_ahead_->type_ != st && look_ahead_->type_ != SYM_EOF)	{
 					look_ahead_ = &producer_.get();
 				}
 				return false;
@@ -145,13 +155,6 @@ namespace cyng
 				trailer tr(set_preamble(name));
 				fun_ws(look_ahead_->value_);
 				match(SYM_FUN_CLOSE);
-
-				//prg_
-				//	//	we asume that the function produced 1 return value
-				//	<< make_object<std::size_t>(1)
-				//	<< invoke(name)
-				//	<< code::REBA
-				//	;
 			}
 				break;
 			case SYM_FUN_CLOSE:
@@ -213,23 +216,21 @@ namespace cyng
 				break;
 			case SYM_FUN_CLOSE:
 				//	no arguments
-				if (verbose_ > 3)
 				{
-					std::cout
-						<< "***info: compile function "
-						<< name
-						<< "() - without arguments"
-						<< std::endl
-						;
-				}
-				{
-					trailer tr(set_preamble(name));
-					//prg_
-					//	<< make_object<std::size_t>(0)
-					//	<< invoke(name)
-					//	<< code::REBA
-					//	;
+					if (verbose_ > 3)
+					{
+						std::cout
+							<< "***info: compile function "
+							<< name
+							<< "() - without arguments"
+							<< std::endl
+							;
+					}
 
+					//
+					//	use RAII to create a function call frame
+					//
+					trailer tr(set_preamble(name));
 					match(SYM_FUN_CLOSE);
 				}
 				break;
@@ -258,7 +259,7 @@ namespace cyng
 			//
 			std::size_t counter{ 0 };
 
-			while (look_ahead_->type_ != SYM_FUN_PAR && look_ahead_->type_ != SYM_FUN_NL && look_ahead_->type_ != SYM_EOF)
+			while ((look_ahead_->type_ != SYM_FUN_PAR) && (look_ahead_->type_ != SYM_FUN_NL) && (look_ahead_->type_ != SYM_EOF))
 			{
 				switch (look_ahead_->type_)
 				{
@@ -297,13 +298,16 @@ namespace cyng
 
 		void compiler::key(std::string name, bool nl, std::string key)
 		{
+			//
+			//	open a function call and close it with RAII
+			//
 			trailer tr(set_preamble(name));
 
 			//
 			//	iterate until SYM_FUN_CLOSE
 			//
 			std::size_t counter{ 0 };
-			while (look_ahead_->type_ != SYM_FUN_CLOSE && look_ahead_->type_ != SYM_EOF)
+			while (SYM_KEY == look_ahead_->type_)
 			{
 				match(SYM_KEY);
 
@@ -330,6 +334,7 @@ namespace cyng
 						;
 					match(SYM_VALUE);
 					break;
+
 				case SYM_NUMBER:
 					if (verbose_ > 3)
 					{
@@ -381,34 +386,17 @@ namespace cyng
 				key = look_ahead_->value_;
 				counter++;
 			}
+
+			//
+			//	function call complete
+			//
 			match(SYM_FUN_CLOSE);
 
-			if (look_ahead_->type_ == SYM_ARG)
-			{
-				if (verbose_ > 3)
-				{
-					std::cout
-						<< "***info: environment "
-						<< name
-						<< " has an argument of "
-// 						<< bytes_format(look_ahead_->value_.size())
-						<< std::endl
-						;
-				}
-
-				counter++;
-				prg_
-					<< make_object(look_ahead_->value_)	//	value
-					<< make_object("$")	//	key
-					<< code::ASSEMBLE_PARAM
-					;
-
-				//	
-				//	This is the content of an environment
-				//
-				match(SYM_ARG);
-			}
-
+			//
+			//	provide basic function call parameters
+			//	* key:value pairs
+			//	* NL/WS function
+			//
 			prg_
 				<< make_object(counter)	//	parameters
 				<< code::ASSEMBLE_PARAM_MAP
@@ -417,11 +405,41 @@ namespace cyng
 				//	close call frame and call function
 				//
 				<< make_object(nl)
-				//<< make_object<std::size_t>(1)	//	one parameter map
-				//<< invoke(name)
-				//<< code::REBA
 				;
 
+			//
+			//	test for environment
+			//
+			if (tr.fp_->type_ == ENV_RAW) {
+
+				//
+				//	provide all symbols unprocessed until .end()
+				//
+				while (look_ahead_->type_ != SYM_EOF) {
+					if ((SYM_FUN_NL == look_ahead_->type_) && (look_ahead_->value_.compare("end") == 0)) {
+						match(SYM_FUN_NL);
+						match(SYM_FUN_CLOSE);
+						break;
+					}
+					else {
+						prg_ << make_object(look_ahead_->value_);
+						match(look_ahead_->type_);
+						//counter++;
+					}
+				}
+
+			}
+			else if (tr.fp_->type_ == ENV_PROCESSED) {
+
+				//
+				//	ToDo:
+				//
+			}
+
+
+			//
+			//	implicit create REBA op with desctructor of trailer
+			//
 		}
 
 		std::size_t compiler::arg(std::string name, bool nl, std::string value)
@@ -474,7 +492,6 @@ namespace cyng
 			insert(library_, std::make_shared<function>("emphasise", 1, WS_), { "i", "italic", "em" });
 			insert(library_, std::make_shared<function>("color", 1, WS_), { "col" });
 			insert(library_, std::make_shared<function>("reference", 1, WS_), { "ref" });
-			//insert(library_, std::make_shared<function>("figure", 0, NL_), { "fig" });
 			insert(library_, std::make_shared<function>("figure", 1, NL_), { "fig" });
 
 			insert(library_, std::make_shared<function>("meta", 0, NL_), {});
@@ -489,9 +506,9 @@ namespace cyng
 			insert(library_, std::make_shared<function>("header.3", 1, NL_), { "h3" });
 			insert(library_, std::make_shared<function>("header.4", 1, NL_), { "h4" });
 
-			insert(library_, std::make_shared<function>("quote", 1, ENV_), { "q" });
-			insert(library_, std::make_shared<function>("env.open", 1, ENV_), { "+" });
-			insert(library_, std::make_shared<function>("env.close", 1, ENV_), { "-" });
+			insert(library_, std::make_shared<function>("quote", 1, ENV_RAW), { "q" });
+			insert(library_, std::make_shared<function>("env.open", 1, ENV_RAW), { "+" });
+			insert(library_, std::make_shared<function>("env.close", 1, ENV_RAW), { "-" });
 		}
 
 		compiler::fp compiler::lookup(std::string const& name) const
@@ -507,10 +524,10 @@ namespace cyng
 			{
 				prg_ << code::ASP;	//	return value(s)
 			}
+
 			prg_ 
 				<< code::ESBA
 				<< static_cast<std::uint32_t>(fp->type_)	//	function type
-				//<< fp->rvs_	//	return value count
 				;
 			return trailer(verbose_, prg_, fp);
 		}

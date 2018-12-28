@@ -23,7 +23,9 @@ namespace cyng
 			NONE_,	//	undefined
 			NL_,
 			WS_,
-			ENV_,	//	environment specific
+			//	environment specific
+			ENV_PROCESSED,
+			ENV_RAW,
 		};
 
 		/**

@@ -3,6 +3,10 @@
 
 .h1(First Header)
 
+.quote(source:"Earl Wilson", url: "https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html")
+Science may never come up with a better office communication system, than the coffee break.
+.end()
+
 Lorem .link(text: "LaTeX", url: "https://www.latex-project.org/") ipsum .b dolor sit amet, consetetur sadipscing elitr,  .i(sed diam nonumy eirmod tempor invidunt ut labore) et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores 
 et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,  sed diam nonumy eirmod tempor invidunt ut labore 
 et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum 
@@ -37,3 +41,4 @@ gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum d
 erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur 
 sadipscing elitr,  sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, 
 no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
