@@ -54,25 +54,33 @@ namespace cyng
 
 		private:
 			/**
-			* Check symbol type and produce next symbol
-			*/
+			 * Check symbol type and produce next symbol
+			 */
 			bool match(symbol_type st);
 
 			/**
-			* @param name function name
-			*/
-			void fun_nl(std::string name);
+			 * Compile until EOF or .end()
+			 *
+			 * @param depth recursion depth
+			 * @return true if EOF
+			 */
+			bool loop(std::size_t depth);
 
 			/**
-			* @param name function name
-			*/
-			void fun_ws(std::string name);
+			 * @param name function name
+			 */
+			void fun_nl(std::string name, std::size_t depth);
+
+			/**
+			 * @param name function name
+			 */
+			void fun_ws(std::string name, std::size_t depth);
 
 			/**
 			 * new paragraph
 			 */
 			void fun_par(trailer&&);
-			void key(std::string name, bool, std::string key);
+			void key(std::string name, bool, std::string key, std::size_t depth);
 
 			/**
 			 * @param name function name

@@ -309,7 +309,7 @@ namespace cyng
 				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 				auto const size = value_cast<std::size_t>(reader.get(1), 0u);
 				BOOST_ASSERT(size == frame.size() - 2);
-				const std::string node = accumulate(reader, 1, frame.size(), "p");
+				const std::string node = accumulate(reader, 2, frame.size(), "p");
 				ctx.push(cyng::make_object(node));
 
             });
@@ -554,7 +554,7 @@ namespace cyng
             vm_.register_function("quote", 3, [this](context& ctx) {
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-				//	[00000003,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),true]
+				//	[00000004,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),true]
 				std::cout
 					<< "\n***info: quote("
 					<< cyng::io::to_str(frame)
@@ -573,7 +573,7 @@ namespace cyng
 					<< "<blockquote cite=\""
 					<< url
 					<< "\">"
-					<< accumulate(reader, 1, frame.size())
+					<< accumulate(reader, 3, frame.size())
 					<< std::endl
 					<< "<footer>- <cite>"
 					<< source
@@ -586,6 +586,43 @@ namespace cyng
 				ctx.push(cyng::make_object(node));
 
             });
+
+			vm_.register_function("cite", 3, [this](context& ctx) {
+
+				const cyng::vector_t frame = ctx.get_frame();
+#ifdef _DEBUG
+				//	[00000003,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),true,<p> Science may never come up with a better office communication system, than the coffee break.</p>]
+				std::cout
+					<< "\n***info: cite("
+					<< cyng::io::to_str(frame)
+					<< ")"
+					<< std::endl;
+#endif
+				auto const reader = make_reader(frame);
+				auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+				auto const source = value_cast<std::string>(reader[1].get("source"), "");
+				auto const url = value_cast<std::string>(reader[1].get("url"), "https://example.org");
+				auto const tag = value_cast(reader[1].get("tag"), uuid_gen_());
+
+				std::stringstream ss;
+				ss
+					<< std::endl
+					<< "<blockquote cite=\""
+					<< url
+					<< "\">"
+					<< accumulate(reader, 2, frame.size())
+					<< std::endl
+					<< "<footer>- <cite>"
+					<< source
+					<< "</cite></footer>"
+					<< std::endl
+					<< "</blockquote>"
+					;
+
+				const std::string node = ss.str();
+				ctx.push(cyng::make_object(node));
+
+			});
 
             vm_.register_function("generate", 1, [this](context& ctx) {
 				cyng::vector_t frame = ctx.get_frame();

@@ -44,44 +44,7 @@ namespace cyng
 				<< out
 				;
 
-			bool loop = true;
-			while (loop)
-			{
-				switch (look_ahead_->type_)
-				{
-				case SYM_EOF:
-					if (verbose_ > 1)
-					{
-						std::cout
-							<< "***info: EOF"
-							<< std::endl
-							;
-					}
-					loop = false;
-					break;
-
-				case SYM_FUN_NL:
-					//	functions at beginning of line are global
-					fun_nl(look_ahead_->value_);
-					break;
-				case SYM_FUN_WS:
-					// all other functions are local	
-					fun_ws(look_ahead_->value_);
-					break;
-				case SYM_FUN_PAR:
-					//	new paragraph
-					fun_par(set_preamble(look_ahead_->value_));
-					break;
-				default:
-					std::cerr
-						<< "***warning: unknown symbol "
-						<< (*look_ahead_)
-						<< std::endl
-						;
-					match(look_ahead_->type_);
-					break;
-				}
-			}
+			loop(0);
 
 			prg_
 				//	generate output file
@@ -98,8 +61,58 @@ namespace cyng
 					<< std::endl
 					;
 			}
-
 		}
+
+		bool compiler::loop(std::size_t depth)
+		{
+			while (true)
+			{
+				switch (look_ahead_->type_)
+				{
+				case SYM_EOF:
+					if (verbose_ > 1)
+					{
+						std::cout
+							<< "***info: EOF"
+							<< std::endl
+							;
+					}
+					return true;
+
+				case SYM_FUN_NL:
+					//	functions at beginning of line are global
+					if (look_ahead_->value_.compare("end") == 0) {
+						match(SYM_FUN_NL);
+						match(SYM_FUN_CLOSE);
+						return false;
+					}
+					else {
+						fun_nl(look_ahead_->value_, depth);
+					}
+					break;
+				case SYM_FUN_WS:
+					// all other functions are local	
+					fun_ws(look_ahead_->value_, depth);
+					break;
+				case SYM_FUN_PAR:
+					//	new paragraph
+					fun_par(set_preamble(look_ahead_->value_));
+					break;
+				default:
+					std::cerr
+						<< "***warning: unknown symbol "
+						<< (*look_ahead_)
+						<< std::endl
+						;
+					match(look_ahead_->type_);
+					break;
+				}
+			}
+
+			//	unreachable
+			return false;
+		}
+
 
 		bool compiler::match(symbol_type st)
 		{
@@ -137,13 +150,13 @@ namespace cyng
 			return true;
 		}
 
-		void compiler::fun_nl(std::string name)
+		void compiler::fun_nl(std::string name, std::size_t depth)
 		{
 			match(SYM_FUN_NL);
 			switch (look_ahead_->type_)
 			{
 			case SYM_KEY:
-				key(name, true, look_ahead_->value_);
+				key(name, true, look_ahead_->value_, depth);
 				break;
 			case SYM_ARG:
 				//	NL function
@@ -153,7 +166,7 @@ namespace cyng
 			{
 				//	overwrite name
 				trailer tr(set_preamble(name));
-				fun_ws(look_ahead_->value_);
+				fun_ws(look_ahead_->value_, depth);
 				match(SYM_FUN_CLOSE);
 			}
 				break;
@@ -180,13 +193,13 @@ namespace cyng
 			}
 		}
 
-		void compiler::fun_ws(std::string name)
+		void compiler::fun_ws(std::string name, std::size_t depth)
 		{
 			match(SYM_FUN_WS);
 			switch (look_ahead_->type_)
 			{
 			case SYM_KEY:
-				key(name, false, look_ahead_->value_);
+				key(name, false, look_ahead_->value_, depth);
 				break;
 			case SYM_ARG:
 				//	WS function
@@ -195,7 +208,7 @@ namespace cyng
 			case SYM_FUN_WS:
 			{
 				trailer tr(set_preamble(name));
-				fun_ws(look_ahead_->value_);
+				fun_ws(look_ahead_->value_, depth);
 
 				//
 				//	It's possible to get one more function call (SYM_FUN_WS) that produces the argument(s)
@@ -272,7 +285,7 @@ namespace cyng
 				case SYM_FUN_WS:
 					//	number of return values
 					counter += lookup(look_ahead_->value_)->rvs_;
-					fun_ws(look_ahead_->value_);
+					fun_ws(look_ahead_->value_, 0u);
 					break;
 				default:
 					match(look_ahead_->type_);
@@ -296,7 +309,7 @@ namespace cyng
 			prg_.at(prg_pos) = make_object<std::size_t>(counter);
 		}
 
-		void compiler::key(std::string name, bool nl, std::string key)
+		void compiler::key(std::string name, bool nl, std::string key, std::size_t depth)
 		{
 			//
 			//	open a function call and close it with RAII
@@ -369,7 +382,7 @@ namespace cyng
 							<< std::endl
 							;
 					}
-					fun_ws(look_ahead_->value_);
+					fun_ws(look_ahead_->value_, depth);
 					prg_
 						<< make_object(key)	//	key
 						<< code::ASSEMBLE_PARAM
@@ -404,13 +417,18 @@ namespace cyng
 				//
 				//	close call frame and call function
 				//
-				<< make_object(nl)
+				<< make_object(depth)
 				;
 
 			//
 			//	test for environment
 			//
 			if (tr.fp_->type_ == ENV_RAW) {
+
+				//
+				//	skip pilcrow
+				//
+				if (SYM_FUN_PAR == look_ahead_->type_)	match(SYM_FUN_PAR);
 
 				//
 				//	provide all symbols unprocessed until .end()
@@ -424,7 +442,6 @@ namespace cyng
 					else {
 						prg_ << make_object(look_ahead_->value_);
 						match(look_ahead_->type_);
-						//counter++;
 					}
 				}
 
@@ -432,8 +449,9 @@ namespace cyng
 			else if (tr.fp_->type_ == ENV_PROCESSED) {
 
 				//
-				//	ToDo:
+				//	full formatting supported
 				//
+				loop(++depth);
 			}
 
 
@@ -507,6 +525,7 @@ namespace cyng
 			insert(library_, std::make_shared<function>("header.4", 1, NL_), { "h4" });
 
 			insert(library_, std::make_shared<function>("quote", 1, ENV_RAW), { "q" });
+			insert(library_, std::make_shared<function>("cite", 1, ENV_PROCESSED), { "c" });
 			insert(library_, std::make_shared<function>("env.open", 1, ENV_RAW), { "+" });
 			insert(library_, std::make_shared<function>("env.close", 1, ENV_RAW), { "-" });
 		}
