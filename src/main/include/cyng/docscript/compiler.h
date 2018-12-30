@@ -31,18 +31,21 @@ namespace cyng
 
 			using fp = std::shared_ptr<function const>;
 
-			class trailer
+			class call_frame
 			{
 			public:
-				trailer(int, vector_t&, fp);
-				trailer(trailer&&);
-				virtual ~trailer();
+				call_frame(compiler::fp, compiler&, std::size_t depth);
+				//call_frame(int, vector_t&, fp);
+				call_frame(call_frame&&);
+				virtual ~call_frame();
 
 			public:
-				fp fp_;
+				compiler::fp fp_;
+
 			private:
-				const int verbose_;
-				vector_t& prg_;
+				compiler& compiler_;
+				std::size_t const depth_;	//!<	call depth
+				std::size_t const pos_;		//!<	programm position
 			};
 
 		public:
@@ -79,15 +82,14 @@ namespace cyng
 			/**
 			 * new paragraph
 			 */
-			void fun_par(trailer&&);
+			void fun_par(std::size_t);
 			void key(std::string name, bool, std::string key, std::size_t depth);
 
 			/**
 			 * @param name function name
-			 * @param nl NL or WS function type
 			 * @return argument count
 			 */
-			std::size_t arg(std::string name, bool nl, std::string value);
+			std::size_t arg(std::string name, std::size_t depth);
 
 			void init_library();
 
@@ -96,8 +98,6 @@ namespace cyng
 			 * a function call
 			 */
 			fp lookup(std::string const& name) const;
-
-			trailer set_preamble(std::string const& name);
 
 		private:
 			/**

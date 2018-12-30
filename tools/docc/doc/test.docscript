@@ -1,7 +1,8 @@
 ﻿.meta(author:"Sylko Olzscher", released: .now(), language: "en")
 .title(Introduction into docScript)
 
-.h1(First Header)
+;.h1(First Header)
+.h1(now())
 
 .quote(source:"Earl Wilson", url: "https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html")
 Science may never come up with a better office communication system, than the coffee break.

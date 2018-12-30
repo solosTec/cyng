@@ -90,6 +90,29 @@ namespace cyng
 			void generate(std::ostream&, cyng::vector_t::const_iterator begin, cyng::vector_t::const_iterator end);
 			std::string generate_header(std::size_t level, std::string const& txt, boost::uuids::uuid tag);
 
+			void fun_contents(context& ctx);
+			void fun_header(context& ctx);
+			void fun_header_1(context& ctx);
+			void fun_header_2(context& ctx);
+			void fun_header_3(context& ctx);
+			void fun_header_4(context& ctx);
+			void fun_paragraph(context& ctx);
+			void fun_bold(context& ctx);
+			void fun_emphasise(context& ctx);
+			void fun_color(context& ctx);
+			void fun_link(context& ctx);
+			void fun_figure(context& ctx);
+			void fun_quote(context& ctx);
+			void fun_cite(context& ctx);
+
+			void fun_list(context& ctx);
+			void fun_item(context& ctx);
+
+			void fun_generate(context& ctx);
+			void fun_meta(context& ctx);
+			void fun_title(context& ctx);
+
+
 		private:
 			const std::vector< boost::filesystem::path > includes_;
 			const int verbosity_;

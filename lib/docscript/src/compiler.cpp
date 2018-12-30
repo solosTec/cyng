@@ -96,7 +96,8 @@ namespace cyng
 					break;
 				case SYM_FUN_PAR:
 					//	new paragraph
-					fun_par(set_preamble(look_ahead_->value_));
+					fun_par(depth);
+					//fun_par(set_preamble(look_ahead_->value_));
 					break;
 				default:
 					std::cerr
@@ -158,18 +159,23 @@ namespace cyng
 			case SYM_KEY:
 				key(name, true, look_ahead_->value_, depth);
 				break;
+
 			case SYM_ARG:
-				//	NL function
-				arg(name, true, look_ahead_->value_);
-				break;
 			case SYM_FUN_WS:
-			{
-				//	overwrite name
-				trailer tr(set_preamble(name));
-				fun_ws(look_ahead_->value_, depth);
-				match(SYM_FUN_CLOSE);
-			}
+				//	NL function
+				arg(name, /*look_ahead_->value_, */depth);
 				break;
+			//case SYM_FUN_WS:
+			//{
+			//	//
+			//	//	a local function produces input for global function
+			//	//
+			//	call_frame tr(lookup(name), *this, depth);
+			//	fun_ws(look_ahead_->value_, depth);
+			//	match(SYM_FUN_CLOSE);
+			//}
+			//	break;
+
 			case SYM_FUN_CLOSE:
 				//	no arguments
 			{
@@ -179,13 +185,14 @@ namespace cyng
 					<< "() - without arguments"
 					<< std::endl
 					;
-				trailer tr(set_preamble(name));
+				call_frame tr(lookup(name), *this, depth);
 			}
 			match(SYM_FUN_CLOSE);
 			break;
+
 			default:
 				std::cerr
-					<< "***warning: unknown symbol (fun-nl)"
+					<< "***warning: unexpected symbol (fun-nl)"
 					<< (*look_ahead_)
 					<< std::endl
 					;
@@ -203,11 +210,11 @@ namespace cyng
 				break;
 			case SYM_ARG:
 				//	WS function
-				arg(name, false, look_ahead_->value_);
+				arg(name, /*look_ahead_->value_, */depth);
 				break;
 			case SYM_FUN_WS:
 			{
-				trailer tr(set_preamble(name));
+				call_frame tr(lookup(name), *this, depth);
 				fun_ws(look_ahead_->value_, depth);
 
 				//
@@ -218,13 +225,6 @@ namespace cyng
 				//
 				//if (look_ahead_ == SYM_FUN_WS)	...
 				match(SYM_FUN_CLOSE);
-
-				//prg_
-				//	<< make_object(false)		//	local function
-				//	<< make_object(lookup(name)->rvs_)
-				//	<< invoke(name)
-				//	<< code::REBA
-				//	;
 			}
 				break;
 			case SYM_FUN_CLOSE:
@@ -243,7 +243,7 @@ namespace cyng
 					//
 					//	use RAII to create a function call frame
 					//
-					trailer tr(set_preamble(name));
+					call_frame tr(lookup(name), *this, depth);
 					match(SYM_FUN_CLOSE);
 				}
 				break;
@@ -257,8 +257,16 @@ namespace cyng
 			}
 		}
 
-		void compiler::fun_par(trailer&& tr)
+		void compiler::fun_par(std::size_t depth)
 		{
+			//
+			//	create call frame
+			//
+			call_frame tr(lookup(look_ahead_->value_), *this, depth);
+
+			//
+			//	match look ahead symbol
+			//
 			match(SYM_FUN_PAR);
 
 			//
@@ -314,7 +322,7 @@ namespace cyng
 			//
 			//	open a function call and close it with RAII
 			//
-			trailer tr(set_preamble(name));
+			call_frame tr(lookup(name), *this, depth);
 
 			//
 			//	iterate until SYM_FUN_CLOSE
@@ -460,12 +468,15 @@ namespace cyng
 			//
 		}
 
-		std::size_t compiler::arg(std::string name, bool nl, std::string value)
+		std::size_t compiler::arg(std::string name, /*std::string value, */std::size_t depth)
 		{
-			trailer tr(set_preamble(name));
+			//
+			//	call frame established
+			//
+			call_frame tr(lookup(name), *this, depth);
 
 			//
-			//	iterate until SYM_FUN_CLOSE
+			//	collect all arguments by iterating until SYM_FUN_CLOSE
 			//
 			std::size_t counter{ 0 };
 			while (look_ahead_->type_ != SYM_FUN_CLOSE && look_ahead_->type_ != SYM_EOF)
@@ -481,17 +492,28 @@ namespace cyng
 						<< " argument #"
 						<< counter
 						<< ": "
-						<< value
+						<< look_ahead_->value_
 						<< std::endl
 						;
 				}
 
-				prg_
-					<< make_object(value);
-				;
-
-				match(SYM_ARG);
-				value = look_ahead_->value_;
+				
+				if (SYM_FUN_WS == look_ahead_->type_)
+				{
+					//
+					//	a local function produces an argument
+					//
+					fun_ws(look_ahead_->value_, depth);
+				}
+				else
+				{
+					//
+					//	produce arguments
+					//
+					prg_ << make_object(look_ahead_->value_);
+					match(SYM_ARG);
+					//value = look_ahead_->value_;
+				}
 				counter++;
 			}
 
@@ -516,6 +538,7 @@ namespace cyng
 			insert(library_, std::make_shared<function>("title", 0, NL_), {});
 			insert(library_, std::make_shared<function>("debug", 0, NL_), {});
 			insert(library_, std::make_shared<function>("contents", 0, NL_), {});
+			insert(library_, std::make_shared<function>("item", 1, NL_), { "entry" });
 
 			insert(library_, std::make_shared<function>("paragraph", 1, NL_), { u8"¶" });
 			insert(library_, std::make_shared<function>("header", 1, NL_), { "h" });
@@ -526,6 +549,7 @@ namespace cyng
 
 			insert(library_, std::make_shared<function>("quote", 1, ENV_RAW), { "q" });
 			insert(library_, std::make_shared<function>("cite", 1, ENV_PROCESSED), { "c" });
+			insert(library_, std::make_shared<function>("list", 1, ENV_PROCESSED), { "l" });
 			insert(library_, std::make_shared<function>("env.open", 1, ENV_RAW), { "+" });
 			insert(library_, std::make_shared<function>("env.close", 1, ENV_RAW), { "-" });
 		}
@@ -535,43 +559,41 @@ namespace cyng
 			return cyng::docscript::lookup(library_, name);
 		}
 
-		compiler::trailer compiler::set_preamble(std::string const& name)
-		{
-			auto fp = lookup(name);
-			BOOST_ASSERT(!!fp);	//	it's guaranteed to get a valid pointer
-			for (auto idx = decltype(fp->rvs_){0}; idx < fp->rvs_; ++idx)
-			{
-				prg_ << code::ASP;	//	return value(s)
-			}
-
-			prg_ 
-				<< code::ESBA
-				<< static_cast<std::uint32_t>(fp->type_)	//	function type
-				;
-			return trailer(verbose_, prg_, fp);
-		}
-
 		vector_t move_program(compiler& c)
 		{
 			return std::move(c.prg_);
 		}
 
 
-		compiler::trailer::trailer(int verbose, vector_t& prg, fp f)
-			: fp_(f)
-			, verbose_(verbose)
-			, prg_(prg)
-		{}
-
-		compiler::trailer::trailer(trailer&& tr)
-			: fp_(std::move(tr.fp_))
-			, verbose_(tr.verbose_)
-			, prg_(tr.prg_)
-		{}
-
-		compiler::trailer::~trailer()
+		compiler::call_frame::call_frame(compiler::fp p, compiler& c, std::size_t depth)
+			: fp_(p)
+			, compiler_(c)
+			, depth_(depth)
+			, pos_(c.prg_.size())
 		{
-			if (verbose_ > 3)
+			BOOST_ASSERT(!!p);	//	it's guaranteed to get a valid pointer
+			for (auto idx = decltype(p->rvs_){0}; idx < p->rvs_; ++idx)
+			{
+				compiler_.prg_ << code::ASP;	//	return value(s)
+			}
+
+			compiler_.prg_
+				<< code::ESBA
+				<< static_cast<std::uint32_t>(p->type_)	//	function type
+				;
+
+		}
+
+		compiler::call_frame::call_frame(call_frame&& tr)
+			: fp_(std::move(tr.fp_))
+			, compiler_(tr.compiler_)
+			, depth_(tr.depth_)
+			, pos_(tr.pos_)
+		{}
+
+		compiler::call_frame::~call_frame()
+		{
+			if (compiler_.verbose_ > 3)
 			{
 				std::cout
 					<< "***info: generate function call "
@@ -583,21 +605,18 @@ namespace cyng
 					;
 			}
 
-			prg_
-				//<< fp_->rvs_	//	return value count
-				<< invoke(fp_->name_)
-				;
+			compiler_.prg_ << invoke(fp_->name_);
 
 			//	set return value(s)
 			for (auto idx = decltype(fp_->rvs_){0}; idx < fp_->rvs_; ++idx)
 			{
-				prg_
+				compiler_.prg_
 					<< (idx + 1)
 					<< code::PR
 					;
 			}
 
-			prg_ << code::REBA;
+			compiler_.prg_ << code::REBA;
 
 		}
 
