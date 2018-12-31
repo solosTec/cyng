@@ -8,8 +8,6 @@
 #ifndef CYNG_DOCSCRIPT_LIBRARY_H
 #define CYNG_DOCSCRIPT_LIBRARY_H
 
-//#include <cyng/docscript/docscript.h>
-//#include <iostream>
 #include <string>
 #include <map>
 #include <memory>
@@ -19,7 +17,7 @@ namespace cyng
 {
 	namespace docscript
 	{
-		enum function_type : std::uint32_t {
+		enum function_type : std::uint16_t {
 			NONE_,	//	undefined
 			NL_,
 			WS_,

@@ -31,11 +31,18 @@ namespace cyng
 
 			using fp = std::shared_ptr<function const>;
 
+			/**
+			 * Call frame contains parameters (key/value pairs) or an argument list
+			 */
+			enum call_frame_type {
+				PARAMETERS,
+				ARGUMENT_LIST
+			};
+
 			class call_frame
 			{
 			public:
-				call_frame(compiler::fp, compiler&, std::size_t depth);
-				//call_frame(int, vector_t&, fp);
+				call_frame(compiler::fp, compiler&, std::size_t depth, call_frame_type cft);
 				call_frame(call_frame&&);
 				virtual ~call_frame();
 
@@ -46,6 +53,11 @@ namespace cyng
 				compiler& compiler_;
 				std::size_t const depth_;	//!<	call depth
 				std::size_t const pos_;		//!<	programm position
+
+				/**
+				 * Call frame contains parameters (key/value pairs) or an argument list
+				 */
+				bool const has_params_;		
 			};
 
 		public:

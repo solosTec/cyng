@@ -62,7 +62,10 @@ namespace cyng
 				ctx.push(cyng::make_now());
             });
 
-			vm_.register_function("meta", 2, std::bind(&generator::fun_meta, this, std::placeholders::_1));
+			//
+			//	4 parameters required. If less function call is empty and therefore useless
+			//	
+			vm_.register_function("meta", 4, std::bind(&generator::fun_meta, this, std::placeholders::_1));
 
             vm_.register_function("debug", 3, [this](context& ctx) {
 
@@ -99,22 +102,22 @@ namespace cyng
 
             });
 
-			vm_.register_function("title", 1, std::bind(&generator::fun_title, this, std::placeholders::_1));
+			vm_.register_function("title", 4, std::bind(&generator::fun_title, this, std::placeholders::_1));
 			vm_.register_function("contents", 2, std::bind(&generator::fun_contents, this, std::placeholders::_1));
 
 			vm_.register_function("header", 3, std::bind(&generator::fun_header, this, std::placeholders::_1));
-			vm_.register_function("header.1", 2, std::bind(&generator::fun_header_1, this, std::placeholders::_1));
-			vm_.register_function("header.2", 2, std::bind(&generator::fun_header_2, this, std::placeholders::_1));
-			vm_.register_function("header.3", 2, std::bind(&generator::fun_header_3, this, std::placeholders::_1));
-			vm_.register_function("header.4", 2, std::bind(&generator::fun_header_4, this, std::placeholders::_1));
-			vm_.register_function("paragraph", 2, std::bind(&generator::fun_paragraph, this, std::placeholders::_1));
-			vm_.register_function("bold", 2, std::bind(&generator::fun_bold, this, std::placeholders::_1));
-			vm_.register_function("emphasise", 2, std::bind(&generator::fun_emphasise, this, std::placeholders::_1));
-			vm_.register_function("color", 3, std::bind(&generator::fun_color, this, std::placeholders::_1));
-			vm_.register_function("link", 3, std::bind(&generator::fun_link, this, std::placeholders::_1));
-			vm_.register_function("figure", 3, std::bind(&generator::fun_figure, this, std::placeholders::_1));
-			vm_.register_function("quote", 3, std::bind(&generator::fun_quote, this, std::placeholders::_1));
-			vm_.register_function("cite", 3, std::bind(&generator::fun_cite, this, std::placeholders::_1));
+			vm_.register_function("header.1", 3, std::bind(&generator::fun_header_1, this, std::placeholders::_1));
+			vm_.register_function("header.2", 3, std::bind(&generator::fun_header_2, this, std::placeholders::_1));
+			vm_.register_function("header.3", 3, std::bind(&generator::fun_header_3, this, std::placeholders::_1));
+			vm_.register_function("header.4", 3, std::bind(&generator::fun_header_4, this, std::placeholders::_1));
+			vm_.register_function("paragraph", 4, std::bind(&generator::fun_paragraph, this, std::placeholders::_1));
+			vm_.register_function("bold", 3, std::bind(&generator::fun_bold, this, std::placeholders::_1));
+			vm_.register_function("emphasise", 3, std::bind(&generator::fun_emphasise, this, std::placeholders::_1));
+			vm_.register_function("color", 4, std::bind(&generator::fun_color, this, std::placeholders::_1));
+			vm_.register_function("link", 4, std::bind(&generator::fun_link, this, std::placeholders::_1));
+			vm_.register_function("figure", 4, std::bind(&generator::fun_figure, this, std::placeholders::_1));
+			vm_.register_function("quote", 4, std::bind(&generator::fun_quote, this, std::placeholders::_1));
+			vm_.register_function("cite", 4, std::bind(&generator::fun_cite, this, std::placeholders::_1));
 
 			vm_.register_function("list", 3, std::bind(&generator::fun_list, this, std::placeholders::_1));
 			vm_.register_function("item", 2, std::bind(&generator::fun_item, this, std::placeholders::_1));
@@ -145,7 +148,7 @@ namespace cyng
 
 		void generator::fun_header(context& ctx)
 		{
-			//	[00000001,%(("level":user-defined),("tag":79bf3ba0-2362-4ea5-bcb5-ed93844ac59a),("title":Second Header)),true]
+			//	[0001,1,true,%(("level":1),("tag":79bf3ba0-2362-4ea5-bcb5-ed93844ac59a),("title":Second Header))]
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
@@ -158,24 +161,38 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const level = value_cast<std::size_t>(reader[1].get("level"), 0);
-			auto const stag = value_cast<std::string>(reader[1].get("tag"), boost::uuids::to_string(uuid_gen_()));
-			auto const txt = value_cast<std::string>(reader[1].get("title"), "NO TITLE");
-			auto const tag = name_gen_(stag);
+			if (cyng::value_cast(reader.get(2), false)) {
 
-			const std::string node = generate_header(level, txt, tag);
-			ctx.push(cyng::make_object(node));
+				auto const level = value_cast<std::size_t>(reader[3].get("level"), 0);
+				auto const stag = value_cast<std::string>(reader[3].get("tag"), boost::uuids::to_string(uuid_gen_()));
+				auto const txt = value_cast<std::string>(reader[3].get("title"), "NO TITLE");
+				auto const tag = name_gen_(stag);
+
+				const std::string node = generate_header(level, txt, tag);
+				ctx.push(cyng::make_object(node));
+			}
+			else {
+
+				std::cerr
+					<< "***error: function header() only accepts named parameters"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function header() only accepts named parameters"));
+
+			}
 		}
 
 		void generator::fun_header_1(context& ctx)
 		{
-			//	[00000001,First,Header]
-			//	
-			//	* function type
-			//	* params
-			//
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
+			//	[0001,1,false,2018-12-31 18:28:49.91697640]
+			//	
+			//	* function type
+			//	* recursion depth
+			//	* parameters/arguments
+			//	* values
+			//
 			std::cout
 				<< "\n***info: header.1("
 				<< cyng::io::to_str(frame)
@@ -184,9 +201,20 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const txt = accumulate(reader, 1, frame.size());
-			auto const node = generate_header(1, txt, uuid_gen_());
-			ctx.push(cyng::make_object(node));
+			if (cyng::value_cast(reader.get(2), false)) {
+
+				//	named parameters
+				//BOOST_ASSERT_MSG(false, "header.1(params) not implemented yet");
+				ctx.push(cyng::make_object("header.1(params) not implemented yet"));
+
+			}
+			else {
+
+				//	argument list
+				auto const txt = accumulate(reader, 3, frame.size());
+				auto const node = generate_header(1, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
+			}
 		}
 
 		void generator::fun_header_2(context& ctx)
@@ -244,9 +272,16 @@ namespace cyng
 
 		void generator::fun_paragraph(context& ctx)
 		{
-			//	[00000001,159,Lorem,ipsum,dolor,sit,amet,...sit,amet,.]
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
+			//	[0001,3,false,16,Science,may,never,come,up,with,a,better,office,communication,system,,than,the,coffee,break,.]
+			//
+			//	* function type (0 ... 3)
+			//	* recursion depth
+			//	* parameters/arguments
+			//	* chunk count
+			//	* text chunks
+			//
 			std::cout
 				<< "\n***info: paragraph("
 				<< cyng::io::to_str(frame)
@@ -255,17 +290,26 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const size = value_cast<std::size_t>(reader.get(1), 0u);
-			BOOST_ASSERT(size == frame.size() - 2);
-			const std::string node = accumulate(reader, 2, frame.size(), "p");
-			ctx.push(cyng::make_object(node));
+			if (!cyng::value_cast(reader.get(2), false)) {
+
+				auto const size = value_cast<std::size_t>(reader.get(3), 0u);
+				BOOST_ASSERT(size == frame.size() - 4);
+				auto const node = accumulate(reader, 4, frame.size(), "p");
+				ctx.push(cyng::make_object(node));
+
+			}
+			else {
+
+				ctx.push(cyng::make_object("error: paragraph only accepts arguments"));
+
+			}
 		}
 
 		void generator::fun_bold(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000002,ipsum]
+			//	[0002,0,false,dolor]
 			std::cout
 				<< "\n***info: bold("
 				<< cyng::io::to_str(frame)
@@ -274,18 +318,29 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			const std::string node = accumulate(reader, 1, frame.size(), "b");
+			if (!cyng::value_cast(reader.get(2), false)) {
 
-			if (verbosity_ > 3)
-			{
-				std::cout
-					<< "***info: bold("
-					<< node
-					<< ")"
-					<< std::endl;
+				const std::string node = accumulate(reader, 3, frame.size(), "b");
+
+				if (verbosity_ > 3)
+				{
+					std::cout
+						<< "***info: bold("
+						<< node
+						<< ")"
+						<< std::endl;
+				}
+
+				ctx.push(cyng::make_object(node));
 			}
+			else {
 
-			ctx.push(cyng::make_object(node));
+				std::cerr
+					<< "***error: function bold() only accepts argument list"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function bold() only accepts argument list"));
+			}
 		}
 
 		void generator::fun_emphasise(context& ctx)
@@ -293,7 +348,7 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 
 #ifdef _DEBUG
-			//	[00000002,ipsum]
+			//	[0002,0,false,sed,diam,nonumy,eirmod,tempor,invidunt,ut,labore]
 			std::cout
 				<< "\n***info: emphasise("
 				<< cyng::io::to_str(frame)
@@ -302,18 +357,29 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			const std::string node = accumulate(reader, 1, frame.size(), "em");
+			if (!cyng::value_cast(reader.get(2), false)) {
 
-			if (verbosity_ > 3)
-			{
-				std::cout
-					<< "***info: emphasise("
-					<< node
-					<< ")"
-					<< std::endl;
+				const std::string node = accumulate(reader, 3, frame.size(), "em");
+
+				if (verbosity_ > 3)
+				{
+					std::cout
+						<< "***info: emphasise("
+						<< node
+						<< ")"
+						<< std::endl;
+				}
+
+				ctx.push(cyng::make_object(node));
 			}
+			else {
 
-			ctx.push(cyng::make_object(node));
+				std::cerr
+					<< "***error: function emphasise() only accepts argument list"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function emphasise() only accepts argument list"));
+			}
 		}
 
 		void generator::fun_color(context& ctx)
@@ -321,7 +387,7 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-			//	[00000002,%(("red":spiced up)),false]
+			//	[0002,0,true,%(("red":amet))]
 			std::cout
 				<< "\n***info: color("
 				<< cyng::io::to_str(frame)
@@ -331,35 +397,46 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			const auto map = value_cast(reader.get(1), param_map_t());
-			BOOST_ASSERT_MSG(map.size() == 1, "internal error (color)");
+			if (cyng::value_cast(reader.get(2), false)) {
 
-			std::stringstream ss;
-			ss
-				<< "<span style=\"color:"
-				<< map.begin()->first
-				<< "\">"
-				<< cyng::io::to_str(map.begin()->second)
-				<< "</span>"
-				;
-			const std::string node = ss.str();
-			if (verbosity_ > 3)
-			{
-				std::cout
-					<< "***info: color("
-					<< node
-					<< ")"
-					<< std::endl;
+				const auto map = value_cast(reader.get(3), param_map_t());
+				BOOST_ASSERT_MSG(map.size() == 1, "internal error (color)");
+
+				std::stringstream ss;
+				ss
+					<< "<span style=\"color:"
+					<< map.begin()->first
+					<< "\">"
+					<< cyng::io::to_str(map.begin()->second)
+					<< "</span>"
+					;
+				const std::string node = ss.str();
+				if (verbosity_ > 3)
+				{
+					std::cout
+						<< "***info: color("
+						<< node
+						<< ")"
+						<< std::endl;
+				}
+
+				ctx.push(cyng::make_object(node));
 			}
+			else {
 
-			ctx.push(cyng::make_object(node));
+				std::cerr
+					<< "***error: function color() only accepts named parameters"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function color() only accepts named parameters"));
+			}
 		}
 
 		void generator::fun_link(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000000,%(("text":LaTeX),("url":https://www.latex-project.org/)),false]
+			//	[0000,0,true,%(("text":LaTeX),("url":https://www.latex-project.org/))]
 			std::cout
 				<< "\n***info: link("
 				<< cyng::io::to_str(frame)
@@ -368,18 +445,29 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			if (cyng::value_cast(reader.get(2), false)) {
 
-			const std::string url = value_cast<std::string>(reader[1].get("url"), "");
-			const std::string node = "<a href=\""
-				+ url
-				+ "\" title=\""
-				+ value_cast<std::string>(reader[1].get("title"), url)
-				+ "\">"
-				+ value_cast<std::string>(reader[1].get("text"), "")
-				+ "</a>"
-				;
+				const std::string url = value_cast<std::string>(reader[3].get("url"), "");
+				const std::string node = "<a href=\""
+					+ url
+					+ "\" title=\""
+					+ value_cast<std::string>(reader[3].get("title"), url)
+					+ "\">"
+					+ value_cast<std::string>(reader[3].get("text"), "")
+					+ "</a>"
+					;
 
-			ctx.push(cyng::make_object(node));
+				ctx.push(cyng::make_object(node));
+			}
+			else {
+
+				std::cerr
+					<< "***error: function link() only accepts named parameters"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function link() only accepts named parameters"));
+
+			}
 		}
 
 		//<figure>
@@ -390,7 +478,7 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000001,%(("caption":figure with caption),("source":LogoSmall.jpg)),true]
+			//	[0001,1,true,%(("alt":Giovanni Bellini, Man wearing a turban),("caption":Giovanni Bellini, Man wearing a turban),("source":LogoSmall.jpg),("tag":0c65390a-9405-43d0-b504-3e22d8c267a0))]
 			std::cout
 				<< "\n***info: figure("
 				<< cyng::io::to_str(frame)
@@ -400,97 +488,108 @@ namespace cyng
 
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			if (cyng::value_cast(reader.get(2), false)) {
 
-			const std::string source = value_cast<std::string>(reader[1].get("source"), "");
-			const boost::filesystem::path p = resolve_path(source);
-			std::ifstream file(p.string(), std::ios::binary | std::ios::ate);
-			if (!file.is_open())
-			{
-				std::cerr
-					<< "***error cannot open figure file "
-					<< source
-					<< std::endl;
-				ctx.push(cyng::make_object("cannot open file " + source));
-			}
-			else
-			{
-				//
-				//	do not skip 
-				//
-				file.unsetf(std::ios::skipws);
-
-				//
-				//	get file size
-				//
-				std::streamsize size = file.tellg();
-				file.seekg(0, std::ios::beg);
-
-				//
-				//	read into buffer
-				//
-				cyng::buffer_t buffer(size);
-				file.read(buffer.data(), size);
-				BOOST_ASSERT(file.gcount() == size);
-
-				//
-				//	encode image as base 64
-				//
-				std::string const alt = value_cast<std::string>(reader[1].get("alt"), "");
-				std::string const cap = value_cast<std::string>(reader[1].get("caption"), "");
-				auto const tag = value_cast(reader[1].get("tag"), uuid_gen_());
-
-				auto pos = structure_.emplace(std::piecewise_construct,
-					std::forward_as_tuple(tag),
-					std::forward_as_tuple(element::FIGURE, cap, numeration_));
-
-				if (pos.second)
+				const std::string source = value_cast<std::string>(reader[3].get("source"), "");
+				const boost::filesystem::path p = resolve_path(source);
+				std::ifstream file(p.string(), std::ios::binary | std::ios::ate);
+				if (!file.is_open())
 				{
-
-					std::stringstream ss;
-					ss
-						<< std::endl
-						<< "<figure id=\""
-						<< tag
-						<< "\">"
-						<< std::endl
-						<< "<img alt=\""
-						<< alt
-						<< "\" src=\"data:image/"
-						<< get_extension(p)
-						<< ";base64,"
-						<< cyng::crypto::base64_encode(buffer.data(), buffer.size())
-						<< "\" />"
-						<< std::endl
-						<< "<figcaption>figure "
-						<< pos.first->second.to_str()
-						<< "</figcaption>"
-						<< std::endl
-						<< "</figure>"
-						;
-
-					const std::string node = ss.str();
-					if (verbosity_ > 1)
-					{
-						std::cout
-							<< "***info: figure("
-							<< cap
-							<< " - "
-							<< size
-							<< " bytes)"
-							<< std::endl;
-					}
-
-					ctx.push(cyng::make_object(node));
-				}
-				else {
 					std::cerr
-						<< "***error: cannot insert figure "
+						<< "***error cannot open figure file ["
 						<< source
+						<< "]"
 						<< std::endl;
-
-					ctx.push(cyng::make_object("cannot insert figure " + source));
-
+					ctx.push(cyng::make_object("cannot open file [" + source + "]"));
 				}
+				else
+				{
+					//
+					//	do not skip 
+					//
+					file.unsetf(std::ios::skipws);
+
+					//
+					//	get file size
+					//
+					std::streamsize size = file.tellg();
+					file.seekg(0, std::ios::beg);
+
+					//
+					//	read into buffer
+					//
+					cyng::buffer_t buffer(size);
+					file.read(buffer.data(), size);
+					BOOST_ASSERT(file.gcount() == size);
+
+					//
+					//	encode image as base 64
+					//
+					std::string const alt = value_cast<std::string>(reader[3].get("alt"), "");
+					std::string const cap = value_cast<std::string>(reader[3].get("caption"), "");
+					auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
+
+					auto pos = structure_.emplace(std::piecewise_construct,
+						std::forward_as_tuple(tag),
+						std::forward_as_tuple(element::FIGURE, cap, numeration_));
+
+					if (pos.second)
+					{
+
+						std::stringstream ss;
+						ss
+							<< std::endl
+							<< "<figure id=\""
+							<< tag
+							<< "\">"
+							<< std::endl
+							<< "<img alt=\""
+							<< alt
+							<< "\" src=\"data:image/"
+							<< get_extension(p)
+							<< ";base64,"
+							<< cyng::crypto::base64_encode(buffer.data(), buffer.size())
+							<< "\" />"
+							<< std::endl
+							<< "<figcaption>figure "
+							<< pos.first->second.to_str()
+							<< "</figcaption>"
+							<< std::endl
+							<< "</figure>"
+							;
+
+						const std::string node = ss.str();
+						if (verbosity_ > 1)
+						{
+							std::cout
+								<< "***info: figure("
+								<< cap
+								<< " - "
+								<< size
+								<< " bytes)"
+								<< std::endl;
+						}
+
+						ctx.push(cyng::make_object(node));
+					}
+					else {
+						std::cerr
+							<< "***error: cannot insert figure "
+							<< source
+							<< std::endl;
+
+						ctx.push(cyng::make_object("cannot insert figure " + source));
+
+					}
+				}
+			}
+			else {
+				std::cerr
+					<< "***error: function figure() only accepts named parameters"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function figure() only accepts named parameters"));
+
 			}
 		}
 
@@ -498,7 +597,13 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000004,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),true]
+			//	[0004,1,true,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),1,Science,may,never,come,up,with,a,better,office,communication,system,,than,the,coffee,break,.]
+			//
+			//	* function type (0 ... 3)
+			//	* recursion depth
+			//	* parameters/arguments
+			//	* text chunks
+			//
 			std::cout
 				<< "\n***info: quote("
 				<< cyng::io::to_str(frame)
@@ -507,34 +612,48 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			std::string const source = value_cast<std::string>(reader[1].get("source"), "");
-			std::string const url = value_cast<std::string>(reader[1].get("url"), "https://example.org");
-			auto const tag = value_cast(reader[1].get("tag"), uuid_gen_());
 
-			std::stringstream ss;
-			ss
-				<< std::endl
-				<< "<blockquote cite=\""
-				<< url
-				<< "\">"
-				<< accumulate(reader, 3, frame.size())
-				<< std::endl
-				<< "<footer>- <cite>"
-				<< source
-				<< "</cite></footer>"
-				<< std::endl
-				<< "</blockquote>"
-				;
+			if (cyng::value_cast(reader.get(2), false)) {
 
-			const std::string node = ss.str();
-			ctx.push(cyng::make_object(node));
+				std::string const source = value_cast<std::string>(reader[3].get("source"), "");
+				std::string const url = value_cast<std::string>(reader[3].get("url"), "https://example.org");
+				auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
+
+				std::stringstream ss;
+				ss
+					<< std::endl
+					<< "<blockquote cite=\""
+					<< url
+					<< "\">"
+					<< accumulate(reader, 4, frame.size())
+					<< std::endl
+					<< "<footer>- <cite>"
+					<< source
+					<< "</cite></footer>"
+					<< std::endl
+					<< "</blockquote>"
+					;
+
+				const std::string node = ss.str();
+				ctx.push(cyng::make_object(node));
+
+			}
+			else {
+
+				std::cerr
+					<< "***error: function quote() only accepts named parameters"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function quote() only accepts named parameters"));
+
+			}
 		}
 
 		void generator::fun_cite(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000003,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),true,<p> Science may never come up with a better office communication system, than the coffee break.</p>]
+			//	[0003,1,true,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),1,<p>Science may never come up with a better office communication system, than the coffee break.</p>]
 			std::cout
 				<< "\n***info: cite("
 				<< cyng::io::to_str(frame)
@@ -543,39 +662,51 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const source = value_cast<std::string>(reader[1].get("source"), "");
-			auto const url = value_cast<std::string>(reader[1].get("url"), "https://example.org");
-			auto const tag = value_cast(reader[1].get("tag"), uuid_gen_());
+			if (cyng::value_cast(reader.get(2), false)) {
 
-			std::stringstream ss;
-			ss
-				<< std::endl
-				<< "<blockquote cite=\""
-				<< url
-				<< "\">"
-				<< accumulate(reader, 2, frame.size())
-				<< std::endl
-				<< "<footer>- <cite>"
-				<< source
-				<< "</cite></footer>"
-				<< std::endl
-				<< "</blockquote>"
-				;
+				auto const source = value_cast<std::string>(reader[3].get("source"), "");
+				auto const url = value_cast<std::string>(reader[3].get("url"), "https://example.org");
+				auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
 
-			const std::string node = ss.str();
-			ctx.push(cyng::make_object(node));
+				std::stringstream ss;
+				ss
+					<< std::endl
+					<< "<blockquote cite=\""
+					<< url
+					<< "\">"
+					<< accumulate(reader, 4, frame.size())
+					<< std::endl
+					<< "<footer>- <cite>"
+					<< source
+					<< "</cite></footer>"
+					<< std::endl
+					<< "</blockquote>"
+					;
+
+				const std::string node = ss.str();
+				ctx.push(cyng::make_object(node));
+			}
+			else {
+
+				std::cerr
+					<< "***error: function cite() only accepts named parameters"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function cite() only accepts named parameters"));
+			}
 		}
 
 		void generator::fun_title(context& ctx)
 		{
-			//	[00000001,Introduction,into,docScript]
-			//	
-			//	* function type (0 ... 3)
-			//	* title chunks
-			//
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[3idx,true,"docScript","into","Introduction"]
+			//	[0001,1,false,Introduction,into,docScript]
+			//	
+			//	* function type (0 ... 3)
+			//	* recursion depth
+			//	* parameters/arguments
+			//	* title chunks
+			//
 			std::cout
 				<< "\n***info: title("
 				<< cyng::io::to_str(frame)
@@ -585,25 +716,29 @@ namespace cyng
 #endif
 			const auto reader = make_reader(frame);
 
-			std::string title;
-			for (std::size_t idx = 1u; idx < frame.size(); ++idx)
-			{
-				if (idx > 1) {
-					title += " ";
+			//	accept only arguments
+			if (!cyng::value_cast(reader.get(2), false)) {
+
+				std::string const title = accumulate(reader, 3, frame.size());
+
+				if (verbosity_ > 1)
+				{
+					std::cout
+						<< "***info: title("
+						<< title
+						<< ")"
+						<< std::endl;
 				}
-				title += value_cast<std::string>(reader.get(idx), "");
-			}
 
-			if (verbosity_ > 1)
-			{
-				std::cout
-					<< "***info: title("
-					<< title
-					<< ")"
+				meta_.emplace("title", cyng::make_object(title));
+			}
+			else {
+
+				std::cerr
+					<< "***error: function title() only accepts arguments"
 					<< std::endl;
-			}
 
-			meta_.emplace("title", cyng::make_object(title));
+			}
 
 			//
 			// function meta has no return values
@@ -615,9 +750,11 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-			//	[00000001,%(("file-size":106),("last-write-time":2018-10-25 22:17:08.00000000))]
+			//	[0001,0,true,%(("file-size":4939),("last-write-time":2018-12-30 21:16:04.00000000))]
 			//	
 			//	* function type
+			//	* recursion depth
+			//	* parameters/arguments
 			//	* parameter set
 			//
 			std::cout
@@ -628,9 +765,19 @@ namespace cyng
 				;
 #endif
 			const auto reader = make_reader(frame);
-			param_map_t data;
-			data = value_cast<param_map_t>(reader.get(1), data);
-			this->update_meta(data);
+			if (cyng::value_cast(reader.get(2), false)) {
+
+				param_map_t data;
+				data = value_cast<param_map_t>(reader.get(3), data);
+				this->update_meta(data);
+			}
+			else {
+
+				std::cerr
+					<< "***error: function meta() only accepts named parameters"
+					<< std::endl;
+
+			}
 
 			//
 			// function meta has no return values

@@ -501,6 +501,13 @@ namespace cyng
 				emit_tmp(SYM_WORD);
 				emit(symbol(SYM_CHAR, c));
 				break;
+			case '>':
+			case '<':
+			case '&':
+				//	HTML entities
+				emit_tmp(SYM_WORD);
+				emit(symbol(SYM_CHAR, c));
+				break;
 			default:
 				tmp_ += c;
 				break;
@@ -532,6 +539,13 @@ namespace cyng
 					break;
 				}
 				return pop();
+			case '>':
+			case '<':
+			case '&':
+				//	HTML entities
+				emit_tmp(SYM_WORD);
+				emit(symbol(SYM_CHAR, c));
+				break;
 			default:
 				tmp_ += c;
 				break;

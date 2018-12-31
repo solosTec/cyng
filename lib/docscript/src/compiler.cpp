@@ -34,9 +34,11 @@ namespace cyng
 			//	call frame
 			//
 			prg_
-				//	true ==> global function
+				//	simulate frame call prolog
 				<< generate_invoke_unwinded("meta"
-					, std::uint32_t(NL_)
+					, std::uint16_t(NL_)	//	function type
+					, std::size_t(0)	//	depth
+					, true	//	use parameters
 					, param_map_factory("last-write-time", last_write_time)("file-size", file_size)())
 
 				//	build a call frame generate function
@@ -87,17 +89,16 @@ namespace cyng
 						return false;
 					}
 					else {
-						fun_nl(look_ahead_->value_, depth);
+						fun_nl(look_ahead_->value_, depth + 1);
 					}
 					break;
 				case SYM_FUN_WS:
 					// all other functions are local	
-					fun_ws(look_ahead_->value_, depth);
+					fun_ws(look_ahead_->value_, depth + 1);
 					break;
 				case SYM_FUN_PAR:
 					//	new paragraph
-					fun_par(depth);
-					//fun_par(set_preamble(look_ahead_->value_));
+					fun_par(depth + 1);
 					break;
 				default:
 					std::cerr
@@ -163,18 +164,8 @@ namespace cyng
 			case SYM_ARG:
 			case SYM_FUN_WS:
 				//	NL function
-				arg(name, /*look_ahead_->value_, */depth);
+				arg(name, depth);
 				break;
-			//case SYM_FUN_WS:
-			//{
-			//	//
-			//	//	a local function produces input for global function
-			//	//
-			//	call_frame tr(lookup(name), *this, depth);
-			//	fun_ws(look_ahead_->value_, depth);
-			//	match(SYM_FUN_CLOSE);
-			//}
-			//	break;
 
 			case SYM_FUN_CLOSE:
 				//	no arguments
@@ -185,7 +176,7 @@ namespace cyng
 					<< "() - without arguments"
 					<< std::endl
 					;
-				call_frame tr(lookup(name), *this, depth);
+				call_frame tr(lookup(name), *this, depth, PARAMETERS);
 			}
 			match(SYM_FUN_CLOSE);
 			break;
@@ -214,7 +205,7 @@ namespace cyng
 				break;
 			case SYM_FUN_WS:
 			{
-				call_frame tr(lookup(name), *this, depth);
+				call_frame tr(lookup(name), *this, depth, PARAMETERS);	//	key function
 				fun_ws(look_ahead_->value_, depth);
 
 				//
@@ -243,7 +234,7 @@ namespace cyng
 					//
 					//	use RAII to create a function call frame
 					//
-					call_frame tr(lookup(name), *this, depth);
+					call_frame tr(lookup(name), *this, depth, PARAMETERS);	//	key function
 					match(SYM_FUN_CLOSE);
 				}
 				break;
@@ -262,7 +253,7 @@ namespace cyng
 			//
 			//	create call frame
 			//
-			call_frame tr(lookup(look_ahead_->value_), *this, depth);
+			call_frame tr(lookup(look_ahead_->value_), *this, depth, ARGUMENT_LIST);	//	not a key function
 
 			//
 			//	match look ahead symbol
@@ -284,8 +275,20 @@ namespace cyng
 			{
 				switch (look_ahead_->type_)
 				{
-				case SYM_WORD:
 				case SYM_CHAR:
+					//if (look_ahead_->value_.compare("<") == 0) {
+					//	prg_ << make_object("&lt;");
+					//	match(look_ahead_->type_);
+					//	counter++;
+					//	break;
+					//}
+					//else if (look_ahead_->value_.compare(">") == 0) {
+					//	prg_ << make_object("&gt;");
+					//	match(look_ahead_->type_);
+					//	counter++;
+					//	break;
+					//}
+				case SYM_WORD:
 					prg_ << make_object(look_ahead_->value_);
 					match(look_ahead_->type_);
 					counter++;
@@ -322,7 +325,7 @@ namespace cyng
 			//
 			//	open a function call and close it with RAII
 			//
-			call_frame tr(lookup(name), *this, depth);
+			call_frame tr(lookup(name), *this, depth, PARAMETERS);	//	function with key/value params
 
 			//
 			//	iterate until SYM_FUN_CLOSE
@@ -425,7 +428,7 @@ namespace cyng
 				//
 				//	close call frame and call function
 				//
-				<< make_object(depth)
+				//<< make_object(depth)
 				;
 
 			//
@@ -459,7 +462,7 @@ namespace cyng
 				//
 				//	full formatting supported
 				//
-				loop(++depth);
+				loop(depth + 1);
 			}
 
 
@@ -468,12 +471,12 @@ namespace cyng
 			//
 		}
 
-		std::size_t compiler::arg(std::string name, /*std::string value, */std::size_t depth)
+		std::size_t compiler::arg(std::string name, std::size_t depth)
 		{
 			//
 			//	call frame established
 			//
-			call_frame tr(lookup(name), *this, depth);
+			call_frame tr(lookup(name), *this, depth, ARGUMENT_LIST);	//	function with argument list
 
 			//
 			//	collect all arguments by iterating until SYM_FUN_CLOSE
@@ -503,7 +506,7 @@ namespace cyng
 					//
 					//	a local function produces an argument
 					//
-					fun_ws(look_ahead_->value_, depth);
+					fun_ws(look_ahead_->value_, depth + 1);
 				}
 				else
 				{
@@ -565,11 +568,12 @@ namespace cyng
 		}
 
 
-		compiler::call_frame::call_frame(compiler::fp p, compiler& c, std::size_t depth)
+		compiler::call_frame::call_frame(compiler::fp p, compiler& c, std::size_t depth, call_frame_type cft)
 			: fp_(p)
 			, compiler_(c)
 			, depth_(depth)
 			, pos_(c.prg_.size())
+			, has_params_(PARAMETERS == cft)
 		{
 			BOOST_ASSERT(!!p);	//	it's guaranteed to get a valid pointer
 			for (auto idx = decltype(p->rvs_){0}; idx < p->rvs_; ++idx)
@@ -579,7 +583,9 @@ namespace cyng
 
 			compiler_.prg_
 				<< code::ESBA
-				<< static_cast<std::uint32_t>(p->type_)	//	function type
+				<< static_cast<std::uint16_t>(p->type_)	//	function type
+				<< depth
+				<< has_params_
 				;
 
 		}
@@ -589,6 +595,7 @@ namespace cyng
 			, compiler_(tr.compiler_)
 			, depth_(tr.depth_)
 			, pos_(tr.pos_)
+			, has_params_(tr.has_params_)
 		{}
 
 		compiler::call_frame::~call_frame()
