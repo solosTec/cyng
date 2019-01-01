@@ -50,7 +50,19 @@ namespace cyng
 							<< lexer_.get_state()
 							<< " - "
 							<< lexer_.dump_stack()
-							<< std::endl;
+							<< " #"
+							<< line_
+							;
+
+						if (!source_files_.empty()) {
+							std::cout
+								<< '@'
+								<< source_files_.top()
+								;
+						}
+						std::cout
+							<< std::endl
+							;
 					}
 					while(!lexer_.next(tok.value_))
 					{
@@ -94,7 +106,10 @@ namespace cyng
 				if (parentheses_ < 0)
 				{
 					std::cerr
-						<< "***error: unbalanced parentheses"
+						<< "***error: unbalanced parentheses #"
+						<< line_
+						<< '@'
+						<< source_files_.top()
 						<< std::endl
 						;
 
@@ -102,6 +117,8 @@ namespace cyng
 				buffer_.emplace_back(std::move(sym));
 
 			})
+			, line_(0u)
+			, source_files_()
 
 		{}
 		
@@ -246,6 +263,15 @@ namespace cyng
 						;
 				}
 
+				//	1. and 2. pass complete
+				//	start compiler
+				cyng::vector_t doc;
+				doc.reserve(buffer_.size());	//	that's an estimation
+
+				docscript::compiler c(buffer_, verbose_);
+				c.meta_["last-write-time"] = make_object(last_write_time_);
+				c.meta_["file-size"] = make_object(file_size_);
+
 				if (verbose_ > 1)
 				{
 					//
@@ -254,10 +280,6 @@ namespace cyng
 					std::cout
 						<< "***info: last write time: "
 						<< cyng::io::to_str(cyng::make_object(last_write_time_))
-// 						;
-// 					cyng::time_format(std::cout, last_write_time_);
-						
-// 					std::cout
 						<< std::endl
 						;
 
@@ -271,24 +293,28 @@ namespace cyng
 					//
 					//	calculated entropy
 					//
-					const double entropy = calculate_entropy(stats_);
+					auto const entropy = calculate_entropy(stats_);
+					auto const size = calculate_size(stats_);	//	symbol count
+
 					std::cout
 						<< "***info: entropy is "
 						<< entropy
 						<< " (calculated over "
-						<< calculate_size(stats_)
+						<< size
 						<< " input token)"
 						<< std::endl
 						;
+
+					c.meta_["text-entropy"] = make_object(entropy);
+					c.meta_["input-symbols"] = make_object(size);
+
 				}
 
-				//	1. and 2. pass complete
+				//
 				//	start compiler
-				cyng::vector_t doc;
-				doc.reserve(buffer_.size());	//	that's an estimation
+				//
+				c.run(out);
 
-				docscript::compiler c(buffer_, /*doc, */verbose_);
-				c.run(last_write_time_, file_size_, out);
 
 				//
 				//	get program out of compiler

@@ -119,8 +119,10 @@ namespace cyng
 			vm_.register_function("quote", 4, std::bind(&generator::fun_quote, this, std::placeholders::_1));
 			vm_.register_function("cite", 4, std::bind(&generator::fun_cite, this, std::placeholders::_1));
 
-			vm_.register_function("list", 3, std::bind(&generator::fun_list, this, std::placeholders::_1));
-			vm_.register_function("item", 2, std::bind(&generator::fun_item, this, std::placeholders::_1));
+			vm_.register_function("list", 4, std::bind(&generator::fun_list, this, std::placeholders::_1));
+			vm_.register_function("item", 3, std::bind(&generator::fun_item, this, std::placeholders::_1));
+
+			vm_.register_function("env.open", 4, std::bind(&generator::fun_env, this, std::placeholders::_1));
 
 			vm_.register_function("generate", 1, std::bind(&generator::fun_generate, this, std::placeholders::_1));
 		}
@@ -164,8 +166,8 @@ namespace cyng
 			if (cyng::value_cast(reader.get(2), false)) {
 
 				auto const level = value_cast<std::size_t>(reader[3].get("level"), 0);
-				auto const stag = value_cast<std::string>(reader[3].get("tag"), boost::uuids::to_string(uuid_gen_()));
 				auto const txt = value_cast<std::string>(reader[3].get("title"), "NO TITLE");
+				auto const stag = value_cast<std::string>(reader[3].get("tag"), boost::uuids::to_string(uuid_gen_()));
 				auto const tag = name_gen_(stag);
 
 				const std::string node = generate_header(level, txt, tag);
@@ -221,8 +223,8 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000001,Examples,of,DocScript]
-			//	[00000001,%(("tag":b3fc0bdc-5d95-45e9-b66c-f0c541f1592c),("title":Basic Rules)),0]
+			//	[0001,1,false,Examples,of,DocScript]
+			//	[0001,1,true,%(("tag":b3fc0bdc-5d95-45e9-b66c-f0c541f1592c),("title":Basic Rules))]
 			std::cout
 				<< "\n***info: header.2("
 				<< cyng::io::to_str(frame)
@@ -231,9 +233,24 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const txt = accumulate(reader, 1, frame.size());
-			auto const node = generate_header(2, txt, uuid_gen_());
-			ctx.push(cyng::make_object(node));
+			if (cyng::value_cast(reader.get(2), false)) {
+
+				//	named parameters
+				auto const txt = value_cast<std::string>(reader[3].get("title"), "NO TITLE");
+				auto const stag = value_cast<std::string>(reader[3].get("tag"), boost::uuids::to_string(uuid_gen_()));
+				auto const tag = name_gen_(stag);
+
+				const std::string node = generate_header(2, txt, tag);
+				ctx.push(cyng::make_object(node));
+
+			}
+			else {
+
+				//	argument list
+				auto const txt = accumulate(reader, 3, frame.size());
+				auto const node = generate_header(2, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
+			}
 		}
 
 		void generator::fun_header_3(context& ctx)
@@ -248,9 +265,17 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const txt = accumulate(reader, 1, frame.size());
-			auto const node = generate_header(3, txt, uuid_gen_());
-			ctx.push(cyng::make_object(node));
+			if (cyng::value_cast(reader.get(2), false)) {
+
+				//	named parameters
+				ctx.push(cyng::make_object("header.3(params) not implemented yet"));
+
+			}
+			else {
+				auto const txt = accumulate(reader, 3, frame.size());
+				auto const node = generate_header(3, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
+			}
 		}
 
 		void generator::fun_header_4(context& ctx)
@@ -265,9 +290,17 @@ namespace cyng
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const txt = accumulate(reader, 1, frame.size());
-			auto const node = generate_header(4, txt, uuid_gen_());
-			ctx.push(cyng::make_object(node));
+			if (cyng::value_cast(reader.get(2), false)) {
+
+				//	named parameters
+				ctx.push(cyng::make_object("header.4(params) not implemented yet"));
+
+			}
+			else {
+				auto const txt = accumulate(reader, 3, frame.size());
+				auto const node = generate_header(4, txt, uuid_gen_());
+				ctx.push(cyng::make_object(node));
+			}
 		}
 
 		void generator::fun_paragraph(context& ctx)
@@ -788,7 +821,7 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			//	[00000003,%(("style":upper-roman),("type":ordered)),0,Change the list style type,See the result,Some of the list types does not work in IE or Opera]
+			//	[0003,1,true,%(("style":upper-roman),("type":ordered)),Change the list style type,See the result,Some of the list types does not work in IE or Opera]
 			std::cout
 				<< "\n***info: list("
 				<< cyng::io::to_str(frame)
@@ -797,14 +830,32 @@ namespace cyng
 				;
 #endif
 			const auto reader = make_reader(frame);
+			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			BOOST_ASSERT(cyng::value_cast(reader.get(2), false));
+
+			auto const type = value_cast<std::string>(reader[3].get("type"), "ordered");
+			auto const style = value_cast<std::string>(reader[3].get("style"), "disc");
+			auto const tag = (boost::algorithm::equals(type, "ordered")) ? "ol" : "ul";
 
 			std::stringstream ss;
-			ss 
+
+			//
+			//	open list
+			//
+			ss
 				<< std::endl
-				<< "<ol>"
+				<< '<'
+				<< tag
+				<< ' '
+				<< "style="
+				<< '"'
+				<< "list-style-type: "
+				<< style
+				<< '"'
+				<< '>'
 				;
 
-			for (std::size_t idx = 3; idx < frame.size(); ++idx)
+			for (std::size_t idx = 4; idx < frame.size(); ++idx)
 			{
 				const auto item = value_cast<std::string>(reader.get(idx), "");
 				ss 
@@ -815,10 +866,17 @@ namespace cyng
 					;
 			}
 
+			//
+			//	close list
+			//
 			ss
 				<< std::endl
-				<< "</ol>"
+				<< '<'
+				<< '/'
+				<< tag
+				<< '>'
 				;
+
 			const std::string node = ss.str();
 			ctx.push(cyng::make_object(node));
 		}
@@ -827,6 +885,7 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
+			//	[0001,3,false,See the result]
 			std::cout
 				<< "\n***info:entry("
 				<< cyng::io::to_str(frame)
@@ -836,8 +895,40 @@ namespace cyng
 #endif
 			const auto reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
-			auto const txt = value_cast<std::string>(reader.get(1), "");	//	item text
-			ctx.push(cyng::make_object(txt));	//	return value is item text
+			if (!cyng::value_cast(reader.get(2), false)) {
+
+				//
+				//	argument list
+				//
+				auto const txt = value_cast<std::string>(reader.get(3), "");	//	item text
+				ctx.push(cyng::make_object(txt));	//	return value is item text
+			}
+			else {
+
+				std::cerr
+					<< "***error: function item() only accepts argument list"
+					<< std::endl;
+
+				ctx.push(cyng::make_object("function item() only accepts argument list"));
+			}
+		}
+
+		void generator::fun_env(context& ctx)
+		{
+			const cyng::vector_t frame = ctx.get_frame();
+#ifdef _DEBUG
+			//	[0004,1,true,%(("filter":JavaScript),("process":false)),CONTENT]
+			std::cout
+				<< "\n***info:env.open("
+				<< cyng::io::to_str(frame)
+				<< ")"
+				<< std::endl
+				;
+#endif
+			const auto reader = make_reader(frame);
+			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			auto const input = value_cast<std::string>(reader.get(4), "");	//	input
+			ctx.push(cyng::make_object("<pre><code>" + input + "</code></pre>"));	//	return value is item text
 		}
 
 		void generator::update_meta(cyng::param_map_t const& data)
@@ -941,6 +1032,15 @@ namespace cyng
 					}
 				}
 
+				//
+				//	layout optimization for block quotes
+				//
+				os
+					<< "<style>blockquote > p { margin-bottom: 1px; }</style>"
+					<< std::endl
+					;
+				
+
 				os
 					<< "</head>"
 					<< std::endl
@@ -974,7 +1074,6 @@ namespace cyng
 					<< std::endl
 					;
 			}
-
 		}
 
 		boost::filesystem::path generator::resolve_path(std::string const& s) const

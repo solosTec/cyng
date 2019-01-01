@@ -25,9 +25,7 @@ namespace cyng
 			init_library();
 		}
 
-		void compiler::run(std::chrono::system_clock::time_point const& last_write_time
-			, uintmax_t file_size
-			, boost::filesystem::path const& out)
+		void compiler::run(boost::filesystem::path const& out)
 		{
 			//
 			//	call initial functions and open the "generate"
@@ -39,7 +37,8 @@ namespace cyng
 					, std::uint16_t(NL_)	//	function type
 					, std::size_t(0)	//	depth
 					, true	//	use parameters
-					, param_map_factory("last-write-time", last_write_time)("file-size", file_size)())
+					, meta_)
+					//, param_map_factory("last-write-time", last_write_time)("file-size", file_size)())
 
 				//	build a call frame generate function
 				<< code::ESBA
@@ -276,18 +275,40 @@ namespace cyng
 				switch (look_ahead_->type_)
 				{
 				case SYM_CHAR:
-					//if (look_ahead_->value_.compare("<") == 0) {
-					//	prg_ << make_object("&lt;");
-					//	match(look_ahead_->type_);
-					//	counter++;
-					//	break;
-					//}
-					//else if (look_ahead_->value_.compare(">") == 0) {
-					//	prg_ << make_object("&gt;");
-					//	match(look_ahead_->type_);
-					//	counter++;
-					//	break;
-					//}
+					BOOST_ASSERT(look_ahead_->value_.size() == 1);
+					switch (look_ahead_->value_.front()) {
+					case '<':
+						prg_ << make_object("&lt;");
+						match(look_ahead_->type_);
+						counter++;
+						continue;
+					case '>':
+						prg_ << make_object("&gt;");
+						match(look_ahead_->type_);
+						counter++;
+						continue;
+					case '&':
+						prg_ << make_object("&amp;");
+						match(look_ahead_->type_);
+						counter++;
+						continue;
+					case '"':
+						prg_ << make_object("&quot;");
+						match(look_ahead_->type_);
+						counter++;
+						continue;
+					case '\'':
+						prg_ << make_object("&apos;");
+						match(look_ahead_->type_);
+						counter++;
+						continue;
+					default:
+						break;
+					}
+
+					//
+					//	fall through - handle SYM_CHAR as SYM_WORD
+					//
 				case SYM_WORD:
 					prg_ << make_object(look_ahead_->value_);
 					match(look_ahead_->type_);
@@ -424,51 +445,89 @@ namespace cyng
 			prg_
 				<< make_object(counter)	//	parameters
 				<< code::ASSEMBLE_PARAM_MAP
-
-				//
-				//	close call frame and call function
-				//
-				//<< make_object(depth)
 				;
 
 			//
 			//	test for environment
 			//
-			if (tr.fp_->type_ == ENV_RAW) {
-
+			switch (tr.fp_->type_) {
+			case ENV_RAW:
 				//
 				//	skip pilcrow
 				//
 				if (SYM_FUN_PAR == look_ahead_->type_)	match(SYM_FUN_PAR);
-
-				//
-				//	provide all symbols unprocessed until .end()
-				//
-				while (look_ahead_->type_ != SYM_EOF) {
-					if ((SYM_FUN_NL == look_ahead_->type_) && (look_ahead_->value_.compare("end") == 0)) {
-						match(SYM_FUN_NL);
-						match(SYM_FUN_CLOSE);
-						break;
-					}
-					else {
-						prg_ << make_object(look_ahead_->value_);
-						match(look_ahead_->type_);
-					}
-				}
-
-			}
-			else if (tr.fp_->type_ == ENV_PROCESSED) {
-
+				env_raw();
+				break;
+			case ENV_PROCESSED:
 				//
 				//	full formatting supported
 				//
 				loop(depth + 1);
+				break;
+			case ENV_DSL:
+				//
+				//	skip pilcrow
+				//
+				env_dsl(tr.fp_->name_);
+				break;
+			default:
+				break;
 			}
-
 
 			//
 			//	implicit create REBA op with desctructor of trailer
 			//
+		}
+
+		void compiler::env_raw()
+		{
+			//
+			//	provide all symbols unprocessed until .end()
+			//
+			while (SYM_EOF != look_ahead_->type_) {
+				if ((SYM_FUN_NL == look_ahead_->type_) && (look_ahead_->value_.compare("end") == 0)) {
+					match(SYM_FUN_NL);
+					match(SYM_FUN_CLOSE);
+					break;
+				}
+				else {
+					prg_ << make_object(look_ahead_->value_);
+					match(look_ahead_->type_);
+				}
+			}
+		}
+
+		void compiler::env_dsl(std::string fname)
+		{
+			//
+			//	provide all symbols unprocessed until .end()
+			//
+			while (SYM_EOF != look_ahead_->type_) {
+				if (SYM_FUN_NL == look_ahead_->type_) {
+					auto p = lookup(look_ahead_->value_);
+					match(SYM_FUN_NL);
+					if (p->name_.compare("env.close") == 0) {
+
+						if (SYM_ARG == look_ahead_->type_) {
+							//
+							//	optional argument
+							//
+							prg_ << make_object(look_ahead_->value_);
+							match(SYM_ARG);
+						}
+						match(SYM_FUN_CLOSE);
+					}
+					break;
+				}
+				else {
+
+					//
+					//	everything else
+					//
+					prg_ << make_object(look_ahead_->value_);
+					match(look_ahead_->type_);
+				}
+			}
 		}
 
 		std::size_t compiler::arg(std::string name, std::size_t depth)
@@ -553,8 +612,8 @@ namespace cyng
 			insert(library_, std::make_shared<function>("quote", 1, ENV_RAW), { "q" });
 			insert(library_, std::make_shared<function>("cite", 1, ENV_PROCESSED), { "c" });
 			insert(library_, std::make_shared<function>("list", 1, ENV_PROCESSED), { "l" });
-			insert(library_, std::make_shared<function>("env.open", 1, ENV_RAW), { "+" });
-			insert(library_, std::make_shared<function>("env.close", 1, ENV_RAW), { "-" });
+			insert(library_, std::make_shared<function>("env.open", 1, ENV_DSL), { "+" });
+			insert(library_, std::make_shared<function>("env.close", 1, ENV_DSL), { "-" });
 		}
 
 		compiler::fp compiler::lookup(std::string const& name) const

@@ -143,7 +143,16 @@ namespace cyng
 			case '8':
 			case '9':
 				return std::make_pair(save(STATE_TXT_, STATE_DECIMAL_), false);
+			case '>':
+			case '<':
+			case '&':
+			case '"':
+			case '\'':
+				//	HTML entities
+				emit(symbol(SYM_CHAR, c));
+				return std::make_pair(state_, true);
 			default:
+				BOOST_ASSERT(tmp_.empty());
 				tmp_ += c;
 				break;
 			}
@@ -501,13 +510,13 @@ namespace cyng
 				emit_tmp(SYM_WORD);
 				emit(symbol(SYM_CHAR, c));
 				break;
-			case '>':
-			case '<':
-			case '&':
-				//	HTML entities
-				emit_tmp(SYM_WORD);
-				emit(symbol(SYM_CHAR, c));
-				break;
+			//case '>':
+			//case '<':
+			//case '&':
+			//	//	HTML entities
+			//	emit_tmp(SYM_WORD);
+			//	emit(symbol(SYM_CHAR, c));
+			//	break;
 			default:
 				tmp_ += c;
 				break;
@@ -539,13 +548,13 @@ namespace cyng
 					break;
 				}
 				return pop();
-			case '>':
-			case '<':
-			case '&':
-				//	HTML entities
-				emit_tmp(SYM_WORD);
-				emit(symbol(SYM_CHAR, c));
-				break;
+			//case '>':
+			//case '<':
+			//case '&':
+			//	//	HTML entities
+			//	emit_tmp(SYM_WORD);
+			//	emit(symbol(SYM_CHAR, c));
+			//	break;
 			default:
 				tmp_ += c;
 				break;

@@ -24,6 +24,7 @@ namespace cyng
 			//	environment specific
 			ENV_PROCESSED,
 			ENV_RAW,
+			ENV_DSL,	//	domain specific language
 		};
 
 		/**

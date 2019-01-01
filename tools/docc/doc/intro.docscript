@@ -29,10 +29,36 @@ These are 3 numbers: one, two, three. .bold EOL .ref 79bf3ba0-2362-4ea5-bcb5-ed9
 .h1(Reference)
 .h2(title: "Basic Rules", tag: b3fc0bdc-5d95-45e9-b66c-f0c541f1592c)
 
-.list(type: ordered, style: "upper-roman")
-.item("Change the list style type")
-.item("See the result")
+Supported list styles are:
+
+.list(type: ordered, style: "lower-roman")
 .item("Some of the list types does not work in IE or Opera")
+.item("hebrew	The marker is traditional Hebrew numbering")
+.item("hiragana	The marker is traditional Hiragana numbering")
+.item("disc	Default value. The marker is a filled circle")
+.item("armenian	The marker is traditional Armenian numbering")
+.item("circle	The marker is a circle")
+.item("cjk-ideographic	The marker is plain ideographic numbers")
+.item("decimal	The marker is a number")
+.item("decimal-leading-zero	The marker is a number with leading zeros (01, 02, 03, etc.)")
+.item("georgian	The marker is traditional Georgian numbering")
+;	
+;	
+.item("hiragana-iroha	The marker is traditional Hiragana iroha numbering")
+.item("katakana	The marker is traditional Katakana numbering")
+.item("katakana-iroha	The marker is traditional Katakana iroha numbering")
+.item("lower-alpha	The marker is lower-alpha (a, b, c, d, e, etc.)	")
+.item("lower-greek	The marker is lower-greek")
+.item("lower-latin	The marker is lower-latin (a, b, c, d, e, etc.)")	
+.item("lower-roman	The marker is lower-roman (i, ii, iii, iv, v, etc.)	")
+.item("none	No marker is shown")
+.item("square	The marker is a square")
+.item("upper-alpha	The marker is upper-alpha (A, B, C, D, E, etc.)")	
+.item("upper-greek	The marker is upper-greek")
+.item("upper-latin	The marker is upper-latin (A, B, C, D, E, etc.)")
+.item("upper-roman	The marker is upper-roman (I, II, III, IV, V, etc.)")
+.item("initial	Sets this property to its default value. Read about initial")
+.item("inherit	Inherits this property from its parent element. Read about inherit")
 .end()
 
 a
@@ -42,18 +68,18 @@ d .(()
 e .( .)
 
 .h2(Tables)
-.include(snippet.docscript)
+;.include(snippet.docscript)
 
 
 .h2(Source Listings)
 
-.+(filter: "JavaScript", process: false)
+.+(domain: "JavaScript", style: "verbatim")
 function myfunction(txt) { 
     document.getElementById("Νες").innerHTML = txt
 } 
 .-
 
-.+(filter: "C++", boundary: "9b2ba500-cacc-49d3-bb72-e325330e8b10", process: "K&R", linenumbers: false)
+.+(domain: "C++", style: "K&R", linenumbers: false, boundary: "9b2ba500-cacc-49d3-bb72-e325330e8b10")
 # include <cerrno>
 class symbol_reader {
 	public:
@@ -65,8 +91,8 @@ class symbol_reader {
 	private:
 		std::list<symbol>::const_iterator begin_, end_;
 		// comment
-		const symbol back_;	};
-
+		const symbol back_;	
+};
 .-("9b2ba500-cacc-49d3-bb72-e325330e8b10")
 
 .h2(Final Considerations)

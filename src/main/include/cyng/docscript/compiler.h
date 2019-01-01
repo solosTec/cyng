@@ -63,9 +63,7 @@ namespace cyng
 		public:
 			compiler(std::list<symbol> const&, int verbose);
 
-			void run(std::chrono::system_clock::time_point const& last_write_time
-				, uintmax_t file_size
-				, boost::filesystem::path const& out);
+			void run(boost::filesystem::path const& out);
 
 		private:
 			/**
@@ -110,6 +108,12 @@ namespace cyng
 			 * a function call
 			 */
 			fp lookup(std::string const& name) const;
+
+			void env_raw();
+			void env_dsl(std::string);
+
+		public:
+			param_map_t meta_;
 
 		private:
 			/**

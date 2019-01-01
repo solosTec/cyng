@@ -108,7 +108,15 @@ namespace cyng
 			*/
 			docscript::lexer		lexer_;
 
-			//cyng::tuple_t	doc_;
+			/**
+			 * current (tokenized) source file line
+			 */
+			std::size_t	line_;
+
+			/**
+			 * stack of source files
+			 */
+			std::stack< boost::filesystem::path>	source_files_;
 
 		};
 

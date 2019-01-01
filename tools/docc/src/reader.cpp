@@ -37,10 +37,15 @@ namespace cyng
 					<< std::endl
 					;
 
+				//
+				//	update source file stack
+				//
+				driver_.source_files_.push(source_);
+
 				std::string line;
 				while (std::getline(f, line))
 				{
-					if (line_ == 0 && line.size() > 3)
+					if (driver_.line_ == 0 && line.size() > 3)
 					{
 						//	test UTF-8 BOM
 						if (line.at(0) == (char)0xef && line.at(1) == (char)0xbb && line.at(2) == (char)0xbf)
@@ -58,17 +63,13 @@ namespace cyng
 						}
 					}
 
-					//	increase local line counter
-					line_++;
-
-					//	trim content
-					//if (!driver_.tokenizer_.is_verbatim())
-					//{
-					//	boost::algorithm::trim(line);
-					//}
+					//
+					//	increase line counter
+					//
+					driver_.line_ = ++line_;
 
 					//
-					//	Todo: Implement detector for recursive includes
+					//	ToDo: Implement detector for recursive includes
 					//
 
 					if (boost::algorithm::starts_with(line, ";"))
@@ -99,6 +100,11 @@ namespace cyng
 				//	emit last character
 				//
 				driver_.tokenizer_.flush();
+
+				//
+				//	update source file stack
+				//
+				driver_.source_files_.pop();
 				return true;
 			}
 			

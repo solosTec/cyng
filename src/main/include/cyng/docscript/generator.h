@@ -108,6 +108,8 @@ namespace cyng
 			void fun_list(context& ctx);
 			void fun_item(context& ctx);
 
+			void fun_env(context& ctx);
+
 			void fun_generate(context& ctx);
 			void fun_meta(context& ctx);
 			void fun_title(context& ctx);

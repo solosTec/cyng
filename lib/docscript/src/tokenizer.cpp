@@ -82,7 +82,7 @@ namespace cyng
 		void tokenizer::reject(std::uint32_t c)
 		{
 			BOOST_ASSERT_MSG(c == last_char_, "reject failed");
-			BOOST_ASSERT_MSG(reject_ == 0, "canot reject more than one chracter");
+			BOOST_ASSERT_MSG(reject_ == 0, "cannot reject more than one chracter");
 			--reject_;
 		}
 
@@ -326,8 +326,13 @@ namespace cyng
 			}
 			else
 			{
-				emit('-', 1);
-				emit(c);
+				if ('-' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit('-', 1);
+					emit(c);
+				}
 			}
 			return STATE_INITIAL_;
 		}
@@ -351,8 +356,13 @@ namespace cyng
 				emit(0x2261, 1);
 				break;
 			default:
-				emit('=', 1);
-				emit(c);
+				if ('=' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit('=', 1);
+					emit(c);
+				}
 				break;
 			}
 			return STATE_INITIAL_;
@@ -373,8 +383,13 @@ namespace cyng
 				//
 				return STATE_ARROW_LEFT_DOUBLE_;
 			default:
-				emit('<', 1);
-				emit(c);
+				if ('<' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit('<', 1);
+					emit(c);
+				}
 				break;
 			}
 			return STATE_INITIAL_;
@@ -558,9 +573,13 @@ namespace cyng
 				}
 				break;
 			default:
-				//emit(tmp_.front());
-				emit('/');
-				emit(c);
+				if ('/' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit('/');
+					emit(c);
+				}
 				break;
 			}
 
@@ -581,8 +600,13 @@ namespace cyng
 			}
 			else
 			{
-				emit('!', 1);
-				emit(c);
+				if ('!' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit('!', 1);
+					emit(c);
+				}
 			}
 
 			return STATE_INITIAL_;
@@ -599,8 +623,13 @@ namespace cyng
 			}
 			else
 			{
-				emit(':', 1);
-				emit(c);
+				if (':' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit(':', 1);
+					emit(c);
+				}
 			}
 
 			return STATE_INITIAL_;
@@ -654,8 +683,13 @@ namespace cyng
 			}
 			else
 			{
-				emit(';', 1);
-				emit(c);
+				if (';' == c) {
+					emit(c, 2);
+				}
+				else {
+					emit(';', 1);
+					emit(c);
+				}
 			}
 
 			return STATE_INITIAL_;
