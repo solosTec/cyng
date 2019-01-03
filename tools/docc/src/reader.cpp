@@ -99,7 +99,7 @@ namespace cyng
 				//
 				//	emit last character
 				//
-				driver_.tokenizer_.flush();
+				driver_.tokenizer_.flush(driver_.source_files_.size() == 1);
 
 				//
 				//	update source file stack

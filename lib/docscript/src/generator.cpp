@@ -14,6 +14,7 @@
 #include <cyng/dom/reader.h>
 #include <cyng/docscript/filter/verbatim.h>
 #include <cyng/docscript/filter/cpp.h>
+#include <cyng/json.h>
 
 #include <iostream>
 #include <boost/algorithm/string/predicate.hpp>
@@ -126,7 +127,8 @@ namespace cyng
 
 			vm_.register_function("env.open", 4, std::bind(&generator::fun_env, this, std::placeholders::_1));
 
-			vm_.register_function("generate", 1, std::bind(&generator::fun_generate, this, std::placeholders::_1));
+			vm_.register_function("generate.file", 1, std::bind(&generator::fun_generate_file, this, std::placeholders::_1));
+			vm_.register_function("generate.meta", 1, std::bind(&generator::fun_generate_meta, this, std::placeholders::_1));
 		}
 
 		void generator::fun_contents(context& ctx)
@@ -931,6 +933,7 @@ namespace cyng
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 			auto const filter = value_cast<std::string>(reader[3].get("filter"), "verbatim");	//	filter
 			auto const line_numbers = value_cast(reader[3].get("linenumbers"), false);
+			auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
 			auto const input = value_cast<std::string>(reader.get(4), "");	//	input
 			auto start = std::begin(input);
 			auto stop = std::end(input);
@@ -945,11 +948,11 @@ namespace cyng
 			}
 			else if (boost::algorithm::equals(filter, "C++")) {
 
-				cyng::filter::cpp filter(1, line_numbers, input.size());
+				cyng::filter::cpp filter(1, line_numbers, tag, input.size());
 				for (auto pos = boost::u8_to_u32_iterator<std::string::const_iterator>(start); pos != boost::u8_to_u32_iterator<std::string::const_iterator>(stop); ++pos) {
 					filter.put(*pos);
 				}
-				ctx.push(cyng::make_object("<pre><code>" + filter.get_result() + "\n</code></pre>"));	//	return value is item text
+				ctx.push(cyng::make_object("<pre>" + filter.get_result() + "\n</pre>"));	//	return value is item text
 			}
 			else {
 				ctx.push(cyng::make_object("<pre><code>" + input + "</code></pre>"));	//	return value is item text
@@ -972,18 +975,17 @@ namespace cyng
 			}
 		}
 
-		void generator::fun_generate(context& ctx)
+		void generator::fun_generate_file(context& ctx)
 		{
 			cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
-
-			//	["C:/projects/cyng/Debug/out.html"path,null,null]
-			std::cout
-				<< "\n***info: generate("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
-
+			//	["C:\projects\cyng\build\Debug\out.html",<h1 class="header.1" id="d6....]
+			//std::cout
+			//	<< "\n***info: generate.file("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 
 			const boost::filesystem::path p = cyng::value_cast(frame.at(0), boost::filesystem::path());
@@ -1008,8 +1010,33 @@ namespace cyng
 			}
 			else
 			{
-				this->generate(ofs, ++frame.begin(), frame.end());
+				//
+				//	provide a slug if not defined yet.
+				//
+				slug();
+
+				//
+				//	write output file
+				//
+				generate(ofs, ++frame.begin(), frame.end());
 			}
+		}
+
+		void generator::fun_generate_meta(context& ctx)
+		{
+			cyng::vector_t frame = ctx.get_frame();
+
+#ifdef _DEBUG
+			//	["C:\projects\cyng\build\Debug\out.json"]
+			std::cout
+				<< "\n***info: generate.meta("
+				<< cyng::io::to_str(frame)
+				<< ")"
+				<< std::endl;
+#endif
+			const boost::filesystem::path p = cyng::value_cast(frame.at(0), boost::filesystem::path());
+			meta(p);
+
 		}
 
 		void generator::generate(std::ostream& os, cyng::vector_t::const_iterator begin, cyng::vector_t::const_iterator end)
@@ -1041,6 +1068,13 @@ namespace cyng
  							<< cyng::io::to_str(e.second)
 							<< "</title>"
 							<< std::endl
+							//	@see http://ogp.me/
+							<< "\t<meta name=\"og:title\" content=\""
+							<< cyng::io::to_str(e.second)
+							<< "\" />"
+							<< std::endl
+							<< "\t<meta name=\"og:type\" content=\"article\" />"
+							<< std::endl
 							;
 
 					}
@@ -1061,11 +1095,41 @@ namespace cyng
 				//	layout optimization for block quotes
 				//
 				os
-					<< "<style>blockquote > p { margin-bottom: 1px; }</style>"
+					<< "\t<style>"
+					<< std::endl
+					<< "\t\tbody { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }"
+					<< std::endl
+					<< "\t\tblockquote > p { margin-bottom: 1px; }"
+					<< std::endl
+					<< "\t\tpre { background-color: whitesmoke; }"
+					<< std::endl
+
+					<< "\t\tblockquote {"
+					<< std::endl
+					<< "\t\t\tborder-left: 4px solid #eee;"
+					<< std::endl
+					<< "\t\t\tpadding-left: 10px;"
+					<< std::endl
+					<< "\t\t\tcolor: #777;"
+					<< std::endl
+					<< "\t\t\tmargin: 16px 20px;"
+					<< std::endl
+					<< "\t\t}"
+					<< std::endl
+
+					<< "\t\timg {"
+					<< std::endl
+					<< "\t\t\tmax-width: 95%;"
+					<< std::endl
+					<< "\t\t\t border: 2px solid black;"
+					<< std::endl
+					<< "\t\t}"
+					<< std::endl
+
+					<< "\t</style>"
 					<< std::endl
 					;
 				
-
 				os
 					<< "</head>"
 					<< std::endl
@@ -1114,7 +1178,7 @@ namespace cyng
 			return boost::filesystem::path();
 		}
 
-		void generator::run(vector_t const& prg)
+		void generator::run(vector_t const& prg, std::chrono::milliseconds compile_time)
 		{
 			if (verbosity_ > 2)
 			{
@@ -1124,6 +1188,7 @@ namespace cyng
 					<< " op codes"
 					<< std::endl;
 			}
+			meta_.emplace("compile-time", cyng::make_object(compile_time));
 			vm_.async_run(vector_t(prg));
 		}
 
@@ -1152,9 +1217,13 @@ namespace cyng
 			{
 				if (verbosity_ > 3)
 				{
-// 					cyng::serialize_json_pretty(std::cout, make_object(meta_), cyng::io::custom_callback());
+					cyng::json::write(std::cout, cyng::make_object(meta_));
+					std::cout << std::endl;
+					//	cyng::serialize_json_pretty(std::cout, make_object(meta_), cyng::io::custom_callback());
 				}
 // 				cyng::serialize_json(file, meta_, cyng::io::custom_callback());
+				cyng::json::write(file, cyng::make_object(meta_));
+
 			}
 			return meta_.size();
 		}
@@ -1250,8 +1319,65 @@ namespace cyng
 				<< std::endl;
 			return "error";
 
-
 		}
+
+		void generator::slug()
+		{
+			auto pos = meta_.find("slug");
+			if (pos == meta_.end()) {
+
+				//
+				//	build a slug from title
+				//
+				auto const title = get_title();
+				std::string slug;
+				for (auto const& c : title) {
+					if ((c > 47 && c < 58) || (c > 96 && c < 123)) {
+						slug += c;
+					}
+					else if (c > 64 && c < 91) {
+						slug += (c + 32);
+					}
+					else if (c == '-' || c == ' ') {
+						if (!slug.empty() && slug.back() != '-') {
+							slug += '-';
+						}
+					}
+				}
+
+				if (verbosity_ > 1)
+				{
+					std::cout
+						<< "***info: auto generated slug: "
+						<< slug
+						<< std::endl;
+				}
+
+				//
+				//	update meta data
+				//
+				meta_.emplace("slug", cyng::make_object(slug));
+			}
+		}
+
+		std::string generator::get_title()
+		{
+			auto pos = meta_.find("title");
+			return (pos == meta_.end())
+				? get_filename()
+				: cyng::io::to_str(pos->second)
+				;
+		}
+
+		std::string generator::get_filename()
+		{
+			auto pos = meta_.find("file-name");
+			return (pos == meta_.end())
+				? "NO FILENAME"
+				: cyng::io::to_str(pos->second)
+				;
+		}
+
 
 		//
 		//	free functions
@@ -1265,7 +1391,7 @@ namespace cyng
 			{
 				auto const s = cyng::io::to_str(reader.get(idx));
 				//const auto s = value_cast<std::string>(reader.get(idx), "");
-				if ((idx != start) && !(s == "." || s == "," || s == ":"))
+				if ((idx != start) && !(s == "." || s == "," || s == ":" || s == "?" || s == "!"))
 				{
 					str += " ";
 				}
@@ -1279,6 +1405,8 @@ namespace cyng
 			, std::size_t end
 			, std::string tag)
 		{
+			if (start == reader.size())	return "";	//	no content
+
 			BOOST_ASSERT_MSG(start < reader.size(), "out of range");
 			BOOST_ASSERT_MSG(start < end, "invalid range");
 			std::string str;
@@ -1287,7 +1415,7 @@ namespace cyng
 			for (std::size_t idx = start; idx < end; ++idx)
 			{
 				const auto s = value_cast<std::string>(reader.get(idx), "");
-				if ((idx != start) && !(s == "." || s == "," || s == ":"))
+				if ((idx != start) && !(s == "." || s == "," || s == ":" || s == "?" || s == "!"))
 				{
 					str += " ";
 				}

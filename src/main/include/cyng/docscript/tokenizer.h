@@ -33,7 +33,7 @@ namespace cyng
 			* After reading the input file, the last pending
 			* character in the input buffer have to be emitted.
 			*/
-			void flush();
+			void flush(bool eof);
 
 		private:
 			void next(std::uint32_t);

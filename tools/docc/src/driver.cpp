@@ -33,6 +33,8 @@ namespace cyng
 			, buffer_()
 			, tokenizer_([this](docscript::token&& tok) {
 
+			if (!tok.eof_)
+			{
 				//	update frequency
 				stats_[tok.value_]++;
 
@@ -64,7 +66,7 @@ namespace cyng
 							<< std::endl
 							;
 					}
-					while(!lexer_.next(tok.value_))
+					while (!lexer_.next(tok.value_))
 					{
 						if (verbose_ > 4)
 						{
@@ -75,36 +77,39 @@ namespace cyng
 						}
 					}
 				}
+			}
+			else {
 
-			})
-			, lexer_([this](symbol&& sym) {
+				//
+				//	eof
+				//
+				lexer_.next(tok.value_);
+			}
+		})
+		, lexer_([this](symbol&& sym) {
 
-				if (verbose_ > 3)
-				{ 
-					std::cout 
-					<< "SYMBOL  " 
-					<< sym 
-					<< std::endl;
-				}
+			if (verbose_ > 3)
+			{ 
+				std::cout 
+				<< "SYMBOL  " 
+				<< sym 
+				<< std::endl;
+			}
 
-				switch (sym.type_)
-				{
-				case SYM_FUN_NL:		
-					//	functions at beginning of line are global
-				case SYM_FUN_WS:		
-					//	all other functions are local	
-					parentheses_++;
-					break;
-				case SYM_FUN_CLOSE:
-					//	all function arguments read
-					parentheses_--;
-					break;
-				default:
-					break;
-				}
-
-				if (parentheses_ < 0)
-				{
+			switch (sym.type_)
+			{
+			case SYM_FUN_NL:		
+				//	functions at beginning of line are global
+			case SYM_FUN_WS:		
+				//	all other functions are local	
+				parentheses_++;
+				break;
+			case SYM_FUN_CLOSE:
+				//	all function arguments read
+				parentheses_--;
+				break;
+			case SYM_EOF:
+				if (parentheses_ != 0) {
 					std::cerr
 						<< "***error: unbalanced parentheses #"
 						<< line_
@@ -112,13 +117,29 @@ namespace cyng
 						<< source_files_.top()
 						<< std::endl
 						;
-
 				}
-				buffer_.emplace_back(std::move(sym));
+				break;
+			default:
+				break;
+			}
 
-			})
-			, line_(0u)
-			, source_files_()
+			if (parentheses_ < 0)
+			{
+				std::cerr
+					<< "***error: unbalanced parentheses #"
+					<< line_
+					<< '@'
+					<< source_files_.top()
+					<< std::endl
+					;
+			}
+
+
+			buffer_.emplace_back(std::move(sym));
+
+		})
+		, line_(0u)
+		, source_files_()
 
 		{}
 		
@@ -128,7 +149,8 @@ namespace cyng
 		int driver::run(boost::filesystem::path const& master
 			, boost::filesystem::path const& body
 			, boost::filesystem::path const& out
-			, bool body_only)
+			, bool body_only
+			, bool meta)
 		{
 			//
 			//	get a timestamp to measure performance
@@ -139,12 +161,12 @@ namespace cyng
 			//	read and tokenize file recursive
 			//
 			const int r = open_and_run(master, 0);
-			finish(body, out);
+			finish(body, out, meta);
 
 			//
 			//	calculate duration of reading and compilation
 			//
-			auto delta = std::chrono::system_clock::now() - now;
+			std::chrono::milliseconds delta = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - now);
 			if (verbose_ > 0)
 			{
 				std::cout
@@ -161,7 +183,7 @@ namespace cyng
 					<< out
 					<< std::endl
 					;
-				process(body, out.parent_path() / "index.json", body_only);
+				process(body, out, body_only, delta);
 			}
 			else
 			{
@@ -217,7 +239,7 @@ namespace cyng
 
 		}
 
-		void driver::finish(boost::filesystem::path const& body, boost::filesystem::path const& out)
+		void driver::finish(boost::filesystem::path const& body, boost::filesystem::path const& out, bool meta)
 		{
 			//
 			//	test lexer state
@@ -237,10 +259,8 @@ namespace cyng
 			}
 
 			//
-			//	mark end of symbol stream
+			//	create intermediate output file for compiler
 			//
-			//buffer_.emplace_back(symbol(SYM_EOF, "EOF"));
-
 			std::ofstream file(body.string(), std::ios::out | std::ios::trunc | std::ios::binary);
 			if (!file.is_open())
 			{
@@ -271,6 +291,7 @@ namespace cyng
 				docscript::compiler c(buffer_, verbose_);
 				c.meta_["last-write-time"] = make_object(last_write_time_);
 				c.meta_["file-size"] = make_object(file_size_);
+				c.meta_["file-name"] = make_object(out.filename().string());
 
 				if (verbose_ > 1)
 				{
@@ -313,7 +334,7 @@ namespace cyng
 				//
 				//	start compiler
 				//
-				c.run(out);
+				c.run(out, meta);
 
 
 				//
@@ -348,8 +369,14 @@ namespace cyng
 
 		}
 
-		void driver::process(boost::filesystem::path const& in, boost::filesystem::path out, bool body_only)
+		void driver::process(boost::filesystem::path const& in
+			, boost::filesystem::path out
+			, bool body_only
+			, std::chrono::milliseconds compile_time)
 		{
+			//
+			//	read intermdiate file
+			//
 			std::ifstream file(in.string(), std::ios::binary);
 			if (!file.is_open())
 			{
@@ -378,7 +405,7 @@ namespace cyng
 				//	startup VM/generator
 				//
 				docscript::generator gen(this->includes_, this->verbose_, body_only);
-				gen.run(prg);
+				gen.run(prg, compile_time);
 // 				if (ec)
 // 				{
 // 					std::cout 
@@ -392,10 +419,6 @@ namespace cyng
 				//
 				//gen.index(out);
 
-				//
-				//	generate meta 
-				//
-				gen.meta(out.parent_path() / "meta.json");
 			}
 		}
 

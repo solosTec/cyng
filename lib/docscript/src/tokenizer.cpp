@@ -64,9 +64,10 @@ namespace cyng
 			}
 		}
 
-		void tokenizer::flush()
+		void tokenizer::flush(bool eof)
 		{
 			next(last_char_);
+			if (eof)	emit_(make_eof());
 		}
 
 		void tokenizer::emit(std::uint32_t c) const
@@ -82,7 +83,7 @@ namespace cyng
 		void tokenizer::reject(std::uint32_t c)
 		{
 			BOOST_ASSERT_MSG(c == last_char_, "reject failed");
-			BOOST_ASSERT_MSG(reject_ == 0, "cannot reject more than one chracter");
+			BOOST_ASSERT_MSG(reject_ == 0, "cannot reject more than one character");
 			--reject_;
 		}
 
@@ -158,6 +159,14 @@ namespace cyng
 				break;
 			case '=':
 				if (counter_ == 1)	return STATE_ARROW_RIGHT_DOUBLE_;
+				if (counter_ == 2)	{
+					//
+					//	==
+					//	&equiv; &Congruent;
+					//
+					emit(0x2261, 1);
+					return STATE_INITIAL_;
+				}
 				break;
 			case '<':
 				if (counter_ == 1)	return STATE_ARROW_LEFT_;
@@ -356,15 +365,16 @@ namespace cyng
 				//	=>
 				//	&xrArr; &Longrightarrow; &DoubleLongRightArrow;	&#x027F9; &#10233;
 				//
-				emit(0x027F9, 1);
+				emit(0x021d2, 1);
+				//emit(0x027F9, 1);
 				break;
-			case '=':
-				//
-				//	==
-				//	&equiv; &Congruent;
-				//
-				emit(0x2261, 1);
-				break;
+			//case '=':
+			//	//
+			//	//	==
+			//	//	&equiv; &Congruent;
+			//	//
+			//	emit(0x2261, 1);
+			//	break;
 			default:
 				if ('=' == c) {
 					emit(c, 2);
@@ -436,7 +446,8 @@ namespace cyng
 				//	<=>
 				//	&DoubleLeftRightArrow; &larr;
 				//
-				emit(0x2190, 1);
+				emit(0x21d4, 1);
+				//emit(0x2190, 1);
 			}
 			else
 			{

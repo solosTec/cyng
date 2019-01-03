@@ -28,20 +28,20 @@ namespace cyng
 			lexer(emit_symbol_f);
 
 			/**
-			* process next character.
-			*
-			* @return false to reject symbol c
-			*/
+			 * process next character.
+			 *
+			 * @return false to reject symbol c
+			 */
 			bool next(std::uint32_t c);
 
 			/**
-			* self test
-			*/
+			 * self test
+			 */
 			bool complete();
 
 			/**
-			* debug
-			*/
+			 * debug
+			 */
 			std::string get_state() const;
 			std::string dump_stack() const;
 

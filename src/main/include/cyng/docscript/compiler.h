@@ -63,7 +63,7 @@ namespace cyng
 		public:
 			compiler(std::list<symbol> const&, int verbose);
 
-			void run(boost::filesystem::path const& out);
+			void run(boost::filesystem::path out, bool meta);
 
 		private:
 			/**

@@ -52,13 +52,14 @@ namespace cyng
 			int run(boost::filesystem::path const& master
 				, boost::filesystem::path const& tmp
 				, boost::filesystem::path const& out
-				, bool body_only);
+				, bool body_only
+				, bool meta);
 
 		private:
 			int run(boost::filesystem::path const& inp, std::size_t);
 			int open_and_run(boost::filesystem::path const& inp, std::size_t);
-			void finish(boost::filesystem::path const& body, boost::filesystem::path const& out);
-			void process(boost::filesystem::path const& in, boost::filesystem::path out, bool body_only);
+			void finish(boost::filesystem::path const& body, boost::filesystem::path const& out, bool meta);
+			void process(boost::filesystem::path const& in, boost::filesystem::path out, bool body_only, std::chrono::milliseconds);
 
 		private:
 			/**

@@ -176,7 +176,6 @@ namespace cyng
 			case '7':
 			case '8':
 			case '9':
-				//return std::make_pair(save(STATE_TXT_, STATE_DECIMAL_), false);
 				tmp_ += c;
 				return save(STATE_TXT_, STATE_DECIMAL_);
 			default:
@@ -376,6 +375,7 @@ namespace cyng
 			case ' ':
 			case '\t':
 			case '\n':
+			case std::numeric_limits<std::uint32_t>::max():
 				emit_tmp(SYM_ARG);
 				while (state_stack_.top() == STATE_ARG_)
 				{
@@ -433,36 +433,6 @@ namespace cyng
 			return state_;
 		}
 
-		//lexer::state lexer::state_num(std::uint32_t c)
-		//{
-		//	switch (c)
-		//	{
-		//	case ' ':
-		//	case '\t':
-		//		emit_tmp(SYM_NUMBER);
-		//		return STATE_START_;
-		//	case '\n':
-		//		emit_tmp(SYM_NUMBER);
-		//		return STATE_NL_;
-		//	case '0':
-		//	case '1':
-		//	case '2':
-		//	case '3':
-		//	case '4':
-		//	case '5':
-		//	case '6':
-		//	case '7':
-		//	case '8':
-		//	case '9':
-		//		tmp_ += c;
-		//		return state_;
-		//	default:
-		//		tmp_ += c;
-		//		break;
-		//	}
-		//	return STATE_TXT_;
-		//}
-
 		std::pair<lexer::state, bool> lexer::state_decimal(std::uint32_t c)
 		{
 			switch (c)
@@ -506,13 +476,10 @@ namespace cyng
 				emit_tmp(SYM_WORD);
 				emit(symbol(SYM_CHAR, c));
 				break;
-			//case '>':
-			//case '<':
-			//case '&':
-			//	//	HTML entities
-			//	emit_tmp(SYM_WORD);
-			//	emit(symbol(SYM_CHAR, c));
-			//	break;
+			case std::numeric_limits<std::uint32_t>::max():
+				//	eof
+				emit_tmp(SYM_WORD);
+				return STATE_START_;
 			default:
 				tmp_ += c;
 				break;
@@ -526,6 +493,7 @@ namespace cyng
 			{
 			case '"':
 			case '\n':
+			case std::numeric_limits<std::uint32_t>::max():
 				switch (state_stack_.top())
 				{
 				case STATE_FUN_OPEN_:
@@ -544,13 +512,6 @@ namespace cyng
 					break;
 				}
 				return pop();
-			//case '>':
-			//case '<':
-			//case '&':
-			//	//	HTML entities
-			//	emit_tmp(SYM_WORD);
-			//	emit(symbol(SYM_CHAR, c));
-			//	break;
 			default:
 				tmp_ += c;
 				break;
@@ -688,27 +649,16 @@ namespace cyng
 			switch (c)
 			{
 			case ')':
+			case std::numeric_limits<std::uint32_t>::max():
 				emit_tmp(SYM_NUMBER);
 				emit(symbol(SYM_FUN_CLOSE, ')'));
 				return std::make_pair(pop(), true);
 			case ',':
 				emit_tmp(SYM_NUMBER);
 				return std::make_pair(STATE_FUN_OPEN_, true);
-				//case '.':
-				//push();
-				//return std::make_pair(STATE_DOT_WS_, true);
-				//	error
-				//break;
-				//case '(':
-				//	function name didn't start with a '.' 
-				//	Is this an error or syntactic sugar?
-				//emit_tmp(SYM_VALUE);
-				//return std::make_pair(STATE_DOT_WS_, true);
 			case ' ':
 			case '\t':
 				return std::make_pair(state_, true);
-				//case '"':
-				//	return std::make_pair(save(STATE_QUOTE_), true);
 			default:
 				break;
 			}
@@ -731,9 +681,29 @@ namespace cyng
 
 		lexer::state lexer::state_env(std::uint32_t c)
 		{
-			if (c == '\n')
-			{
+			//
+			//	decomposing symbols
+			//
+			switch (c) {
+			case '\n':
 				return STATE_ENV_EOL_;
+			case 0x21d0:
+				//	0x21d0 "<="
+				tmp_ += '<';
+				tmp_ += '=';
+				return state_;
+			case 0x027F9:
+				//	0x027F9 "=>"
+				tmp_ += '=';
+				tmp_ += '>';
+				return state_;
+			case 0x2260:
+				//	0x2260 "!="
+				tmp_ += '!';
+				tmp_ += '=';
+				return state_;
+			default:
+				break;
 			}
 			tmp_ += c;
 			return state_;
@@ -807,12 +777,6 @@ namespace cyng
 #ifdef _DEBUG
 			//std::cout << "POP " << state_stack_.size() << std::endl;
 #endif
-			//while (state == STATE_POP_)
-			//{
-			//	emit(symbol(SYM_FUN_CLOSE, ')'));
-			//	state = state_stack_.top();
-			//	state_stack_.pop();
-			//}
 			return state;
 		}
 

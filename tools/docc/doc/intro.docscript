@@ -1,4 +1,4 @@
-﻿.meta(author:"Sylko Olzscher", released: .now(), language: "en")
+﻿.meta(author:"Sylko Olzscher", released: .now(), language: "en", slug: "intro-into-docscript")
 .title(Introduction into docScript)
 ;.debug(on)
 
@@ -68,7 +68,7 @@ d .(()
 e .( .)
 
 .h2(Tables)
-;.include(snippet.docscript)
+.include(snippet.docscript)
 
 
 .h2(Source Listings)

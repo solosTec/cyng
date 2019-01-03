@@ -10,6 +10,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <limits>
 #include <boost/predef.h>
 
 namespace cyng	
@@ -41,7 +42,7 @@ namespace cyng
 
 		token make_eof()
 		{
-			return token(-1, 0, true);
+			return token(std::numeric_limits<std::uint32_t>::max(), 0, true);
 		}
 
 		token make_token(std::uint32_t c, std::size_t count)

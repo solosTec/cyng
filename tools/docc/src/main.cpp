@@ -18,11 +18,11 @@
 #endif
 
 /**
- * The first version generates HTML only. Future version generate hopefully PDF too.
+ * The first version generates HTML only. Future version generate hopefully SVG and PDF too.
  *
  * Start with
  * @code
- * build/docc "C:\Users\Pyrx\Source\Repos\cyng\lib\docscript\src\doc\intro.docscript"
+ * build/docc -V9 C:\projects\cyng\tools\docc\doc\intro
  * @endcode
  */
 int main(int argc, char* argv[]) {
@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
 			//	verbose level
 			("verbose,V", boost::program_options::value<int>()->default_value(0)->implicit_value(1), "verbose level")
 			("body", boost::program_options::bool_switch()->default_value(false), "generate only HTML body")
+			("meta", boost::program_options::bool_switch()->default_value(true), "generate a JSON file mith meta data")
 			;
 
 		//
@@ -239,7 +240,8 @@ int main(int argc, char* argv[]) {
  		return d.run(boost::filesystem::path(inp_file).filename()
  			, tmp
  			, cyng::docscript::verify_extension(out_file, "html")
- 			, vm["body"].as< bool >());
+ 			, vm["body"].as< bool >()
+			, vm["meta"].as< bool >());
 
 	}
 	catch (std::exception& e)

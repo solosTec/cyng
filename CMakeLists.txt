@@ -700,7 +700,8 @@ if(${PROJECT_NAME}_SSL_SUPPORT)
 		cyng_core
 		cyng_async
 		cyng_crypto
-		cyng_vm)
+		cyng_vm
+		cyng_json)
 endif()
 
 #

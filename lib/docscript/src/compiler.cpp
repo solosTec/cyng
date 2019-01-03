@@ -26,7 +26,7 @@ namespace cyng
 			init_library();
 		}
 
-		void compiler::run(boost::filesystem::path const& out)
+		void compiler::run(boost::filesystem::path out, bool meta)
 		{
 			//
 			//	call initial functions and open the "generate"
@@ -39,20 +39,32 @@ namespace cyng
 					, std::size_t(0)	//	depth
 					, true	//	use parameters
 					, meta_)
-					//, param_map_factory("last-write-time", last_write_time)("file-size", file_size)())
 
 				//	build a call frame generate function
 				<< code::ESBA
 				<< out
 				;
 
+			//
+			//	main loop until EOF
+			//
 			loop(0);
 
 			prg_
+				//
 				//	generate output file
-				<< invoke("generate")
+				//
+				<< invoke("generate.file")
 				<< code::REBA
 				;
+
+			if (meta) {
+				//
+				//	generate meta 
+				//
+				out.replace_extension(".json");
+				prg_ << generate_invoke_unwinded("generate.meta", out);
+			}
 
 			if (verbose_ > 2)
 			{

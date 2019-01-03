@@ -10,15 +10,17 @@
 #include <boost/regex/pending/unicode_iterator.hpp>
 #include <cctype>
 #include <iomanip>
+#include <boost/uuid/uuid_io.hpp>
 
 namespace cyng	
 {
 	namespace filter
 	{
-		cpp::cpp(int verbose, bool linenumbers, std::size_t reserve)
-			: verbose_(verbose)
+		cpp::cpp(int verbose, bool linenumbers, boost::uuids::uuid tag, std::size_t reserve)
+			: linenumbers_(linenumbers)
+			, verbose_(verbose)
+			, tag_(tag)
 			, result_()
-			, linenumbers_(linenumbers)
 			, state_(INITIAL_)
 			, parenthesis_(0)
 			, braces_(0)
@@ -173,15 +175,15 @@ namespace cyng
 			switch (c)
 			{
 			case '{':
-				nl();
-				repeat(' ', braces_ * 2);
 				braces_++;
+				//nl();
+				//repeat(' ', braces_ * 2);
 				result_.push_back('{');
 				break;
 			case '}':
-				nl();
 				braces_--;
-				repeat(' ', braces_ * 2);
+				//nl();
+				//repeat(' ', braces_ * 2);
 				result_.push_back('}');
 				break;
 			case '(':
@@ -226,13 +228,13 @@ namespace cyng
 				break;
 
 			default:
-				if (std::isalpha(c))
+				if ((c < 255) && std::isalpha(c))
 				{
 					pos_ = result_.size();
 					result_.push_back(c);
 					return LITERAL_;
 				}
-				else if (std::isdigit(c))
+				else if ((c < 255) && std::isdigit(c))
 				{
 					pos_ = result_.size();
 					result_.push_back(c);
@@ -300,7 +302,7 @@ namespace cyng
 					result_.insert(result_.end(), end_.begin(), end_.end());
 				}
 				result_.append(U"&lt;");
-				result_.push_back(' ');
+				//result_.push_back(' ');
 				return INITIAL_;
 			case '>':
 				if (is_keyword())
@@ -308,7 +310,7 @@ namespace cyng
 					result_.insert(pos_, color_blue_);
 					result_.insert(result_.end(), end_.begin(), end_.end());
 				}
-				result_.push_back(' ');
+				//result_.push_back(' ');
 				result_.append(U"&gt;");
 				return INITIAL_;
 			case '\t':
@@ -533,17 +535,24 @@ namespace cyng
 			//
 			if (linenumbers_)
 			{
-				result_.insert(result_.end(), color_cyan_.begin(), color_cyan_.end());
+				//result_.insert(result_.end(), color_cyan_.begin(), color_cyan_.end());
 
+				//U"<code style=\"color: DarkCyan; font-size: smaller;\">";
 				std::stringstream ss;
 				ss
+					<< "<code style = \"color: DarkCyan; font-size: smaller;\" id=\""
+					<< tag_
+					<< '-'
+					<< line_
+					<< "\">"
 					<< std::setw(4)
 					<< std::setfill('0')
 					<< line_
+					<< "</code>"
 					;
 				auto nr = docscript::parse_utf8(ss.str());
 				result_.insert(result_.end(), nr.begin(), nr.end());
-				result_.insert(result_.end(), end_.begin(), end_.end());
+				//result_.insert(result_.end(), end_.begin(), end_.end());
 				result_.push_back(' ');
 			}
 

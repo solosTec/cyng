@@ -11,6 +11,7 @@
 #include <cyng/parser/utf8_parser.h>
 #include <cstdint>
 #include <set>
+#include <boost/uuid/uuid.hpp>
 
 namespace cyng	
 {
@@ -21,13 +22,18 @@ namespace cyng
 		class cpp
 		{
 		public:
-			cpp(int verbose, bool linenumbers, std::size_t reserve);
+			cpp(int verbose, bool linenumbers, boost::uuids::uuid, std::size_t reserve);
 			void put(std::uint32_t c);
 			std::string get_result();
 
 		private:
+
+			bool const linenumbers_;
+			int const verbose_;
+			boost::uuids::uuid const tag_;
+
 			u32_string	result_;
-			const bool linenumbers_;
+
 			enum state {
 				INITIAL_,
 				QUOTE_,
@@ -59,7 +65,7 @@ namespace cyng
 			state include_state(std::uint32_t c);
 
 			/**
-			 * end of keyword reached. color it blue.
+			 * if end of keyword reached, color it blue.
 			 */
 			bool stop_keyword();
 
@@ -74,8 +80,6 @@ namespace cyng
 			static const u32_string color_brown_;
 			static const u32_string end_;
 
-		private:
-			const int verbose_;
 		};
 	}
 

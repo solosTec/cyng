@@ -1,11 +1,11 @@
 ﻿
-.table(example).head().row().row().row()
+;.table(example).head().row().row().row()
 
 ;
 ; C++ code
 ;
 
-.+(filter: "C++", process: "K&R", linenumbers: false, title: "C++ code from Quantlib")
+.+(filter: "C++", process: "K&R", linenumbers: true, title: "C++ code from Quantlib")
 
 #include <ql/interestrate.hpp>
 #include <ql/utilities/dataformatters.hpp>

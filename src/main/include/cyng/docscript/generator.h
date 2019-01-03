@@ -69,17 +69,13 @@ namespace cyng
 			/**
 			 * produce the document
 			 */
-			void run(cyng::vector_t const&);
+			void run(cyng::vector_t const&, std::chrono::milliseconds compile_time);
 
 			/**
 			 * generate an index file (JSON)
 			 */
 			//std::size_t index(boost::filesystem::path const& out) const;
 
-			/**
-			 * generate a meta file (JSON)
-			 */
-			std::size_t meta(boost::filesystem::path const& out) const;
 
 		protected:
 			boost::filesystem::path resolve_path(std::string const& s) const;
@@ -110,10 +106,20 @@ namespace cyng
 
 			void fun_env(context& ctx);
 
-			void fun_generate(context& ctx);
+			void fun_generate_file(context& ctx);
+			void fun_generate_meta(context& ctx);
+
 			void fun_meta(context& ctx);
 			void fun_title(context& ctx);
 
+			void slug();
+			std::string get_title();
+			std::string get_filename();
+
+			/**
+			 * generate a meta file (JSON)
+			 */
+			std::size_t meta(boost::filesystem::path const& out) const;
 
 		private:
 			const std::vector< boost::filesystem::path > includes_;
