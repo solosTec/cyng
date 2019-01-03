@@ -151,19 +151,26 @@ namespace cyng
 			switch (c)
 			{
 			case '#':
-				return STATE_UTF8_DEC_;
+				if (counter_ == 1)	return STATE_UTF8_DEC_;
+				break;
 			case '-':
-				return STATE_ARROW_RIGHT_;
+				if (counter_ == 1)	return STATE_ARROW_RIGHT_;
+				break;
 			case '=':
-				return STATE_ARROW_RIGHT_DOUBLE_;
+				if (counter_ == 1)	return STATE_ARROW_RIGHT_DOUBLE_;
+				break;
 			case '<':
-				return STATE_ARROW_LEFT_;
+				if (counter_ == 1)	return STATE_ARROW_LEFT_;
+				break;
 			case '!':
-				return STATE_NOT_EQUAL_;
+				if (counter_ == 1)	return STATE_NOT_EQUAL_;
+				break;
 			case ':':
-				return STATE_EMOJI_;
+				if (counter_ == 1)	return STATE_EMOJI_;
+				break;
 			case ';':
-				return STATE_EMOJI_WINK_;
+				if (counter_ == 1)	return STATE_EMOJI_WINK_;
+				break;
 			case '0':
 			case '1':
 			case '2':
@@ -179,9 +186,12 @@ namespace cyng
 				return STATE_NUMBER_;
 
 			default:
-				emit_(make_token(c, counter_));
-				return STATE_INITIAL_;
+				//emit_(make_token(c, counter_));
+				//return STATE_INITIAL_;
+				break;
 			}
+
+			emit_(make_token(c, counter_));
 			return state_;
 		}
 

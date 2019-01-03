@@ -12,6 +12,8 @@
 #include <cyng/crypto/base64.h>
 #include <cyng/io/serializer.h>
 #include <cyng/dom/reader.h>
+#include <cyng/docscript/filter/verbatim.h>
+#include <cyng/docscript/filter/cpp.h>
 
 #include <iostream>
 #include <boost/algorithm/string/predicate.hpp>
@@ -927,8 +929,31 @@ namespace cyng
 #endif
 			const auto reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			auto const filter = value_cast<std::string>(reader[3].get("filter"), "verbatim");	//	filter
+			auto const line_numbers = value_cast(reader[3].get("linenumbers"), false);
 			auto const input = value_cast<std::string>(reader.get(4), "");	//	input
-			ctx.push(cyng::make_object("<pre><code>" + input + "</code></pre>"));	//	return value is item text
+			auto start = std::begin(input);
+			auto stop = std::end(input);
+
+			if (boost::algorithm::equals(filter, "verbatim")) {
+
+				cyng::filter::verbatim filter(input.size());
+				for (auto pos = boost::u8_to_u32_iterator<std::string::const_iterator>(start); pos != boost::u8_to_u32_iterator<std::string::const_iterator>(stop); ++pos) {
+					filter.put(*pos);
+				}
+				ctx.push(cyng::make_object("<pre><code>" + filter.get_result() + "</code></pre>"));	//	return value is item text
+			}
+			else if (boost::algorithm::equals(filter, "C++")) {
+
+				cyng::filter::cpp filter(1, line_numbers, input.size());
+				for (auto pos = boost::u8_to_u32_iterator<std::string::const_iterator>(start); pos != boost::u8_to_u32_iterator<std::string::const_iterator>(stop); ++pos) {
+					filter.put(*pos);
+				}
+				ctx.push(cyng::make_object("<pre><code>" + filter.get_result() + "\n</code></pre>"));	//	return value is item text
+			}
+			else {
+				ctx.push(cyng::make_object("<pre><code>" + input + "</code></pre>"));	//	return value is item text
+			}
 		}
 
 		void generator::update_meta(cyng::param_map_t const& data)

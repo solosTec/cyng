@@ -29,8 +29,18 @@ set (docscript_h
 	src/main/include/cyng/docscript/tokenizer.h
 )
 
+set (docscript_filter
+	lib/docscript/src/filter/verbatim.cpp
+	lib/docscript/src/filter/cpp.cpp
+	src/main/include/cyng/docscript/filter/verbatim.h
+	src/main/include/cyng/docscript/filter/cpp.h
+)
+
+source_group("filter" FILES ${docscript_filter})
+
 # define the docscript lib
 set (docscript_lib
   ${docscript_cpp}
   ${docscript_h}
+  ${docscript_filter}
 )

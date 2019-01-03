@@ -45,13 +45,13 @@ namespace cyng
 	};
 
 	/**
-	* Define an emit function
-	*/
+	 * Define an emit function
+	 */
 	using emit_symbol_f = std::function<void(symbol&&)>;
 
 	/**
-	* Streaming operator
-	*/
+	 * Streaming operator
+	 */
 	std::ostream& operator<<(std::ostream& os, const symbol& sym);
 
 	namespace docscript

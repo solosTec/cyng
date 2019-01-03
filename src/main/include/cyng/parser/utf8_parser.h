@@ -24,7 +24,9 @@ namespace cyng
 		/**
 		 * a UTF-32 string to hold results from unicode (UTF-8) strings
 		 */
-		using u32_string = std::basic_string<std::uint32_t>;
+		//using u32string = basic_string<char32_t, char_traits<char32_t>, allocator<char32_t>>;
+		//using u32_string = std::basic_string<std::uint32_t>;
+		using u32_string = std::u32string;
 
 		/**
 		 * define a pair of UTF-32 strings

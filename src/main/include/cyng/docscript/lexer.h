@@ -74,18 +74,18 @@ namespace cyng
 			}	state_;
 
 			/**
-			* emitter for complete symbols
-			*/
+			 * emitter for complete symbols
+			 */
 			emit_symbol_f	emit_;
 
 			/**
-			* temporary buffer
-			*/
+			 * temporary buffer
+			 */
 			utf::u32_string tmp_;
 
 			/**
-			* state stack
-			*/
+			 * state stack
+			 */
 			std::stack<state>	state_stack_;
 
 		private:
@@ -97,7 +97,6 @@ namespace cyng
 			std::pair<state, bool> state_fun_name(std::uint32_t);
 			state state_arg(std::uint32_t);
 			state state_fun_open(std::uint32_t);
-			//state state_num(std::uint32_t);
 			std::pair<state, bool> state_decimal(std::uint32_t c);
 			state state_txt(std::uint32_t);
 			state state_quote(std::uint32_t);
@@ -118,8 +117,8 @@ namespace cyng
 			void push(state);
 
 			/**
-			* saves the current state and returns the specified state
-			*/
+			 * saves the current state and returns the specified state
+			 */
 			state save(state);
 			state save(state, state);
 			state transit_ws(state);

@@ -9,6 +9,7 @@
 #include <cyng/docscript/compiler.h>
 #include <cyng/vm/generator.h>
 #include <cyng/factory.h>
+#include <boost/algorithm/string.hpp>
 
 namespace cyng	
 {
@@ -372,8 +373,17 @@ namespace cyng
 							<< std::endl
 							;
 					}
+
+					if (boost::algorithm::equals("true", look_ahead_->value_)) {
+						prg_ << true;
+					}
+					else if (boost::algorithm::equals("false", look_ahead_->value_)) {
+						prg_ << false;
+					}
+					else {
+						prg_ << look_ahead_->value_;	//	value
+					}
 					prg_
-						<< make_object(look_ahead_->value_)	//	value
 						<< make_object(key)	//	key
 						<< code::ASSEMBLE_PARAM
 						;

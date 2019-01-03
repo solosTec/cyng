@@ -28,10 +28,6 @@ namespace cyng
 			{
 				return false;
 			}
-			//else if (state_ != STATE_START_)
-			//{
-			//	return false;
-			//}
 			return true;
 		}
 
@@ -643,6 +639,7 @@ namespace cyng
 			case '(':
 				//	function name didn't start with a '.' 
 				//	Is this an error or syntactic sugar?
+				//	Because it's unambiguous it's syntactic sugar.
 				emit_tmp(SYM_VALUE);
 				return std::make_pair(STATE_DOT_WS_, true);
 			case ' ':
@@ -653,6 +650,7 @@ namespace cyng
 				//	//<< get_position(tok)
 				//	<< std::endl
 				//	;
+				//	skip white space
 				return std::make_pair(state_, true);
 			case '"':
 				return std::make_pair(save(STATE_QUOTE_), true);

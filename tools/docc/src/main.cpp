@@ -22,7 +22,7 @@
  *
  * Start with
  * @code
- * build/docc "C:\Users\Pyrx\Source\Repos\cyx\lib\docscript\src\doc\intro.docscript"
+ * build/docc "C:\Users\Pyrx\Source\Repos\cyng\lib\docscript\src\doc\intro.docscript"
  * @endcode
  */
 int main(int argc, char* argv[]) {
