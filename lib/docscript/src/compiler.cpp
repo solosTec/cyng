@@ -211,24 +211,10 @@ namespace cyng
 			case SYM_KEY:
 				key(name, false, look_ahead_->value_, depth);
 				break;
+			case SYM_FUN_WS:
 			case SYM_ARG:
 				//	WS function
-				arg(name, /*look_ahead_->value_, */depth);
-				break;
-			case SYM_FUN_WS:
-			{
-				call_frame tr(lookup(name), *this, depth, PARAMETERS);	//	key function
-				fun_ws(look_ahead_->value_, depth);
-
-				//
-				//	It's possible to get one more function call (SYM_FUN_WS) that produces the argument(s)
-				//	for the previous function call. To handle this properly the order of function calls
-				//	must be changed. To make the right decision, we have to know if there are missing arguments
-				//	open.
-				//
-				//if (look_ahead_ == SYM_FUN_WS)	...
-				match(SYM_FUN_CLOSE);
-			}
+				arg(name, depth);
 				break;
 			case SYM_FUN_CLOSE:
 				//	no arguments
@@ -283,7 +269,8 @@ namespace cyng
 			//
 			std::size_t counter{ 0 };
 
-			while ((look_ahead_->type_ != SYM_FUN_PAR) && (look_ahead_->type_ != SYM_FUN_NL) && (look_ahead_->type_ != SYM_EOF))
+			bool stop = false;
+			while (!stop)
 			{
 				switch (look_ahead_->type_)
 				{
@@ -327,10 +314,22 @@ namespace cyng
 					match(look_ahead_->type_);
 					counter++;
 					break;
+				case SYM_FUN_NL:
+					if (!lookup(look_ahead_->value_)->is_ws()) {
+						stop = true;
+						break;
+					}
+					counter += lookup(look_ahead_->value_)->rvs_;
+					fun_nl(look_ahead_->value_, depth);
+					break;
 				case SYM_FUN_WS:
 					//	number of return values
 					counter += lookup(look_ahead_->value_)->rvs_;
-					fun_ws(look_ahead_->value_, 0u);
+					fun_ws(look_ahead_->value_, depth);
+					break;
+				case SYM_FUN_PAR:
+				case SYM_EOF:
+					stop = true;
 					break;
 				default:
 					match(look_ahead_->type_);
@@ -338,6 +337,7 @@ namespace cyng
 					break;
 				}
 			}
+
 			if (verbose_ > 3)
 			{
 				std::cout
@@ -636,6 +636,7 @@ namespace cyng
 			insert(library_, std::make_shared<function>("list", 1, ENV_PROCESSED), { "l" });
 			insert(library_, std::make_shared<function>("env.open", 1, ENV_DSL), { "+" });
 			insert(library_, std::make_shared<function>("env.close", 1, ENV_DSL), { "-" });
+			insert(library_, std::make_shared<function>("end", 0, NL_), {});
 		}
 
 		compiler::fp compiler::lookup(std::string const& name) const

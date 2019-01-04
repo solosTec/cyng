@@ -533,6 +533,13 @@ namespace cyng
 				//	additional lexer state required to distinguish
 				//	between an ARG and an ':' after the white space(s).
 				return STATE_KEY_;
+
+#ifdef _CYNG_DOCSCRIPT_NOT_DOT_REQUIRED
+				//
+				//	to accept functions without a preceding '.' is not a good idea
+				//	since every open opening '(' in a text is virtual a function what makes
+				//	no sense.
+				//
 			case '(':
 				//
 				//	accept function names without a preceding . (DOT)
@@ -541,6 +548,7 @@ namespace cyng
 				emit(symbol(SYM_FUN_WS, tmp_));
 				tmp_.clear();
 				return STATE_FUN_OPEN_;
+#endif
 			case ')':
 				emit_tmp(SYM_ARG);
 				emit(symbol(SYM_FUN_CLOSE, ')'));
