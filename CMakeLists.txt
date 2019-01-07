@@ -808,8 +808,17 @@ if(${PROJECT_NAME}_SSL_SUPPORT)
             list(APPEND docc_link_libs pthread "${Boost_LIBRARIES}")
         endif()
     endif()
-    #message(STATUS "** docc libs         : ${docc_link_libs}")
     target_link_libraries(docc ${docc_link_libs})
+
+    include (tools/docc/batch/prg.cmake)
+    add_executable(batch ${batch})
+    set(batch_link_libs cyng_io cyng_vm cyng_async cyng_crypto cyng_docscript)
+    if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+        if (UNIX)
+            list(APPEND batch_link_libs pthread "${Boost_LIBRARIES}")
+        endif()
+    endif()
+    target_link_libraries(batch ${batch_link_libs})
 endif()
 
 #

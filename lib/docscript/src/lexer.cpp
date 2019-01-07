@@ -33,6 +33,13 @@ namespace cyng
 
 		bool lexer::next(std::uint32_t c)
 		{
+			if (state_stack_.empty()) {
+				std::cerr
+					<< "***error: stack is empty "
+					<< std::endl
+					;
+			}
+
 			bool advance = true;
 			switch (state_)
 			{
@@ -62,6 +69,9 @@ namespace cyng
 			case STATE_FUN_OPEN_:
 				state_ = state_fun_open(c);
 				break;
+			case STATE_FUN_CLOSE_:
+				state_ = state_fun_close(c);
+				break;
 			case STATE_PARAM_:
 				state_ = state_param(c);
 				break;
@@ -89,9 +99,6 @@ namespace cyng
 			case STATE_BOUNDARY_:
 				std::tie(state_, advance) = std::make_pair(STATE_NL_, false);
 				break;
-				//case STATE_NUM_:
-				//	state_ = state_num(c);
-				//	break;
 			case STATE_DECIMAL_:
 				std::tie(state_, advance) = state_decimal(c);
 				break;
@@ -106,7 +113,7 @@ namespace cyng
 				break;
 			default:
 				std::cerr
-					<< "***error: internal lexer error at "
+					<< "***error: internal lexer error at #"
 					//<< get_position(tok)
 					<< std::endl
 					;
@@ -162,6 +169,8 @@ namespace cyng
 			case '\n':
 				return STATE_PAR_;
 			case '.':
+				//	state NL is pushed - this information is essential to distinguish
+				//	between NL and WS functions when function name is complete
 				return save(STATE_DOT_NL_);
 			case ' ':
 			case '\t':
@@ -333,11 +342,13 @@ namespace cyng
 				switch (state_stack_.top())
 				{
 				case STATE_NL_:
+				//case STATE_DOT_WS_:
 					emit_tmp(SYM_FUN_NL);
 					return std::make_pair(transit_ws(STATE_FUN_OPEN_), true);
 				case STATE_START_:
 				case STATE_VALUE_:
 				case STATE_ARG_:
+				case STATE_FUN_OPEN_:
 					emit_tmp(SYM_FUN_WS);
 					return std::make_pair(transit_ws(STATE_FUN_OPEN_), true);
 				case STATE_ENV_:
@@ -432,6 +443,24 @@ namespace cyng
 			}
 			return state_;
 		}
+
+		lexer::state lexer::state_fun_close(std::uint32_t c)
+		{
+			switch (c)
+			{
+			case '\n':
+				return STATE_PAR_;
+			case ' ':
+			case '\t':
+				break;
+			default:
+				emit(symbol(SYM_CHAR, c));
+				break;
+				break;
+			}
+			return STATE_START_;
+		}
+
 
 		std::pair<lexer::state, bool> lexer::state_decimal(std::uint32_t c)
 		{
@@ -552,7 +581,9 @@ namespace cyng
 			case ')':
 				emit_tmp(SYM_ARG);
 				emit(symbol(SYM_FUN_CLOSE, ')'));
-				return pop();
+				//return pop();	//	NL or ...
+				pop();
+				return STATE_FUN_CLOSE_;
 			case '"':
 				push(STATE_NL_);
 				return STATE_QUOTE_;
@@ -710,6 +741,11 @@ namespace cyng
 				tmp_ += '!';
 				tmp_ += '=';
 				return state_;
+			case 0x2261:
+				//	0x2261 "=="
+				tmp_ += '=';
+				tmp_ += '=';
+				return state_;
 			default:
 				break;
 			}
@@ -848,13 +884,14 @@ namespace cyng
 			case STATE_FUN_NAME_:	return "FUN_NAME";
 			case STATE_ARG_:	return "ARG";
 			case STATE_FUN_OPEN_:	return "FUN_OPEN";
+			case STATE_FUN_CLOSE_:	return "FUN_CLOSE";
+
 			case STATE_ENV_OPEN_:	return "ENV_OPEN";
 			case STATE_ENV_CLOSE_:	return "ENV_CLOSE";
 			case STATE_ENV_:		return "ENV";
 			case STATE_ENV_EOL_:	return "ENV_EOL";
 			case STATE_BOUNDARY_:	return "BOUNDARY";
-				//case STATE_NUM_:		return "NUM";
-			case STATE_DECIMAL_:		return "DECIMAL";
+			case STATE_DECIMAL_:	return "DECIMAL";
 			case STATE_TXT_:		return "TXT";
 			case STATE_QUOTE_:		return "QUOTE";
 			case STATE_PARAM_:		return "PARAM";
@@ -885,18 +922,21 @@ namespace cyng
 				{
 					const hacked_stack hs(s);
 					return hs.c;
-					//return s.*hacked_stack::c;
 				}
 			};
 
 			auto cont = hacked_stack::get_container(state_stack_);
 			std::string result;
-			for (auto pos = ++cont.begin(); pos != cont.end(); ++pos)
-			{
-				result += get_state_name(*pos);
-				result += "=>";
+			if (!cont.empty()) {
+				for (auto pos = ++cont.begin(); pos != cont.end(); ++pos)
+				{
+					result += get_state_name(*pos);
+					result += "=>";
+				}
+				return result;
 			}
-			return result;
+
+			return "***error: stack is empty";
 		}
 	}	//	docscript
 }	//	cyng

@@ -26,7 +26,7 @@ namespace cyng
 			, braces_(0)
 			, pos_(0)
 			, keywords_()
-			, line_(1)
+			, line_(0)
 		{
 			//
 			//	initialize keyword list
@@ -110,10 +110,6 @@ namespace cyng
 
 		void cpp::put(std::uint32_t c)
 		{
-			if ((line_ == 1) && (c != '\n'))
-			{
-				nl();
-			}
 			switch (state_)
 			{
 			case QUOTE_:
@@ -167,7 +163,7 @@ namespace cyng
 				}
 			}
 
-			return std::string(boost::u32_to_u8_iterator<u32_string::const_iterator>(result_.begin()), boost::u32_to_u8_iterator<u32_string::const_iterator>(result_.end()));
+			return std::string(boost::u32_to_u8_iterator<u32_string::const_iterator>(result_.begin()), boost::u32_to_u8_iterator<u32_string::const_iterator>(result_.end())) + "</code>";
 		}
 
 		cpp::state cpp::initial_state(std::uint32_t c)
@@ -224,7 +220,8 @@ namespace cyng
 				return PRE_;
 
 			case '\n':
-				nl();
+				if (line_ > 0) 	nl();
+				else ++line_;
 				break;
 
 			default:
@@ -425,7 +422,6 @@ namespace cyng
 			{
 				result_.insert(pos_, color_grey_);
 				result_.insert(result_.end(), end_.begin(), end_.end());
-				//result_.push_back(c);
 				nl();
 				return INITIAL_;
 			}
@@ -435,7 +431,7 @@ namespace cyng
 
 		cpp::state cpp::pre_state(std::uint32_t c)
 		{
-			if (std::isalpha(c))
+			if ((c < 255) && std::isalpha(c))
 			{
 				result_.push_back(c);
 				return PRE_;
@@ -528,19 +524,21 @@ namespace cyng
 
 		void cpp::nl()
 		{
+			if (!result_.empty()) {
+				result_.append(U"</code>");
+			}
+
 			result_.push_back('\n');
+			result_.append(U"<code>");
 
 			//
 			//	write line number
 			//
 			if (linenumbers_)
 			{
-				//result_.insert(result_.end(), color_cyan_.begin(), color_cyan_.end());
-
-				//U"<code style=\"color: DarkCyan; font-size: smaller;\">";
 				std::stringstream ss;
 				ss
-					<< "<code style = \"color: DarkCyan; font-size: smaller;\" id=\""
+					<< "<span style = \"color: DarkCyan; font-size: smaller;\" id=\""
 					<< tag_
 					<< '-'
 					<< line_
@@ -548,11 +546,10 @@ namespace cyng
 					<< std::setw(4)
 					<< std::setfill('0')
 					<< line_
-					<< "</code>"
+					<< "</span>"
 					;
 				auto nr = docscript::parse_utf8(ss.str());
 				result_.insert(result_.end(), nr.begin(), nr.end());
-				//result_.insert(result_.end(), end_.begin(), end_.end());
 				result_.push_back(' ');
 			}
 
@@ -562,13 +559,13 @@ namespace cyng
 		//
 		//	constants
 		//
-		u32_string const cpp::color_green_ = U"<code style=\"color: green;\">";
-		u32_string const cpp::color_blue_ = U"<code style=\"color: blue;\">";
-		u32_string const cpp::color_grey_ = U"<code style=\"color: grey;\">";
-		u32_string const cpp::color_red_ = U"<code style=\"color: red;\">";
-		u32_string const cpp::color_cyan_ = U"<code style=\"color: DarkCyan; font-size: smaller;\">";
-		u32_string const cpp::color_brown_ = U"<code style=\"color: brown;\">";
-		u32_string const cpp::end_ = U"</code>";
+		u32_string const cpp::color_green_ = U"<span style=\"color: green;\">";
+		u32_string const cpp::color_blue_ = U"<span style=\"color: blue;\">";
+		u32_string const cpp::color_grey_ = U"<span style=\"color: grey;\">";
+		u32_string const cpp::color_red_ = U"<span style=\"color: red;\">";
+		u32_string const cpp::color_cyan_ = U"<span style=\"color: DarkCyan; font-size: smaller;\">";
+		u32_string const cpp::color_brown_ = U"<span style=\"color: brown;\">";
+		u32_string const cpp::end_ = U"</span>";
 	}
 }	//	cyng
 

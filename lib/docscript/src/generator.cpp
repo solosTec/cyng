@@ -944,7 +944,7 @@ namespace cyng
 				for (auto pos = boost::u8_to_u32_iterator<std::string::const_iterator>(start); pos != boost::u8_to_u32_iterator<std::string::const_iterator>(stop); ++pos) {
 					filter.put(*pos);
 				}
-				ctx.push(cyng::make_object("<pre><code>" + filter.get_result() + "</code></pre>"));	//	return value is item text
+				ctx.push(cyng::make_object("<pre>" + filter.get_result() + "</pre>"));	//	return value is item text
 			}
 			else if (boost::algorithm::equals(filter, "C++")) {
 
@@ -1101,7 +1101,16 @@ namespace cyng
 					<< std::endl
 					<< "\t\tblockquote > p { margin-bottom: 1px; }"
 					<< std::endl
-					<< "\t\tpre { background-color: whitesmoke; }"
+					<< "\t\tpre { background-color: #eee; }"
+					<< std::endl
+
+					<< "\t\tpre > code:hover {"
+					<< std::endl
+					<< "\t\t\tbackground-color: orange;"
+					<< std::endl
+					//<< "\t\t\tborder: 1px solid black;"
+					//<< std::endl
+					<< "\t\t}"
 					<< std::endl
 
 					<< "\t\tblockquote {"
@@ -1121,7 +1130,7 @@ namespace cyng
 					<< std::endl
 					<< "\t\t\tmax-width: 95%;"
 					<< std::endl
-					<< "\t\t\t border: 2px solid black;"
+					<< "\t\t\tborder: 2px solid black;"
 					<< std::endl
 					<< "\t\t}"
 					<< std::endl
@@ -1372,10 +1381,10 @@ namespace cyng
 		std::string generator::get_filename()
 		{
 			auto pos = meta_.find("file-name");
-			return (pos == meta_.end())
-				? "NO FILENAME"
-				: cyng::io::to_str(pos->second)
-				;
+			if (pos == meta_.end())	return "NO FILENAME";
+
+			boost::filesystem::path p(cyng::io::to_str(pos->second));
+			return p.stem().string();
 		}
 
 

@@ -192,8 +192,14 @@ namespace cyng
 					<< std::endl
 					;
 			}
+
+			//
+			//	remove temporary files
+			//
+			boost::system::error_code ec;
+			remove(body, ec);
 			
-			return r;
+			return !ec;
 		}
 
 		int driver::run(boost::filesystem::path const& inp, std::size_t depth)

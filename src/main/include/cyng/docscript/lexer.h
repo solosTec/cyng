@@ -57,6 +57,7 @@ namespace cyng
 				STATE_FUN_NAME_,	//	function name
 				STATE_ARG_,			//	read 1 arg
 				STATE_FUN_OPEN_,	//	function open
+				STATE_FUN_CLOSE_,	//	function complete ')'
 				STATE_ENV_OPEN_,	//	.+
 				STATE_ENV_CLOSE_,	//	.-
 				STATE_ENV_,
@@ -70,7 +71,6 @@ namespace cyng
 				STATE_VALUE_,		//	a parameter value
 				STATE_NUMBER_,		//	a parameter number
 				STATE_SKIP_WS_,		//	skip white spaces
-
 			}	state_;
 
 			/**
@@ -97,6 +97,7 @@ namespace cyng
 			std::pair<state, bool> state_fun_name(std::uint32_t);
 			state state_arg(std::uint32_t);
 			state state_fun_open(std::uint32_t);
+			state state_fun_close(std::uint32_t);
 			std::pair<state, bool> state_decimal(std::uint32_t c);
 			state state_txt(std::uint32_t);
 			state state_quote(std::uint32_t);
