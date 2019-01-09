@@ -60,8 +60,9 @@ int main(int argc, char* argv[]) {
 			("include-path,I", boost::program_options::value< std::vector<std::string> >()->default_value(std::vector<std::string>(1, cwd.string()), cwd.string()), "include path")
 			//	verbose level
 			("verbose,V", boost::program_options::value<int>()->default_value(0)->implicit_value(1), "verbose level")
-			//("body", boost::program_options::bool_switch()->default_value(false), "generate only HTML body")
-			//("meta", boost::program_options::bool_switch()->default_value(true), "generate a JSON file mith meta data")
+			("robot,R", boost::program_options::bool_switch()->default_value(true), "generate robots.txt")
+			//	https://www.sitemaps.org/index.html
+			("sitemap", boost::program_options::bool_switch()->default_value(false), "generate a sitemap file")
 			;
 
 		//
@@ -221,7 +222,11 @@ int main(int argc, char* argv[]) {
 		//
 		//	Start driver with the main/input file
 		//
-		return b.run(inp_dir, out_dir);
+		return b.run(inp_dir
+			, out_dir
+			, vm["robot"].as< bool >()
+			, vm["sitemap"].as< bool >());
+
 
 	}
 	catch (std::exception& e)

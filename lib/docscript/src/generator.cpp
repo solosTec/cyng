@@ -1142,25 +1142,26 @@ namespace cyng
 				os
 					<< "</head>"
 					<< std::endl
+					<< "<body>"
+					<< std::endl
 					;
+			}
+			else {
 
+				os
+					<< "<div class=\"docscript\">"
+					<< std::endl
+					;
 			}
 
 			//
 			//	generate body
 			//
-			os
-				<< "<body>"
-				<< std::endl
-				;
 			std::for_each(begin, end, [this, &os](cyng::object const& obj) {
 				os << cyng::io::to_str(obj) << std::endl;
 				//os << this->backpatch(cyng::to_string(obj));
 			});
-			os
-				<< "</body>"
-				<< std::endl
-				;
+
 
 			if (!body_only_)
 			{
@@ -1168,7 +1169,15 @@ namespace cyng
 				//	generate complete HTML file
 				//	
 				os
+					<< "</body>"
+					<< std::endl
 					<< "</html>"
+					<< std::endl
+					;
+			}
+			else {
+				os
+					<< "</div>"
 					<< std::endl
 					;
 			}

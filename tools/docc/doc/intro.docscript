@@ -1,4 +1,4 @@
-﻿.meta(author:"Sylko Olzscher", released: .now(), language: "en", slug: "intro-into-docscript")
+﻿.meta(author:"Sylko Olzscher", released: "2018-10-01 19:45:03", language: "en", slug: "intro-into-docscript")
 .title(Introduction into docScript)
 ;.debug(on)
 

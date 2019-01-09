@@ -49,14 +49,20 @@ namespace cyng
 			 * @param out output file (html)
 			 */
 			int run(boost::filesystem::path const& inp
-				, boost::filesystem::path const& out);
+				, boost::filesystem::path const& out
+				, bool gen_robot
+				, bool gen_sitemap);
 
 		private:
 			void process_file(boost::filesystem::path const& inp
 				, boost::filesystem::path const& out);
 
-			void generate_index(boost::filesystem::path const& out);
-			void read_meta_data(boost::filesystem::path const& p);
+			void generate_index(boost::filesystem::path const& out
+				, bool gen_robot
+				, bool gen_sitemap);
+			void generate_index_page(boost::filesystem::path const& out
+				, std::map<std::chrono::system_clock::time_point, tuple_t> const&);
+			object read_meta_data(boost::filesystem::path const& p);
 
 		private:
 			/**

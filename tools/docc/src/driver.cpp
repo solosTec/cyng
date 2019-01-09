@@ -299,6 +299,15 @@ namespace cyng
 				c.meta_["file-size"] = make_object(file_size_);
 				c.meta_["file-name"] = make_object(out.filename().string());
 
+				//
+				//	calculated entropy
+				//
+				auto const entropy = calculate_entropy(stats_);
+				auto const size = calculate_size(stats_);	//	symbol count
+
+				c.meta_["text-entropy"] = make_object(entropy);
+				c.meta_["input-symbols"] = make_object(size);
+
 				if (verbose_ > 1)
 				{
 					//
@@ -317,11 +326,6 @@ namespace cyng
 						<< std::endl
 						;
 
-					//
-					//	calculated entropy
-					//
-					auto const entropy = calculate_entropy(stats_);
-					auto const size = calculate_size(stats_);	//	symbol count
 
 					std::cout
 						<< "***info: entropy is "
@@ -331,9 +335,6 @@ namespace cyng
 						<< " input token)"
 						<< std::endl
 						;
-
-					c.meta_["text-entropy"] = make_object(entropy);
-					c.meta_["input-symbols"] = make_object(size);
 
 				}
 

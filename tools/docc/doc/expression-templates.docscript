@@ -1,4 +1,4 @@
-.meta( author : "Sylko Olzscher", released: now())
+.meta( author : "Sylko Olzscher", released: .now())
 .title(Gentle introduction into expression templates)
 
 .h1(Gentle introduction into expression templates)
