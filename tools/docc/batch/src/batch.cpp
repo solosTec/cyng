@@ -17,9 +17,11 @@
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/io/serializer.h>
 #include <cyng/io/io_chrono.hpp>
+#include <cyng/factory/set_factory.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 
@@ -126,6 +128,9 @@ namespace cyng
 
 					if (boost::algorithm::equals(".json", entry.path().extension().string())) {
 
+						//
+						//	parse JSON file
+						//
 						const auto obj = read_meta_data(entry);
 						if (!obj) {
 							std::cerr << "***error: "
@@ -166,26 +171,40 @@ namespace cyng
 						}
 					}
 				}
+
+				//
+				//	generate index page
+				//
+				generate_index_page(out, meta_map);
+
+				//
+				//	generate index map
+				//
+				generate_index_map(out, meta_map);
+
+				if (gen_robot) {
+
+					//
+					//	generate robots.txt
+					//
+					generate_robots_txt(out, meta_map, gen_sitemap);
+				}
+
+				if (gen_sitemap) {
+
+					//
+					//	generate sitemap
+					//
+					generate_sitemap(out, meta_map);
+				}
 			}
+			else {
 
-			//
-			//	generate index page
-			//
-			generate_index_page(out, meta_map);
-
-			if (gen_robot) {
-
-				//
-				//	generate robots.txt
-				//
-
-			}
-
-			if (gen_sitemap) {
-
-				//
-				//	generate sitemap
-				//
+				std::cerr
+					<< "***error: "
+					<< out
+					<< " is not a directory"
+					<< std::endl;
 			}
 		}
 
@@ -211,9 +230,9 @@ namespace cyng
 					;
 
 				//
-				//	iterate over all meta data
+				//	reverse iterate over all meta data
 				//
-				for (auto const& meta : meta_map) {
+				for (auto const& meta : boost::adaptors::reverse(meta_map)) {
 
 					auto const map = to_param_map(meta.second);
 
@@ -240,7 +259,7 @@ namespace cyng
 						ofs
 							<< "\t<div>"
 							<< std::endl
-							<< "\t\t<a href=\"/docscript/"
+							<< "\t\t<a href=\"/plog/"
 							<< cyng::io::to_str(pos_file_name->second)
 							<< "\" title=\""
 							<< cyng::io::to_str(pos_symbols->second)
@@ -266,6 +285,120 @@ namespace cyng
 					<< std::endl
 					;
 
+			}
+		}
+
+		void batch::generate_index_map(boost::filesystem::path const& out
+			, std::map<std::chrono::system_clock::time_point, tuple_t> const& meta_map)
+		{
+			boost::filesystem::path p = out / "index.json";
+
+			std::ofstream ofs(p.string(), std::ios::out | std::ios::trunc);
+			if (!ofs.is_open())
+			{
+				std::cerr
+					<< "***error: cannot open index map "
+					<< p
+					<< std::endl;
+
+			}
+			else
+			{
+				//
+				//	data vector of all available posts
+				//
+				vector_t data;
+
+				//
+				//	reverse iterate over all meta data
+				//
+				for (auto const& meta : boost::adaptors::reverse(meta_map)) {
+
+					auto const map = to_param_map(meta.second);
+
+
+					auto const pos_title = map.find("title");
+					auto const pos_file_name = map.find("file-name");
+					auto const pos_slug = map.find("slug");
+					//auto const pos_entropy = map.find("text-entropy");	// double
+					//auto const pos_symbols = map.find("input-symbols");	//	size_t
+
+					if (pos_title != map.end()
+						&& pos_file_name != map.end()
+						&& pos_slug != map.end()) {
+
+
+						data.push_back(set_factory(cyng::io::to_str(pos_slug->second), cyng::io::to_str(pos_file_name->second)));
+					}
+				}
+
+				//
+				//	write as JSON file
+				//
+				cyng::json::write(ofs, cyng::make_object(data));
+
+			}
+
+		}
+
+		void batch::generate_robots_txt(boost::filesystem::path const& out
+			, std::map<std::chrono::system_clock::time_point, tuple_t> const&
+			, bool gen_sitemap)
+		{
+			boost::filesystem::path p = out / "robots.txt";
+
+			std::ofstream ofs(p.string(), std::ios::out | std::ios::trunc);
+			if (!ofs.is_open())
+			{
+				std::cerr
+					<< "***error: cannot robot file"
+					<< p
+					<< std::endl;
+
+			}
+			else {
+
+				//
+				//	ToDo: generate robots.txt
+				//
+
+				ofs
+					<< "User-agent: *"
+					<< std::endl
+					<< "Allow: /plog"
+					<< std::endl
+					;
+
+				if (gen_sitemap) {
+
+					ofs
+						<< "Sitemap: sitemap.xml"
+						<< std::endl
+						;
+				}
+
+			}
+		}
+
+		void batch::generate_sitemap(boost::filesystem::path const& out
+			, std::map<std::chrono::system_clock::time_point, tuple_t> const&)
+		{
+			boost::filesystem::path p = out / "sitemap.xml";
+
+			std::ofstream ofs(p.string(), std::ios::out | std::ios::trunc);
+			if (!ofs.is_open())
+			{
+				std::cerr
+					<< "***error: cannot open sitemap "
+					<< p
+					<< std::endl;
+
+			}
+			else {
+
+				//
+				//	ToDo: generate sitemap
+				//
 			}
 		}
 

@@ -358,13 +358,17 @@ namespace cyng
 
 
 #ifdef _DEBUG
-				for (auto obj : prg)
-				{
-					std::cout
-						<< cyng::io::to_str(obj)
-						<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
-						;
-				}
+				//
+				//	dump generated program
+				//
+
+				//for (auto obj : prg)
+				//{
+				//	std::cout
+				//		<< cyng::io::to_str(obj)
+				//		<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
+				//		;
+				//}
 #endif
 				//
 				//	serialize as program not as data (reverse on stack)

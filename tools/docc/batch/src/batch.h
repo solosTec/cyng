@@ -62,6 +62,13 @@ namespace cyng
 				, bool gen_sitemap);
 			void generate_index_page(boost::filesystem::path const& out
 				, std::map<std::chrono::system_clock::time_point, tuple_t> const&);
+			void generate_index_map(boost::filesystem::path const& out
+				, std::map<std::chrono::system_clock::time_point, tuple_t> const&);
+			void generate_robots_txt(boost::filesystem::path const& out
+				, std::map<std::chrono::system_clock::time_point, tuple_t> const&
+				, bool gen_sitemap);
+			void generate_sitemap(boost::filesystem::path const& out
+				, std::map<std::chrono::system_clock::time_point, tuple_t> const&);
 			object read_meta_data(boost::filesystem::path const& p);
 
 		private:

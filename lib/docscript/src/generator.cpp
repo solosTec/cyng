@@ -52,12 +52,12 @@ namespace cyng
 
 				const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-				std::cout
-					<< "\n***info: now("
-					<< cyng::io::to_str(frame)
-					<< ")"
-					<< std::endl
-					;
+				//std::cout
+				//	<< "\n***info: now("
+				//	<< cyng::io::to_str(frame)
+				//	<< ")"
+				//	<< std::endl
+				//	;
 #endif
 				//
 				//	produce result value
@@ -137,11 +137,11 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-			std::cout
-				<< "\n***info: contents("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: contents("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 
 #endif
 			auto const reader = make_reader(frame);
@@ -158,11 +158,11 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 
-			std::cout
-				<< "\n***info: header("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: header("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 
 #endif
 			auto const reader = make_reader(frame);
@@ -199,11 +199,11 @@ namespace cyng
 			//	* parameters/arguments
 			//	* values
 			//
-			std::cout
-				<< "\n***info: header.1("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: header.1("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -229,11 +229,11 @@ namespace cyng
 #ifdef _DEBUG
 			//	[0001,1,false,Examples,of,DocScript]
 			//	[0001,1,true,%(("tag":b3fc0bdc-5d95-45e9-b66c-f0c541f1592c),("title":Basic Rules))]
-			std::cout
-				<< "\n***info: header.2("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: header.2("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -261,11 +261,11 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			std::cout
-				<< "\n***info: header.3("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: header.3("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -286,11 +286,11 @@ namespace cyng
 		{
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-			std::cout
-				<< "\n***info: header.3("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: header.3("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -319,11 +319,11 @@ namespace cyng
 			//	* chunk count
 			//	* text chunks
 			//
-			std::cout
-				<< "\n***info: paragraph("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: paragraph("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -347,11 +347,11 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 			//	[0002,0,false,dolor]
-			std::cout
-				<< "\n***info: bold("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: bold("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -386,11 +386,11 @@ namespace cyng
 
 #ifdef _DEBUG
 			//	[0002,0,false,sed,diam,nonumy,eirmod,tempor,invidunt,ut,labore]
-			std::cout
-				<< "\n***info: emphasise("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: emphasise("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -422,16 +422,16 @@ namespace cyng
 		void generator::fun_color(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
-
 			//	[0002,0,true,%(("red":amet))]
-			std::cout
-				<< "\n***info: color("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
-
+			//std::cout
+			//	<< "\n***info: color("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
+
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 			if (cyng::value_cast(reader.get(2), false)) {
@@ -472,13 +472,14 @@ namespace cyng
 		void generator::fun_link(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 			//	[0000,0,true,%(("text":LaTeX),("url":https://www.latex-project.org/))]
-			std::cout
-				<< "\n***info: link("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: link("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -514,13 +515,14 @@ namespace cyng
 		void generator::fun_figure(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 			//	[0001,1,true,%(("alt":Giovanni Bellini, Man wearing a turban),("caption":Giovanni Bellini, Man wearing a turban),("source":LogoSmall.jpg),("tag":0c65390a-9405-43d0-b504-3e22d8c267a0))]
-			std::cout
-				<< "\n***info: figure("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: figure("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 
 			auto const reader = make_reader(frame);
@@ -641,11 +643,11 @@ namespace cyng
 			//	* parameters/arguments
 			//	* text chunks
 			//
-			std::cout
-				<< "\n***info: quote("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: quote("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -691,11 +693,11 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 			//	[0003,1,true,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),1,<p>Science may never come up with a better office communication system, than the coffee break.</p>]
-			std::cout
-				<< "\n***info: cite("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: cite("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -736,6 +738,7 @@ namespace cyng
 		void generator::fun_title(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 			//	[0001,1,false,Introduction,into,docScript]
 			//	
@@ -744,12 +747,11 @@ namespace cyng
 			//	* parameters/arguments
 			//	* title chunks
 			//
-			std::cout
-				<< "\n***info: title("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
-
+			//std::cout
+			//	<< "\n***info: title("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			const auto reader = make_reader(frame);
 
@@ -785,8 +787,8 @@ namespace cyng
 		void generator::fun_meta(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
-#ifdef _DEBUG
 
+#ifdef _DEBUG
 			//	[0001,0,true,%(("file-size":4939),("last-write-time":2018-12-30 21:16:04.00000000))]
 			//	
 			//	* function type
@@ -794,13 +796,14 @@ namespace cyng
 			//	* parameters/arguments
 			//	* parameter set
 			//
-			std::cout
-				<< "\n***info: meta("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl
-				;
+			//std::cout
+			//	<< "\n***info: meta("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl
+			//	;
 #endif
+
 			const auto reader = make_reader(frame);
 			if (cyng::value_cast(reader.get(2), false)) {
 
@@ -824,14 +827,15 @@ namespace cyng
 		void generator::fun_list(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 			//	[0003,1,true,%(("style":upper-roman),("type":ordered)),Change the list style type,See the result,Some of the list types does not work in IE or Opera]
-			std::cout
-				<< "\n***info: list("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl
-				;
+			//std::cout
+			//	<< "\n***info: list("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl
+			//	;
 #endif
 			const auto reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -888,15 +892,17 @@ namespace cyng
 		void generator::fun_item(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 			//	[0001,3,false,See the result]
-			std::cout
-				<< "\n***info:entry("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl
-				;
+			//std::cout
+			//	<< "\n***info:entry("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl
+			//	;
 #endif
+
 			const auto reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 			if (!cyng::value_cast(reader.get(2), false)) {
@@ -920,15 +926,17 @@ namespace cyng
 		void generator::fun_env(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 			//	[0004,1,true,%(("filter":JavaScript),("process":false)),CONTENT]
-			std::cout
-				<< "\n***info:env.open("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl
-				;
+			//std::cout
+			//	<< "\n***info:env.open("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl
+			//	;
 #endif
+
 			const auto reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 			auto const filter = value_cast<std::string>(reader[3].get("filter"), "verbatim");	//	filter
@@ -1028,11 +1036,11 @@ namespace cyng
 
 #ifdef _DEBUG
 			//	["C:\projects\cyng\build\Debug\out.json"]
-			std::cout
-				<< "\n***info: generate.meta("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl;
+			//std::cout
+			//	<< "\n***info: generate.meta("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl;
 #endif
 			const boost::filesystem::path p = cyng::value_cast(frame.at(0), boost::filesystem::path());
 			meta(p);
