@@ -73,13 +73,13 @@ e .( .)
 
 .h2(Source Listings)
 
-.+(filter: "verbatim", style: "verbatim")
+.start-(filter: "verbatim", style: "verbatim")
 function myfunction(txt) { 
     document.getElementById("Νες").innerHTML = txt;
 } 
-.-
+.end-()
 
-.+(filter: "C++", style: "K&R", linenumbers: true, boundary: "9b2ba500-cacc-49d3-bb72-e325330e8b10")
+.start-9b2ba500-cacc-49d3-bb72-e325330e8b10(filter: "C++", style: "K&R", linenumbers: true)
 # include <cerrno>
 # include "def.h"
 class symbol_reader {
@@ -94,7 +94,7 @@ class symbol_reader {
 		// comment
 		const symbol back_;	
 };
-.-("9b2ba500-cacc-49d3-bb72-e325330e8b10")
+.end-9b2ba500-cacc-49d3-bb72-e325330e8b10()
 
 .h2(Final Considerations)
 .quote(source:"Earl Wilson", url: "https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html")

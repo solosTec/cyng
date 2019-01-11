@@ -11,6 +11,7 @@
 #include <cyng/docscript/token.h>
 #include <cyng/docscript/symbol.h>
 #include <cyng/intrinsics/sets.h>
+#include <cyng/log/severity.h>
 #include <fstream>
 #include <stack>
 #include <boost/uuid/uuid.hpp>
@@ -25,7 +26,7 @@ namespace cyng
 		class lexer
 		{
 		public:
-			lexer(emit_symbol_f);
+			lexer(emit_symbol_f, std::function<void(cyng::logging::severity, std::string)>);
 
 			/**
 			 * process next character.
@@ -49,71 +50,89 @@ namespace cyng
 			enum state
 			{
 				STATE_ERROR_,
+				STATE_SKIP_WS_,
 				STATE_START_,
-				STATE_NL_,	//	
-				STATE_PAR_,	//	after multiple NLs
-				STATE_DOT_NL_,		//	'.' after NL
-				STATE_DOT_WS_,		//	'.' after WS
-				STATE_FUN_NAME_,	//	function name
-				STATE_ARG_,			//	read 1 arg
-				STATE_FUN_OPEN_,	//	function open
-				STATE_FUN_CLOSE_,	//	function complete ')'
-				STATE_ENV_OPEN_,	//	.+
-				STATE_ENV_CLOSE_,	//	.-
-				STATE_ENV_,
-				STATE_ENV_EOL_,		//	EOL in environment
-				STATE_BOUNDARY_,	//	read the boundary string
-				STATE_DECIMAL_,		//	decial number 0 .. 9
-				STATE_TXT_,			//	running paragraph
-				STATE_QUOTE_,		//	quoted text
-				STATE_PARAM_,		//	expecting function arguments
-				STATE_KEY_,			//	pending key/arg decision
-				STATE_VALUE_,		//	a parameter value
-				STATE_NUMBER_,		//	a parameter number
-				STATE_SKIP_WS_,		//	skip white spaces
+				STATE_NL_DOT_,		//	'.' after NL
+				STATE_WS_DOT_,		//	'.' after WS
+				STATE_NUMBER_,		//	0 ... 9
+				STATE_TOKEN_,		//	lowercase characters and '_'
+				STATE_FUNCTION_,	//	expection arguments 
+				STATE_1_ARG_,		//	function with one (simple) argument
+				STATE_PARAMS_,		//	parameters enclosed (...)
+				STATE_VALUE_,		//	read value of a key
+				STATE_QUOTE_,		//	string enclosed in "
+				STATE_TEXT_,		//	text and punctuation
+				STATE_ENV_OPEN_,	//	read environment boundary
+				STATE_ENV_CLOSE_,	//	compare environment boundary
+				STATE_VERBATIM_,	//	environment data
+				STATE_TRAIL_,		//	after function call ")..."
+
 			}	state_;
 
 			/**
 			 * emitter for complete symbols
 			 */
 			emit_symbol_f	emit_;
+			std::function<void(cyng::logging::severity, std::string)>	err_;
 
 			/**
 			 * temporary buffer
 			 */
 			utf::u32_string tmp_;
+			utf::u32_string env_open_, env_close_;
+
+			/**
+			 * additional state info to collect
+			 * an environment
+			 */
+			bool env_on_;
 
 			/**
 			 * state stack
 			 */
 			std::stack<state>	state_stack_;
 
+			/**
+			 * virtual line position
+			 */
+			std::size_t col_;
+
 		private:
 			std::pair<state, bool> state_start(std::uint32_t);
-			state state_nl(std::uint32_t);
-			std::pair<state, bool> state_paragraph(std::uint32_t);
-			std::pair<state, bool> state_dot_nl(std::uint32_t);
-			std::pair<state, bool> state_dot_ws(std::uint32_t);
-			std::pair<state, bool> state_fun_name(std::uint32_t);
-			state state_arg(std::uint32_t);
-			state state_fun_open(std::uint32_t);
-			state state_fun_close(std::uint32_t);
-			std::pair<state, bool> state_decimal(std::uint32_t c);
-			state state_txt(std::uint32_t);
-			state state_quote(std::uint32_t);
-			state state_param(std::uint32_t);
-			state state_key(std::uint32_t);
-			std::pair<state, bool> state_value(std::uint32_t);
+			std::pair<state, bool> state_error(std::uint32_t);
+			std::pair<state, bool> skip_ws(std::uint32_t c);
+
+			std::pair<state, bool> state_dot(std::uint32_t);
 			std::pair<state, bool> state_number(std::uint32_t);
-			state state_env_open(std::uint32_t);
-			state state_env_close(std::uint32_t);
-			state state_env(std::uint32_t);
-			state state_env_eol(std::uint32_t);
-			std::pair<state, bool> skip_ws(std::uint32_t);
+			std::pair<state, bool> state_token(std::uint32_t);
+			std::pair<state, bool> state_function(std::uint32_t);
+			std::pair<state, bool> state_1_arg(std::uint32_t);
+			std::pair<state, bool> state_params(std::uint32_t);
+			std::pair<state, bool> state_value(std::uint32_t);
+			std::pair<state, bool> state_quote(std::uint32_t);
+			std::pair<state, bool> state_text(std::uint32_t);
+			std::pair<state, bool> state_env_open(std::uint32_t);
+			std::pair<state, bool> state_env_close(std::uint32_t);
+			std::pair<state, bool> state_verbatim(std::uint32_t);
+			std::pair<state, bool> state_trail(std::uint32_t);
 
 			bool emit_tmp(symbol_type);
 			void emit(symbol&&) const;
+
+			/**
+			 * Removes the element on top of the stack and returns the value
+			 */
 			state pop();
+
+			/**
+			 * if state stack is empty function returns the given
+			 * parameter s. Otherwise it works like pop()
+			 */
+			state pop(state s);
+
+			/**
+			 * Push current state on state stack
+			 */
 			void push();
 			void push(state);
 
@@ -123,6 +142,7 @@ namespace cyng
 			state save(state);
 			state save(state, state);
 			state transit_ws(state);
+			state top() const;
 
 			std::string get_state_name(state) const;
 

@@ -122,9 +122,9 @@ namespace cyng
 			std::size_t meta(boost::filesystem::path const& out) const;
 
 		private:
-			const std::vector< boost::filesystem::path > includes_;
-			const int verbosity_;
-			const bool body_only_;
+			std::vector< boost::filesystem::path > const includes_;
+			int const verbosity_;
+			bool const body_only_;
 
 			boost::uuids::random_generator	uuid_gen_;	//	basic_random_generator<mt19937>
 			boost::uuids::name_generator name_gen_;
@@ -136,6 +136,8 @@ namespace cyng
 			std::vector<std::size_t> numeration_;
 			structure_t	structure_;
 			std::string language_;	//!< target language
+
+			std::size_t paragraph_counter_;
 		};
 
 		//

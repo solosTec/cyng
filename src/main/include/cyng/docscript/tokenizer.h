@@ -10,6 +10,8 @@
 
 #include <cyng/docscript/docscript.h>
 #include <cyng/docscript/token.h>
+#include <cyng/log/severity.h>
+
 #include <boost/regex/pending/unicode_iterator.hpp>
 
 namespace cyng
@@ -19,7 +21,7 @@ namespace cyng
 		class tokenizer
 		{
 		public:
-			tokenizer(emit_token_f);
+			tokenizer(emit_token_f, std::function<void(cyng::logging::severity, std::string)>);
 			void read(boost::u8_to_u32_iterator<std::string::const_iterator> first, boost::u8_to_u32_iterator<std::string::const_iterator> last);
 
 			/**
@@ -50,6 +52,7 @@ namespace cyng
 			* callback for complete tokens
 			*/
 			emit_token_f	emit_;
+			std::function<void(cyng::logging::severity, std::string)>	err_;
 
 			std::uint32_t	last_char_;	//!<	previous character
 			std::size_t		counter_;	//!<	counter of successive equal characters

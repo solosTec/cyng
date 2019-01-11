@@ -22,6 +22,9 @@ namespace cyng
 			, verbose_(verbose)
 			, library_()
 			, prg_()
+			, line_(0)
+			, column_(0)
+			, source_file_()
 		{
 			init_library();
 		}
@@ -32,15 +35,12 @@ namespace cyng
 			//	call initial functions and open the "generate"
 			//	call frame
 			//
-			prg_
-				//	simulate frame call prolog
-				<< generate_invoke_unwinded("meta"
-					, std::uint16_t(NL_)	//	function type
-					, std::size_t(0)	//	depth
-					, true	//	use parameters
-					, meta_)
+			init();
 
-				//	build a call frame generate function
+			//
+			//	build a call frame generate function
+			//
+			prg_
 				<< code::ESBA
 				<< out
 				;
@@ -50,15 +50,16 @@ namespace cyng
 			//
 			loop(0);
 
+			//
+			//	generate output file
+			//
 			prg_
-				//
-				//	generate output file
-				//
 				<< invoke("generate.file")
 				<< code::REBA
 				;
 
 			if (meta) {
+
 				//
 				//	generate meta 
 				//
@@ -75,6 +76,15 @@ namespace cyng
 					<< std::endl
 					;
 			}
+		}
+
+		void compiler::init()
+		{
+			//
+			//	use RAII to create a function call frame
+			//
+			call_frame cf(lookup("meta"), *this, 0, PARAMETERS);
+			prg_ << meta_;
 		}
 
 		bool compiler::loop(std::size_t depth)
@@ -101,21 +111,24 @@ namespace cyng
 						return false;
 					}
 					else {
-						fun_nl(look_ahead_->value_, depth + 1);
+						func(look_ahead_->value_, depth, true);
 					}
 					break;
 				case SYM_FUN_WS:
 					// all other functions are local	
-					fun_ws(look_ahead_->value_, depth + 1);
+					func(look_ahead_->value_, depth, false);
 					break;
 				case SYM_FUN_PAR:
 					//	new paragraph
-					fun_par(depth + 1);
+					fun_par(depth);
 					break;
+
 				default:
 					std::cerr
 						<< "***warning: unknown symbol "
 						<< (*look_ahead_)
+						<< " #"
+						<< line_
 						<< std::endl
 						;
 					match(look_ahead_->type_);
@@ -137,6 +150,8 @@ namespace cyng
 					<< name(st)
 					<< "] but get "
 					<< *look_ahead_
+					<< " #"
+					<< line_
 					<< std::endl
 					;
 
@@ -150,7 +165,40 @@ namespace cyng
 			}
 
 			BOOST_ASSERT_MSG(look_ahead_->type_ == st, "wrong symbol");
-			look_ahead_ = &producer_.get();
+
+			do {
+
+				//
+				//	next symbol
+				//
+				look_ahead_ = &producer_.get();
+
+				switch (look_ahead_->type_)
+				{
+					case SYM_LINE:
+						line_ = look_ahead_->value_.at(0);
+						if (verbose_ > 5)
+						{
+							std::cout
+								<< "***info: update source line #"
+								<< line_
+								<< std::endl
+								;
+						}
+						look_ahead_ = &producer_.get();
+						break;
+					case SYM_COL:
+						look_ahead_ = &producer_.get();
+						break;
+					case SYM_FILE:
+						look_ahead_ = &producer_.get();
+						break;
+				}
+
+			} while (look_ahead_->type_ == SYM_LINE
+				|| look_ahead_->type_ == SYM_COL
+				|| look_ahead_->type_ == SYM_FILE);
+
 
 			if (verbose_ > 4)
 			{
@@ -164,16 +212,20 @@ namespace cyng
 			return true;
 		}
 
-		void compiler::fun_nl(std::string name, std::size_t depth)
+		void compiler::func(std::string name, std::size_t depth, bool nl)
 		{
-			match(SYM_FUN_NL);
+			//
+			//	match and produce next look ahead
+			//
+			match(nl ? SYM_FUN_NL : SYM_FUN_WS);
+
 			switch (look_ahead_->type_)
 			{
 			case SYM_KEY:
 				key(name, true, look_ahead_->value_, depth);
 				break;
 
-			case SYM_ARG:
+			case SYM_VALUE:
 			case SYM_FUN_WS:
 				//	NL function
 				arg(name, depth);
@@ -183,9 +235,9 @@ namespace cyng
 				//	no arguments
 			{
 				std::cout
-					<< "***info: compile function "
+					<< "***info: compile function ["
 					<< name
-					<< "() - without arguments"
+					<< "]() - without arguments"
 					<< std::endl
 					;
 				call_frame tr(lookup(name), *this, depth, PARAMETERS);
@@ -197,49 +249,8 @@ namespace cyng
 				std::cerr
 					<< "***warning: unexpected symbol (fun-nl)"
 					<< (*look_ahead_)
-					<< std::endl
-					;
-				break;
-			}
-		}
-
-		void compiler::fun_ws(std::string name, std::size_t depth)
-		{
-			match(SYM_FUN_WS);
-			switch (look_ahead_->type_)
-			{
-			case SYM_KEY:
-				key(name, false, look_ahead_->value_, depth);
-				break;
-			case SYM_FUN_WS:
-			case SYM_ARG:
-				//	WS function
-				arg(name, depth);
-				break;
-			case SYM_FUN_CLOSE:
-				//	no arguments
-				{
-					if (verbose_ > 3)
-					{
-						std::cout
-							<< "***info: compile function "
-							<< name
-							<< "() - without arguments"
-							<< std::endl
-							;
-					}
-
-					//
-					//	use RAII to create a function call frame
-					//
-					call_frame tr(lookup(name), *this, depth, PARAMETERS);	//	key function
-					match(SYM_FUN_CLOSE);
-				}
-				break;
-			default:
-				std::cerr
-					<< "***warning: unknown symbol (fun-nl)"
-					<< (*look_ahead_)
+					<< " #"
+					<< line_
 					<< std::endl
 					;
 				break;
@@ -320,12 +331,12 @@ namespace cyng
 						break;
 					}
 					counter += lookup(look_ahead_->value_)->rvs_;
-					fun_nl(look_ahead_->value_, depth);
+					func(look_ahead_->value_, depth, true);
 					break;
 				case SYM_FUN_WS:
 					//	number of return values
 					counter += lookup(look_ahead_->value_)->rvs_;
-					fun_ws(look_ahead_->value_, depth);
+					func(look_ahead_->value_, depth, false);
 					break;
 				case SYM_FUN_PAR:
 				case SYM_EOF:
@@ -377,25 +388,17 @@ namespace cyng
 						std::cout
 							<< "***info: ["
 							<< name
-							<< "] assemble param "
+							<< '.'
 							<< key
-							<< " = \""
+							<< "] = \""
 							<< look_ahead_->value_
 							<< "\""
 							<< std::endl
 							;
 					}
 
-					if (boost::algorithm::equals("true", look_ahead_->value_)) {
-						prg_ << true;
-					}
-					else if (boost::algorithm::equals("false", look_ahead_->value_)) {
-						prg_ << false;
-					}
-					else {
-						prg_ << look_ahead_->value_;	//	value
-					}
 					prg_
+						<< produce_value(look_ahead_->value_)
 						<< make_object(key)	//	key
 						<< code::ASSEMBLE_PARAM
 						;
@@ -408,35 +411,37 @@ namespace cyng
 						std::cout
 							<< "***info: ["
 							<< name
-							<< "] assemble param "
+							<< '.'
 							<< key
-							<< " = "
+							<< "] = "
 							<< std::stoull(look_ahead_->value_)
 							<< std::endl
 							;
 					}
+
 					prg_
-						<< make_object(std::stoull(look_ahead_->value_))	//	value (string => int)
+						<< produce_number(look_ahead_->value_)
 						<< make_object(key)	//	key
 						<< code::ASSEMBLE_PARAM
 						;
 					match(SYM_NUMBER);
 					break;
+
 				case SYM_FUN_WS:
 					if (verbose_ > 3)
 					{
 						std::cout
-							<< "***info: compile function "
+							<< "***info: compile function ["
 							<< name
-							<< " with "
+							<< '.'
 							<< key
-							<< " = "
+							<< "] = "
 							<< look_ahead_->value_
 							<< "(...)"
 							<< std::endl
 							;
 					}
-					fun_ws(look_ahead_->value_, depth);
+					func(look_ahead_->value_, depth, false);
 					prg_
 						<< make_object(key)	//	key
 						<< code::ASSEMBLE_PARAM
@@ -530,12 +535,12 @@ namespace cyng
 					match(SYM_FUN_NL);
 					if (p->name_.compare("env.close") == 0) {
 
-						if (SYM_ARG == look_ahead_->type_) {
+						if (SYM_VALUE == look_ahead_->type_) {
 							//
 							//	optional argument
 							//
 							prg_ << make_object(look_ahead_->value_);
-							match(SYM_ARG);
+							match(SYM_VALUE);
 						}
 						match(SYM_FUN_CLOSE);
 					}
@@ -571,33 +576,37 @@ namespace cyng
 				if (verbose_ > 3)
 				{
 					std::cout
-						<< "***info: compile function "
+						<< "***info: compile function ["
 						<< name
-						<< " argument #"
+						<< ".#"
 						<< counter
-						<< ": "
+						<< "] = "
 						<< look_ahead_->value_
 						<< std::endl
 						;
 				}
 
 				
-				if (SYM_FUN_WS == look_ahead_->type_)
-				{
+				switch (look_ahead_->type_) {
+				case SYM_FUN_WS:
 					//
 					//	a local function produces an argument
 					//
-					fun_ws(look_ahead_->value_, depth + 1);
-				}
-				else
-				{
+					func(look_ahead_->value_, depth + 1, false);
+					break;
+				case SYM_NUMBER:
+					prg_ << produce_number(look_ahead_->value_);
+					match(SYM_NUMBER);
+					break;
+				default:
 					//
 					//	produce arguments
 					//
-					prg_ << make_object(look_ahead_->value_);
-					match(SYM_ARG);
-					//value = look_ahead_->value_;
+					prg_ << produce_value(look_ahead_->value_);
+					match(SYM_VALUE);
+					break;
 				}
+
 				counter++;
 			}
 
@@ -707,6 +716,22 @@ namespace cyng
 
 			compiler_.prg_ << code::REBA;
 
+		}
+
+		cyng::object produce_value(std::string val)
+		{
+			if (boost::algorithm::equals("true", val)) {
+				return cyng::make_object(true);
+			}
+			else if (boost::algorithm::equals("false", val)) {
+				return cyng::make_object(false);
+			}
+			return cyng::make_object(val);
+		}
+
+		cyng::object produce_number(std::string val)
+		{
+			return cyng::make_object(std::stoull(val));
 		}
 
 	}	//	docscript

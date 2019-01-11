@@ -11,10 +11,11 @@ namespace cyng
 {
 	namespace docscript
 	{
-		tokenizer::tokenizer(emit_token_f f)
+		tokenizer::tokenizer(emit_token_f f, std::function<void(cyng::logging::severity, std::string)> err)
 			: emit_(f)
+			, err_(err)
 			, last_char_('\n')
-			, counter_(1)
+			, counter_(0)
 			, reject_(0)
 			, tmp_()
 			, state_(STATE_INITIAL_)
@@ -180,27 +181,29 @@ namespace cyng
 			case ';':
 				if (counter_ == 1)	return STATE_EMOJI_WINK_;
 				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
+
+			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
 				BOOST_ASSERT_MSG(tmp_.empty(), "buffer not empty");
 				tmp_.append(counter_, c);
 				return STATE_NUMBER_;
 
 			default:
-				//emit_(make_token(c, counter_));
-				//return STATE_INITIAL_;
 				break;
 			}
 
-			emit_(make_token(c, counter_));
+			if ('\n' == c && counter_ > 1) {
+
+				//
+				//	emit special symbol for all CR with counter > 1
+				//	Pilcrow Sign - &para; - UTF-8: 0xC2 0xB6, UTF-32: 0x000000B6
+				//	0x00B6 
+				//
+				emit_(make_token(U'¶', 1));
+
+			}
+			else {
+				emit_(make_token(c, counter_));
+			}
 			return state_;
 		}
 
@@ -210,16 +213,8 @@ namespace cyng
 			{
 			case '/':
 				return STATE_FRACTION_;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
+
+			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
 #ifdef _DEBUG
 				if (tmp_.size() > 1)
 				{
@@ -257,16 +252,7 @@ namespace cyng
 			case 'x':
 				return STATE_UTF8_HEX_;
 
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
+			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
 				tmp_.append(counter_, c);
 				break;
 

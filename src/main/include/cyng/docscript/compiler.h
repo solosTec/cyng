@@ -12,6 +12,7 @@
 #include <cyng/docscript/library.h>
 #include <cyng/object.h>
 #include <cyng/intrinsics/sets.h>
+
 #include <chrono>
 #include <boost/filesystem.hpp>
 
@@ -67,6 +68,11 @@ namespace cyng
 
 		private:
 			/**
+			 * Add prolog 
+			 */
+			void init();
+
+			/**
 			 * Check symbol type and produce next symbol
 			 */
 			bool match(symbol_type st);
@@ -81,13 +87,10 @@ namespace cyng
 
 			/**
 			 * @param name function name
+			 * @param depth call depth
+			 * @param nl true for NL functions otherwise false
 			 */
-			void fun_nl(std::string name, std::size_t depth);
-
-			/**
-			 * @param name function name
-			 */
-			void fun_ws(std::string name, std::size_t depth);
+			void func(std::string name, std::size_t depth, bool nl);
 
 			/**
 			 * new paragraph
@@ -121,7 +124,7 @@ namespace cyng
 			 */
 			symbol_reader producer_;
 			symbol const* look_ahead_;
-			const int verbose_;
+			int const verbose_;
 
 			/**
 			 * function library
@@ -133,8 +136,21 @@ namespace cyng
 			 */
 			vector_t	prg_;
 
+			/**
+			 * position in source file
+			 */
+			std::uint32_t line_,
+				column_;
+
+			/**
+			 * source file name
+			 */
+			std::string source_file_;
+
 		};
 
+		cyng::object produce_value(std::string);
+		cyng::object produce_number(std::string);
 
 	}	//	docscript
 }	//	cyng

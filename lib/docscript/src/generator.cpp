@@ -37,6 +37,7 @@ namespace cyng
 			, numeration_()
 			, structure_()
 			, language_("en")
+			, paragraph_counter_(0)
 		{
 			register_this();
 		}
@@ -329,10 +330,28 @@ namespace cyng
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 			if (!cyng::value_cast(reader.get(2), false)) {
 
+				//
+				//	update paragraph counterG143
+				//
+				++paragraph_counter_;
+
 				auto const size = value_cast<std::size_t>(reader.get(3), 0u);
 				BOOST_ASSERT(size == frame.size() - 4);
-				auto const node = accumulate(reader, 4, frame.size(), "p");
-				ctx.push(cyng::make_object(node));
+				//auto const node = accumulate(reader, 4, frame.size(), "p");
+				std::stringstream ss;
+				if (size != 0) {
+					ss
+						<< "<p id=paragraph."
+						<< paragraph_counter_
+						<< ">"
+						<< accumulate(reader, 4, frame.size())
+						<< "</p>"
+						;
+
+					//auto const node = accumulate(reader, 4, frame.size(), "p");
+					//ctx.push(cyng::make_object(node));
+				}
+				ctx.push(cyng::make_object(ss.str()));
 
 			}
 			else {
@@ -508,10 +527,6 @@ namespace cyng
 			}
 		}
 
-		//<figure>
-		//  <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
-		//  <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
-		//</figure>
 		void generator::fun_figure(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
@@ -574,6 +589,10 @@ namespace cyng
 
 					if (pos.second)
 					{
+						//<figure>
+						//  <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
+						//  <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
+						//</figure>
 
 						std::stringstream ss;
 						ss
@@ -693,11 +712,11 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
 			//	[0003,1,true,%(("source":Earl Wilson),("url":https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html)),1,<p>Science may never come up with a better office communication system, than the coffee break.</p>]
-			//std::cout
-			//	<< "\n***info: cite("
-			//	<< cyng::io::to_str(frame)
-			//	<< ")"
-			//	<< std::endl;
+			std::cout
+				<< "\n***info: cite("
+				<< cyng::io::to_str(frame)
+				<< ")"
+				<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -868,9 +887,7 @@ namespace cyng
 				const auto item = value_cast<std::string>(reader.get(idx), "");
 				ss 
 					<< std::endl
-					<< "<li>"
 					<< item
-					<< "</li>"
 					;
 			}
 
@@ -894,13 +911,14 @@ namespace cyng
 			const cyng::vector_t frame = ctx.get_frame();
 
 #ifdef _DEBUG
-			//	[0001,3,false,See the result]
-			//std::cout
-			//	<< "\n***info:entry("
-			//	<< cyng::io::to_str(frame)
-			//	<< ")"
-			//	<< std::endl
-			//	;
+			//	[0001,1,false,Some of the list types does not work in IE or Opera]
+			//	[0001,1,false,<b>inherit</b>,-,Inherits,this,property,from,its,parent,element.,Read,about,inherit]
+			std::cout
+				<< "\n***info:entry("
+				<< cyng::io::to_str(frame)
+				<< ")"
+				<< std::endl
+				;
 #endif
 
 			const auto reader = make_reader(frame);
@@ -910,8 +928,10 @@ namespace cyng
 				//
 				//	argument list
 				//
-				auto const txt = value_cast<std::string>(reader.get(3), "");	//	item text
-				ctx.push(cyng::make_object(txt));	//	return value is item text
+				auto const node = accumulate(reader, 3, frame.size(), "li");
+				ctx.push(cyng::make_object(node));	
+				//auto const txt = value_cast<std::string>(reader.get(3), "");	//	item text
+				//ctx.push(cyng::make_object(txt));	//	return value is item text
 			}
 			else {
 

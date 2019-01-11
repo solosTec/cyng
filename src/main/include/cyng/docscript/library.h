@@ -43,9 +43,9 @@ namespace cyng
 			bool is_ws() const;
 			bool is_nl() const;
 
-			const std::string name_;	//!<	function name
-			const std::size_t rvs_;	//!< return values
-			const function_type	type_;
+			std::string const name_;	//!<	function name
+			std::size_t const rvs_;	//!< return values
+			function_type const type_;
 		};
 
 		using function_map = std::map<std::string, std::shared_ptr<function const>>;

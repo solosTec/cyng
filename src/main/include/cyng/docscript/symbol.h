@@ -25,10 +25,14 @@ namespace cyng
 		SYM_FUN_NL,		//!<	functions at beginning of line are global
 		SYM_FUN_WS,		//!<	all other functions are local	
 		SYM_FUN_PAR,	//!<	new paragraph
+		SYM_FUN_ENV,	//!<	environment function
 		SYM_FUN_CLOSE,	//!<	all function arguments read
-		SYM_ARG,		//!<	function argument
 		SYM_KEY,
 		SYM_VALUE,
+
+		SYM_LINE,		//!<	line in source code
+		SYM_COL,		//!<	column in source code
+		SYM_FILE,		//!<	current source file
 	};
 
 	std::string name(symbol_type);

@@ -65,6 +65,11 @@ namespace cyng
 			}
 			else
 			{
+				os
+					<< tok.count_
+					<< '*'
+					;
+
 				if (tok.value_ == '\n')	{
 					std::cout << "NL";
 				}
@@ -72,6 +77,9 @@ namespace cyng
 					std::cout << "SP";
 				}
 #if BOOST_OS_WINDOWS
+				else if (tok.value_ == 0xb6) {
+					std::cout << u8"¶";
+				}
 				else if (tok.value_ == 0xbd) {
 					std::cout << "1/2";
 				}
@@ -88,11 +96,6 @@ namespace cyng
 				else {
 					std::cout << tok.value_;
 				}
-				os
-					<< '*'
-					//<< std::setw(2)
-					<< tok.count_
-					;
 			}
 
 			os << ']';

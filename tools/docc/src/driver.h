@@ -12,6 +12,7 @@
 #include <cyng/docscript/lexer.h>
 #include <cyng/docscript/statistics.h>
 #include <cyng/intrinsics/sets.h>
+#include <cyng/log/severity.h>
 #include <chrono>
 #include <boost/filesystem.hpp>
 
@@ -60,6 +61,7 @@ namespace cyng
 			int open_and_run(boost::filesystem::path const& inp, std::size_t);
 			void finish(boost::filesystem::path const& body, boost::filesystem::path const& out, bool meta);
 			void process(boost::filesystem::path const& in, boost::filesystem::path out, bool body_only, std::chrono::milliseconds);
+			void print_error(cyng::logging::severity, std::string);
 
 		private:
 			/**
@@ -112,7 +114,7 @@ namespace cyng
 			/**
 			 * current (tokenized) source file line
 			 */
-			std::size_t	line_;
+			std::size_t	line_, prev_line_;
 
 			/**
 			 * stack of source files

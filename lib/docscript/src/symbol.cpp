@@ -25,10 +25,15 @@ namespace cyng
 		case SYM_FUN_NL:	return "FNL";
 		case SYM_FUN_WS:	return "FWS";
 		case SYM_FUN_PAR:	return "PAR";
+		case SYM_FUN_ENV:	return "ENV";
 		case SYM_FUN_CLOSE:	return "FCL";
-		case SYM_ARG:		return "ARG";
 		case SYM_KEY:		return "KEY";
 		case SYM_VALUE:		return "VAL";
+
+		case SYM_LINE:		return "LIN";
+		case SYM_COL:		return "COL";
+		case SYM_FILE:		return "FIL";
+
 		default:
 			break;
 		}

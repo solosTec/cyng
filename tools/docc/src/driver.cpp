@@ -85,7 +85,7 @@ namespace cyng
 				//
 				lexer_.next(tok.value_);
 			}
-		})
+		}, std::bind(&driver::print_error, this, std::placeholders::_1, std::placeholders::_2))
 		, lexer_([this](symbol&& sym) {
 
 			if (verbose_ > 3)
@@ -99,8 +99,8 @@ namespace cyng
 			switch (sym.type_)
 			{
 			case SYM_FUN_NL:		
-				//	functions at beginning of line are global
 			case SYM_FUN_WS:		
+				//	functions at beginning of line are global
 				//	all other functions are local	
 				parentheses_++;
 				break;
@@ -112,7 +112,7 @@ namespace cyng
 				if (parentheses_ != 0) {
 					std::cerr
 						<< "***error: unbalanced parentheses #"
-						<< line_
+						<< this->line_
 						<< '@'
 						<< source_files_.top()
 						<< std::endl
@@ -136,9 +136,14 @@ namespace cyng
 
 
 			buffer_.emplace_back(std::move(sym));
+			if (this->prev_line_ != this->line_) {
+				buffer_.emplace_back(symbol(SYM_LINE, this->line_));
+				this->prev_line_ = this->line_;
+			}
 
-		})
+		}, std::bind(&driver::print_error, this, std::placeholders::_1, std::placeholders::_2))
 		, line_(0u)
+		, prev_line_(std::numeric_limits<std::size_t>::max())
 		, source_files_()
 
 		{}
@@ -362,13 +367,13 @@ namespace cyng
 				//	dump generated program
 				//
 
-				//for (auto obj : prg)
-				//{
-				//	std::cout
-				//		<< cyng::io::to_str(obj)
-				//		<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
-				//		;
-				//}
+				for (auto obj : prg)
+				{
+					std::cout
+						<< cyng::io::to_str(obj)
+						<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
+						;
+				}
 #endif
 				//
 				//	serialize as program not as data (reverse on stack)
@@ -417,21 +422,38 @@ namespace cyng
 				//
 				docscript::generator gen(this->includes_, this->verbose_, body_only);
 				gen.run(prg, compile_time);
-// 				if (ec)
-// 				{
-// 					std::cout 
-// 						<< "***error: generator stopped with message "
-// 						<< ec.message()
-// 						<< std::endl;
-// 				}
-
-				//
-				//	generate index 
-				//
-				//gen.index(out);
 
 			}
 		}
+
+		void driver::print_error(cyng::logging::severity level, std::string msg)
+		{
+			std::cout
+				<< "***"
+				<< cyng::logging::to_string(level)
+				<< ": "
+				<< msg
+				<< " #"
+				<< line_
+				;
+
+			if (!source_files_.empty()) {
+				std::cout
+					<< '@'
+					<< source_files_.top()
+					;
+			}
+			std::cout
+				<< std::endl
+				;
+		}
+
+		//void driver::update_line(std::size_t line)
+		//{
+		//	line_ = line;
+		//	lexer_.update_line(line);
+		//}
+
 
 		std::tuple<std::chrono::system_clock::time_point, uintmax_t> read_meta_data(boost::filesystem::path p)
 		{
