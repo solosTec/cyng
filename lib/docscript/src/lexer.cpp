@@ -39,6 +39,18 @@ namespace cyng
 				err_(cyng::logging::severity::LEVEL_ERROR, get_state_name(state_) + ": internal error - empty stack");
 			}
 
+			//
+			//	updating column
+			//
+			switch (c) {
+			case '\n':
+			case U'¶':	//	0xb6
+				//	reset virtual line position
+				col_ = 0;
+			default:
+				break;
+			}
+
 			bool advance = true;
 			switch (state_)
 			{
@@ -167,7 +179,6 @@ namespace cyng
 
 			switch (c) {
 			case '\n':
-				col_ = 0;	//	reset virtual line position
 				return std::make_pair(state_, true);
 
 			case ' ': case '\t':
@@ -188,7 +199,6 @@ namespace cyng
 				return std::make_pair(state_, true);
 
 			case U'¶':	//	0xb6
-				col_ = 0;	//	reset virtual line position
 				emit(symbol(SYM_FUN_PAR, u8"¶"));
 				return std::make_pair(state_, true);
 
@@ -222,7 +232,6 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				col_ = 0;
 			case ' ':
 			case '\t':
 				//	ommit white spaces
@@ -269,7 +278,6 @@ namespace cyng
 				tmp_ += c;
 				break;
 			case '\n':
-				col_ = 0;
 			default:
 				emit_tmp(SYM_NUMBER);
 				return std::make_pair(pop(STATE_START_), false);
@@ -284,12 +292,16 @@ namespace cyng
 			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
 			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i': case 'j': case 'k': case 'l': case 'm':
 			case 'n': case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
-			case '_': case '.':
+			case '_': //case '.':
 				tmp_ += c;
 				break;
 
+			case '.':
+				pop();	//	remove STATE_WS_DOT_
+				emit_tmp(SYM_FUN_WS);
+				return std::make_pair(STATE_FUNCTION_, false);
+
 			case '\n':
-				col_ = 0;
 			case ' ': case '\t': 
 				//	token complete
 				switch (top()) {
@@ -304,6 +316,7 @@ namespace cyng
 					return std::make_pair(transit_ws(STATE_FUNCTION_), true);
 
 				default:
+					err_(cyng::logging::severity::LEVEL_ERROR, get_state_name(state_) + ": invalid end of function call");
 					break;
 				}
 				return std::make_pair(pop(), true);
@@ -314,8 +327,15 @@ namespace cyng
 				case STATE_NL_DOT_:
 					pop();	//	remove STATE_NL_DOT_
 					BOOST_ASSERT(complete());
-					if (this->env_on_)	emit_tmp(SYM_FUN_ENV);
-					else emit_tmp(SYM_FUN_NL);
+					if (this->env_on_) {
+						if (boost::algorithm::equals(U"end", tmp_)) {
+							this->env_on_ = false;
+						}
+						emit_tmp(SYM_FUN_ENV);
+					}
+					else {
+						emit_tmp(SYM_FUN_NL);
+					}
 					return std::make_pair(STATE_FUNCTION_, false);
 				case STATE_WS_DOT_:
 					pop();	//	remove STATE_WS_DOT_
@@ -323,6 +343,7 @@ namespace cyng
 					return std::make_pair(STATE_FUNCTION_, false);
 
 				default:
+					err_(cyng::logging::severity::LEVEL_ERROR, get_state_name(state_) + ": invalid end of function call");
 					break;
 				}
 				return std::make_pair(pop(), false);
@@ -338,9 +359,11 @@ namespace cyng
 					env_open_.clear();
 					BOOST_ASSERT(!env_on_);
 					env_on_ = true;
+					err_(cyng::logging::severity::LEVEL_TRACE, get_state_name(state_) + ": open environment");
 					return std::make_pair(save(STATE_ENV_OPEN_), true);
 				}
 				else if (boost::algorithm::equals(U"end", tmp_)) {
+					err_(cyng::logging::severity::LEVEL_TRACE, get_state_name(state_) + ": close environment");
 					env_close_.clear();
 					return std::make_pair(save(STATE_ENV_CLOSE_), true);
 				}
@@ -363,7 +386,16 @@ namespace cyng
 				return std::make_pair(STATE_PARAMS_, true);
 			case ' ': case '\t':
 				err_(cyng::logging::severity::LEVEL_ERROR, get_state_name(state_) + ": no SPACE expected");
-				return std::make_pair(STATE_1_ARG_, true);
+				//return std::make_pair(STATE_1_ARG_, true);
+				emit_tmp(SYM_VALUE);
+				emit(symbol(SYM_FUN_CLOSE, ')'));	//	virtual ')'
+				return std::make_pair(pop(STATE_START_), true);
+
+			case '.':
+				//	nested function call as argument for STATE_1_ARG_
+				err_(cyng::logging::severity::LEVEL_WARNING, get_state_name(state_) + ": nested call for single argument function");
+				return std::make_pair(save(STATE_WS_DOT_), true);
+				
 			default:
 				break;
 			}
@@ -374,7 +406,6 @@ namespace cyng
 		{
 			switch (c) {
 			case '\n': case U'¶':	//	0xb6
-				col_ = 0;
 			case ' ': case '\t': 
 				emit_tmp(SYM_VALUE);
 				emit(symbol(SYM_FUN_CLOSE, ')'));	//	virtual ')'
@@ -411,7 +442,6 @@ namespace cyng
 				break;
 
 			case '\n':
-				col_ = 0;
 			case ' ': case '\t':
 				emit_tmp(SYM_VALUE);
 
@@ -507,7 +537,6 @@ namespace cyng
 				break;
 
 			case '\n':
-				col_ = 0;
 			case ' ': case '\t':
 				//
 				//	ignore white spaces in values
@@ -528,7 +557,10 @@ namespace cyng
 			{
 			case '\n':
 				err_(cyng::logging::severity::LEVEL_ERROR, get_state_name(state_) + ": no line breaks allowed");
-				col_ = 0;
+
+				//
+				//	fall through
+				//
 			case '"':
 			case std::numeric_limits<std::uint32_t>::max():	//	eof
 				//
@@ -552,7 +584,6 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				col_ = 0;	//	reset virtual line position
 			case ' ': case '\t':
 			case std::numeric_limits<std::uint32_t>::max():	//	eof
 				emit_tmp(SYM_WORD);
@@ -569,7 +600,6 @@ namespace cyng
 				break;
 
  			case U'¶':	//	0xb6
-				col_ = 0;	//	reset virtual line position
 				emit(symbol(SYM_FUN_PAR, u8"¶"));
 				return std::make_pair(STATE_START_, true);
 
@@ -589,7 +619,6 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				col_ = 0;	//	reset virtual line position
 			case ' ': case '\t':
 			case std::numeric_limits<std::uint32_t>::max():	//	eof
 				return std::make_pair(pop(), true);
@@ -609,7 +638,6 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				col_ = 0;	//	reset virtual line position
 			case ' ': case '\t':
 			case std::numeric_limits<std::uint32_t>::max():	//	eof
 				if (!boost::algorithm::equals(env_open_, env_close_)) {
@@ -622,7 +650,6 @@ namespace cyng
 					err_(cyng::logging::severity::LEVEL_ERROR, get_state_name(state_) + ": environment boundary doesn't match");
 				}
 				BOOST_ASSERT(env_on_);
-				env_on_ = false;
 				return std::make_pair(pop(), false);
 
 			default:
@@ -636,10 +663,6 @@ namespace cyng
 		{
 			switch (c)
 			{
-			case '\n':
-				col_ = 0;	//	reset virtual line position
-				break;
-
 			case '.':
 				if (col_ == 1) {
 					emit_tmp(SYM_WORD);
@@ -660,13 +683,25 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				col_ = 0;
 				emit(symbol(SYM_FUN_PAR, u8"¶"));
+
+				//
+				//	fall through
+				//
 
 			case U'¶':	//	0xb6
 				return std::make_pair(STATE_START_, false);
 
 			case ' ': case '\t':
+				break;
+
+			case ')':
+				err_(cyng::logging::severity::LEVEL_WARNING, get_state_name(state_) + ": function already closed");
+				emit(symbol(SYM_CHAR, c));
+				break;
+
+			case std::numeric_limits<std::uint32_t>::max():	//	eof
+				return std::make_pair(STATE_START_, true);
 				break;
 
 			default:

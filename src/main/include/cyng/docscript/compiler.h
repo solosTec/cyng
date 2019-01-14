@@ -99,6 +99,11 @@ namespace cyng
 			void key(std::string name, bool, std::string key, std::size_t depth);
 
 			/**
+			 * new environment
+			 */
+			void fun_env(std::size_t);
+
+			/**
 			 * @param name function name
 			 * @return argument count
 			 */
@@ -113,7 +118,7 @@ namespace cyng
 			fp lookup(std::string const& name) const;
 
 			void env_raw();
-			void env_dsl(std::string);
+			void env_dsl();
 
 		public:
 			param_map_t meta_;

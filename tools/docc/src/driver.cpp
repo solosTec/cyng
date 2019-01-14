@@ -99,7 +99,8 @@ namespace cyng
 			switch (sym.type_)
 			{
 			case SYM_FUN_NL:		
-			case SYM_FUN_WS:		
+			case SYM_FUN_WS:
+			case SYM_FUN_ENV:
 				//	functions at beginning of line are global
 				//	all other functions are local	
 				parentheses_++;
@@ -367,13 +368,13 @@ namespace cyng
 				//	dump generated program
 				//
 
-				for (auto obj : prg)
-				{
-					std::cout
-						<< cyng::io::to_str(obj)
-						<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
-						;
-				}
+				//for (auto obj : prg)
+				//{
+				//	std::cout
+				//		<< cyng::io::to_str(obj)
+				//		<< ((obj.get_class().tag() == TC_CODE) ? "\n" : " ")
+				//		;
+				//}
 #endif
 				//
 				//	serialize as program not as data (reverse on stack)

@@ -9,7 +9,7 @@
 .header(title: "Basics", level: 1, tag: "79bf3ba0-2362-4ea5-bcb5-ed93844ac59a")
 ; .h1(Basics)
 
-DocScript  is::    intended for programmers to write documentation, blog posts and any other kinds of reports and papers. DocScript is designed in the spirit of .link(text: "LaTeX", 
+DocScript  .b.i is   intended for programmers to write documentation, blog posts and any other kinds of reports and papers. DocScript is designed in the spirit of .link(text: "LaTeX", 
 url: "https://www.latex-project.org/") and .link(text: "troff/nroff", url: "https://en.wikipedia.org/wiki/Troff", title: "text-formatting program from the 1960") an ancient document processing system with roots
 back to the first UNIX systems. The main idea is to write the content .b .color(red: "spiced up") with some semantic hints. The typesetting system transforms this into a proper document. 
 And since the underlying markup language is Turing complete you do not write the text, you .bold program it. If required you can use functions, recursion, loops and all kinds of algorithm. 
@@ -21,7 +21,7 @@ And here is an example: -> <- => <= 1/2 1/3 1/4 3/4 2/3 1/5 2/5 3/5 4/5 1/6 5/6 
 ;.include(examples.docscript)
 
 On the other hand, Νες φαβυλας αππαρεατ μαιεσθατις θε. 毎元大類止紙想激価案務首図乗者分断
-These are 3 numbers: one, two, three. .bold EOL .ref 79bf3ba0-2362-4ea5-bcb5-ed93844ac59a .i .ref b3fc0bdc-5d95-45e9-b66c-f0c541f1592c
+These are 3 numbers: one, two, three. .bold EOL .ref 79bf3ba0-2362-4ea5-bcb5-ed93844ac59a .ref b3fc0bdc-5d95-45e9-b66c-f0c541f1592c
 .bold EOP
 .bold(everything bold here).
 .figure(source: "LogoSmall.jpg", caption: "figure with caption", alt: "Giovanni Bellini, Man wearing a turban")
@@ -51,7 +51,7 @@ Supported list styles are:
 .item("lower-greek	The marker is lower-greek")
 .item("lower-latin	The marker is lower-latin (a, b, c, d, e, etc.)")	
 .item("lower-roman	The marker is lower-roman (i, ii, iii, iv, v, etc.)	")
-.item("none	No marker is shown")
+.item(none	.b No marker is shown)
 .item("square	The marker is a square")
 .item("upper-alpha	The marker is upper-alpha (A, B, C, D, E, etc.)")	
 .item("upper-greek	The marker is upper-greek")
@@ -68,7 +68,7 @@ d .(()
 e .( .)
 
 .h2(Tables)
-.include(snippet.docscript)
+;.include(snippet.docscript)
 
 
 .h2(Source Listings)

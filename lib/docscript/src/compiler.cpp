@@ -123,6 +123,11 @@ namespace cyng
 					fun_par(depth);
 					break;
 
+				case SYM_FUN_ENV:
+					//	new environment
+					fun_env(depth);
+					break;
+
 				default:
 					std::cerr
 						<< "***warning: unknown symbol "
@@ -339,6 +344,7 @@ namespace cyng
 					func(look_ahead_->value_, depth, false);
 					break;
 				case SYM_FUN_PAR:
+				case SYM_FUN_ENV:
 				case SYM_EOF:
 					stop = true;
 					break;
@@ -363,6 +369,13 @@ namespace cyng
 			//	patch paragraph size as first parameter
 			//
 			prg_.at(prg_pos) = make_object<std::size_t>(counter);
+		}
+
+		void compiler::fun_env(std::size_t depth)
+		{
+			auto const p = lookup(look_ahead_->value_);
+			match(SYM_FUN_ENV);
+			key(p->name_, true, look_ahead_->value_, depth);
 		}
 
 		void compiler::key(std::string name, bool nl, std::string key, std::size_t depth)
@@ -495,7 +508,8 @@ namespace cyng
 				//
 				//	skip pilcrow
 				//
-				env_dsl(tr.fp_->name_);
+				if (SYM_FUN_PAR == look_ahead_->type_)	match(SYM_FUN_PAR);
+				env_dsl();
 				break;
 			default:
 				break;
@@ -524,33 +538,34 @@ namespace cyng
 			}
 		}
 
-		void compiler::env_dsl(std::string fname)
+		void compiler::env_dsl()
 		{
-			//
-			//	provide all symbols unprocessed until .end()
-			//
 			while (SYM_EOF != look_ahead_->type_) {
-				if (SYM_FUN_NL == look_ahead_->type_) {
-					auto p = lookup(look_ahead_->value_);
-					match(SYM_FUN_NL);
-					if (p->name_.compare("env.close") == 0) {
-
-						if (SYM_VALUE == look_ahead_->type_) {
-							//
-							//	optional argument
-							//
-							prg_ << make_object(look_ahead_->value_);
-							match(SYM_VALUE);
-						}
-						match(SYM_FUN_CLOSE);
+				if ((SYM_FUN_ENV == look_ahead_->type_)) {
+					auto const p = lookup(look_ahead_->value_);
+					if (p->name_.compare("env.close") != 0) {
+						std::cerr
+							<< "***error: end of environment expected "
+							<< (*look_ahead_)
+							<< " #"
+							<< line_
+							<< std::endl
+							;
 					}
+					match(SYM_FUN_ENV);
+					if (SYM_FUN_CLOSE != look_ahead_->type_) {
+						std::cerr
+							<< "***error: no parameters allowed at end of environment"
+							<< (*look_ahead_)
+							<< " #"
+							<< line_
+							<< std::endl
+							;
+					}
+					match(SYM_FUN_CLOSE);
 					break;
 				}
 				else {
-
-					//
-					//	everything else
-					//
 					prg_ << make_object(look_ahead_->value_);
 					match(look_ahead_->type_);
 				}
@@ -643,8 +658,8 @@ namespace cyng
 			insert(library_, std::make_shared<function>("quote", 1, ENV_RAW), { "q" });
 			insert(library_, std::make_shared<function>("cite", 1, ENV_PROCESSED), { "c" });
 			insert(library_, std::make_shared<function>("list", 1, ENV_PROCESSED), { "l" });
-			insert(library_, std::make_shared<function>("env.open", 1, ENV_DSL), { "+" });
-			insert(library_, std::make_shared<function>("env.close", 1, ENV_DSL), { "-" });
+			insert(library_, std::make_shared<function>("env.open", 1, ENV_DSL), { "+", "start" });
+			insert(library_, std::make_shared<function>("env.close", 1, ENV_DSL), { "-", "end" });
 			insert(library_, std::make_shared<function>("end", 0, NL_), {});
 		}
 
@@ -694,11 +709,10 @@ namespace cyng
 			if (compiler_.verbose_ > 3)
 			{
 				std::cout
-					<< "***info: generate function call "
-					<< fp_->name_
-					<< " with #"
+					<< "***info: generate function ["
 					<< fp_->rvs_
-					<< " return value(s)"
+					<< "] "
+					<< fp_->name_
 					<< std::endl
 					;
 			}

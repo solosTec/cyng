@@ -913,12 +913,12 @@ namespace cyng
 #ifdef _DEBUG
 			//	[0001,1,false,Some of the list types does not work in IE or Opera]
 			//	[0001,1,false,<b>inherit</b>,-,Inherits,this,property,from,its,parent,element.,Read,about,inherit]
-			std::cout
-				<< "\n***info:entry("
-				<< cyng::io::to_str(frame)
-				<< ")"
-				<< std::endl
-				;
+			//std::cout
+			//	<< "\n***info:entry("
+			//	<< cyng::io::to_str(frame)
+			//	<< ")"
+			//	<< std::endl
+			//	;
 #endif
 
 			const auto reader = make_reader(frame);
