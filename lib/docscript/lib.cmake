@@ -6,7 +6,7 @@ set (docscript_lib)
 set (docscript_cpp
 	lib/docscript/src/compiler.cpp  
 	lib/docscript/src/generator.cpp  
-	lib/docscript/src/lexer.cpp  
+	lib/docscript/src/lexer.cpp
 	lib/docscript/src/library.cpp  
 	lib/docscript/src/parser.cpp  
 	lib/docscript/src/parser.hpp  
@@ -44,3 +44,8 @@ set (docscript_lib
   ${docscript_h}
   ${docscript_filter}
 )
+
+if(WIN32)
+	set_source_files_properties(lib/docscript/src/lexer.cpp PROPERTIES COMPILE_FLAGS /utf-8)
+	set_source_files_properties(lib/docscript/src/tokenizer.cpp PROPERTIES COMPILE_FLAGS /utf-8)
+endif()
