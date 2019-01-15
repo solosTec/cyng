@@ -248,20 +248,34 @@ namespace cyng
 
 					auto const pos_title = map.find("title");
 					auto const pos_file_name = map.find("file-name");
+					auto const pos_slug = map.find("slug");
 					auto const pos_entropy = map.find("text-entropy");	// double
 					auto const pos_symbols = map.find("input-symbols");	//	size_t
 
 					if (pos_title != map.end() 
 						&& pos_file_name != map.end()
+						&& pos_slug != map.end()
 						&& pos_entropy != map.end()
 						&& pos_symbols != map.end()) {
+
+						//
+						//	assume that the path has depth of one
+						//
+						auto const blog_path = out.filename().string();
+
+						//	<a href="#" title="4860 characters" onclick="load_page(&quot;test.html&quot;);">docScript Test</a>
 
 						ofs
 							<< "\t<div>"
 							<< std::endl
-							<< "\t\t<a href=\"/plog/"
+							<< "\t\t<a href=\"/"
+							<< blog_path
+							<< "/posts?slug="
+							<< cyng::io::to_str(pos_slug->second)
+							<< "\" onclick=\"load_page('"
 							<< cyng::io::to_str(pos_file_name->second)
-							<< "\" title=\""
+							//	don't follow href
+							<< "'); return false;\" title=\""
 							<< cyng::io::to_str(pos_symbols->second)
 							<< ' '
 							<< "input symbols with an entropy of "
@@ -368,10 +382,16 @@ namespace cyng
 				//	ToDo: generate robots.txt
 				//
 
+				//
+				//	assume that the path has depth of one
+				//
+				auto const blog_path = out.filename().string();
+
 				ofs
 					<< "User-agent: *"
 					<< std::endl
-					<< "Allow: /plog"
+					<< "Allow: /"
+					<< blog_path
 					<< std::endl
 					;
 
