@@ -198,7 +198,7 @@ namespace cyng
 				//	Pilcrow Sign - &para; - UTF-8: 0xC2 0xB6, UTF-32: 0x000000B6
 				//	0x00B6 
 				//
-				emit_(make_token(U'¶', 1));
+				emit_(make_token(U'Â¶', 1));
 
 			}
 			else {
