@@ -44,7 +44,7 @@ namespace cyng
 			//
 			switch (c) {
 			case '\n':
-			case U'¶':	//	0xb6
+			case U'Â¶':	//	0xb6
 				//	reset virtual line position
 				col_ = 0;
 			default:
@@ -198,8 +198,8 @@ namespace cyng
 				emit(symbol(SYM_CHAR, c));
 				return std::make_pair(state_, true);
 
-			case U'¶':	//	0xb6
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+			case U'Â¶':	//	0xb6
+				emit(symbol(SYM_FUN_PAR, u8"Â¶"));
 				return std::make_pair(state_, true);
 
 			case std::numeric_limits<std::uint32_t>::max():	//	eof
@@ -217,8 +217,8 @@ namespace cyng
 		std::pair<lexer::state, bool> lexer::state_error(std::uint32_t c)
 		{
 			switch (c) {
-			case U'¶':	//	0xb6
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+			case U'Â¶':	//	0xb6
+				emit(symbol(SYM_FUN_PAR, u8"Â¶"));
 				return std::make_pair(pop(STATE_START_), true);
 			default:
 				break;
@@ -405,7 +405,7 @@ namespace cyng
 		std::pair<lexer::state, bool> lexer::state_1_arg(std::uint32_t c)
 		{
 			switch (c) {
-			case '\n': case U'¶':	//	0xb6
+			case '\n': case U'Â¶':	//	0xb6
 			case ' ': case '\t': 
 				emit_tmp(SYM_VALUE);
 				emit(symbol(SYM_FUN_CLOSE, ')'));	//	virtual ')'
@@ -599,8 +599,8 @@ namespace cyng
 				emit(symbol(SYM_CHAR, c));
 				break;
 
- 			case U'¶':	//	0xb6
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+ 			case U'Â¶':	//	0xb6
+				emit(symbol(SYM_FUN_PAR, u8"Â¶"));
 				return std::make_pair(STATE_START_, true);
 
 			default:
@@ -683,13 +683,13 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+				emit(symbol(SYM_FUN_PAR, u8"Â¶"));
 
 				//
 				//	fall through
 				//
 
-			case U'¶':	//	0xb6
+			case U'Â¶':	//	0xb6
 				return std::make_pair(STATE_START_, false);
 
 			case ' ': case '\t':
