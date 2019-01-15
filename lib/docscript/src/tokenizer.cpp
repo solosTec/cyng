@@ -181,6 +181,17 @@ namespace cyng
 			case ';':
 				if (counter_ == 1)	return STATE_EMOJI_WINK_;
 				break;
+			case '+':
+				if (counter_ == 2)	{
+					//
+					//	DOUBLE PLUS - 0x000029FA (29fa)
+					//	UTF-8 (hex)	0xE2 0xA7 0xBA (e2a7ba)
+					//	HTML-Code &#10746;
+					//
+					emit(0x29fa, 1);
+					return STATE_INITIAL_;
+				}
+				break;
 
 			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
 				BOOST_ASSERT_MSG(tmp_.empty(), "buffer not empty");
