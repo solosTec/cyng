@@ -1,5 +1,5 @@
 ﻿.meta(author:"Sylko Olzscher", released: .now(), language: "en")
-.title(Introduction into docScript)
+.title(docScript Test)
 
 .h1(First Header)
 ;.h1(.now())

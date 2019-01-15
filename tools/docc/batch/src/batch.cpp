@@ -307,11 +307,12 @@ namespace cyng
 				//
 				//	data vector of all available posts
 				//
-				vector_t data;
+				tuple_t data;
 
 				//
 				//	reverse iterate over all meta data
 				//
+				std::size_t index{ 0 };
 				for (auto const& meta : boost::adaptors::reverse(meta_map)) {
 
 					auto const map = to_param_map(meta.second);
@@ -320,15 +321,20 @@ namespace cyng
 					auto const pos_title = map.find("title");
 					auto const pos_file_name = map.find("file-name");
 					auto const pos_slug = map.find("slug");
-					//auto const pos_entropy = map.find("text-entropy");	// double
-					//auto const pos_symbols = map.find("input-symbols");	//	size_t
+					auto const pos_symbols = map.find("input-symbols");	//	size_t
 
 					if (pos_title != map.end()
 						&& pos_file_name != map.end()
+						&& pos_symbols != map.end()
 						&& pos_slug != map.end()) {
 
-
-						data.push_back(set_factory(cyng::io::to_str(pos_slug->second), cyng::io::to_str(pos_file_name->second)));
+						auto map = param_map_factory("title", pos_title->second)
+							("file-name", pos_file_name->second)
+							("index", index)
+							("size", pos_symbols->second)
+							();
+						data.push_back(set_factory(cyng::io::to_str(pos_slug->second), map));
+						++index;
 					}
 				}
 
