@@ -60,7 +60,7 @@ namespace cyng
 	std::vector<std::string> split(std::string str, std::string delims)
 	{
 		std::vector<std::string> result;
-		boost::algorithm::split(result, str, boost::algorithm::is_any_of(delims), boost::algorithm::token_compress_off);
+		boost::algorithm::split(result, str, boost::algorithm::is_any_of(delims), boost::algorithm::token_compress_on);
 		return result;
 	}
 }

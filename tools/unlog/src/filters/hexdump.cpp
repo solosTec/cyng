@@ -45,26 +45,28 @@ namespace cyng
 				++line_counter;
 				if (line_counter > min && line_counter < max) {
 					if ((line.size() > 12)
-						&& (line.at(7) == ' ')
-						//&& (line.at(12) == ' ')
-						//&& (line.at(17) == ' ')
-						//&& (line.at(22) == ' ')
-						//&& (line.at(27) == ' ')
-						//&& (line.at(32) == ' ')
-						//&& (line.at(37) == ' ')
-						//&& (line.at(42) == ' ')
-						) {
+						&& (line.at(0) == '[')
+						&& (line.at(7) == ' ')) {
+
 						if (verbose_ > 5) {
-							std::cout << "process line #" << line_counter << '\t' << line.substr(8) << std::endl;
+							std::cout << "process line #" << line_counter << '\t' << '[' << line.substr(8) << ']' << std::endl;
 						}
 
-						const auto values = split(line.substr(8), " ");
+						const auto values = split(line.substr(8), " \t");
 						for (auto const& v : values) {
-							auto n = std::stoul(v, 0, 16);
-							io::write_binary<std::uint16_t>(fout, n);
-
+							if (!v.empty()) {
+								try {
+									if (verbose_ > 8) {
+										std::cout << "process line #" << line_counter << '\t' << '[' << v << ']' << std::endl;
+									}
+									auto n = std::stoul(v, 0, 16);
+									io::write_binary<std::uint8_t>(fout, n);
+								}
+								catch (std::invalid_argument const& ex) {
+									std::cerr << "error in line #" << line_counter << '\t' << '[' << v << ']' << ' ' << ex.what() << std::endl;
+								}
+							}
 						}
-
 					}
 					else {
 						if (verbose_ > 4) {
