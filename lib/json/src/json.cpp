@@ -21,7 +21,7 @@ namespace cyng
 	{
 		object read(std::string const& inp)
 		{
-			std::pair<object, bool> r = parse_json(inp);
+			auto const r = parse_json(inp);
 			return (r.second)
 			? r.first
 			: make_object()
@@ -30,7 +30,7 @@ namespace cyng
 		
 		object read(buffer_t const& inp)
 		{
-			std::pair<object, bool> r = parse_json(inp);
+			auto const r = parse_json(inp);
 			return (r.second)
 			? r.first
 			: make_object()
@@ -48,7 +48,8 @@ namespace cyng
 				//	The double parenthesis are required to stop compiler see the string inp
 				//	as a function.
 				//
-				const std::string inp((std::istream_iterator<char>(fs)), (std::istream_iterator<char>()));
+				//std::string const inp((std::istream_iterator<char>(fs)), (std::istream_iterator<char>()));
+				std::string const inp{ std::istream_iterator<char>(fs), std::istream_iterator<char>() };
 				return read(inp);
 			}
 			return make_object();

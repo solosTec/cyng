@@ -8,6 +8,7 @@ set (io_cpp
   	lib/io/src/binary.cpp
  	lib/io/src/typed.cpp
  	lib/io/src/json.cpp
+ 	lib/io/src/csv.cpp
  	lib/io/src/io_chrono.cpp
  	lib/io/src/io_buffer.cpp
  	lib/io/src/serialize.cpp
@@ -28,6 +29,7 @@ set (io_h
     src/main/include/cyng/io/serializer/binary.hpp
     src/main/include/cyng/io/serializer/typed.hpp
     src/main/include/cyng/io/serializer/json.hpp
+    src/main/include/cyng/io/serializer/csv.hpp
     src/main/include/cyng/io/serializer/serialize.hpp
     src/main/include/cyng/io/serializer.h
     src/main/include/cyng/io/parser/parser.h

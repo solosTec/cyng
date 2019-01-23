@@ -282,3 +282,14 @@ BOOST_AUTO_TEST_CASE(sys_001)
 	BOOST_CHECK(test_sys_001());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	SYS
+
+
+#include "test-csv-001.h"
+
+BOOST_AUTO_TEST_SUITE(CSV)
+BOOST_AUTO_TEST_CASE(csv_001)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_csv_001());
+}
+BOOST_AUTO_TEST_SUITE_END()	//	CSV

@@ -65,7 +65,7 @@ namespace boost
 	
 namespace cyng	
 {
-	namespace	
+	namespace
 	{
 
 		//	Transform an Attribute to a Different Type 
@@ -80,30 +80,30 @@ namespace cyng
 			{
 				const utf::u32_string utf8_key = boost::fusion::front(arg);
 				std::string key = utf::u32_to_u8_string(utf8_key);
-				
+
 				const object value = boost::fusion::back(arg);
 				return make_object(param_t(key, value));
 			}
 		};
+
+		/**
+		 * helper function to create an object of type UUID from a buffer
+		 * of size 16.
+		 */
+		object uuid_from_buffer_factory(buffer_t const& b)
+		{
+			BOOST_ASSERT_MSG(b.size() == 16, "wrong buffer size");
+			if (b.size() == 16)
+			{
+				boost::uuids::uuid v;
+				//	C4996
+				std::copy(b.begin(), b.end(), std::begin(v.data));
+				return make_object(v);
+			}
+			return make_object();
+		}
 	}	//	namespace *anonymous*
 
-	/**
-	 * helper function to create an object of type UUID from a buffer 
-	 * of size 16.
-	 */
-	object uuid_from_buffer_factory(buffer_t const& b)
-	{
-		BOOST_ASSERT_MSG(b.size() == 16, "wrong buffer size");
-		if (b.size() == 16)	
-		{
-			boost::uuids::uuid v;
-			//	C4996
-			std::copy(b.begin(), b.end(), std::begin(v.data));
-			return make_object(v);
-		}
-		return make_object();
-	}
-	
 	template <typename Iterator, typename Skipper>
 	json_parser< Iterator, Skipper > :: json_parser()
 		: json_parser::base_type( r_json )

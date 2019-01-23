@@ -682,6 +682,19 @@ target_link_libraries(cyng_json
 	cyng_io
 	cyng_parser)
 
+#
+#	cyng CSV library
+#
+include (lib/csv/lib.cmake)
+add_library(cyng_csv ${GLOBAL_LIBRARY_TYPE} ${csv_lib})
+target_link_libraries(cyng_csv
+	cyng_core
+	cyng_io
+	cyng_parser)
+
+#
+#	cyng SML library
+#
 include (lib/xml/lib.cmake)
 add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
 
@@ -779,7 +792,7 @@ if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
         TARGET unit_test
         PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-    set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml ${PUGIXML_LIBRARY})
+    set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml cyng_csv ${PUGIXML_LIBRARY})
 
     if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
         list(APPEND unittest_link_libs ${Boost_LIBRARIES})

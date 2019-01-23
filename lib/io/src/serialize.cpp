@@ -35,6 +35,10 @@ namespace cyng
 			serializer_helper<SERIALIZE_JSON>::write(os, obj);
 		}
 
+		void serialize_csv(std::ostream& os, object const& obj)
+		{
+			serializer_helper<SERIALIZE_CSV>::write(os, obj);
+		}
 		
 		std::string to_str(object const& obj)
 		{

@@ -12,6 +12,7 @@
 #include <cyng/io/serializer/typed.hpp>
 #include <cyng/io/serializer/binary.hpp>
 #include <cyng/io/serializer/json.hpp>
+#include <cyng/io/serializer/csv.hpp>
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/object_cast.hpp>
 #include <cyng/meta/meta.hpp>

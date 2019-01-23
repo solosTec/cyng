@@ -71,6 +71,12 @@ namespace cyng
 			 */
 			tuple_t convert(param_map_t const& pm) const;
 
+			/**
+			 * Convert the record into a tuple ignoring
+			 * all meta data.
+			 */
+			tuple_t convert_data() const;
+
 		private:
 			object get(std::size_t idx) const;
 			

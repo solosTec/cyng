@@ -108,7 +108,8 @@ namespace cyng
 		{
 			std::cout << file_name << std::endl;
 			std::fstream f(file_name, std::ios::binary | std::ios::trunc | std::ios::out);
-			BOOST_ASSERT_MSG(f.is_open(), "bad state");
+			//BOOST_ASSERT_MSG(f.is_open(), "bad state");
+			BOOST_CHECK(f.is_open());
 
 			io::serialize_binary(f, make_object());	//	test NULL value
 

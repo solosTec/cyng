@@ -268,9 +268,7 @@ namespace cyng
 		
 		std::ostream& serializer <bool, SERIALIZE_JSON>::write(std::ostream& os, bool v)
 		{
-			if (v)	os << "true";
-			else os << "false";
-			return os;		
+			return os << ((v) ? "true" : "false");
 		}
 		
 		std::ostream& serializer <code, SERIALIZE_JSON>::write(std::ostream& os, code c)

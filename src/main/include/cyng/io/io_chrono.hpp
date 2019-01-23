@@ -35,6 +35,11 @@ namespace cyng
 	std::string to_str(std::chrono::system_clock::time_point const&);
 
 	/**
+	 * ISO format: yyyy-mm-ddThh:mm:ssZ 
+	 */
+	std::string to_str_iso(std::chrono::system_clock::time_point const&);
+
+	/**
 	 * yyyy-mm-dd only date without time information
 	 */
 	std::ostream& date_to_str(std::ostream& os, std::chrono::system_clock::time_point, char sep);

@@ -65,6 +65,11 @@ namespace cyng
 		void serialize_json(std::ostream& os, object const& obj);
 
 		/**
+		 * serialization tag: SERIALIZE_CSV
+		 */
+		void serialize_csv(std::ostream& os, object const& obj);
+
+		/**
 		 * serialize an object with tag SERIALIZE_PLAIN
 		 */
 		std::string to_str(object const&);

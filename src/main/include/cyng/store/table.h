@@ -161,6 +161,15 @@ namespace cyng
 			 */
 			cyng::table::record max_record() const;
 
+			/**
+			 * Convert the table into a vector. Usefull for
+			 * serialization to CSV.
+			 *
+			 * @param col_names if true the first data tuple contains the 
+			 * column names
+			 */
+			vector_t convert(bool col_names) const;
+
 		private:
 			/**
 			 * This method is potential unsafe, since record data are unlocked

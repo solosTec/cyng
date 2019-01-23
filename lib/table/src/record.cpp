@@ -114,11 +114,13 @@ namespace cyng
 				}
 			});
 
+			//
+			//	generation_ is part of the data body
+			//
 			data["gen"] = make_object(generation_);
 
 			return cyng::tuple_factory(cyng::param_factory("key", key)
 				, cyng::param_factory("data", data));
-				//, cyng::param_factory("gen", generation_));
 		}
 
 		tuple_t record::convert(param_map_t const& pm) const
@@ -143,6 +145,17 @@ namespace cyng
 			return cyng::tuple_factory(cyng::param_factory("key", key)
 				, cyng::param_factory("data", data)
 				, cyng::param_factory("gen", generation_));
+		}
+
+		tuple_t record::convert_data() const
+		{
+			tuple_t tpl;
+
+			meta_->loop([&](column&& col) {
+				tpl.push_back(get(col.pos_));
+			});
+
+			return tpl;
 		}
 
 	}	//	table	

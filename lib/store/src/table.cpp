@@ -288,6 +288,42 @@ namespace cyng
 			return cyng::table::record(meta_);
 		}
 
+		vector_t table::convert(bool col_names) const
+		{
+			vector_t vec;
+
+			if (col_names) {
+				vec.reserve(size() + 1);
+
+				//
+				//	generate header entry
+				//
+				tuple_t header;
+				meta_->loop([&](cyng::table::column&& col) {
+					header.push_back(make_object(col.name_));
+				});
+
+				//
+				//	insert header record
+				//
+				vec.push_back(make_object(header));
+			}
+			else {
+				vec.reserve(size());
+			}
+
+			//
+			//	append all records
+			//
+			loop([&](cyng::table::record const& rec)->bool {
+
+				vec.push_back(make_object(rec.convert_data()));
+				return true;	//	continue
+			});
+
+			return vec;
+		}
+
 	}	//	store
 	
 	std::size_t erase(store::table* tbl, table::key_list_t const& keys, boost::uuids::uuid source)
