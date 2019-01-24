@@ -87,6 +87,12 @@ namespace cyng
  		};
 
 		template <>
+		struct serializer <std::int8_t, SERIALIZE_PLAIN>
+		{
+			static std::ostream& write(std::ostream& os, std::int8_t v);
+		};
+
+		template <>
 		struct serializer <std::uint8_t, SERIALIZE_PLAIN>
 		{
 			static std::ostream& write(std::ostream& os, std::uint8_t v);

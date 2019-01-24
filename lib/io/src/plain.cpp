@@ -202,6 +202,19 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& serializer <std::int8_t, SERIALIZE_PLAIN>::write(std::ostream& os, std::int8_t v)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+
+			os
+				<< std::dec
+				<< std::setfill('0')
+				<< +v
+				;
+			return os;
+		}
+
 		std::ostream& serializer <std::uint8_t, SERIALIZE_PLAIN>::write(std::ostream& os, std::uint8_t v)
 		{
 			//	store and reset stream state

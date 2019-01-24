@@ -343,16 +343,10 @@ namespace cyng
 		std::ostream& serializer <std::int8_t, SERIALIZE_JSON>::write(std::ostream& os, std::int8_t v)
 		{
 			boost::io::ios_flags_saver  ifs(os);
-			if ((v >= 0x20) && (v <= 0x7e)) {
 				os
-					<< '"'
-					<< v
-					<< '"'
+					<< std::dec
+					<< +v
 					;
-			}
-			else {
-				serializer<std::string, SERIALIZE_JSON>::write(os, std::string(1, v));
-			}
 			return os;
 		}
 
