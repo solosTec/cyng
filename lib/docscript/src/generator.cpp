@@ -14,6 +14,7 @@
 #include <cyng/dom/reader.h>
 #include <cyng/docscript/filter/verbatim.h>
 #include <cyng/docscript/filter/cpp.h>
+#include <cyng/docscript/filter/json.h>
 #include <cyng/json.h>
 
 #include <iostream>
@@ -596,7 +597,7 @@ namespace cyng
 
 						std::stringstream ss;
 						ss
-							<< std::endl
+							//<< std::endl
 							<< "<figure id=\""
 							<< tag
 							<< "\">"
@@ -679,7 +680,7 @@ namespace cyng
 
 				std::stringstream ss;
 				ss
-					<< std::endl
+					//<< std::endl
 					<< "<blockquote cite=\""
 					<< url
 					<< "\">"
@@ -728,7 +729,7 @@ namespace cyng
 
 				std::stringstream ss;
 				ss
-					<< std::endl
+					//<< std::endl
 					<< "<blockquote cite=\""
 					<< url
 					<< "\">"
@@ -870,7 +871,7 @@ namespace cyng
 			//	open list
 			//
 			ss
-				<< std::endl
+				//<< std::endl
 				<< '<'
 				<< tag
 				<< ' '
@@ -885,10 +886,12 @@ namespace cyng
 			for (std::size_t idx = 4; idx < frame.size(); ++idx)
 			{
 				const auto item = value_cast<std::string>(reader.get(idx), "");
-				ss 
-					<< std::endl
-					<< item
-					;
+				if (!item.empty()) {
+					ss
+						<< std::endl
+						<< item
+						;
+				}
 			}
 
 			//
@@ -980,6 +983,12 @@ namespace cyng
 				for (auto pos = boost::u8_to_u32_iterator<std::string::const_iterator>(start); pos != boost::u8_to_u32_iterator<std::string::const_iterator>(stop); ++pos) {
 					filter.put(*pos);
 				}
+				ctx.push(cyng::make_object("<pre>" + filter.get_result() + "\n</pre>"));	//	return value is item text
+			}
+			else if (boost::algorithm::equals(filter, "JSON")) {
+
+				cyng::filter::json filter(line_numbers, tag, input.size());
+				filter.put(input);
 				ctx.push(cyng::make_object("<pre>" + filter.get_result() + "\n</pre>"));	//	return value is item text
 			}
 			else {
@@ -1186,7 +1195,8 @@ namespace cyng
 			//	generate body
 			//
 			std::for_each(begin, end, [this, &os](cyng::object const& obj) {
-				os << cyng::io::to_str(obj) << std::endl;
+				auto const str = cyng::io::to_str(obj);
+				if (!str.empty())	os << cyng::io::to_str(obj) << std::endl;
 				//os << this->backpatch(cyng::to_string(obj));
 			});
 

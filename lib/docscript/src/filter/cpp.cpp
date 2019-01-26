@@ -106,6 +106,7 @@ namespace cyng
 			//	small optimization
 			//
 			result_.reserve(reserve * 2);
+			nl();
 		}
 
 		void cpp::put(std::uint32_t c)

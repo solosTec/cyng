@@ -9,7 +9,7 @@
 .header(title: "Basics", level: 1, tag: "79bf3ba0-2362-4ea5-bcb5-ed93844ac59a")
 ; .h1(Basics)
 
-DocScript  .b.i is   intended for programmers to write documentation, blog posts and any other kinds of reports and papers. DocScript is designed in the spirit of .link(text: "LaTeX", 
+DocScript  .b.i is   intended for C++ programmers to write documentation, blog posts and any other kinds of reports and papers. DocScript is designed in the spirit of .link(text: "LaTeX", 
 url: "https://www.latex-project.org/") and .link(text: "troff/nroff", url: "https://en.wikipedia.org/wiki/Troff", title: "text-formatting program from the 1960") an ancient document processing system with roots
 back to the first UNIX systems. The main idea is to write the content .b .color(red: "spiced up") with some semantic hints. The typesetting system transforms this into a proper document. 
 And since the underlying markup language is Turing complete you do not write the text, you .bold program it. If required you can use functions, recursion, loops and all kinds of algorithm. 
@@ -73,12 +73,18 @@ e .( .)
 
 .h2(Source Listings)
 
+;
+; verbatim
+;
 .start-(filter: "verbatim", style: "verbatim")
 function myfunction(txt) { 
     document.getElementById("Νες").innerHTML = txt;
 } 
 .end-()
 
+;
+; C++ format
+;
 .start-9b2ba500-cacc-49d3-bb72-e325330e8b10(filter: "C++", style: "K&R", linenumbers: true)
 # include <cerrno>
 # include "def.h"
@@ -95,6 +101,34 @@ class symbol_reader {
 		const symbol back_;	
 };
 .end-9b2ba500-cacc-49d3-bb72-e325330e8b10()
+
+;
+; JSON format
+;
+.start-(filter: "JSON", linenumbers: true)
+{
+    "glossary": {
+        "title": "example glossary",
+		"GlossDiv": {
+            "title": "S",
+			"GlossList": {
+                "GlossEntry": {
+                    "ID": "SGML",
+					"SortAs": "SGML",
+					"GlossTerm": "Standard Generalized Markup Language",
+					"Acronym": "SGML",
+					"Abbrev": "ISO 8879:1986",
+					"GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+						"GlossSeeAlso": ["GML", "XML"]
+                    },
+					"GlossSee": "markup"
+                }
+            }
+        }
+    }
+}
+.end-()
 
 .h2(Final Considerations)
 .quote(source:"Earl Wilson", url: "https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html")

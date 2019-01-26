@@ -32,8 +32,10 @@ set (docscript_h
 set (docscript_filter
 	lib/docscript/src/filter/verbatim.cpp
 	lib/docscript/src/filter/cpp.cpp
+	lib/docscript/src/filter/json.cpp
 	src/main/include/cyng/docscript/filter/verbatim.h
 	src/main/include/cyng/docscript/filter/cpp.h
+	src/main/include/cyng/docscript/filter/json.h
 )
 
 source_group("filter" FILES ${docscript_filter})
