@@ -24,8 +24,8 @@ namespace cyng
 		public:
 			json_walker(std::ostream&, bool linenumbers, boost::uuids::uuid tag);
 
-			virtual bool enter_node(std::size_t depth, object const&, std::size_t idx, std::size_t total) override;
-			virtual void leave_node(std::size_t depth, object const&, std::size_t idx, std::size_t total) override;
+			virtual bool enter_node(std::size_t depth, object const&, std::size_t idx, std::size_t total, object parent) override;
+			virtual void leave_node(std::size_t depth, object const&, std::size_t idx, std::size_t total, object parent) override;
 
 		private:
 			std::string indentation(std::size_t);

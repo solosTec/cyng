@@ -63,19 +63,22 @@ namespace cyng
 			}
 		}
 
-		bool json_walker::enter_node(std::size_t depth, object const& obj, std::size_t idx, std::size_t total)
+		bool json_walker::enter_node(std::size_t depth, object const& obj, std::size_t idx, std::size_t total, object parent)
 		{
 
 			//std::cout << "enter " << depth << " - " << idx << '/' << total << " - " << obj.get_class().type_name() << " - " << cyng::json::to_string(obj) << std::endl;
 
 			switch (obj.get_class().tag()) {
 			case TC_TUPLE:
-				//if (idx == total && total > 1) {
-				//	os_
-				//		<< nl()
-				//		<< indentation(depth)
-				//		;
-				//}
+				//
+				//	If the parent element was a also a container insert a NL.
+				//	
+				if (parent.get_class().tag() == TC_TUPLE || parent.get_class().tag() == TC_VECTOR) {
+					os_
+						<< nl()
+						<< indentation(depth)
+						;
+				}
 				os_ << '{';
 				break;
 			case TC_VECTOR:
@@ -114,7 +117,7 @@ namespace cyng
 			return true;	//	continue
 		}
 
-		void json_walker::leave_node(std::size_t depth, object const& obj, std::size_t idx, std::size_t total)
+		void json_walker::leave_node(std::size_t depth, object const& obj, std::size_t idx, std::size_t total, object previous)
 		{
 			//std::cout << "leave " << depth << " - " << idx << '/' << total << " - "  << obj.get_class().type_name() << " - " << cyng::json::to_string(obj) << std::endl;
 
@@ -134,6 +137,15 @@ namespace cyng
 				//}
 				break;
 			case TC_VECTOR:
+				//
+				//	If the previous element was a also a container insert a NL.
+				//	
+				if (previous.get_class().tag() == TC_TUPLE || previous.get_class().tag() == TC_VECTOR) {
+					os_
+						<< nl()
+						<< indentation(depth)
+						;
+				}
 				os_	<< ']';
 				if (idx != 1)	os_ << ',';
 				break;

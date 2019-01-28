@@ -130,6 +130,20 @@ class symbol_reader {
 }
 .end-()
 
+.start-(filter: "JSON", linenumbers: true)
+{"menu": {
+  "id": "file",
+  "value": "File",
+  "popup": {
+    "menuitem": [
+      {"value": "New", "onclick": "CreateNewDoc()"},
+      {"value": "Open", "onclick": "OpenDoc()"},
+      {"value": "Close", "onclick": "CloseDoc()"}
+    ]
+  }
+}}
+.end-()
+
 .h2(Final Considerations)
 .quote(source:"Earl Wilson", url: "https://www.brainyquote.com/quotes/quotes/e/earlwilson385998.html")
 Science may never come up with a better office communication system, than the coffee break.
