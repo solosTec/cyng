@@ -104,19 +104,22 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2)
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2
-tar xjvf boost_1_68_0.tar.bz2
-cd boost_1_68_0
+wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_69_0.tar.bz2
+tar xjvf boost_1_69_0.tar.bz2
+cd boost_1_69_0
 ```
 
 (2) bootstrap
 
 ```
-./bootstrap.sh --with-libraries=filesystem,program_options,system,thread,timer,random,test
+./bootstrap.sh --with-libraries=filesystem,program_options,system,thread,timer,random,test,regex
 ```
+
+Specify a none-standard installation path with --prefix=...
+
 
 (3) edit project-config.jam
 
