@@ -19,7 +19,10 @@
 
 #include <iostream>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/nil_generator.hpp>
 
 namespace cyng	
 {
@@ -36,11 +39,16 @@ namespace cyng
 			, vm_(scheduler_.get_io_service(), uuid_gen_(), std::cout, std::cerr)
 			, meta_()
 			, numeration_()
+			, figures_()
+			, listings_()
 			, structure_()
 			, language_("en")
 			, paragraph_counter_(0)
 		{
 			register_this();
+			figures_.push_back(0);
+			listings_.push_back(0);
+			dummy_.push_back(0);
 		}
 
 		generator::~generator()
@@ -52,15 +60,8 @@ namespace cyng
 		{
             vm_.register_function("now", 1, [this](context& ctx) {
 
-				const cyng::vector_t frame = ctx.get_frame();
-#ifdef _DEBUG
-				//std::cout
-				//	<< "\n***info: now("
-				//	<< cyng::io::to_str(frame)
-				//	<< ")"
-				//	<< std::endl
-				//	;
-#endif
+				//const cyng::vector_t frame = ctx.get_frame();
+
 				//
 				//	produce result value
 				//
@@ -120,6 +121,7 @@ namespace cyng
 			vm_.register_function("emphasise", 3, std::bind(&generator::fun_emphasise, this, std::placeholders::_1));
 			vm_.register_function("color", 4, std::bind(&generator::fun_color, this, std::placeholders::_1));
 			vm_.register_function("link", 4, std::bind(&generator::fun_link, this, std::placeholders::_1));
+			vm_.register_function("reference", 4, std::bind(&generator::fun_reference, this, std::placeholders::_1));
 			vm_.register_function("figure", 4, std::bind(&generator::fun_figure, this, std::placeholders::_1));
 			vm_.register_function("quote", 4, std::bind(&generator::fun_quote, this, std::placeholders::_1));
 			vm_.register_function("cite", 4, std::bind(&generator::fun_cite, this, std::placeholders::_1));
@@ -135,23 +137,41 @@ namespace cyng
 
 		void generator::fun_contents(context& ctx)
 		{
-			//	[1idx,true,%(("depth":"4"))]
+			//	[0001,0,true,%(("depth":4))]
 			const cyng::vector_t frame = ctx.get_frame();
+
 #ifdef _DEBUG
 
-			//std::cout
-			//	<< "\n***info: contents("
-			//	<< cyng::io::to_str(frame)
-			//	<< ")"
-			//	<< std::endl;
+			std::cout
+				<< "\n***info: contents("
+				<< cyng::io::to_str(frame)
+				<< ")"
+				<< std::endl;
 
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
+			auto const title = value_cast<std::string>(reader[3].get("title"), "TABLE OF CONTENTS");
+			auto const tag = uuid_gen_();
+
+			dummy_.at(0)++;
+			auto pos = structure_.emplace(std::piecewise_construct,
+				std::forward_as_tuple(tag),
+				std::forward_as_tuple(element::CONTENTS, title, dummy_));
 
 			//
-			//	ToDo: use structure_ to generate a content list
+			//	set a placeholder
 			//
+			std::stringstream ss;
+			ss
+				<< "{"
+				<< tag
+				<< "}"
+				;
+			auto const node = ss.str();
+
+			ctx.push(cyng::make_object(node));
+
 		}
 
 		void generator::fun_header(context& ctx)
@@ -159,13 +179,12 @@ namespace cyng
 			//	[0001,1,true,%(("level":1),("tag":79bf3ba0-2362-4ea5-bcb5-ed93844ac59a),("title":Second Header))]
 			const cyng::vector_t frame = ctx.get_frame();
 #ifdef _DEBUG
-
 			//std::cout
-			//	<< "\n***info: header("
+			//	<< "\n***info: "
+			//	<< ctx.get_name()
+			//	<< " "
 			//	<< cyng::io::to_str(frame)
-			//	<< ")"
 			//	<< std::endl;
-
 #endif
 			auto const reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
@@ -446,9 +465,10 @@ namespace cyng
 #ifdef _DEBUG
 			//	[0002,0,true,%(("red":amet))]
 			//std::cout
-			//	<< "\n***info: color("
+			//	<< "\n***info: "
+			//	<< ctx.get_name()
+			//	<< " "
 			//	<< cyng::io::to_str(frame)
-			//	<< ")"
 			//	<< std::endl;
 #endif
 
@@ -471,7 +491,9 @@ namespace cyng
 				if (verbosity_ > 3)
 				{
 					std::cout
-						<< "***info: color("
+						<< "***info: "
+						<< ctx.get_name()
+						<< "("
 						<< node
 						<< ")"
 						<< std::endl;
@@ -482,7 +504,9 @@ namespace cyng
 			else {
 
 				std::cerr
-					<< "***error: function color() only accepts named parameters"
+					<< "***error: function "
+					<< ctx.get_name()
+					<< "() accepts only named parameters"
 					<< std::endl;
 
 				ctx.push(cyng::make_object("function color() only accepts named parameters"));
@@ -496,9 +520,10 @@ namespace cyng
 #ifdef _DEBUG
 			//	[0000,0,true,%(("text":LaTeX),("url":https://www.latex-project.org/))]
 			//std::cout
-			//	<< "\n***info: link("
+			//	<< "\n***info: "
+			//	<< ctx.get_name()
+			//	<< " "
 			//	<< cyng::io::to_str(frame)
-			//	<< ")"
 			//	<< std::endl;
 #endif
 			auto const reader = make_reader(frame);
@@ -528,6 +553,68 @@ namespace cyng
 			}
 		}
 
+		void generator::fun_reference(context& ctx)
+		{
+			const cyng::vector_t frame = ctx.get_frame();
+
+#ifdef _DEBUG
+			//	[0002,0,false,79bf3ba0-2362-4ea5-bcb5-ed93844ac59a]
+			//std::cout
+			//	<< "\n***info: "
+			//	<< ctx.get_name()
+			//	<< " "
+			//	<< cyng::io::to_str(frame)
+			//	<< std::endl;
+#endif
+			auto const reader = make_reader(frame);
+			auto const stag = value_cast<std::string>(reader.get(3), "");
+			if (stag.empty()) {
+
+				std::cerr
+					<< "***error: function "
+					<< ctx.get_name()
+					<< "() has no valid tag"
+					<< std::endl;
+			}
+			else {
+				auto const tag = name_gen_(stag);
+				auto const pos = structure_.find(tag);
+				if (pos != structure_.end()) {
+
+					std::stringstream ss;
+					ss
+						<< "<a href=\"#"
+						<< tag
+						<< "\">"
+						<< pos->second.to_str()
+						<< "</a>"
+						;
+					auto const node = ss.str();
+					ctx.push(cyng::make_object(node));
+				}
+				else {
+					if (verbosity_ > 2)
+					{
+						std::cout
+							<< "***info: "
+							<< ctx.get_name()
+							<< "() - set backpatching tag "
+							<< tag
+							<< std::endl;
+					}
+					std::stringstream ss;
+					ss
+						<< "{"
+						<< tag
+						<< "}"
+						;
+					auto const node = ss.str();
+					ctx.push(cyng::make_object(node));
+				}
+			}
+
+		}
+
 		void generator::fun_figure(context& ctx)
 		{
 			const cyng::vector_t frame = ctx.get_frame();
@@ -535,9 +622,10 @@ namespace cyng
 #ifdef _DEBUG
 			//	[0001,1,true,%(("alt":Giovanni Bellini, Man wearing a turban),("caption":Giovanni Bellini, Man wearing a turban),("source":LogoSmall.jpg),("tag":0c65390a-9405-43d0-b504-3e22d8c267a0))]
 			//std::cout
-			//	<< "\n***info: figure("
+			//	<< "\n***info: "
+			//	<< ctx.get_name()
+			//	<< " "
 			//	<< cyng::io::to_str(frame)
-			//	<< ")"
 			//	<< std::endl;
 #endif
 
@@ -582,11 +670,13 @@ namespace cyng
 					//
 					std::string const alt = value_cast<std::string>(reader[3].get("alt"), "");
 					std::string const cap = value_cast<std::string>(reader[3].get("caption"), "");
-					auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
+					auto const stag = value_cast<std::string>(reader[3].get("tag"), boost::uuids::to_string(uuid_gen_()));
+					auto const tag = name_gen_(stag);
 
+					figures_.at(0)++;
 					auto pos = structure_.emplace(std::piecewise_construct,
 						std::forward_as_tuple(tag),
-						std::forward_as_tuple(element::FIGURE, cap, numeration_));
+						std::forward_as_tuple(element::FIGURE, cap, figures_));
 
 					if (pos.second)
 					{
@@ -597,7 +687,6 @@ namespace cyng
 
 						std::stringstream ss;
 						ss
-							//<< std::endl
 							<< "<figure id=\""
 							<< tag
 							<< "\">"
@@ -680,7 +769,6 @@ namespace cyng
 
 				std::stringstream ss;
 				ss
-					//<< std::endl
 					<< "<blockquote cite=\""
 					<< url
 					<< "\">"
@@ -959,15 +1047,24 @@ namespace cyng
 			//	<< std::endl
 			//	;
 #endif
+			listings_.at(0)++;
 
 			const auto reader = make_reader(frame);
 			auto const ft = value_cast<std::uint32_t>(reader.get(0), 0);	//	function type
 			auto const filter = value_cast<std::string>(reader[3].get("filter"), "verbatim");	//	filter
 			auto const line_numbers = value_cast(reader[3].get("linenumbers"), false);
-			auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
+
 			auto const input = value_cast<std::string>(reader.get(4), "");	//	input
 			auto start = std::begin(input);
 			auto stop = std::end(input);
+
+			//auto const tag = value_cast(reader[3].get("tag"), uuid_gen_());
+			auto const stag = value_cast<std::string>(reader[3].get("tag"), boost::uuids::to_string(uuid_gen_()));
+			auto const tag = name_gen_(stag);
+
+			auto pos = structure_.emplace(std::piecewise_construct,
+				std::forward_as_tuple(tag),
+				std::forward_as_tuple(element::LISTING, filter, listings_));
 
 			if (boost::algorithm::equals(filter, "verbatim")) {
 
@@ -1167,7 +1264,7 @@ namespace cyng
 					<< std::endl
 					<< "\t\t\tmax-width: 95%;"
 					<< std::endl
-					<< "\t\t\tborder: 2px solid black;"
+					<< "\t\t\tborder: 2px solid #777;"
 					<< std::endl
 					<< "\t\t}"
 					<< std::endl
@@ -1195,9 +1292,8 @@ namespace cyng
 			//	generate body
 			//
 			std::for_each(begin, end, [this, &os](cyng::object const& obj) {
-				auto const str = cyng::io::to_str(obj);
-				if (!str.empty())	os << cyng::io::to_str(obj) << std::endl;
-				//os << this->backpatch(cyng::to_string(obj));
+				auto str = cyng::io::to_str(obj);
+				if (!str.empty()) os << backpatch(str);
 			});
 
 
@@ -1219,6 +1315,76 @@ namespace cyng
 					<< std::endl
 					;
 			}
+		}
+
+		std::string generator::backpatch(std::string& str)
+		{
+			//
+			//	optimization: string with less than 36 characters cannot match an UUID
+			//
+			if (str.size() > 36) {
+				std::for_each(structure_.begin(), structure_.end(), [&](std::pair<boost::uuids::uuid, element> const e) {
+
+					auto pos = structure_.find(e.first);
+					if (pos != structure_.end())
+					{
+						std::string const s = "{" + boost::uuids::to_string(e.first) + "}";
+
+						auto const spos = str.find(s);
+						if (spos != std::string::npos) {
+
+							switch (e.second.type_) {
+							case element::CONTENTS:
+								std::cout << "generate table of contents: " << e.second.text_ << std::endl;
+								substitute_table_of_contents(str, spos, e.second.text_, s.size());
+								break;
+							default:
+								substitute_string(str, spos, e.first, pos->second.to_str(), s.size());
+								break;
+							}
+
+							return;
+						}
+					}
+				});
+
+			}
+			return str;
+		}
+
+		void generator::substitute_table_of_contents(std::string& str, std::string::size_type pos, std::string title, std::size_t size)
+		{
+			std::stringstream ss;
+			ss
+				<< "<nav>"
+				<< std::endl
+				<< "\t<h1>"
+				<< title
+				<< "</h1>"
+				<< std::endl
+				;
+
+			std::for_each(structure_.begin(), structure_.end(), [&](std::pair<boost::uuids::uuid, element> const e) {
+				if (element::HEADER == e.second.type_) {
+					ss 
+						<< "\t<h2>"
+						<< "<a href=\"#"
+						<< e.first
+						<< "\">"
+						<< e.second.to_str() 
+						<< "</a>"
+						<< "</h2>"
+						<< std::endl;
+				}
+			});
+
+			ss
+				<< "</nav>"
+				<< std::endl;
+
+			auto const node = ss.str();
+			str.replace(pos, size, node);
+
 		}
 
 		boost::filesystem::path generator::resolve_path(std::string const& s) const
@@ -1446,7 +1612,6 @@ namespace cyng
 			for (std::size_t idx = start; idx < end; ++idx)
 			{
 				auto const s = cyng::io::to_str(reader.get(idx));
-				//const auto s = value_cast<std::string>(reader.get(idx), "");
 				if ((idx != start) && !(s == "." || s == "," || s == ":" || s == "?" || s == "!"))
 				{
 					str += " ";
@@ -1479,6 +1644,23 @@ namespace cyng
 			}
 			return str + '<' + '/' + tag + '>';
 
+		}
+
+		void substitute_string(std::string& str, std::string::size_type pos, boost::uuids::uuid tag, std::string txt, std::size_t size)
+		{
+			//
+			//	substitute string
+			//
+			std::stringstream ss;
+			ss
+				<< "<a href=\"#"
+				<< tag
+				<< "\">"
+				<< txt
+				<< "</a>"
+				;
+			auto const node = ss.str();
+			str.replace(pos, size, node);
 		}
 
 		std::string get_extension(boost::filesystem::path const& p)
@@ -1538,18 +1720,6 @@ namespace cyng
 		{
 			return chapter_.size();
 		}
-
-		//element& element::operator=(element const& other)
-		//{
-		//	if (this != &other)
-		//	{
-		//		//const type type_;
-		//		//const std::string text_;
-		//		//const std::vector<std::size_t>	chapter_;
-
-		//	}
-		//	return *this;
-		//}
 
 		//	comparison
 		bool operator==(element const& lhs, element const& rhs)

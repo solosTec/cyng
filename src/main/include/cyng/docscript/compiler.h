@@ -120,6 +120,11 @@ namespace cyng
 			void env_raw();
 			void env_dsl();
 
+			/**
+			 * emit the look ahead symbol
+			 */
+			void emit();
+
 		public:
 			param_map_t meta_;
 

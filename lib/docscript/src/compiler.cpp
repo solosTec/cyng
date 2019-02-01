@@ -326,8 +326,7 @@ namespace cyng
 					//	fall through - handle SYM_CHAR as SYM_WORD
 					//
 				case SYM_WORD:
-					prg_ << make_object(look_ahead_->value_);
-					match(look_ahead_->type_);
+					emit();
 					counter++;
 					break;
 				case SYM_FUN_NL:
@@ -532,8 +531,7 @@ namespace cyng
 					break;
 				}
 				else {
-					prg_ << make_object(look_ahead_->value_);
-					match(look_ahead_->type_);
+					emit();
 				}
 			}
 		}
@@ -566,8 +564,7 @@ namespace cyng
 					break;
 				}
 				else {
-					prg_ << make_object(look_ahead_->value_);
-					match(look_ahead_->type_);
+					emit();
 				}
 			}
 		}
@@ -610,14 +607,14 @@ namespace cyng
 					func(look_ahead_->value_, depth + 1, false);
 					break;
 				case SYM_NUMBER:
-					prg_ << produce_number(look_ahead_->value_);
+					if (!look_ahead_->value_.empty())	prg_ << produce_number(look_ahead_->value_);
 					match(SYM_NUMBER);
 					break;
 				default:
 					//
 					//	produce arguments
 					//
-					prg_ << produce_value(look_ahead_->value_);
+					if (!look_ahead_->value_.empty())	prg_ << produce_value(look_ahead_->value_);
 					match(SYM_VALUE);
 					break;
 				}
@@ -627,6 +624,12 @@ namespace cyng
 
 			match(SYM_FUN_CLOSE);
 			return counter;
+		}
+
+		void compiler::emit()
+		{
+			if (!look_ahead_->value_.empty())	prg_ << make_object(look_ahead_->value_);
+			match(look_ahead_->type_);
 		}
 
 		void compiler::init_library()
@@ -645,7 +648,7 @@ namespace cyng
 			insert(library_, std::make_shared<function>("meta", 0, NL_), {});
 			insert(library_, std::make_shared<function>("title", 0, NL_), {});
 			insert(library_, std::make_shared<function>("debug", 0, NL_), {});
-			insert(library_, std::make_shared<function>("contents", 0, NL_), {});
+			insert(library_, std::make_shared<function>("contents", 1, NL_), {});
 			insert(library_, std::make_shared<function>("item", 1, NL_), { "entry" });
 
 			insert(library_, std::make_shared<function>("paragraph", 1, NL_), { u8"¶" });
@@ -745,7 +748,15 @@ namespace cyng
 
 		cyng::object produce_number(std::string val)
 		{
-			return cyng::make_object(std::stoull(val));
+			try {
+				return cyng::make_object(std::stoull(val));
+			}
+			catch (std::invalid_argument const&) {
+				return cyng::make_object(val);
+			}
+			catch (std::out_of_range const&) {
+				return cyng::make_object(0);
+			}
 		}
 
 	}	//	docscript

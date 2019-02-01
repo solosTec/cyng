@@ -31,6 +31,7 @@ namespace cyng
 				FIGURE,
 				TABLE,
 				LISTING,
+				CONTENTS,
 			};
 			element(type, std::string const&, std::vector<std::size_t> const& chapter);
 			std::string level() const;
@@ -97,6 +98,7 @@ namespace cyng
 			void fun_emphasise(context& ctx);
 			void fun_color(context& ctx);
 			void fun_link(context& ctx);
+			void fun_reference(context& ctx);
 			void fun_figure(context& ctx);
 			void fun_quote(context& ctx);
 			void fun_cite(context& ctx);
@@ -121,6 +123,12 @@ namespace cyng
 			 */
 			std::size_t meta(boost::filesystem::path const& out) const;
 
+			/**
+			 * patch open references
+			 */
+			std::string backpatch(std::string& str);
+			void substitute_table_of_contents(std::string& str, std::string::size_type pos, std::string title, std::size_t size);
+
 		private:
 			std::vector< boost::filesystem::path > const includes_;
 			int const verbosity_;
@@ -134,6 +142,9 @@ namespace cyng
 
 			param_map_t meta_;
 			std::vector<std::size_t> numeration_;
+			std::vector<std::size_t> figures_;
+			std::vector<std::size_t> listings_;
+			std::vector<std::size_t> dummy_;
 			structure_t	structure_;
 			std::string language_;	//!< target language
 
@@ -149,6 +160,7 @@ namespace cyng
 			, std::size_t end
 			, std::string tag);
 		std::string get_extension(boost::filesystem::path const& p);
+		void substitute_string(std::string& str, std::string::size_type pos, boost::uuids::uuid tag, std::string txt, std::size_t);
 
 	}	//	docscript
 }	//	cyng
