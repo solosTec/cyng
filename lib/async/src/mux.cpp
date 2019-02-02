@@ -145,6 +145,7 @@ namespace cyng
 #ifdef _DEBUG
 					std::cerr << "MUST WAIT FOR SHUTDOWN of " << shutdown_counter_.load() << " task(s)" << std::endl;
 #endif
+					if (tasks_.empty())	shutdown_counter_ = 0u;
 					std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 

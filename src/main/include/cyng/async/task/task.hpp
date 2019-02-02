@@ -81,17 +81,22 @@ namespace cyng
 				}
 
 				//
-				//	signal that termination process is complete
-				//
-				if (shutdown)	remove_this();
-
-				//
 				//  Now it's safe to stop the timer.
 				//  Before stop() a task could restart the timer again.
 				//  It is the responsibility of the implementor to guarantee
 				//  this behavior. 
 				//
-				return cancel_timer();
+				auto const counter = cancel_timer();
+
+				//
+				//	signal that termination process is complete
+				//
+				if (shutdown)	remove_this();
+
+				//
+				//	The number of asynchronous operations that were cancelled.
+				//
+				return counter;
 			}
 			
 			/**
