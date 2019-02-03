@@ -25,7 +25,7 @@ namespace cyng
 		static_assert(std::is_integral<T>::value, "integral required");
 		static_assert(std::is_unsigned<T>::value, "unsigned required");
 
-		const char* units[] = { "bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+		const char* units[] = { "Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 		std::size_t idx = 0;
 		auto d = boost::numeric_cast<double>(v);
 		while ((d >= 1024) && (idx < 8)) {
