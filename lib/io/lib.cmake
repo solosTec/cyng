@@ -16,6 +16,7 @@ set (io_cpp
  	lib/io/src/parser.cpp
  	lib/io/src/object_reader.cpp
  	lib/io/src/swap.cpp
+ 	lib/io/src/iso_3166_1.cpp
 )
     
 set (io_h
@@ -36,6 +37,7 @@ set (io_h
     src/main/include/cyng/io/parser/deserializer.h
     src/main/include/cyng/io/object_reader.hpp
     src/main/include/cyng/io/swap.h
+    src/main/include/cyng/io/iso_3166_1.h
 )
 
 
