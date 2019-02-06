@@ -271,45 +271,92 @@ namespace cyng
 
 		cyng::table::record read(pugi::xml_node node, cyng::table::meta_table_ptr meta)
 		{
-			auto node_key = node.child("key");
-			auto node_data = node.child("data");
-
-			//
-			//	generate key
-			//
 			try {
 				cyng::table::key_type key;
-				meta->loop_key([&](cyng::table::column&& col) {
-
-					auto type = node_key.child(col.name_.c_str()).attribute("type").as_string();
-					key.push_back(produce_object(type, node_key.child_value(col.name_.c_str())));
-
-				});
-
-				//
-				//	generate body
-				//
 				cyng::table::data_type data;
+				std::uint64_t gen{ 0 };
 
-				meta->loop_body([&](cyng::table::column&& col) {
+				pugi::xml_node param = node.child("param");
+				if (param) {
 
-					BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
-					auto type = node_data.child(col.name_.c_str()).attribute("type").as_string();
-					data.push_back(produce_object(type, node_data.child_value(col.name_.c_str())));
+					//
+					//	key
+					//
+					meta->loop_key([&](cyng::table::column&& col) {
 
-				});
+						auto type = param.child(col.name_.c_str()).attribute("type").as_string();
+						key.push_back(produce_object(type, param.child_value(col.name_.c_str())));
 
-				std::uint64_t gen = std::stoull(node_data.child_value("gen"));
+					});
+
+				}
+				param = param.next_sibling();
+				if (param) {
+
+					//
+					//	data
+					//
+					meta->loop_body([&](cyng::table::column&& col) {
+
+						BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
+						auto type = param.child(col.name_.c_str()).attribute("type").as_string();
+						data.push_back(produce_object(type, param.child_value(col.name_.c_str())));
+
+					});
+
+					//
+					//	gen(eration)
+					//
+					gen = std::stoull(param.child_value("gen"));
+				}
 
 				return cyng::table::record(meta, key, data, gen);
 			}
 			catch (std::exception const&) {
-
 			}
+
+			//
+			//	return empty record
+			//
 			return cyng::table::record(meta);
+
+			//auto node_key = node.child("key");
+			//auto node_data = node.child("data");
+
+			////
+			////	generate key
+			////
+			//try {
+			//	cyng::table::key_type key;
+			//	meta->loop_key([&](cyng::table::column&& col) {
+
+			//		auto type = node_key.child(col.name_.c_str()).attribute("type").as_string();
+			//		key.push_back(produce_object(type, node_key.child_value(col.name_.c_str())));
+
+			//	});
+
+			//	//
+			//	//	generate body
+			//	//
+			//	cyng::table::data_type data;
+
+			//	meta->loop_body([&](cyng::table::column&& col) {
+
+			//		BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
+			//		auto type = node_data.child(col.name_.c_str()).attribute("type").as_string();
+			//		data.push_back(produce_object(type, node_data.child_value(col.name_.c_str())));
+
+			//	});
+
+			//	std::uint64_t gen = std::stoull(node_data.child_value("gen"));
+
+			//	return cyng::table::record(meta, key, data, gen);
+			//}
+			//catch (std::exception const&) {
+
+			//}
+			//return cyng::table::record(meta);
 		}
-
-
 	}
 }
 
