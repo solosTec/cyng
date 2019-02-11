@@ -21,7 +21,7 @@ namespace cyng
         try {
             const std::string defll = std::to_string(def);
             const std::string inp = cyng::value_cast<std::string>(obj, defll);
-            return (std::is_unsigned_v <T>)
+            return (std::is_unsigned<T>::value)
                 ? std::stoull(inp)
                 : std::stoll(inp)
                 ;

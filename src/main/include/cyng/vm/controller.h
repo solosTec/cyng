@@ -13,6 +13,7 @@
 #include <cyng/async/policy.h>
 #include <cyng/compatibility/async.h>
 #include <initializer_list>
+#include <thread>
 
 namespace cyng 
 {
