@@ -196,24 +196,6 @@ namespace cyng
 			serial_t::out(node, tpl);
 		}
 
-		//object read(std::string const& inp)
-		//{
-		//	std::pair<object, bool> r = parse_json(inp);
-		//	return (r.second)
-		//	? r.first
-		//	: make_object()
-		//	;
-		//}
-		//
-		//object read(buffer_t const& inp)
-		//{
-		//	std::pair<object, bool> r = parse_json(inp);
-		//	return (r.second)
-		//	? r.first
-		//	: make_object()
-		//	;
-		//}
-		//
 		object read_file(std::string const& p)
 		{
 			pugi::xml_document doc;
@@ -225,35 +207,6 @@ namespace cyng
 				boost::ignore_unused(type);
 
 				return read_root(root);
-				//if (boost::algorithm::equals(type, "vec")) {
-				//	std::cout
-				//		<< root.name()
-				//		<< " type: "
-				//		<< type
-				//		<< " size: "
-				//		<< root.attribute("size").as_int()
-				//		<< std::endl;
-
-				//	vector_t vec;
-				//	vec.reserve(root.attribute("size").as_int());
-				//	for (pugi::xml_node elem : root) {
-				//		std::cout << elem.name() << std::endl;
-				//		vec.push_back(read(elem));
-				//	}
-
-				//	return make_object(vec);
-
-				//}
-				//else {
-				//	std::cout
-				//		<< root.name()
-				//		<< " type: "
-				//		<< type
-				//		<< std::endl;
-
-				//}
-				//return read(root.begin(), root.end());
-
 			}
 
 			std::stringstream ss;
@@ -276,22 +229,22 @@ namespace cyng
 				cyng::table::data_type data;
 				std::uint64_t gen{ 0 };
 
-				pugi::xml_node param = node.child("param");
-				if (param) {
+				pugi::xml_node const param_key = node.find_child_by_attribute("param", "name", "key");
+				if (param_key) {
 
 					//
 					//	key
 					//
 					meta->loop_key([&](cyng::table::column&& col) {
 
-						auto type = param.child(col.name_.c_str()).attribute("type").as_string();
-						key.push_back(produce_object(type, param.child_value(col.name_.c_str())));
+						auto type = param_key.child(col.name_.c_str()).attribute("type").as_string();
+						key.push_back(produce_object(type, param_key.child_value(col.name_.c_str())));
 
 					});
 
 				}
-				param = param.next_sibling();
-				if (param) {
+				pugi::xml_node const param_data = node.find_child_by_attribute("param", "name", "data");
+				if (param_data) {
 
 					//
 					//	data
@@ -299,15 +252,15 @@ namespace cyng
 					meta->loop_body([&](cyng::table::column&& col) {
 
 						BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
-						auto type = param.child(col.name_.c_str()).attribute("type").as_string();
-						data.push_back(produce_object(type, param.child_value(col.name_.c_str())));
+						auto type = param_data.child(col.name_.c_str()).attribute("type").as_string();
+						data.push_back(produce_object(type, param_data.child_value(col.name_.c_str())));
 
 					});
 
 					//
 					//	gen(eration)
 					//
-					gen = std::stoull(param.child_value("gen"));
+					gen = std::stoull(param_data.child_value("gen"));
 				}
 
 				return cyng::table::record(meta, key, data, gen);
@@ -320,42 +273,6 @@ namespace cyng
 			//
 			return cyng::table::record(meta);
 
-			//auto node_key = node.child("key");
-			//auto node_data = node.child("data");
-
-			////
-			////	generate key
-			////
-			//try {
-			//	cyng::table::key_type key;
-			//	meta->loop_key([&](cyng::table::column&& col) {
-
-			//		auto type = node_key.child(col.name_.c_str()).attribute("type").as_string();
-			//		key.push_back(produce_object(type, node_key.child_value(col.name_.c_str())));
-
-			//	});
-
-			//	//
-			//	//	generate body
-			//	//
-			//	cyng::table::data_type data;
-
-			//	meta->loop_body([&](cyng::table::column&& col) {
-
-			//		BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
-			//		auto type = node_data.child(col.name_.c_str()).attribute("type").as_string();
-			//		data.push_back(produce_object(type, node_data.child_value(col.name_.c_str())));
-
-			//	});
-
-			//	std::uint64_t gen = std::stoull(node_data.child_value("gen"));
-
-			//	return cyng::table::record(meta, key, data, gen);
-			//}
-			//catch (std::exception const&) {
-
-			//}
-			//return cyng::table::record(meta);
 		}
 	}
 }

@@ -136,6 +136,11 @@ namespace cyng
 			});
 
 			//
+			//	generation_ is part of the data body
+			//
+			data["gen"] = make_object(generation_);
+
+			//
 			//	additional parameters
 			//
 			std::for_each(pm.begin(), pm.end(), [&data](param_map_value const& val) {
@@ -143,8 +148,7 @@ namespace cyng
 			});
 
 			return cyng::tuple_factory(cyng::param_factory("key", key)
-				, cyng::param_factory("data", data)
-				, cyng::param_factory("gen", generation_));
+				, cyng::param_factory("data", data));
 		}
 
 		tuple_t record::convert_data() const
