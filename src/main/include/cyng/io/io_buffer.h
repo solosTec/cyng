@@ -24,11 +24,13 @@ namespace cyng
 		/**
 		 * Writes a binary buffer as ASCII values and not printable characters as dot
 		 */
+		std::ostream& to_ascii(std::ostream&, buffer_t const&);
 		std::string to_ascii(buffer_t const&);
 
 		/**
 		 * Writes a binary buffer as hex values
 		 */
+		std::ostream& to_hex(std::ostream&, buffer_t const&);
 		std::string to_hex(buffer_t const&);
 
 		/**

@@ -19,6 +19,14 @@ namespace cyng
 		});
 		return tmp;
 	}
+
+	bool is_ascii(buffer_t const& v)
+	{
+		return std::all_of(v.cbegin(), v.cend(), [](char c) { 
+			return (c > 31) && (c < 126);
+		});
+	}
+
 }
 
 

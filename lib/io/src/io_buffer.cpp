@@ -59,29 +59,32 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& to_ascii(std::ostream& os, buffer_t const& buffer)
+		{
+			for (const char c : buffer)
+			{
+				if ((c > 31) && (c < 127))	{
+					os << c;
+				}
+				else	{
+					os << '.';
+				}
+			}
+			return os;
+		}
+
 		std::string to_ascii(buffer_t const& buffer)
 		{
 			std::stringstream ss;
-
+			to_ascii(ss, buffer);
 			//	write buffer
-			for (const char c : buffer)
-			{
-				if ((c > 31) && (c < 127))
-				{
-					ss << c;
-				}
-				else
-				{
-					ss << '.';
-				}
-			}
 			return ss.str();
 		}
 
-		std::string to_hex(buffer_t const& buffer)
+		std::ostream& to_hex(std::ostream& os, buffer_t const& buffer)
 		{
-			std::stringstream ss;
-			ss
+			boost::io::ios_flags_saver  ifs(os);
+			os
 				<< std::setfill('0')
 				<< std::hex
 				;
@@ -89,12 +92,18 @@ namespace cyng
 			//	write buffer
 			for (const char c : buffer)
 			{
-				ss
+				os
 					<< std::setw(2)
 					<< (+c & 0xFF)
 					;
 			}
+			return os;
+		}
 
+		std::string to_hex(buffer_t const& buffer)
+		{
+			std::stringstream ss;
+			to_hex(ss, buffer);
 			return ss.str();
 		}
 
