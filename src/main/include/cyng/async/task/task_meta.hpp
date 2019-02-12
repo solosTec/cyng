@@ -10,8 +10,8 @@
 #include <cyng/meta/conversion.hpp>
 #include <cyng/meta/meta.hpp>
 #include <cyng/intrinsics/sets.h>
-#include <boost/assert.hpp>
 #include <cyng/async/policy.h>
+#include <boost/assert.hpp>
 
 namespace cyng 
 {
