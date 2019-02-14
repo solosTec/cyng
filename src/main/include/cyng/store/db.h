@@ -111,6 +111,32 @@ namespace cyng
 			}
 			
 			/**
+			 * Select a specific value from a table. The requested will be temporarily
+			 * read locked.
+			 */
+			template <typename ...Args>
+			object get_value(std::string table, std::string column, Args&& ... args)
+			{
+				//
+				//	build key
+				//
+				auto const key = cyng::table::key_generator(std::forward<Args>(args)...);
+
+				object obj;
+				access([&](cyng::store::table const* tbl)->void {
+
+					//
+					//	search record
+					//
+					auto const rec = tbl->lookup(key);
+					if (!rec.empty())	obj = rec[column];
+
+				}, cyng::store::read_access(table));
+
+				return obj;
+			}
+
+			/**
 			 * Clears the table contents.
 			 *
 			 * @param name table name
