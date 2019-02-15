@@ -137,7 +137,14 @@ namespace cyng
 		auto const end = begin + sizeof(T);
 
 		result_type a;
-		std::reverse_copy(begin, end, a.begin());
+        
+        //  requires C++17
+// 		std::reverse_copy(begin, end, a.begin());
+        
+        auto dest = a.begin();
+        while (begin != end) {
+            *(dest++) = *(--end);
+        }
 
 		return a;
 	}
