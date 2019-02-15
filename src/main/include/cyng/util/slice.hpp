@@ -122,6 +122,46 @@ namespace cyng
 		return std::vector< T >(first, last);
 	}
 
+	/**
+	 * Convert an interal type into an array of smaller integral types
+	 */
+	template <typename U, typename T>
+	auto to_array(T n) -> std::array< U, sizeof(T) / sizeof(U) >
+	{
+		static_assert(sizeof(T) > sizeof(U), "subtype must be smaller");
+		static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
+
+		typedef std::array< U, sizeof(T) / sizeof(U) >	result_type;
+
+		auto const begin = reinterpret_cast<U const*>(&n);
+		auto const end = begin + sizeof(T);
+
+		result_type a;
+		std::reverse_copy(begin, end, a.begin());
+
+		return a;
+	}
+
+	/**
+	 * Convert an interal type into a vector of smaller integral types
+	 */
+	template <typename U, typename T>
+	auto to_vector(T n) -> std::vector< U >
+	{
+		static_assert(sizeof(T) > sizeof(U), "subtype must be smaller");
+		static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
+
+		typedef std::vector< U >	result_type;
+
+		auto const begin = reinterpret_cast<U const*>(&n);
+		auto const end = begin + sizeof(T);
+
+		//result_type v(begin, end);
+		//std::reverse(v.begin(), v.end());
+		//return v;
+
+		return result_type(begin, end);
+	}
 
 }
 
