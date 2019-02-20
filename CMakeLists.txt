@@ -563,6 +563,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #
 include (lib/meta/lib.cmake)
 add_library(cyng_meta ${GLOBAL_LIBRARY_TYPE} ${meta_lib})
+install(FILES ${meta_lib}
+  DESTINATION include)
 
 
 #
@@ -573,12 +575,18 @@ add_library(cyng_core ${GLOBAL_LIBRARY_TYPE} ${core_lib})
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	target_link_libraries(cyng_core boost_thread)
 endif()
+install(TARGETS cyng_core
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng log library
 #
 include (lib/log/lib.cmake)
 add_library(cyng_log ${GLOBAL_LIBRARY_TYPE} ${log_lib})
+install(TARGETS cyng_log
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng I/O library
@@ -587,6 +595,9 @@ include (lib/io/lib.cmake)
 add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
 set(io_link_libs cyng_core)
 target_link_libraries(cyng_io ${io_link_libs})
+install(TARGETS cyng_io
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static)
 
 
 #
@@ -608,6 +619,9 @@ add_library(cyng_vm ${GLOBAL_LIBRARY_TYPE} ${vm_lib})
 target_link_libraries(cyng_vm
 	cyng_core
 	cyng_io)
+install(TARGETS cyng_vm
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng async library
@@ -822,6 +836,10 @@ if(${PROJECT_NAME}_SSL_SUPPORT)
         endif()
     endif()
     target_link_libraries(docc ${docc_link_libs})
+    install(TARGETS docc
+        RUNTIME
+        DESTINATION bin)
+
 
     include (tools/docc/batch/prg.cmake)
     add_executable(batch ${batch})
@@ -847,6 +865,9 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
     endif()
 endif()
 target_link_libraries(unlog ${unlog_link_libs})
+install(TARGETS unlog
+    RUNTIME
+    DESTINATION bin)
 
 #
 # play - send files to ip address
@@ -862,3 +883,40 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 endif()
 target_link_libraries(play ${play_link_libs})
 
+
+#
+# GeneratING OPKG files requires the OPKG tools (https://git.yoctoproject.org/cgit/cgit.cgi/opkg-utils)
+# fakeroot opkg/opkg-tools/opkg-buildpackage
+# Install with: opkg --force-space install /tmp/oecp-cyng_0.x_armel.ipk
+#
+if(${PROJECT_NAME}_CROSS_COMPILE)
+
+	configure_file (
+		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/control"
+		  "${PROJECT_BINARY_DIR}/opkg/control")
+
+	configure_file (
+		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/postinst"
+		  "${PROJECT_BINARY_DIR}/opkg/postinst")
+
+	configure_file (
+		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/rules"
+		  "${PROJECT_BINARY_DIR}/opkg/rules")
+		  
+endif()
+
+#
+# CPack configuration
+#
+if(UNIX)
+set(CPACK_PACKAGE_VERSION ${VERSION})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} - dynamic data types for C++")
+set(CPACK_GENERATOR "RPM")
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_RELEASE 1)
+set(CPACK_PACKAGE_CONTACT "info@solostec.ch")
+set(CPACK_PACKAGE_VENDOR "solosTec")
+set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+include(CPack)
+endif()

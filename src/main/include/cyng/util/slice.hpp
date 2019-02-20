@@ -134,7 +134,7 @@ namespace cyng
 		typedef std::array< U, sizeof(T) / sizeof(U) >	result_type;
 
 		auto const begin = reinterpret_cast<U const*>(&n);
-		auto const end = begin + sizeof(T);
+		auto end = begin + sizeof(T);
 
 		result_type a;
         
