@@ -128,8 +128,7 @@ namespace cyng
 					//
 					//	search record
 					//
-					auto const rec = tbl->lookup(key);
-					if (!rec.empty())	obj = rec[column];
+					obj = tbl->lookup(key, column);
 
 				}, cyng::store::read_access(table));
 

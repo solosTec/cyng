@@ -96,7 +96,7 @@ namespace cyng
 		{
 			if (meta_->check_key(key))
 			{
-				auto pos = data_.find(key);
+				auto const pos = data_.find(key);
 				return std::make_pair(pos, pos != data_.end());
 			}
 			return std::make_pair(data_.end(), false);
@@ -112,7 +112,7 @@ namespace cyng
 			std::pair<table::table_type::const_iterator, bool> r = find(key);
 			if (r.second)
 			{
-				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 				return cyng::table::record(meta_, key, *ptr, (*r.first).second.generation_);
 			}
 
@@ -120,6 +120,28 @@ namespace cyng
 			return cyng::table::record(meta_);
 		}
 		
+		object table::lookup(cyng::table::key_type const& key, std::size_t idx) const
+		{
+			std::pair<table::table_type::const_iterator, bool> r = find(key);
+			if (r.second)
+			{
+				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				if (idx < ptr->size())	return ptr->at(idx);
+			}
+
+			//	empty result
+			return make_object();
+		}
+
+		object table::lookup(cyng::table::key_type const& key, std::string const& name) const
+		{
+			auto const r = meta_->get_body_index(name);
+			return (r.second) 
+				? lookup(key, r.first)
+				: make_object()
+				;
+		}
+
 		
 		bool table::modify(cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source)
 		{
@@ -229,9 +251,10 @@ namespace cyng
 			cyng::table::record result(meta_);
 
 			//
-			//	ToDo: check column name
+			//	check column name
 			//
-			//if (meta_->size() < attr.first)	return result;
+			auto const check = meta_->get_record_index(param.first);
+			if (!check.second)	return result;	//	param has no valid column name
 
 			//
 			//	search first matching record

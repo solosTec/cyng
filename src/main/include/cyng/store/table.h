@@ -108,6 +108,8 @@ namespace cyng
 			 * @brief simple record lookup
 			 */
 			cyng::table::record lookup(cyng::table::key_type const& key) const;
+			object lookup(cyng::table::key_type const& key, std::size_t) const;
+			object lookup(cyng::table::key_type const& key, std::string const&) const;
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
@@ -150,9 +152,9 @@ namespace cyng
 			cyng::table::record find_first(param_t&& param) const;
 
 			/**
-			* Finds the smallest key in the table and returns the record
-			* of this key. Record is empty if table is empty.
-			*/
+			 * Finds the smallest key in the table and returns the record
+			 * of this key. Record is empty if table is empty.
+			 */
 			cyng::table::record min_record() const;
 
 			/**

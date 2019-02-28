@@ -6,9 +6,10 @@
  * 
  */ 
 #include "test-io-003.h"
-#include <iostream>
-#include <boost/test/unit_test.hpp>
 #include <cyng/io/io_buffer.h>
+#include <iostream>
+#include <limits>
+#include <boost/test/unit_test.hpp>
 
 namespace cyng 
 {
@@ -25,9 +26,13 @@ namespace cyng
 		s = io::to_hex(48879);
 		BOOST_CHECK_EQUAL(s, "0000BEEF");
 
-		char const c{ 1 };
+		char c{ std::numeric_limits<char>::min() };
 		s = io::to_hex(c);
-		BOOST_CHECK_EQUAL(s, "01");
+		BOOST_CHECK_EQUAL(s, "80");
+
+		c = -1;
+		s = io::to_hex(c);
+		BOOST_CHECK_EQUAL(s, "FF");
 
 		short const i{ 12 };
 		s = io::to_hex(i);
