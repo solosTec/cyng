@@ -108,8 +108,20 @@ namespace cyng
 			 * @brief simple record lookup
 			 */
 			cyng::table::record lookup(cyng::table::key_type const& key) const;
-			object lookup(cyng::table::key_type const& key, std::size_t) const;
-			object lookup(cyng::table::key_type const& key, std::string const&) const;
+
+			/**
+			 * Lookup a single value.
+			 *
+			 * @param idx index of data column
+			 */
+			object lookup(cyng::table::key_type const& key, std::size_t idx) const;
+
+			/**
+			 * Lookup a single value.
+			 *
+			 * @param column column name
+			 */
+			object lookup(cyng::table::key_type const& key, std::string const& column) const;
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
