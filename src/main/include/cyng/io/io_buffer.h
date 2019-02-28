@@ -38,6 +38,21 @@ namespace cyng
 		 * by a single character (preferrable a white space)
 		 */
 		std::string to_hex(buffer_t const&, char);
+
+		/**
+		 * faster and lighter int to hex conversion compared to streams.
+		 * @see https://stackoverflow.com/a/33447587/3979819
+		 */
+		template <typename T> 
+		std::string to_hex(T w, size_t length = sizeof(T) << 1) 
+		{
+			static const char digits[] = "0123456789ABCDEF";
+			std::string str(length, '0');
+			for (size_t idx = 0, pos = (length - 1) * 4; idx < length; ++idx, pos -= 4) {
+				str[idx] = digits[(w >> pos) & 0x0f];
+			}
+			return str;
+		}
 	}
 }
 

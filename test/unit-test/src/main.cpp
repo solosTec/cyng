@@ -110,6 +110,7 @@ BOOST_AUTO_TEST_SUITE_END()	//	ASYNC
 
 #include "test-io-001.h"
 #include "test-io-002.h"
+#include "test-io-003.h"
 
 BOOST_AUTO_TEST_SUITE(IO)
 BOOST_AUTO_TEST_CASE(io_001)
@@ -121,6 +122,11 @@ BOOST_AUTO_TEST_CASE(io_002)
 {
 	using namespace cyng;
 	BOOST_CHECK(test_io_002());
+}
+BOOST_AUTO_TEST_CASE(io_003)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_io_003());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	IO
 
