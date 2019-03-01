@@ -305,7 +305,18 @@ namespace cyng
 			});
 
 			if (pos != data_.end()) {
-				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
+				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
+				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
+			}
+			return cyng::table::record(meta_);
+		}
+
+		cyng::table::record table::nth_record(std::size_t idx) const
+		{
+			if (idx < size()) {
+				auto pos = data_.begin();
+				std::advance(pos, idx);
+				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
 				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
 			}
 			return cyng::table::record(meta_);

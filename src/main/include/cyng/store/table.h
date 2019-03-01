@@ -176,6 +176,18 @@ namespace cyng
 			cyng::table::record max_record() const;
 
 			/**
+			 * The internal map has no index, so this index purely artifical. Since the underlying 
+			 * data type is an unordered_map there is no guarantee that the same index returns the same
+			 * record after insert/remove operations.
+			 *
+			 * By selecting a record by index we start by the first table entry (index == 0) and
+			 * increment the iterator nth times.
+			 *
+			 * If the index is greater than the tables size the record is empty.
+			 */
+			cyng::table::record nth_record(std::size_t) const;
+
+			/**
 			 * Convert the table into a vector. Usefull for
 			 * serialization to CSV.
 			 *
