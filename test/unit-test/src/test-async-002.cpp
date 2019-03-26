@@ -64,7 +64,7 @@ namespace cyng
 			}
 			return continuation::TASK_CONTINUE;
 		}
-		void stop()
+		void stop(bool shutdown)
 		{
 			std::cout << "simple::stop(" << base_->get_id() << ")" << std::endl;			
 		}
