@@ -53,8 +53,10 @@ namespace cyng
 		if (
 #if (BOOST_ASIO_VERSION < 101200)
 			!dispatcher_.get_io_service().stopped()
-#else
+#elif (BOOST_ASIO_VERSION < 101202)
 			!dispatcher_.get_io_context().stopped()
+#else
+			!dispatcher_.context().stopped()
 #endif
 			) {
 
@@ -73,8 +75,10 @@ namespace cyng
 		if (
 #if (BOOST_ASIO_VERSION < 101200)
 			!dispatcher_.get_io_service().stopped()
-#else
+#elif (BOOST_ASIO_VERSION < 101202)
 			!dispatcher_.get_io_context().stopped()
+#else
+			!dispatcher_.context().stopped()
 #endif
 		) 	{
 

@@ -105,7 +105,17 @@ namespace cyng
 			 */
 			virtual bool push(typename log_base< R >::record_ptr ptr) override
 			{
-				BOOST_ASSERT_MSG(!dispatcher_.get_io_service().stopped(), "no io service available");
+ 				BOOST_ASSERT_MSG( 
+#if (BOOST_ASIO_VERSION < 101200)
+				!dispatcher_.get_io_service().stopped(),
+#elif (BOOST_ASIO_VERSION < 101202)
+				!dispatcher_.get_io_context().stopped(),
+#else
+				!dispatcher_.context().stopped(),
+#endif
+					"no io service available");
+				
+				
 				if (!ptr->is_matching_severity(threshold_))	return false;
 				
 				dispatcher_.dispatch([this, ptr](){
@@ -275,7 +285,16 @@ namespace cyng
 			 */
 			virtual bool push(typename log_base< R >::record_ptr ptr) override
 			{
-				BOOST_ASSERT_MSG(!dispatcher_.get_io_service().stopped(), "no io service available");
+ 				BOOST_ASSERT_MSG( 
+#if (BOOST_ASIO_VERSION < 101200)
+				!dispatcher_.get_io_service().stopped(),
+#elif (BOOST_ASIO_VERSION < 101202)
+				!dispatcher_.get_io_context().stopped(),
+#else
+				!dispatcher_.context().stopped(),
+#endif
+					"no io service available");
+				
 				if (!ptr->is_matching_severity(threshold_))	return false;
 				
 				dispatcher_.dispatch([this, ptr](){

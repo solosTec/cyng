@@ -36,8 +36,10 @@ math(EXPR PATCH_LEVEL "(${THIS_YEAR} * 1000) + ${PATCH_LEVEL}")
 # set project name/properties
 #
 project(CYNG 
-	VERSION 0.7.${PATCH_LEVEL}.1
-	LANGUAGES CXX C)
+	VERSION 0.8.${PATCH_LEVEL}.1
+	LANGUAGES CXX C
+	DESCRIPTION "dynamic datatypes in C++"
+	HOMEPAGE_URL "https://solostec.ch")
 
 string(TIMESTAMP THIS_YEAR "%Y")
 set (${PROJECT_NAME}_COPYRIGHT_YEAR ${THIS_YEAR})
@@ -278,7 +280,7 @@ else()
 endif()
 
 #
-# BOOST_VER is "1_67", "1_68"  or "1_69"
+# BOOST_VER is "1_67", "1_68", "1_69" or "1_70"
 #
 function(windows_boost_fix BOOST_VER)
 #  SET(${varName} ${${varName}}${${varName}} PARENT_SCOPE)
@@ -302,13 +304,20 @@ function(windows_boost_fix BOOST_VER)
 endfunction()
 
 #
-#	setup Boost library 1.69.0, 1.68.0, 1.67.0 or 1.66.0
+#	setup Boost library 1.70.0, 1.69.0, 1.68.0 or 1.67.0
 #
 if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
     if(UNIX)
-        if(EXISTS "$ENV{HOME}/projects/boost_1_69_0")
-            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_69_0" CACHE PATH "BOOST_ROOT")
-            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_69_0/lib" CACHE PATH "BOOST_LIBRARYDIR")
+		#
+		# search for installation in path ~/projects/boost_X_YY_Z/install
+		#
+        if(EXISTS "$ENV{HOME}/projects/boost_1_70_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_70_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_70_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
+        elseif(EXISTS "$ENV{HOME}/projects/boost_1_69_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_69_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_69_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
             message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         elseif(EXISTS "$ENV{HOME}/projects/boost_1_68_0/install")
             set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_68_0/install" CACHE PATH "BOOST_ROOT")
@@ -324,7 +333,9 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
             message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         endif()
     elseif(WIN32)
-        if(EXISTS "C:/local/boost_1_69_0")
+        if(EXISTS "C:/local/boost_1_70_0")
+            windows_boost_fix("1_70")
+        elseif(EXISTS "C:/local/boost_1_69_0")
             windows_boost_fix("1_69")
         elseif(EXISTS "C:/local/boost_1_68_0")
             windows_boost_fix("1_68")
@@ -909,14 +920,22 @@ endif()
 # CPack configuration
 #
 if(UNIX)
-set(CPACK_PACKAGE_VERSION ${VERSION})
+set(CPACK_PACKAGE_VERSION ${VERSION})
+
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} - dynamic data types for C++")
-set(CPACK_GENERATOR "RPM")
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-set(CPACK_PACKAGE_RELEASE 1)
-set(CPACK_PACKAGE_CONTACT "info@solostec.ch")
-set(CPACK_PACKAGE_VENDOR "solosTec")
-set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+set(CPACK_GENERATOR "RPM")
+
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+
+set(CPACK_PACKAGE_RELEASE 1)
+
+set(CPACK_PACKAGE_CONTACT "info@solostec.ch")
+
+set(CPACK_PACKAGE_VENDOR "solosTec")
+
+set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+
 include(CPack)
 endif()
