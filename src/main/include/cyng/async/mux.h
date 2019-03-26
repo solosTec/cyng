@@ -112,21 +112,13 @@ namespace cyng
 			 * It's no guaranty that the specified task exists and will be stopped.
 			 */
 			bool stop(std::size_t);
-
-			/**
-			 * If the task was found, the callback will be called before the task is erased but 
-			 * after it was stopped.
-			 * The second callback parameter of type size_t contains the return value of the
-			 * task::stop() function.
-			 * If the task wasn't found the first callback parameter is false.
-			 */
 			bool stop(std::size_t, std::function<void(bool, std::size_t)>);
 
 			/**
 			 * Stop all tasks with the specified class name. 
 			 * Works asynchronously.
 			 *
-			 * @return true if scheduler is running
+			 * @return number of found tasks with the specified class name.
 			 */
 			bool stop(std::string const&);
 			bool stop(std::string const&, std::function<void(std::size_t)>);
@@ -255,7 +247,7 @@ namespace cyng
 			 * during shutdown. Otherwise this would create a deadlock.
 			 */
 			std::atomic< bool >	shutdown_;
-			//std::atomic< std::size_t >	shutdown_counter_;
+			std::atomic< std::size_t >	shutdown_counter_;
 
 		};
 

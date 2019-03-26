@@ -21,7 +21,7 @@ namespace cyng
 			, next_tag_(NO_TASK)
 			, tasks_()
 			, shutdown_(false)
-			//, shutdown_counter_(0)
+			, shutdown_counter_(0)
 		{
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 		}
@@ -32,15 +32,14 @@ namespace cyng
 			, next_tag_(NO_TASK)
 			, tasks_()
 			, shutdown_(false)
-			//, shutdown_counter_(0)
+			, shutdown_counter_(0)
 		{
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");			
 		}
 
 		mux::~mux()
 		{
-			//BOOST_ASSERT(shutdown_counter_ == 0u);
-			BOOST_ASSERT(tasks_.empty());
+			BOOST_ASSERT(shutdown_counter_ == 0u);
 		}
 		
 		bool mux::size(std::function<void(std::size_t)> f) const
@@ -117,7 +116,7 @@ namespace cyng
 				//	When shutdown flag is set, the tasks are not longer allowed to access the tasks_ list.
 				//	Instead an (atomic) counter is initialized to track the shutdown process.
 				//
-				//shutdown_counter_.exchange(tasks_.size());
+				shutdown_counter_.exchange(tasks_.size());
 
 				//
 				//	send stop message to all remaining tasks in a separate thread
@@ -128,34 +127,25 @@ namespace cyng
 					//	reverse order - latest entries first
 					//
 					for (auto pos = tasks_.rbegin(); pos != tasks_.rend(); ++pos) {
-
 						//
 						//	call stop()
 						//	This call is sync.
 						//
-#ifdef _DEBUG
-						//std::cerr << "STOP #" << (*pos).first << "/" << tasks_.size() << std::endl;
-#endif
 						(*pos).second->stop(true);
 
 					}
-
-					//
-					//	empty task table to signal that shutdown is complete
-					//
-					tasks_.clear();
 				});
 
 				//
 				//	wait for pending references
 				//
 				std::this_thread::yield();
-				while (!tasks_.empty())
+				while (shutdown_counter_.load() != 0u)
 				{
 #ifdef _DEBUG
-					std::cerr << "MUST WAIT FOR SHUTDOWN of " << tasks_.size() << " task(s)" << std::endl;
+					std::cerr << "MUST WAIT FOR SHUTDOWN of " << shutdown_counter_.load() << " task(s)" << std::endl;
 #endif
-					//if (tasks_.empty())	shutdown_counter_ = 0u;
+					if (tasks_.empty())	shutdown_counter_ = 0u;
 					std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 
@@ -294,7 +284,7 @@ namespace cyng
 			//	thread safe access to task list
 			//
 			dispatcher_.dispatch([this, stp]()->void {
-				auto const r = tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
+				tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
 			});
 			return true;
 		}
@@ -390,6 +380,10 @@ namespace cyng
 				dispatcher_.dispatch([this, id]() {
 					tasks_.erase(id);
 				});
+			}
+			else {
+				BOOST_ASSERT(shutdown_counter_ != 0u);
+				--shutdown_counter_;
 			}
 		}
 

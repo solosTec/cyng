@@ -74,7 +74,7 @@ namespace cyng
 				shutdown_ = true;
 				
 				try {
-					impl_.stop(shutdown);
+					impl_.stop();
 				}
 				catch(std::exception const& ex) {
 					boost::ignore_unused(ex);
@@ -85,9 +85,18 @@ namespace cyng
 				//  Before stop() a task could restart the timer again.
 				//  It is the responsibility of the implementor to guarantee
 				//  this behavior. 
-				//	return the number of asynchronous operations that were cancelled.
 				//
-				return cancel_timer();
+				auto const counter = cancel_timer();
+
+				//
+				//	signal that termination process is complete
+				//
+				if (shutdown)	remove_this();
+
+				//
+				//	The number of asynchronous operations that were cancelled.
+				//
+				return counter;
 			}
 			
 			/**
@@ -174,7 +183,7 @@ namespace cyng
 				{
 				case continuation::TASK_STOP:
 					this->shutdown_ = true;
-					impl_.stop(false);	//	no system shutdown
+					impl_.stop();
 					this->cancel_timer();
 					remove_this();
 					break;
