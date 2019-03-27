@@ -11,37 +11,41 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 */
  
 
-#include <iostream>
-#include <string>
-#include <tuple>
 #include <algorithm>
 #include <memory>
+#include <string>
+#include <tuple>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/compare.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/regex.hpp>
 #include <cyng/io/mail/imap.hpp>
 
 
-using std::cout;
-using std::endl;
+using std::find_if;
+using std::invalid_argument;
+using std::list;
+using std::make_shared;
+using std::make_tuple;
+using std::map;
+using std::move;
+using std::out_of_range;
+using std::shared_ptr;
+using std::stoul;
 using std::string;
 using std::to_string;
-using std::stoul;
-using std::vector;
 using std::tuple;
-using std::make_tuple;
-using std::move;
-using std::list;
-using std::shared_ptr;
-using std::make_shared;
-using std::out_of_range;
-using std::invalid_argument;
+using std::vector;
+using std::chrono::milliseconds;
 using boost::system::system_error;
 using boost::iequals;
 using boost::regex;
 using boost::regex_match;
 using boost::smatch;
+using boost::split;
 using boost::trim;
+using boost::algorithm::trim_copy_if;
 using boost::algorithm::trim_if;
 using boost::algorithm::is_any_of;
 
@@ -50,7 +54,8 @@ namespace mailio
 {
 
 
-imap::imap(const string& hostname, unsigned port) : _dlg(new dialog(hostname, port)), _tag(0), _optional_part_state(false), _atom_state(false),
+imap::imap(const string& hostname, unsigned port, milliseconds timeout) :
+    _dlg(new dialog(hostname, port, timeout)), _tag(0), _optional_part_state(false), _atom_state(atom_state_t::NONE),
     _parenthesis_list_counter(0), _literal_state(string_literal_state_t::NONE), _literal_bytes_read(0), _eols_no(2)
 {
 }
@@ -76,11 +81,12 @@ void imap::authenticate(const string& username, const string& password, auth_met
 }
 
 
-// fetching literal is the only place where line is ended with LF only, instead of CRLF; thus, `receive_raw()` and counting EOLs is performed
-void imap::fetch(const string& mailbox, unsigned long message_no, message& msg)
+// fetching literal is the only place where line is ended with LF only, instead of CRLF; thus, `receive(true)` and counting EOLs is performed
+void imap::fetch(const string& mailbox, unsigned long message_no, message& msg, bool header_only)
 {
+    const string RFC822_TOKEN = string("RFC822") + (header_only ? ".HEADER" : "");
     select(mailbox);
-    _dlg->send(format("FETCH " + to_string(message_no) + " RFC822"));
+    _dlg->send(format("FETCH " + to_string(message_no) + " " + RFC822_TOKEN));
 
     bool has_more = true;
     while (has_more)
@@ -100,7 +106,7 @@ void imap::fetch(const string& mailbox, unsigned long message_no, message& msg)
                         bool rfc_found = false;
                         for (auto token = part->parenthesized_list.begin(); token != part->parenthesized_list.end(); token++)
                         {
-                            if ((*token)->token_type == response_token_t::token_type_t::ATOM && iequals((*token)->atom, "RFC822"))
+                            if ((*token)->token_type == response_token_t::token_type_t::ATOM && iequals((*token)->atom, RFC822_TOKEN))
                             {
                                 rfc_found = true;
                                 continue;
@@ -123,7 +129,7 @@ void imap::fetch(const string& mailbox, unsigned long message_no, message& msg)
                 // loop to read string literal
                 while (_literal_state == string_literal_state_t::READING)
                 {
-                    string line = _dlg->receive_raw();
+                    string line = _dlg->receive(true);
                     if (!line.empty())
                         trim_eol(line);
                     parse_response(line);
@@ -131,7 +137,7 @@ void imap::fetch(const string& mailbox, unsigned long message_no, message& msg)
                 // closing parenthesis not yet read
                 if (_literal_state == string_literal_state_t::DONE && _parenthesis_list_counter > 0)
                 {
-                    string line = _dlg->receive_raw();
+                    string line = _dlg->receive(true);
                     if (!line.empty())
                         trim_eol(line);
                     parse_response(line);
@@ -239,6 +245,108 @@ void imap::remove(const string& mailbox, unsigned long message_no)
 }
 
 
+bool imap::create_folder(const list<string>& folder_tree)
+{
+    string delim = folder_delimiter();
+    string folder_str = folder_tree_to_string(folder_tree, delim);
+    _dlg->send(format("CREATE " + folder_str));
+
+    string line = _dlg->receive();
+    tuple<string, string, string> tag_result_response = parse_tag_result(line);
+    if (std::get<0>(tag_result_response) != to_string(_tag))
+        throw imap_error("Parsing failure.");
+    if (iequals(std::get<1>(tag_result_response), "NO"))
+        return false;
+    if (!iequals(std::get<1>(tag_result_response), "OK"))
+        throw imap_error("Creating folder failure.");
+    return true;
+}
+
+
+auto imap::list_folders(const list<string>& folder_name) -> mailbox_folder
+{
+    string delim = folder_delimiter();
+    string folder_name_s = folder_tree_to_string(folder_name, delim);
+    _dlg->send(format("LIST \"\" \"" + folder_name_s + "*\""));
+    mailbox_folder mailboxes;
+
+    bool has_more = true;
+    while (has_more)
+    {
+        string line = _dlg->receive();
+        tuple<string, string, string> tag_result_response = parse_tag_result(line);
+        if (std::get<0>(tag_result_response) == "*")
+        {
+            parse_response(std::get<2>(tag_result_response));
+            if (_mandatory_part.size() < 3)
+                throw imap_error("Parsing failure.");
+            auto found_folder = _mandatory_part.begin();
+            found_folder++; found_folder++;
+            if (found_folder != _mandatory_part.end() && (*found_folder)->token_type == response_token_t::token_type_t::ATOM)
+            {
+                vector<string> folders_hierarchy;
+                // TODO: May `delim` contain more than one character?
+                split(folders_hierarchy, (*found_folder)->atom, is_any_of(delim));
+                map<string, mailbox_folder>* mbox = &mailboxes.folders;
+                for (auto f : folders_hierarchy)
+                {
+                    auto fit = find_if(mbox->begin(), mbox->end(), [&f](const std::pair<string, mailbox_folder>& mf){ return mf.first == f; });
+                    if (fit == mbox->end())
+                        mbox->insert(std::make_pair(f, mailbox_folder{}));
+                    mbox = &(mbox->at(f).folders);
+                }
+            }
+            else
+                throw imap_error("Parsing failure.");
+            reset_response_parser();
+        }
+        else if(std::get<0>(tag_result_response) == to_string(_tag))
+        {
+            has_more = false;
+        }
+    }
+
+    return mailboxes;
+}
+
+
+bool imap::delete_folder(const list<string>& folder_name)
+{
+    string delim = folder_delimiter();
+    string folder_name_s = folder_tree_to_string(folder_name, delim);
+    _dlg->send(format("DELETE \"" + folder_name_s + "\""));
+
+    string line = _dlg->receive();
+    tuple<string, string, string> tag_result_response = parse_tag_result(line);
+    if (std::get<0>(tag_result_response) != to_string(_tag))
+        throw imap_error("Parsing failure.");
+    if (iequals(std::get<1>(tag_result_response), "NO"))
+        return false;
+    if (!iequals(std::get<1>(tag_result_response), "OK"))
+        throw imap_error("Deleting folder failure.");
+    return true;
+}
+
+
+bool imap::rename_folder(const list<string>& old_name, const list<string>& new_name)
+{
+    string delim = folder_delimiter();
+    string old_name_s = folder_tree_to_string(old_name, delim);
+    string new_name_s = folder_tree_to_string(new_name, delim);
+    _dlg->send(format("RENAME \"" + old_name_s + "\" \"" + new_name_s + "\""));
+
+    string line = _dlg->receive();
+    tuple<string, string, string> tag_result_response = parse_tag_result(line);
+    if (std::get<0>(tag_result_response) != to_string(_tag))
+        throw imap_error("Parsing failure.");
+    if (iequals(std::get<1>(tag_result_response), "NO"))
+        return false;
+    if (!iequals(std::get<1>(tag_result_response), "OK"))
+        throw imap_error("Renaming folder failure.");
+    return true;
+}
+
+
 void imap::connect()
 {
     // read greetings message
@@ -282,7 +390,6 @@ void imap::select(const string& mailbox)
     while (has_more)
     {
         string line = _dlg->receive();
-        
         tuple<string, string, string> tag_result_response = parse_tag_result(line);
         if (std::get<0>(tag_result_response) == "*")
             continue;
@@ -296,6 +403,38 @@ void imap::select(const string& mailbox)
         else
             throw imap_error("Parsing failure.");
     }
+}
+
+
+string imap::folder_delimiter()
+{
+    string delimiter;
+    _dlg->send(format("LIST \"\" \"\""));
+    bool has_more = true;
+    while (has_more)
+    {
+        string line = _dlg->receive();
+        tuple<string, string, string> tag_result_response = parse_tag_result(line);
+        if (std::get<0>(tag_result_response) == "*" && delimiter.empty())
+        {
+            parse_response(std::get<2>(tag_result_response));
+            if (_mandatory_part.size() < 3)
+                throw imap_error("Determining folder delimiter failure.");
+            auto it = _mandatory_part.begin();
+            if ((*(++it))->token_type != response_token_t::token_type_t::ATOM)
+                throw imap_error("Determining folder delimiter failure.");
+            delimiter = trim_copy_if((*it)->atom, [](char c ){ return c == codec::QUOTE_CHAR; });
+            reset_response_parser();
+        }
+        else if (std::get<0>(tag_result_response) == to_string(_tag))
+        {
+            if (!iequals(std::get<1>(tag_result_response), "OK"))
+                throw imap_error("Determining folder delimiter failure.");
+
+            has_more = false;
+        }
+    }
+    return delimiter;
 }
 
 
@@ -363,77 +502,124 @@ void imap::parse_response(const string& response)
         {
             case codec::LEFT_BRACKET_CHAR:
             {
-                if (_optional_part_state)
-                    throw imap_error("Parser failure.");
-                
-                _optional_part_state = true;
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
+                else
+                {
+                    if (_optional_part_state)
+                        throw imap_error("Parser failure.");
+
+                    _optional_part_state = true;
+                }
             }
             break;
         
             case codec::RIGHT_BRACKET_CHAR:
             {
-                if (!_optional_part_state)
-                    throw imap_error("Parser failure.");
-                
-                _optional_part_state = false;
-                _atom_state = false;
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
+                else
+                {
+                    if (!_optional_part_state)
+                        throw imap_error("Parser failure.");
+
+                    _optional_part_state = false;
+                    _atom_state = atom_state_t::NONE;
+                }
             }
             break;
             
             case codec::LEFT_PARENTHESIS_CHAR:
             {
-                cur_token = make_shared<response_token_t>();
-                cur_token->token_type = response_token_t::token_type_t::LIST;
-                token_list = _optional_part_state ? find_last_token_list(_optional_part) : find_last_token_list(_mandatory_part);
-                token_list->push_back(cur_token);
-                _parenthesis_list_counter++;
-                _atom_state = false;
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
+                else
+                {
+                    cur_token = make_shared<response_token_t>();
+                    cur_token->token_type = response_token_t::token_type_t::LIST;
+                    token_list = _optional_part_state ? find_last_token_list(_optional_part) : find_last_token_list(_mandatory_part);
+                    token_list->push_back(cur_token);
+                    _parenthesis_list_counter++;
+                    _atom_state = atom_state_t::NONE;
+                }
             }
             break;
             
             case codec::RIGHT_PARENTHESIS_CHAR:
             {
-                if (_parenthesis_list_counter == 0)
-                    throw imap_error("Parser failure.");
-                _parenthesis_list_counter--;
-                
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
+                else
+                {
+                    if (_parenthesis_list_counter == 0)
+                        throw imap_error("Parser failure.");
+
+                    _parenthesis_list_counter--;
+                    _atom_state = atom_state_t::NONE;
+                }
             }
             break;
             
             case codec::LEFT_BRACE_CHAR:
             {
-                if (_literal_state == string_literal_state_t::SIZE)
-                    throw imap_error("Parser failure.");
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
+                else
+                {
+                    if (_literal_state == string_literal_state_t::SIZE)
+                        throw imap_error("Parser failure.");
 
-                cur_token = make_shared<response_token_t>();
-                cur_token->token_type = response_token_t::token_type_t::LITERAL;
-                token_list = _optional_part_state ? find_last_token_list(_optional_part) : find_last_token_list(_mandatory_part);
-                token_list->push_back(cur_token);
-                _literal_state = string_literal_state_t::SIZE;
-                _atom_state = false;
-                
+                    cur_token = make_shared<response_token_t>();
+                    cur_token->token_type = response_token_t::token_type_t::LITERAL;
+                    token_list = _optional_part_state ? find_last_token_list(_optional_part) : find_last_token_list(_mandatory_part);
+                    token_list->push_back(cur_token);
+                    _literal_state = string_literal_state_t::SIZE;
+                    _atom_state = atom_state_t::NONE;
+                }
             }
             break;
             
             case codec::RIGHT_BRACE_CHAR:
             {
-                if (_literal_state == string_literal_state_t::NONE)
-                    throw imap_error("Parser failure.");
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
+                else
+                {
+                    if (_literal_state == string_literal_state_t::NONE)
+                        throw imap_error("Parser failure.");
 
-                _literal_state = string_literal_state_t::WAITING;
+                    _literal_state = string_literal_state_t::WAITING;
+                }
             }
             break;
             
             case codec::SPACE_CHAR:
             {
-                if (_parenthesis_list_counter > 0)
-                {
-                    _atom_state = false;
-                    if (cur_token != nullptr)
-                        trim(cur_token->atom);
-                }
+                if (_atom_state == atom_state_t::QUOTED)
+                    cur_token->atom +=ch;
                 else
-                    cur_token->atom += ch;
+                {
+                    if (cur_token != nullptr)
+                    {
+                        trim(cur_token->atom);
+                        _atom_state = atom_state_t::NONE;
+                    }
+                }
+            }
+            break;
+
+            case codec::QUOTE_CHAR:
+            {
+                if (_atom_state == atom_state_t::NONE)
+                {
+                    cur_token = make_shared<response_token_t>();
+                    cur_token->token_type = response_token_t::token_type_t::ATOM;
+                    token_list = _optional_part_state ? find_last_token_list(_optional_part) : find_last_token_list(_mandatory_part);
+                    token_list->push_back(cur_token);
+                    _atom_state = atom_state_t::QUOTED;
+                }
+                else if (_atom_state == atom_state_t::QUOTED)
+                    _atom_state = atom_state_t::NONE;
             }
             break;
             
@@ -453,13 +639,13 @@ void imap::parse_response(const string& response)
                 }
                 else
                 {
-                    if (!_atom_state)
+                    if (_atom_state == atom_state_t::NONE)
                     {
                         cur_token = make_shared<response_token_t>();
                         cur_token->token_type = response_token_t::token_type_t::ATOM;
                         token_list = _optional_part_state ? find_last_token_list(_optional_part) : find_last_token_list(_mandatory_part);
                         token_list->push_back(cur_token);
-                        _atom_state = true;
+                        _atom_state = atom_state_t::PLAIN;
                     }
                     cur_token->atom += ch;
                 }
@@ -468,7 +654,6 @@ void imap::parse_response(const string& response)
     }
     if (_literal_state == string_literal_state_t::WAITING)
         _literal_state = string_literal_state_t::READING;
-    
 }
 
 void imap::reset_response_parser()
@@ -476,7 +661,7 @@ void imap::reset_response_parser()
     _optional_part.clear();
     _mandatory_part.clear();
     _optional_part_state = false;
-    _atom_state = false;
+    _atom_state = atom_state_t::NONE;
     _parenthesis_list_counter = 0;
     _literal_state = string_literal_state_t::NONE;
     _literal_bytes_read = 0;
@@ -502,6 +687,19 @@ void imap::trim_eol(string& line)
 }
 
 
+string imap::folder_tree_to_string(const list<string>& folder_tree, string delimiter) const
+{
+    string folders;
+    int elem = 0;
+    for (const auto& f : folder_tree)
+        if (elem++ < folder_tree.size())
+            folders += f + delimiter;
+        else
+            folders += f;
+    return folders;
+}
+
+
 list<shared_ptr<imap::response_token_t>>* imap::find_last_token_list(list<shared_ptr<response_token_t>>& token_list)
 {
     list<shared_ptr<response_token_t>>* list_ptr = &token_list;
@@ -515,7 +713,7 @@ list<shared_ptr<imap::response_token_t>>* imap::find_last_token_list(list<shared
 }
 
 
-imaps::imaps(const string& hostname, unsigned port) : imap(hostname, port)
+imaps::imaps(const string& hostname, unsigned port, milliseconds timeout) : imap(hostname, port, timeout)
 {
 }
 
