@@ -112,17 +112,22 @@ namespace cyng
             const std::string service = value_cast<std::string>(frame.at(1), "");
 
 #if (BOOST_ASIO_VERSION < 101200)
-            
+            //	< Boost 1.66
             boost::asio::ip::tcp::resolver resolver(s.get_io_service());
             boost::asio::ip::tcp::resolver::query query(address, service);
             boost::asio::connect(s, resolver.resolve(query), ec);
 			
-#elif (BOOST_ASIO_VERSION < 101202)
-            
+#elif (BOOST_ASIO_VERSION <= 101202)
+
+			//	< Boost 1.69
             boost::asio::ip::tcp::resolver resolver(s.get_executor().context());
 			boost::asio::connect(s, resolver.resolve(address, service), ec);
 			
 #else
+			//	> Boost 1.69
+			//
+			//	There is a problem that Boost.Asio in Boost 1.69.0 und 1.70.0 labelled with the same version
+			//
             boost::asio::ip::tcp::resolver resolver(s.get_executor());
 			boost::asio::connect(s, resolver.resolve(address, service), ec);
 
