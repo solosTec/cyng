@@ -255,7 +255,6 @@ namespace cyng
 			 * during shutdown. Otherwise this would create a deadlock.
 			 */
 			std::atomic< bool >	shutdown_;
-			//std::atomic< std::size_t >	shutdown_counter_;
 
 		};
 
