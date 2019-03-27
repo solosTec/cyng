@@ -11,7 +11,6 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 */
 
 
-//#include "mailio/mailboxes.hpp"
 #include <cyng/io/mail/mailboxes.hpp>
 
 

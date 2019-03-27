@@ -13,11 +13,11 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 
 #pragma once
 
-#include <string>
-#include <stdexcept>
-#include <vector>
-#include <tuple>
+#include <chrono>
 #include <list>
+#include <stdexcept>
+#include <string>
+#include <tuple>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/streambuf.hpp>
@@ -56,6 +56,14 @@ public:
     };
 
     /**
+    Mailbox folder tree.
+    **/
+    struct mailbox_folder
+    {
+        std::map<std::string, mailbox_folder> folders;
+    };
+
+    /**
     Available authentication methods.
     **/
     enum class auth_method_t {LOGIN};
@@ -65,9 +73,10 @@ public:
 
     @param hostname Hostname of the server.
     @param port     Port of the server.
+    @param timeout  Network timeout after which I/O operations fail. If zero, then no timeout is set i.e. I/O operations are synchronous.
     @throw *        `dialog::dialog(const string&, unsigned)`.
     **/
-    imap(const std::string& hostname, unsigned port);
+    imap(const std::string& hostname, unsigned port, std::chrono::milliseconds timeout = std::chrono::milliseconds(0));
 
     /**
     Sending the logout command and closing the connection.
@@ -100,16 +109,17 @@ public:
     Some servers report success if a message with the given number does not exist, so the method returns with the empty `msg`. Other considers
     fetching non-existing message to be an error, and an exception is thrown.
     
-    @param mailbox    Mailbox to fetch from.
-    @param message_no Number of the message to fetch.
-    @param msg        Message to store the result.
-    @throw imap_error Fetching message failure.
-    @throw imap_error Parsing failure.
-    @throw *          `parse_tag_result(const string&)`, `select(const string&)`, `parse_response(const string&)`,
-                      `dialog::send(const string&)`, `dialog::receive()`, `message::parse(const string&, bool)`.
-    @todo             Add server error messages to exceptions.
+    @param mailbox     Mailbox to fetch from.
+    @param message_no  Number of the message to fetch.
+    @param msg         Message to store the result.
+    @param header_only Flag if only the message header should be fetched.
+    @throw imap_error  Fetching message failure.
+    @throw imap_error  Parsing failure.
+    @throw *           `parse_tag_result(const string&)`, `select(const string&)`, `parse_response(const string&)`,
+                       `dialog::send(const string&)`, `dialog::receive()`, `message::parse(const string&, bool)`.
+    @todo              Add server error messages to exceptions.
     **/
-    void fetch(const std::string& mailbox, unsigned long message_no, message& msg);
+    void fetch(const std::string& mailbox, unsigned long message_no, message& msg, bool header_only = false);
 
     /**
     Getting the mailbox statistics.
@@ -134,6 +144,48 @@ public:
     @todo             Add server error messages to exceptions.
     **/
     void remove(const std::string& mailbox, unsigned long message_no);
+
+    /**
+    Creating folder.
+
+    @param folder_tree Folder to be created.
+    @return            True if created, false if not.
+    @throw imap_error  Parsing failure.
+    @throw imap_error  Creating folder failure.
+    @throw *           `folder_delimiter()`, `parse_tag_result(const string&)`, `dialog::send(const string&)`, `dialog::receive()`.
+    **/
+    bool create_folder(const std::list<std::string>& folder_tree);
+
+    /**
+    Listing folders.
+
+    @param folder_name Folder to list.
+    @return            Subfolder tree of the folder.
+    **/
+    mailbox_folder list_folders(const std::list<std::string>& folder_name);
+
+    /**
+    Deleting a folder.
+
+    @param folder_name Folder to delete.
+    @return            True if deleted, false if not.
+    @throw imap_error  Parsing failure.
+    @throw imap_error  Deleting folder failure.
+    @throw *           `folder_delimiter()`, `parse_tag_result(const string&)`, `dialog::send(const string&)`, `dialog::receive()`.
+    **/
+    bool delete_folder(const std::list<std::string>& folder_name);
+
+    /**
+    Renaming a folder.
+
+    @param old_name    Old name of the folder.
+    @param new_name    New name of the folder.
+    @return            True if renaming is successful, false if not.
+    @throw imap_error  Parsing failure.
+    @throw imap_error  Renaming folder failure.
+    @throw *           `folder_delimiter()`, `parse_tag_result(const string&)`, `dialog::send(const string&)`, `dialog::receive()`.
+    **/
+    bool rename_folder(const std::list<std::string>& old_name, const std::list<std::string>& new_name);
 
 protected:
 
@@ -169,6 +221,15 @@ protected:
     @todo             Add server error messages to exceptions.
     **/
     void select(const std::string& mailbox);
+
+    /**
+    Determining folder delimiter of a mailbox.
+
+    @return           Folder delimiter.
+    @throw imap_error Determining folder delimiter failure.
+    @throw *          `parse_tag_result(const string&)`, `dialog::send(const string&)`, `dialog::receive()`.
+    **/
+    std::string folder_delimiter();
 
     /**
     Parsing a line into tag, result and response which is the rest of the line.
@@ -209,6 +270,15 @@ protected:
     @param line Line to trim.
     **/
     void trim_eol(std::string& line);
+
+    /**
+    Formatting folder tree to string.
+
+    @param folder_tree Folders to format into string.
+    @param delimiter   Delimiter of the folders.
+    @return            Formatted string.
+    **/
+    std::string folder_tree_to_string(const std::list<std::string>& folder_tree, std::string delimiter) const;
 
     /**
     Dialog to use for send/receive operations.
@@ -281,7 +351,7 @@ protected:
     /**
     Parser state if an atom is reached.
     **/
-    bool _atom_state;
+    enum class atom_state_t {NONE, PLAIN, QUOTED} _atom_state;
     
     /**
     Counting open parenthesis of a parenthized list, thus it also keeps parser state if a parenthesized list is reached.
@@ -326,7 +396,7 @@ protected:
 /**
 Secure version of `imap` class.
 **/
-class imaps : public imap
+class MAILIO_EXPORT imaps : public imap
 {
 public:
 
@@ -342,9 +412,10 @@ public:
 
     @param hostname Hostname of the server.
     @param port     Port of the server.
+    @param timeout  Network timeout after which I/O operations fail. If zero, then no timeout is set i.e. I/O operations are synchronous.
     @throw *        `imap::imap(const std::string&, unsigned)`.
     **/
-    imaps(const std::string& hostname, unsigned port);
+    imaps(const std::string& hostname, unsigned port, std::chrono::milliseconds timeout = std::chrono::milliseconds(0));
 
     /**
     Sending the logout command and closing the connection.

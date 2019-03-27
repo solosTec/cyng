@@ -18,6 +18,7 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 #include <map>
 #include <utility>
 #include <istream>
+#include <chrono>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/streambuf.hpp>
@@ -75,9 +76,10 @@ public:
 
     @param hostname Hostname of the server.
     @param port     Port of the server.
+    @param timeout  Network timeout after which I/O operations fail. If zero, then no timeout is set i.e. I/O operations are synchronous.
     @throw *        `dialog::dialog(const string&, unsigned)`.
     **/
-    pop3(const std::string& hostname, unsigned port);
+    pop3(const std::string& hostname, unsigned port, std::chrono::milliseconds timeout = std::chrono::milliseconds(0));
 
     /**
     Sending the quit command and closing the connection.
@@ -129,13 +131,17 @@ public:
 
     /**
     Fetching a message.
+
+    The flag for fetching the header only uses a different POP3 command (than for retrieving the full messsage) which is not mandatory by POP3. In case the
+    command fails, the method will not report an error but rather the `msg` parameter will be empty.
     
-    @param message_no Message number to fetch.
-    @param msg        Fetched message.
-    @throw pop3_error Fetching message failure.
+    @param message_no  Message number to fetch.
+    @param msg         Fetched message.
+    @param header_only Flag if only the message header should be fetched.
+    @throw pop3_error  Fetching message failure.
     @throw *          `parse_status(const string&)`, `dialog::send(const string&)`, `dialog::receive()`.
     **/
-    void fetch(unsigned long message_no, message& msg);
+    void fetch(unsigned long message_no, message& msg, bool header_only = false);
 
     /**
     Removing a message in the mailbox.
@@ -186,7 +192,7 @@ protected:
 /**
 Secure version of POP3 client.
 **/
-class pop3s : public pop3
+class MAILIO_EXPORT pop3s : public pop3
 {
 public:
 
@@ -202,9 +208,10 @@ public:
 
     @param hostname Hostname of the server.
     @param port     Port of the server.
+    @param timeout  Network timeout after which I/O operations fail. If zero, then no timeout is set i.e. I/O operations are synchronous.
     @throw *        `pop3::pop3(const string&, unsigned)`.
     **/
-    pop3s(const std::string& hostname, unsigned port);
+    pop3s(const std::string& hostname, unsigned port, std::chrono::milliseconds timeout = std::chrono::milliseconds(0));
 
     /**
     Sending the quit command and closing the connection.
