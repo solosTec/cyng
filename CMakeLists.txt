@@ -2,7 +2,7 @@
 #
 #
 # CMake compatibility issues: don't modify this, please!
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.10)
 
                                                      
 #                                                                                                        
@@ -38,8 +38,8 @@ math(EXPR PATCH_LEVEL "(${THIS_YEAR} * 1000) + ${PATCH_LEVEL}")
 project(CYNG 
 	VERSION 0.8.${PATCH_LEVEL}.1
 	LANGUAGES CXX C
-	DESCRIPTION "dynamic datatypes in C++"
-	HOMEPAGE_URL "https://solostec.ch")
+	DESCRIPTION "dynamic datatypes in C++")
+#	HOMEPAGE_URL "https://solostec.ch")
 
 string(TIMESTAMP THIS_YEAR "%Y")
 set (${PROJECT_NAME}_COPYRIGHT_YEAR ${THIS_YEAR})
