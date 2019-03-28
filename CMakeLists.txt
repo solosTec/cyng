@@ -149,6 +149,16 @@ if(NOT DEFINED ${PROJECT_NAME}_BUILD_TEST)
 endif()
 
 #
+#	The path to cmake modules
+#
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/src/modules/")
+
+#
+#	setup compiler features
+#
+include(CPPFeatureSupport)
+
+#
 #	setup C++ compiler
 #
 if (CMAKE_COMPILER_IS_GNUCXX)
@@ -454,11 +464,6 @@ message(STATUS "** SQLite3 Version   : ${SQLite3_VERSION}")
 message(STATUS "** SQLite3 Include   : ${SQLite3_INCLUDE_DIR}")
 message(STATUS "** SQLite3 Libraries : ${SQLite3_LIBRARY}")
 
-
-#
-#	The path to cmake modules
-#
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/src/modules/")
 
 #
 #	Find UnixODBC library
