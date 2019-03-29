@@ -14,7 +14,7 @@
 
 namespace cyng
 {
-#if !defined(CYNG_STD_STRING_VIEW_OFF)
+#if !defined(_CYNG_CPP_SUPPORT_N3921)
     std::vector<std::string_view> split(std::string_view str, std::string_view delims);
 #endif
 	std::vector<boost::string_view> split(boost::string_view str, boost::string_view delims);

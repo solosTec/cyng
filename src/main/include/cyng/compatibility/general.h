@@ -9,28 +9,35 @@
 
 #include <CYNG_project_info.h>
 
-#if defined(CYNG_STD_STRING_VIEW_OFF)
-#include <boost/utility/string_view.hpp>
-#else
+//	string_view
+#if defined(_CYNG_CPP_SUPPORT_N3921)	
+
 #include <string_view>
 #include <string>
+#if defined(_CYNG_CPP_SUPPORT_N3642)
 using namespace std::string_literals; // enables s-suffix for std::string literals
+#endif
+
+#else
+
+#include <boost/utility/string_view.hpp>
 #endif
 
 namespace cyng 
 {
-#if defined(CYNG_STD_STRING_VIEW_OFF)
-    using string_view = boost::string_view;
+#if defined(_CYNG_CPP_SUPPORT_N3921)
     
-#define CYNG_STRING_LITERAL(x)    \
-    std::string(x) 
-    
-    
-#else
-    using string_view = std::string_view;
-    
+	using string_view = std::string_view;
+
 #define CYNG_STRING_LITERAL(x)    \
     x ## s 
+
+#else
+
+	using string_view = boost::string_view;
+
+#define CYNG_STRING_LITERAL(x)    \
+    std::string(x) 
     
 #endif
     

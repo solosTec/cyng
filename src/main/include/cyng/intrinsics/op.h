@@ -17,10 +17,10 @@ namespace cyng
 	 * VM op codes. 
 	 * Inspired from the book "Compiler Construction" by Anthony J. Dos Reis.
 	 */
-#if defined(CYNG_LEGACY_MODE_ON)
-	enum code : std::uint16_t	
+#if defined(_CYNG_CPP_SUPPORT_N2347)
+	enum class code : std::uint16_t
 #else
-	enum class code : std::uint16_t	
+	enum code : std::uint16_t
 #endif
 	{
 		PUSH = 0,	//!<  	push, mem[--sp] = mem[pc]

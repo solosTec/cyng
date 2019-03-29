@@ -24,20 +24,25 @@ namespace cyng
 		{
 			using type = T;
 			using tag =  std::integral_constant<std::size_t, std::numeric_limits<std::size_t>::max()>;
-#if defined(CYNG_LEGACY_MODE_ON)
-			const static char name[];
-#else
+#if defined(_CYNG_CPP_SUPPORT_N2235)
 			//	C++17 allows constexpr string_view
 			constexpr static char name[] = "user-defined";
+#else
+			const static char name[];
 #endif
 		};
-#if defined(CYNG_LEGACY_MODE_ON)
+
+#if !defined(_CYNG_CPP_SUPPORT_N2235)
 		template <typename T>
 		const char type_tag<T>::name[] = "user-defined";
 #endif
 		
 		
-		enum /*class*/ predef_type_code : std::size_t
+		enum 
+#if defined(_CYNG_CPP_SUPPORT_N2347)
+		class 
+#endif
+		predef_type_code: std::size_t
 		{
 			PREDEF_TABLE = 0x100,
 			PREDEF_DB,
@@ -53,6 +58,6 @@ namespace cyng
 	}
 }
 
-#endif	//	CYNG_TRAITS_HPP
+#endif	
 
 

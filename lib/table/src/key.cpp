@@ -11,19 +11,12 @@ namespace cyng
 {
 	namespace store
 	{
-// 		key::key()
-// 			: pk_()
-// 			, generation_(0)
-// 		{}
+		//	intentinally left blank
 	}
 
 	namespace traits
 	{
-
-// #if defined(CYNG_LEGACY_MODE_ON)
-// 		const char type_tag<cyng::store::key>::name[] = "key";
-// #endif
-	}	// traits	
-
+		//	intentinally left blank
+	}
 }
 

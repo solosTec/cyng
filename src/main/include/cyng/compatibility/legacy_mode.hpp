@@ -16,31 +16,43 @@ namespace cyng
 	namespace meta
 	{
 		
-#if defined(CYNG_LEGACY_MODE_ON)
+#if defined(_CYNG_CPP_SUPPORT_N3658)
+
+		/**
+		 * Alias in namespace cyng::meta
+		 */
+		template<std::size_t... Ints>
+		using index_sequence = std::integer_sequence<std::size_t, Ints...>;
+
+		template<std::size_t N>
+		using make_index_sequence = std::make_integer_sequence<std::size_t, N>;
+
+#else
+
 		/**
 		 * Define our own sequence.
-		 * 
+		 *
 		 * @code
-		 * std::make_index_sequence<N> is 
+		 * std::make_index_sequence<N> is
 		 * @endcode
-		 * 
+		 *
 		 * is equal to
-		 * 
+		 *
 		 * @code
 		 * generate_sequence<N>::type or
 		 * make_index_sequence<N>
 		 * @endcode
 		 */
 		template<std::size_t ...>
-		struct index_sequence 
+		struct index_sequence
 		{ };
 
 		template<std::size_t N, std::size_t ...S>
-		struct generate_index_sequence : generate_index_sequence<N-1, N-1, S...> 
+		struct generate_index_sequence : generate_index_sequence<N - 1, N - 1, S...>
 		{ };
 
 		template<std::size_t ...S>
-		struct generate_index_sequence<0, S...> 
+		struct generate_index_sequence<0, S...>
 		{
 			using type = index_sequence<S...>;
 		};
@@ -48,15 +60,6 @@ namespace cyng
 		template<std::size_t ...S>
 		using make_index_sequence = typename generate_index_sequence<S...>::type;
 
-#else
-		/**
-		 * Alias for namespace cyng::meta
-		 */
-		template<std::size_t... Ints>
-		using index_sequence = std::integer_sequence<std::size_t, Ints...>;
-		
-		template<std::size_t N>
-		using make_index_sequence = std::make_integer_sequence<std::size_t, N>;
 #endif
 		
 	}	

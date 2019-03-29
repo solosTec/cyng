@@ -28,25 +28,20 @@ namespace cyng
 
 	bool test_async_001()
 	{
-#if defined(CYNG_STD_SHARED_MUTEX_OFF)
-		std::cout << "CYNG_STD_SHARED_MUTEX_OFF" << std::endl;
-#elif defined(CYNG_STD_SHARED_MUTEX_ON)    
-		std::cout << "CYNG_STD_SHARED_MUTEX_ON" << std::endl;
+#if defined(_CYNG_CPP_SUPPORT_N4508)
+		std::cout << "std::shared_mutex support" << std::endl;
 #else 
-
-#error CYNG_STD_SHARED_MUTEX_... undefined
+		std::cout << "no std::shared_mutex supportF" << std::endl;
 
 #endif    
 		using tpl = std::tuple<int, char, long, std::string>;
 		std::cout << meta::size<tpl>::value << std::endl;
 		BOOST_CHECK_EQUAL(meta::size<tpl>::value, std::tuple_size<tpl>::value);
 // 		
-#if defined(CYNG_LEGACY_MODE_ON)
-		std::cout << meta::apply(add, std::make_pair(1, 2))  << '\n';
-		//	support required to get the right return value type
-// 		std::function<int(int,int)> f = add;
-// 		std::cout << meta::cyng_apply(f, std::make_pair(1, 2)) << std::endl;
+#if defined(_CYNG_CPP_SUPPORT_N3915)
+		std::cout << meta::apply(add, std::make_pair(1, 2)) << '\n';
 #else
+		//	support required to get the right return value type
 		std::cout << meta::apply(add, std::make_pair(1, 2)) << '\n';
 #endif
 

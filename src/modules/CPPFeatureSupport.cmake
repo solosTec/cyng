@@ -3,6 +3,7 @@
 # Available for gcc, clang and msvc
 # see https://en.cppreference.com/w/cpp/compiler_support
 # see https://clang.llvm.org/cxx_status.html
+# see https://devblogs.microsoft.com/cppblog/announcing-msvc-conforms-to-the-c-standard/
 #
 # 14.0  => Visual Studio 2005 version 8.0
 # 15.0  => Visual Studio 2008 version 9.0
@@ -115,10 +116,12 @@ define_compiler_support("P1209R0" "Consistent container erasure" "9.0" "8.0" "99
 
 #
 #   C++17 features
+#	g++ -std=c++17
+#	cl /std:c++latest
 #
 message(STATUS "** test ${CMAKE_CXX_COMPILER_ID} compiler ${CMAKE_CXX_COMPILER_VERSION} for C++17 features")
 # not really sure about support of N3915 - maybe C++ 2015 CTP, GCC 4.9.2, and Clang 3.5 are sufficient
-define_compiler_support("N3915" "apply() call a function with arguments from a tuple" "5.1" "3.7" "19.16" "999")
+define_compiler_support("N3915" "apply() call a function with arguments from a tuple" "7.1" "5.0" "19.14" "999")
 define_compiler_support("N3922" "New auto rules for direct-list-initialization" "5.0" "3.8" "19.0" "17.0")
 define_compiler_support("N3928" "static_assert with no message" "6.0" "2.5" "19.10" "18.0")
 define_compiler_support("N4051" "typename in a template template parameter" "5.0" "3.5" "19.0" "17.0")
@@ -176,6 +179,8 @@ define_compiler_support("P0298R3" "std::byte" "7.0" "5.0" "19.11" "999")
 
 #
 #   C++14 features
+#	g++ -std=c++14
+#	cl /std:c++latest
 #
 message(STATUS "** test ${CMAKE_CXX_COMPILER_ID} compiler ${CMAKE_CXX_COMPILER_VERSION} for C++14 features")
 define_compiler_support("N3323" "Tweaked wording for contextual conversions" "4.9" "3.4" "18.0" "16.0")
@@ -200,12 +205,16 @@ define_compiler_support("N3642" "User-defined literals for <chrono> and <string>
 define_compiler_support("N3644" "Null forward iterators" "5.0" "3.4" "19.0" "999")
 define_compiler_support("N3654" "std::quoted" "5.0" "3.4" "19.0" "999")
 define_compiler_support("N3657" "Heterogeneous associative lookup" "5.0" "3.4" "19.0" "999")
-define_compiler_support("N3658" "std::integer_sequence" "5.0" "3.4" "19.0" "999")
+#define_compiler_support("N3658" "std::integer_sequence" "5.0" "3.4" "19.0" "999")
+define_compiler_support("N3658" "integer_sequence, index_sequence, make_index_sequence etc., to allow tag dispatch on integer packs." "6.3" "5.0" "19.4" "999")
 define_compiler_support("N3659" "std::shared_timed_mutex" "5.0" "3.4" "19.0" "999")
 define_compiler_support("N3668" "std::exchange" "5.0" "3.4" "19.0" "999")
 define_compiler_support("N3669" "fixing constexpr member functions without const" "5.0" "3.4" "19.0" "999")
 define_compiler_support("N3670" "std::get<T>()" "5.0" "3.4" "19.0" "999")
 define_compiler_support("N3671" "Dual-Range std::equal, std::is_permutation, std::mismatch" "5.0" "3.4" "19.0" "999")
+# intel support unknwon
+define_compiler_support("N3656" "make_unique (Revision 1)" "5.1" "5.0" "19.14" "999")
+define_compiler_support("N3857" "std::promise" "5.1" "5.0" "19.14" "999")
 
 #
 #   C++11 features

@@ -151,11 +151,10 @@ namespace cyng
 
 		using class_t = class_impl< T[N] >;
 		
-#if defined(CYNG_LEGACY_MODE_ON)
-// 		using indices = typename generate_sequence<N>::type;
-		using indices = meta::make_index_sequence<N>;
-#else
+#if defined(_CYNG_CPP_SUPPORT_N3658)
 		using indices = typename std::make_index_sequence<N>;
+#else
+		using indices = meta::make_index_sequence<N>;
 #endif
 
 		public:
@@ -170,15 +169,15 @@ namespace cyng
 			: wrapper(v, indices{})
 			{}
 			
-#if defined(CYNG_LEGACY_MODE_ON)
+#if defined(_CYNG_CPP_SUPPORT_N3658)
 			template<std::size_t... I>
-			wrapper(T const(&v)[N], typename meta::generate_index_sequence<N>::type)
-			: held_{ v[I]... }
+			wrapper(T const(&v)[N], std::index_sequence<I...>)
+				: held_{ v[I]... }
 			{}
 #else
 			template<std::size_t... I>
-			wrapper(T const(&v)[N], std::index_sequence<I...>)
-			: held_{ v[I]... }
+			wrapper(T const(&v)[N], typename meta::generate_index_sequence<N>::type)
+				: held_{ v[I]... }
 			{}
 #endif
 

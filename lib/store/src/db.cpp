@@ -22,7 +22,11 @@ namespace cyng
 		db::db()
 		: tables_(cyng::table::make_meta_table<1, 3>("db"
 			, { "name", "table", "created", "state" }
+#if defined(_CYNG_CPP_SUPPORT_N2347)
+			, { TC_STRING, static_cast<std::size_t>(traits::predef_type_code::PREDEF_TABLE), TC_TIME_POINT, TC_UINT32 }
+#else
 			, { TC_STRING, traits::PREDEF_TABLE, TC_TIME_POINT, TC_UINT32 }
+#endif
 			, { 64, 0, 0, 0 }))
 		, m_()
 		{}
@@ -61,25 +65,31 @@ namespace cyng
 			, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
-#if defined(CYNG_STD_APPLY_OFF)
+
+#if defined(_CYNG_CPP_SUPPORT_N3915)
+			return access([&](table* tbl)->bool {
+				return tbl->insert(key, data, generation, source);
+			}, write_access(name));
+#else
 			bool b = false;
 			access([&](table* tbl)->void {
 
 				b = tbl->insert(key, data, generation, source);
 
-			}, write_access(name));
+		}, write_access(name));
 			return b;
-#else
-			return access([&](table* tbl)->bool {
-				return tbl->insert(key, data, generation, source);
-			}, write_access(name));
 #endif
 		}
 
 		bool db::erase(std::string const& name, cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
-#if defined(CYNG_STD_APPLY_OFF)
+
+#if defined(_CYNG_CPP_SUPPORT_N3915)
+			return access([&](table* tbl)->bool {
+				return tbl->erase(key, source);
+			}, write_access(name));
+#else
 			bool b = false;
 			access([&](table* tbl)->void {
 
@@ -87,17 +97,18 @@ namespace cyng
 
 			}, write_access(name));
 			return b;
-#else
-			return access([&](table* tbl)->bool {
-				return tbl->erase(key, source);
-			}, write_access(name));
 #endif
 		}
 
 		bool db::modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
-#if defined(CYNG_STD_APPLY_OFF)
+
+#if defined(_CYNG_CPP_SUPPORT_N3915)
+			return access([&](table* tbl)->bool {
+				return tbl->modify(key, std::move(attr), source);
+			}, write_access(name));
+#else
 			bool b = false;
 			access([&](table* tbl)->void {
 
@@ -105,17 +116,18 @@ namespace cyng
 
 			}, write_access(name));
 			return b;
-#else
-			return access([&](table* tbl)->bool {
-				return tbl->modify(key, std::move(attr), source);
-			}, write_access(name));
 #endif
 		}
 
 		bool db::modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
-#if defined(CYNG_STD_APPLY_OFF)
+
+#if defined(_CYNG_CPP_SUPPORT_N3915)
+			return access([&](table* tbl)->bool {
+				return tbl->modify(key, std::move(param), source);
+			}, write_access(name));
+#else
 			bool b = false;
 			access([&](table* tbl)->void {
 
@@ -123,10 +135,6 @@ namespace cyng
 
 			}, write_access(name));
 			return b;
-#else
-			return access([&](table* tbl)->bool {
-				return tbl->modify(key, std::move(param), source);
-			}, write_access(name));
 #endif
 		}
 
@@ -248,7 +256,7 @@ namespace cyng
 	namespace traits
 	{
 	
-#if defined(CYNG_LEGACY_MODE_ON)
+#if !defined(_CYNG_CPP_SUPPORT_N2235)
 		const char type_tag<cyng::store::db>::name[] = "db";
 #endif
 	}	// traits		
