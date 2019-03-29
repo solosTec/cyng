@@ -100,7 +100,7 @@ namespace cyng
 
 
 //
-//  promise
+//  promise 
 //
 
 #if defined(__CPP_SUPPORT_N3857)
@@ -110,8 +110,12 @@ namespace cyng
 {
 	namespace async
 	{
-		template < typename R >
-		using promise = std::promise< R >;
+        //  5.4.0 emits a compiler error: conflicting declaration of template ...
+        //  Since this is a problem only for this compiler version I assume a bug.
+        //  The alias wasn't used - so it was safe to remove it - but it would be nice
+        //  to found a solution for this particular problem.
+// 		template < typename R >
+// 		using promise = std::promise< R >;
 	}
 }
 
@@ -122,8 +126,8 @@ namespace cyng
 {
 	namespace async
 	{
-		template < typename R >
-		using promise = boost::promise< R >;
+// 		template < typename R >
+// 		using promise = boost::promise< R >;
 	}
 }
 
