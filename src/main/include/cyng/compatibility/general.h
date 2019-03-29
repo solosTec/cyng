@@ -10,11 +10,11 @@
 #include <CYNG_project_info.h>
 
 //	string_view
-#if defined(_CYNG_CPP_SUPPORT_N3921)	
+#if defined(__CPP_SUPPORT_N3921)	
 
 #include <string_view>
 #include <string>
-#if defined(_CYNG_CPP_SUPPORT_N3642)
+#if defined(__CPP_SUPPORT_N3642)
 using namespace std::string_literals; // enables s-suffix for std::string literals
 #endif
 
@@ -25,7 +25,7 @@ using namespace std::string_literals; // enables s-suffix for std::string litera
 
 namespace cyng 
 {
-#if defined(_CYNG_CPP_SUPPORT_N3921)
+#if defined(__CPP_SUPPORT_N3921)
     
 	using string_view = std::string_view;
 

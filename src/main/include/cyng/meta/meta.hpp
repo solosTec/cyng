@@ -13,7 +13,7 @@
 #include <tuple>
 
 //	apply
-#if !defined(_CYNG_CPP_SUPPORT_N3915)	
+#if !defined(__CPP_SUPPORT_N3915)	
 
 //#if defined(CYNG_STD_APPLY_OFF)
 #include <boost/fusion/functional/invocation/invoke_function_object.hpp>
@@ -74,7 +74,7 @@ namespace cyng
 		
 	
 //	BOOST_NO_CXX17_STD_APPLY doesn't fit
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 		
 		template <class F, class Sequence>
 		constexpr decltype(auto)

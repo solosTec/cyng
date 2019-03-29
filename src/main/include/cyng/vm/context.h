@@ -116,13 +116,13 @@ namespace cyng
 		{
 			using type = cyng::vm_call;
 			using tag =  std::integral_constant<std::size_t, 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 				static_cast<std::size_t>(traits::predef_type_code::PREDEF_VM_CALL)
 #else
 				PREDEF_VM_CALL
 #endif
 			>;
-#if defined(_CYNG_CPP_SUPPORT_N2235)
+#if defined(__CPP_SUPPORT_N2235)
 			constexpr static char name[] = "vm-call";
 #else
 			const static char name[];
@@ -131,7 +131,7 @@ namespace cyng
 		
 		template <>
 		struct reverse_type < 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 			static_cast<std::size_t>(traits::predef_type_code::PREDEF_VM_CALL)
 #else
 			PREDEF_VM_CALL 

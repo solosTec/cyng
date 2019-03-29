@@ -53,7 +53,7 @@ namespace cyng
 			/**
 			 * generic access on tables
 			 */
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 			template <class F, typename ...Tbls>
 			constexpr decltype(auto)
 			access(F&& f, Tbls&& ... tbls)
@@ -99,7 +99,7 @@ namespace cyng
 				//
 				//	call function F with unpacked table pointers
 				//
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 				return cyng::meta::apply(std::forward<F>(f), tbl_list);
 #else
 				cyng::meta::apply(f, tbl_list);
@@ -186,7 +186,7 @@ namespace cyng
 			bool modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source);
 
 
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 			template <class F, typename ...Tbls>
 			bool multi_modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source, F&& f, Tbls&& ... tbls)
 #else
@@ -220,7 +220,7 @@ namespace cyng
 				//
 				//	call function F with unpacked table pointers
 				//
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 				return cyng::meta::apply(std::forward<F>(f), std::tuple_cat(std::make_tuple(key, param, source), tbl_list));
 #else
 				return cyng::meta::apply(f, std::tuple_cat(std::make_tuple(key, param, source), tbl_list));
@@ -337,14 +337,14 @@ namespace cyng
 		{
 			using type = cyng::store::db;
 			using tag =  std::integral_constant<std::size_t, 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 				static_cast<std::size_t>(traits::predef_type_code::PREDEF_DB)
 #else
 				PREDEF_DB
 #endif
 			>;
 
-#if defined(_CYNG_CPP_SUPPORT_N2235)
+#if defined(__CPP_SUPPORT_N2235)
 			constexpr static char name[] = "db";
 #else
 			const static char name[];
@@ -353,7 +353,7 @@ namespace cyng
 		
 		template <>
 		struct reverse_type < 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 			static_cast<std::size_t>(traits::predef_type_code::PREDEF_DB)
 #else
 			PREDEF_DB 

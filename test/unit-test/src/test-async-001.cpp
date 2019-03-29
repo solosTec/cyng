@@ -28,7 +28,7 @@ namespace cyng
 
 	bool test_async_001()
 	{
-#if defined(_CYNG_CPP_SUPPORT_N4508)
+#if defined(__CPP_SUPPORT_N4508)
 		std::cout << "std::shared_mutex support" << std::endl;
 #else 
 		std::cout << "no std::shared_mutex supportF" << std::endl;
@@ -38,7 +38,7 @@ namespace cyng
 		std::cout << meta::size<tpl>::value << std::endl;
 		BOOST_CHECK_EQUAL(meta::size<tpl>::value, std::tuple_size<tpl>::value);
 // 		
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 		std::cout << meta::apply(add, std::make_pair(1, 2)) << '\n';
 #else
 		//	support required to get the right return value type

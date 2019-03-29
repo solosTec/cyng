@@ -499,7 +499,7 @@ namespace cyng
 			}
 			catch (boost::numeric::positive_overflow const& ex) {
 				std::cerr << std::endl << "*** error: " << ex.what() << std::endl;
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 				const std::uint32_t tag = static_cast<std::uint32_t>(traits::predef_type_code::PREDEF_CUSTOM);
 #else
 				const std::uint32_t tag = traits::PREDEF_CUSTOM;

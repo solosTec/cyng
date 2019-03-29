@@ -222,14 +222,14 @@ namespace cyng
 		{
 			using type = cyng::store::table;
 			using tag =  std::integral_constant<std::size_t, 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 				static_cast<std::size_t>(traits::predef_type_code::PREDEF_TABLE)
 #else
 				PREDEF_TABLE;
 #endif
 			>;
 
-#if defined(_CYNG_CPP_SUPPORT_N2235)
+#if defined(__CPP_SUPPORT_N2235)
 			constexpr static char name[] = "table";
 #else
 			const static char name[];
@@ -238,7 +238,7 @@ namespace cyng
 		
 		template <>
 		struct reverse_type < 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 			static_cast<std::size_t>(traits::predef_type_code::PREDEF_TABLE)
 #else
 			PREDEF_TABLE

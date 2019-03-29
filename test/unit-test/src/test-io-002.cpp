@@ -38,27 +38,27 @@ namespace cyng
 		{
 			using type = custom;
 			using tag = std::integral_constant<std::size_t, 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 				static_cast<std::size_t>(traits::predef_type_code::PREDEF_CUSTOM)
 #else
 				PREDEF_CUSTOM
 #endif
 			>;
 
-#if defined(_CYNG_CPP_SUPPORT_N2235)
+#if defined(__CPP_SUPPORT_N2235)
 			constexpr static char name[] = "custom";
 #else
 			const static char name[];
 #endif
 		};
 
-#if !defined(_CYNG_CPP_SUPPORT_N2235)
+#if !defined(__CPP_SUPPORT_N2235)
 		const char type_tag<custom>::name[] = "custom";
 #endif
 
 		template <>
 		struct reverse_type < 
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 			static_cast<std::size_t>(traits::predef_type_code::PREDEF_CUSTOM)
 #else
 			PREDEF_CUSTOM 

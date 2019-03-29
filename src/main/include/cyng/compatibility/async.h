@@ -14,7 +14,7 @@
 //
 
 //	std::shared_mutex (untimed)
-#if defined(_CYNG_CPP_SUPPORT_N4508)	
+#if defined(__CPP_SUPPORT_N4508)	
 #include <shared_mutex>
 #include <mutex>
 #include <future>
@@ -103,7 +103,7 @@ namespace cyng
 //  promise
 //
 
-#if defined(_CYNG_CPP_SUPPORT_N3857)
+#if defined(__CPP_SUPPORT_N3857)
 
 #include <future>
 namespace cyng

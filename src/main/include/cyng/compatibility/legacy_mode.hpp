@@ -16,7 +16,7 @@ namespace cyng
 	namespace meta
 	{
 		
-#if defined(_CYNG_CPP_SUPPORT_N3658)
+#if defined(__CPP_SUPPORT_N3658)
 
 		/**
 		 * Alias in namespace cyng::meta

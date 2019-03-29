@@ -22,7 +22,7 @@ namespace cyng
 		db::db()
 		: tables_(cyng::table::make_meta_table<1, 3>("db"
 			, { "name", "table", "created", "state" }
-#if defined(_CYNG_CPP_SUPPORT_N2347)
+#if defined(__CPP_SUPPORT_N2347)
 			, { TC_STRING, static_cast<std::size_t>(traits::predef_type_code::PREDEF_TABLE), TC_TIME_POINT, TC_UINT32 }
 #else
 			, { TC_STRING, traits::PREDEF_TABLE, TC_TIME_POINT, TC_UINT32 }
@@ -66,7 +66,7 @@ namespace cyng
 		{
 			shared_lock_t ul(this->m_);
 
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 			return access([&](table* tbl)->bool {
 				return tbl->insert(key, data, generation, source);
 			}, write_access(name));
@@ -85,7 +85,7 @@ namespace cyng
 		{
 			shared_lock_t ul(this->m_);
 
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 			return access([&](table* tbl)->bool {
 				return tbl->erase(key, source);
 			}, write_access(name));
@@ -104,7 +104,7 @@ namespace cyng
 		{
 			shared_lock_t ul(this->m_);
 
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 			return access([&](table* tbl)->bool {
 				return tbl->modify(key, std::move(attr), source);
 			}, write_access(name));
@@ -123,7 +123,7 @@ namespace cyng
 		{
 			shared_lock_t ul(this->m_);
 
-#if defined(_CYNG_CPP_SUPPORT_N3915)
+#if defined(__CPP_SUPPORT_N3915)
 			return access([&](table* tbl)->bool {
 				return tbl->modify(key, std::move(param), source);
 			}, write_access(name));
@@ -256,7 +256,7 @@ namespace cyng
 	namespace traits
 	{
 	
-#if !defined(_CYNG_CPP_SUPPORT_N2235)
+#if !defined(__CPP_SUPPORT_N2235)
 		const char type_tag<cyng::store::db>::name[] = "db";
 #endif
 	}	// traits		

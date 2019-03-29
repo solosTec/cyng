@@ -108,7 +108,7 @@ namespace cyng
 	namespace traits
 	{
 	
-#if !defined(_CYNG_CPP_SUPPORT_N2235)
+#if !defined(__CPP_SUPPORT_N2235)
 		const char type_tag<cyng::vm_call>::name[] = "vm-call";
 #endif
 	}	// traits		

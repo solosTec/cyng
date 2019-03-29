@@ -15,7 +15,7 @@
 
 namespace cyng 
 {
-#if defined(_CYNG_CPP_SUPPORT_N3642)
+#if defined(__CPP_SUPPORT_N3642)
     using namespace std::string_literals;
 #endif
 
