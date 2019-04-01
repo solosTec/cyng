@@ -14,6 +14,8 @@ set (unlog_filter
 	tools/unlog/src/filters/hexdump_cpp.cpp
 	tools/unlog/src/filters/cu.h
 	tools/unlog/src/filters/cu.cpp
+	tools/unlog/src/filters/word.h
+	tools/unlog/src/filters/word.cpp
 )
 
 source_group("filter" FILES ${unlog_filter})
