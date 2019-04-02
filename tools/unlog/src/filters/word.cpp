@@ -49,17 +49,38 @@ namespace cyng
 					if ((line.size() > 12) && (line.at(7) == ' ')) {
 
 						if (verbose_ > 5) {
-							std::cout << "process line #" << line_counter << '\t' << '[' << line.substr(8) << ']' << std::endl;
+							std::cout 
+								<< "process line #" 
+								<< std::dec
+								<< line_counter
+								<< '\t' 
+								<< '[' 
+								<< line.substr(8) 
+								<< ']' 
+								<< std::endl
+								;
 						}
 
 						const auto values = split(line.substr(8), " \t");
 						for (auto const& v : values) {
 							if (!v.empty()) {
 								try {
-									if (verbose_ > 8) {
-										std::cout << "process line #" << line_counter << '\t' << '[' << v << ']' << std::endl;
-									}
 									auto n = std::stoul(v, 0, 16);
+									if (verbose_ > 8) {
+										std::cout 
+											<< "process line #" 
+											<< std::dec
+											<< line_counter 
+											<< '\t' 
+											<< '[' 
+											<< std::hex
+											<< std::setw(2) 
+											<< std::setfill('0')
+											<< (n & 0xFFFF)
+											<< ']' 
+											<< std::endl
+											;
+									}
 									io::write_binary<std::uint16_t>(fout, n);
 								}
 								catch (std::invalid_argument const& ex) {
@@ -70,7 +91,13 @@ namespace cyng
 					}
 					else {
 						if (verbose_ > 4) {
-							std::cout << "skip line #" << line_counter << '\t' << line << std::endl;
+							std::cout 
+								<< "skip line #" 
+								<< std::dec
+								<< line_counter
+								<< '\t' 
+								<< line 
+								<< std::endl;
 						}
 					}
 				}
