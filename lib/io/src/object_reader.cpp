@@ -119,6 +119,27 @@ namespace cyng
 			return crypto::digest_sha512(a);
 		}
 
+		crypto::aes_128_key reader_policy<crypto::aes_128_key>::extract(std::istream& is)
+		{
+			crypto::aes_128_key::key_type a{ 0 };
+			read_binary(is, a);
+			return crypto::aes_128_key(std::move(a));
+		}
+
+		crypto::aes_192_key reader_policy<crypto::aes_192_key>::extract(std::istream& is)
+		{
+			crypto::aes_192_key::key_type a{ 0 };
+			read_binary(is, a);
+			return crypto::aes_192_key(std::move(a));
+		}
+
+		crypto::aes_256_key reader_policy<crypto::aes_256_key>::extract(std::istream& is)
+		{
+			crypto::aes_256_key::key_type a{ 0 };
+			read_binary(is, a);
+			return crypto::aes_256_key(std::move(a));
+		}
+
 		boost::asio::ip::tcp::endpoint reader_policy<boost::asio::ip::tcp::endpoint>::extract(std::istream& is)
 		{
 			std::uint16_t port = read_binary<std::uint16_t>(is);

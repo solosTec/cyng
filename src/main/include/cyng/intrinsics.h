@@ -20,6 +20,7 @@
 #include <cyng/log/severity.h>
 #include <cyng/intrinsics/lockable.h>
 #include <cyng/intrinsics/digest.h>
+#include <cyng/crypto/aes_keys.h>
 
 #include <boost/system/error_code.hpp>
 #include <boost/uuid/uuid.hpp>

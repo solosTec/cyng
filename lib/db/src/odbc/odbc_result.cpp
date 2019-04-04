@@ -206,13 +206,6 @@ namespace cyng
 					return make_object();
 				}
 				
-			//	template <>
-			//	object get_value<long double>(SQLHSTMT stmt, int index, std::size_t)
-			//	{
-			//		const long double result = ::sqlite3_column_double(stmt, index);
-			//		return make_object(result);
-			//	}
-			//	
 				template <>
 				object get_value<std::string>(SQLHSTMT stmt, int index, std::size_t size)
 				{
@@ -358,12 +351,11 @@ namespace cyng
 				object get_value<buffer_t>(SQLHSTMT stmt, int index, std::size_t size)
 				{
 					BOOST_ASSERT_MSG(index != 0, "index out of range");
-					//BOOST_ASSERT_MSG(size < 0xFFFF, "size out of range");
 					SQLLEN length = { 0 };
-					buffer_t result(size + 1);
+					buffer_t result(size + 1, 0u);
 
 					//
-					//	ToDo: retrieve data in distinct parts
+					//	retrieve data in distinct parts
 					//
 					SQLINTEGER  bytes{ 0 };
 					while (SQLRETURN rc = ::SQLGetData(stmt, index, SQL_C_BINARY, result.data(), size + 1, &length) != SQL_NO_DATA)
@@ -371,49 +363,7 @@ namespace cyng
 						bytes += static_cast<SQLINTEGER>(length);
 					}
 					return make_object(result);
-					//if (is_ok(rc))
-					//{
-					//	std::string result;
-					//	if (length == -1)
-					//	{
-					//		result.clear();
-					//	}
-					//	else
-					//	{
-					//		BOOST_ASSERT_MSG(length <= size, "wrong data length (std::string)");
-					//	}
-					//	return make_object(result);
-					//}
-					//statement_diagnostics dia;
-					//dia.run(stmt);
-					//return make_object();
-
-					//cyng::buffer_t result;
-					//int size = ::sqlite3_column_bytes(stmt, index);
-					//if (size > 0)	{
-					//	result.resize(size);
-					//	const char * p = static_cast<const char*>(::sqlite3_column_blob(stmt, index));
-					//	result.assign(p, p + size);
-					//	return make_object(result);
-					//}
-					//return make_object();
 				}
-			//	
-			//	//	std::size_t
-			//	template <>
-			//	object get_value<cyng::index>(SQLHSTMT stmt, int index, std::size_t)
-			//	{
-			//		const auto result = boost::numeric::converter<std::size_t, int>::convert(::sqlite3_column_int64(stmt, index));
-			//		return cyng::index_factory(result);
-			//	}
-			//	
-			//	//	std::ptrdiff_t
-			//	template <>
-			//	object get_value<cyng::diff>(SQLHSTMT stmt, int index)
-			//	{
-			//		const std::ptrdiff_t result = ::sqlite3_column_int64(stmt, index);
-			//		return cyng::diff_factory(result);
-			//	}
 				
 				//	cyng::mac48
 				template <>

@@ -54,6 +54,10 @@ namespace cyng
 			"crypto:SHA1",
 			"crypto:SHA256",
 			"crypto:SHA512",
+
+			"crypto::AESkey128",
+			"crypto::AESkey192",
+			"crypto::AESkey256",
 			
 			"obj",		//	object
 			

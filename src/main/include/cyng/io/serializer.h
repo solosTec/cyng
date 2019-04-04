@@ -44,6 +44,10 @@ namespace cyng
 		std::ostream& operator<<(std::ostream& os, crypto::digest_sha256 const&);
 		std::ostream& operator<<(std::ostream& os, crypto::digest_sha512 const&);
 
+		std::ostream& operator<<(std::ostream& os, crypto::aes_128_key const&);
+		std::ostream& operator<<(std::ostream& os, crypto::aes_192_key const&);
+		std::ostream& operator<<(std::ostream& os, crypto::aes_256_key const&);
+
 		/**
 		 * serialization tag: SERIALIZE_PLAIN
 		 */

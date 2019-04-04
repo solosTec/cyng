@@ -453,6 +453,30 @@ namespace cyng
 			return os;
 		}
 		
+		std::ostream& serializer <crypto::aes_128_key, SERIALIZE_BINARY>::write(std::ostream& os, crypto::aes_128_key const& key)
+		{
+			serialize_type_tag<crypto::aes_128_key>(os);
+			serialize_length(os, sizeof(crypto::aes_128_key::key_type));
+			write_binary(os, key.key_);
+			return os;
+		}
+
+		std::ostream& serializer <crypto::aes_192_key, SERIALIZE_BINARY>::write(std::ostream& os, crypto::aes_192_key const& key)
+		{
+			serialize_type_tag<crypto::aes_192_key>(os);
+			serialize_length(os, sizeof(crypto::aes_192_key::key_type));
+			write_binary(os, key.key_);
+			return os;
+		}
+
+		std::ostream& serializer <crypto::aes_256_key, SERIALIZE_BINARY>::write(std::ostream& os, crypto::aes_256_key const& key)
+		{
+			serialize_type_tag<crypto::aes_256_key>(os);
+			serialize_length(os, sizeof(crypto::aes_256_key::key_type));
+			write_binary(os, key.key_);
+			return os;
+		}
+
 		std::size_t serialize_length(std::ostream& os, std::size_t length)
 		{
 			if (length < 126)

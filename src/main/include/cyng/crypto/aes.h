@@ -14,6 +14,9 @@
 
 
 #include <cyng/crypto/aes_keys.h>
+#include <cyng/intrinsics/buffer.h>
+
+#include <openssl/aes.h>
 
 namespace cyng
 {

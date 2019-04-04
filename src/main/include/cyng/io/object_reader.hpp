@@ -202,6 +202,24 @@ namespace cyng
 		};
 
 		template <>
+		struct reader_policy<crypto::aes_128_key>
+		{
+			static crypto::aes_128_key extract(std::istream& is);
+		};
+
+		template <>
+		struct reader_policy<crypto::aes_192_key>
+		{
+			static crypto::aes_192_key extract(std::istream& is);
+		};
+
+		template <>
+		struct reader_policy<crypto::aes_256_key>
+		{
+			static crypto::aes_256_key extract(std::istream& is);
+		};
+
+		template <>
 		struct reader_policy<boost::asio::ip::tcp::endpoint>
 		{
 			static boost::asio::ip::tcp::endpoint extract(std::istream& is);

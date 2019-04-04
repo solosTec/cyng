@@ -5,16 +5,16 @@
  *
  */
 
+ /** @file aes_keys.h
+  * Keep this file clean from references to OpenSLL or other
+  *	libraries. Here are only type definitions. So this file can 
+  * be included in <intrinsics.h>
+  */
+
 #ifndef CYNG_CRYPTO_AES_KEYS_H
 #define CYNG_CRYPTO_AES_KEYS_H
 
 
-#include <string>
-#include <openssl/sha.h>
-#include <openssl/aes.h>
-#include <openssl/rand.h>
-
-#include <cyng/intrinsics/buffer.h>
 #include <array>
 #include <cstdint>
 
@@ -66,13 +66,6 @@ namespace cyng
 				: key_(key.key_)
 			{}
 
-			/**
-			 * Fill with a random value
-			 */
-			void randomize()
-			{
-				::RAND_bytes(key_.data(), N);
-			}
 
 		};
 
@@ -81,6 +74,90 @@ namespace cyng
 		using aes_256_key = aes_key<256>;	//	32 bytes
 
 	}
+}
+
+#include <functional>
+
+namespace std
+{
+	template<>
+	struct equal_to<cyng::crypto::aes_128_key>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::aes_128_key;
+		using second_argument_type = cyng::crypto::aes_128_key;
+
+		inline bool operator()(cyng::crypto::aes_128_key const& c1, cyng::crypto::aes_128_key const& c2) const noexcept
+		{
+			return c1.key_ == c2.key_;
+		}
+	};
+
+	template<>
+	struct equal_to<cyng::crypto::aes_192_key>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::aes_192_key;
+		using second_argument_type = cyng::crypto::aes_192_key;
+
+		inline bool operator()(cyng::crypto::aes_192_key const& c1, cyng::crypto::aes_192_key const& c2) const noexcept
+		{
+			return c1.key_ == c2.key_;
+		}
+	};
+
+	template<>
+	struct equal_to<cyng::crypto::aes_256_key>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::aes_256_key;
+		using second_argument_type = cyng::crypto::aes_256_key;
+
+		inline bool operator()(cyng::crypto::aes_256_key const& c1, cyng::crypto::aes_256_key const& c2) const noexcept
+		{
+			return c1.key_ == c2.key_;
+		}
+	};
+
+	template<>
+	struct less<cyng::crypto::aes_128_key>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::aes_128_key;
+		using second_argument_type = cyng::crypto::aes_128_key;
+
+		inline bool operator()(cyng::crypto::aes_128_key const& c1, cyng::crypto::aes_128_key const& c2) const noexcept
+		{
+			return c1.key_ < c2.key_;
+		}
+	};
+
+	template<>
+	struct less<cyng::crypto::aes_192_key>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::aes_192_key;
+		using second_argument_type = cyng::crypto::aes_192_key;
+
+		inline bool operator()(cyng::crypto::aes_192_key const& c1, cyng::crypto::aes_192_key const& c2) const noexcept
+		{
+			return c1.key_ < c2.key_;
+		}
+	};
+
+	template<>
+	struct less<cyng::crypto::aes_256_key>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::crypto::aes_256_key;
+		using second_argument_type = cyng::crypto::aes_256_key;
+
+		inline bool operator()(cyng::crypto::aes_256_key const& c1, cyng::crypto::aes_256_key const& c2) const noexcept
+		{
+			return c1.key_ < c2.key_;
+		}
+	};
+
 }
 
 #endif	

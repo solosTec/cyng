@@ -236,7 +236,49 @@ namespace cyng
 						std::stringstream ss;
 						using io::operator<<;
 						ss << *ptr;
-						const std::string str = ss.str();
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				template <>
+				bool bind_value< crypto::aes_128_key >(sqlite3_stmt* stmt, int index, crypto::aes_128_key const* ptr)
+				{
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				template <>
+				bool bind_value< crypto::aes_192_key >(sqlite3_stmt* stmt, int index, crypto::aes_192_key const* ptr)
+				{
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				template <>
+				bool bind_value< crypto::aes_256_key >(sqlite3_stmt* stmt, int index, crypto::aes_256_key const* ptr)
+				{
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
 						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));

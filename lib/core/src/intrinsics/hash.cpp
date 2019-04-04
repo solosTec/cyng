@@ -191,6 +191,21 @@ namespace std
 		return boost::hash<cyng::crypto::digest_sha512::value_type>()(v.data_);
 	}
 
+	size_t hash<cyng::crypto::aes_128_key>::operator()(cyng::crypto::aes_128_key const& v) const noexcept
+	{
+		return boost::hash<cyng::crypto::aes_128_key::key_type>()(v.key_);
+	}
+
+	size_t hash<cyng::crypto::aes_192_key>::operator()(cyng::crypto::aes_192_key const& v) const noexcept
+	{
+		return boost::hash<cyng::crypto::aes_192_key::key_type>()(v.key_);
+	}
+
+	size_t hash<cyng::crypto::aes_256_key>::operator()(cyng::crypto::aes_256_key const& v) const noexcept
+	{
+		return boost::hash<cyng::crypto::aes_256_key::key_type>()(v.key_);
+	}
+
 	
 	size_t hash<boost::asio::ip::tcp::endpoint>::operator()(boost::asio::ip::tcp::endpoint const& v) const noexcept
 	{

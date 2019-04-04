@@ -8,9 +8,10 @@
 
 #include "sqlite_result.h"
 #include <cyng/factory.h>
+#include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/mac_parser.h>
-#include <cyng/intrinsics/traits/tag.hpp>
+#include <cyng/parser/buffer_parser.h>
 
 #include <utility>
 #include <boost/numeric/conversion/converter.hpp>
@@ -234,23 +235,7 @@ namespace cyng
 					}
 					return make_object();
 				}
-				
-				//	std::size_t
-				//template <>
-				//object get_value<cyng::index>(sqlite3_stmt* stmt, int index)
-				//{
-				//	const auto result = boost::numeric::converter<std::size_t, int>::convert(::sqlite3_column_int64(stmt, index));
-				//	return cyng::index_factory(result);
-				//}
-				//
-				////	std::ptrdiff_t
-				//template <>
-				//object get_value<cyng::diff>(sqlite3_stmt* stmt, int index)
-				//{
-				//	const std::ptrdiff_t result = ::sqlite3_column_int64(stmt, index);
-				//	return cyng::diff_factory(result);
-				//}
-				
+								
 				//	cyng::mac48
 				template <>
 				object get_value<mac48>(sqlite3_stmt* stmt, int index)
@@ -260,7 +245,7 @@ namespace cyng
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
 						BOOST_ASSERT_MSG(size == 17, "invalid MAC48 format");
-						std::string input((const char*)ptr, size);
+						std::string const input((const char*)ptr, size);
 
 						//	call mac parser
 						const auto r = cyng::parse_mac48(input);
@@ -281,7 +266,7 @@ namespace cyng
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
 						BOOST_ASSERT_MSG(size == 19, "invalid MAC64 format");
-						std::string input((const char*)ptr, size);
+						std::string const input((const char*)ptr, size);
 
 						//	call mac parser
 						const auto r = cyng::parse_mac64(input);
@@ -289,6 +274,160 @@ namespace cyng
 							? make_object(r.first)
 							: make_object()
 							;
+					}
+					return make_object();
+				}
+
+				//	crypto::digest_md5
+				template <>
+				object get_value<crypto::digest_md5>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 16, "invalid MD5 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::digest_md5::value_type)) {
+
+							crypto::digest_md5::value_type val;
+							std::copy(r.first.begin(), r.first.end(), val.begin());
+							return make_object(crypto::digest_md5(std::move(val)));
+						}
+					}
+					return make_object();
+				}
+
+				//	crypto::digest_sha1
+				template <>
+				object get_value<crypto::digest_sha1>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 20, "invalid SHA1 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::digest_sha1::value_type)) {
+
+							crypto::digest_sha1::value_type val;
+							std::copy(r.first.begin(), r.first.end(), val.begin());
+							return make_object(crypto::digest_sha1(std::move(val)));
+						}
+					}
+					return make_object();
+				}
+
+				//	crypto::digest_sha256
+				template <>
+				object get_value<crypto::digest_sha256>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 32, "invalid SHA256 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::digest_sha256::value_type)) {
+
+							crypto::digest_sha256::value_type val;
+							std::copy(r.first.begin(), r.first.end(), val.begin());
+							return make_object(crypto::digest_sha256(std::move(val)));
+						}
+					}
+					return make_object();
+				}
+
+				//	crypto::digest_sha512
+				template <>
+				object get_value<crypto::digest_sha512>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 64, "invalid SHA512 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::digest_sha512::value_type)) {
+
+							crypto::digest_sha512::value_type val;
+							std::copy(r.first.begin(), r.first.end(), val.begin());
+							return make_object(crypto::digest_sha512(std::move(val)));
+						}
+					}
+					return make_object();
+				}
+
+				//	crypto::aes_128_key
+				template <>
+				object get_value<crypto::aes_128_key>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 16, "invalid AESkey128 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::aes_128_key::key_type)) {
+
+							crypto::aes_128_key::key_type key;
+							std::copy(r.first.begin(), r.first.end(), key.begin());
+							return make_object(crypto::aes_128_key(std::move(key)));
+						}
+					}
+					return make_object();
+				}
+
+				//	crypto::aes_192_key
+				template <>
+				object get_value<crypto::aes_192_key>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 24, "invalid AESkey192 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::aes_192_key::key_type)) {
+
+							crypto::aes_192_key::key_type key;
+							std::copy(r.first.begin(), r.first.end(), key.begin());
+							return make_object(crypto::aes_192_key(std::move(key)));
+						}
+					}
+					return make_object();
+				}
+
+				//	crypto::aes_256_key
+				template <>
+				object get_value<crypto::aes_256_key>(sqlite3_stmt* stmt, int index)
+				{
+					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
+					if (ptr != NULL)
+					{
+						int size = ::sqlite3_column_bytes(stmt, index);
+						BOOST_ASSERT_MSG(size == 32, "invalid AESkey256 format");
+						std::string const inp((const char*)ptr, size);
+
+						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
+						if (r.second && r.first.size() == sizeof(crypto::aes_256_key::key_type)) {
+
+							crypto::aes_256_key::key_type key;
+							std::copy(r.first.begin(), r.first.end(), key.begin());
+							return make_object(crypto::aes_256_key(std::move(key)));
+						}
 					}
 					return make_object();
 				}

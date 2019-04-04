@@ -65,7 +65,11 @@ namespace cyng
 		crypto::digest_sha1,
 		crypto::digest_sha256,
 		crypto::digest_sha512,
-		
+
+		crypto::aes_128_key,
+		crypto::aes_192_key,
+		crypto::aes_256_key,
+
 		object, 		//	embedded object - don't do this
 		
 		tuple_t,
@@ -243,6 +247,10 @@ namespace cyng
 		TC_DIGEST_SHA256	= type_tag_traits<crypto::digest_sha256>(),
 		TC_DIGEST_SHA512	= type_tag_traits<crypto::digest_sha512>(),
 		
+		TC_DIGEST_AES128 = type_tag_traits<crypto::aes_128_key>(),
+		TC_DIGEST_AES192 = type_tag_traits<crypto::aes_192_key>(),
+		TC_DIGEST_AES256 = type_tag_traits<crypto::aes_256_key>(),
+
 		TC_OBJECT	= type_tag_traits<object>(),
 	
 		TC_TUPLE	= type_tag_traits<tuple_t>(),

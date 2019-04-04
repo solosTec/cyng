@@ -23,10 +23,16 @@ namespace cyng
 	class mac48
 	{
 	public:
-		typedef std::array< std::uint8_t, 6 >	address_type;
-		typedef std::uint8_t	value_type;
-		typedef std::array< std::uint8_t, 3 >	oui_type;
-		typedef std::array< std::uint8_t, 3 >	nic_type;
+
+		using value_type = std::uint8_t;
+
+		/**
+		 * internal storage type
+		 */
+		using address_type = std::array< value_type, 6 >;
+
+		using oui_type = std::array< value_type, 3 >;
+		using nic_type = std::array< value_type, 3 >;
 		
 	public:
 		mac48();
@@ -135,8 +141,12 @@ namespace cyng
 	class mac64
 	{
 	public:
-		typedef std::array< std::uint16_t, 4 >	address_type;
-		typedef std::uint8_t	value_type;
+		using value_type = std::uint16_t;
+
+		/**
+		 * internal storage type
+		 */
+		using address_type = std::array< value_type, 4 >;
 		
 	public:
 		mac64();

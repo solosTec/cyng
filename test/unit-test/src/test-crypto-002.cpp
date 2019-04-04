@@ -23,7 +23,8 @@ namespace cyng
 			//
 
 			crypto::aes_128_key key;
-			key.randomize();
+			//key.randomize();
+			RAND_bytes(key.key_.data(), key.key_.size());
 
 			cyng::buffer_t inp{ 'h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!' };
 			auto enc = crypto::aes::encrypt(inp, key);
@@ -39,7 +40,7 @@ namespace cyng
 			//
 
 			crypto::aes_128_key key;
-			key.randomize();
+			RAND_bytes(key.key_.data(), key.key_.size());
 
 			crypto::aes::iv_t iv;
 			BOOST_ASSERT(iv.size() == AES_BLOCK_SIZE);

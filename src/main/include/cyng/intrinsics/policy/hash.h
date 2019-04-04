@@ -208,6 +208,24 @@ namespace std
 	};
 
 	template<>
+	struct hash<cyng::crypto::aes_128_key>
+	{
+		size_t operator()(cyng::crypto::aes_128_key const&) const noexcept;
+	};
+
+	template<>
+	struct hash<cyng::crypto::aes_192_key>
+	{
+		size_t operator()(cyng::crypto::aes_192_key const&) const noexcept;
+	};
+
+	template<>
+	struct hash<cyng::crypto::aes_256_key>
+	{
+		size_t operator()(cyng::crypto::aes_256_key const&) const noexcept;
+	};
+
+	template<>
 	struct hash<boost::asio::ip::tcp::endpoint>
 	{
 		size_t operator()(boost::asio::ip::tcp::endpoint const&) const noexcept;

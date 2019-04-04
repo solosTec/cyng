@@ -200,6 +200,30 @@ namespace cyng
 						: bind_null(stmt, index, SQL_CHAR, 128);
 				}
 
+				//template <>
+				//bool bind_value< crypto::aes_128_key >(SQLHSTMT stmt, SQLSMALLINT index, crypto::aes_128_key const* ptr, std::size_t column_size)
+				//{
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->get_key(), ptr->key_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+
+				//template <>
+				//bool bind_value< crypto::aes_192_key >(SQLHSTMT stmt, SQLSMALLINT index, crypto::aes_192_key const* ptr, std::size_t column_size)
+				//{
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->get_key(), ptr->key_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+
+				//template <>
+				//bool bind_value< crypto::aes_256_key >(SQLHSTMT stmt, SQLSMALLINT index, crypto::aes_256_key const* ptr, std::size_t column_size)
+				//{
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->get_key(), ptr->key_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+
 				template <>
 				bool bind_value<SQL_TIMESTAMP_STRUCT>(SQLHSTMT stmt, SQLSMALLINT index, SQL_TIMESTAMP_STRUCT const* ptr, std::size_t column_size)
 				{
@@ -500,7 +524,7 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYNG_MAC48 ==> std::string
+						//	mac48 ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 17);
 					}
 
@@ -509,8 +533,64 @@ namespace cyng
 						//	data type substitution 
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
-						//	CYNG_MAC64 ==> std::string
+						//	mac64 ==> std::string
 						return bind_value_by_code<TC_STRING>(obj, 19);
+					}
+
+					case TC_DIGEST_MD5:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	digest_md5 ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 16);
+					}
+
+					case TC_DIGEST_SHA1:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	digest_sha1 ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 20);
+					}
+
+					case TC_DIGEST_SHA256:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	digest_sha256 ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 32);
+					}
+
+					case TC_DIGEST_SHA512:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	digest_sha512 ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 64);
+					}
+
+					case TC_DIGEST_AES128:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	aes_128_key ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 16);
+					}
+
+					case TC_DIGEST_AES192:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	aes_192_key ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 24);
+					}
+
+					case TC_DIGEST_AES256:
+					{
+						object str = make_object(cyng::io::to_str(obj));
+						swap(obj, str);
+						//	aes_256_key ==> std::string
+						return bind_value_by_code<TC_STRING>(obj, 32);
 					}
 
 					case TC_ATTR_MAP:
