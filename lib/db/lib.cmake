@@ -26,7 +26,6 @@ set (db_h
     
 )
 
-
 # define the database library
 set (db_lib
   ${db_cpp}

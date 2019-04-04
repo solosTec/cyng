@@ -28,10 +28,19 @@ set (crypto_h
     src/main/include/cyng/crypto/x509.h
 )
 
+set (crypto_objects
+    src/main/include/cyng/crypto/bio.h
+	lib/crypto/src/bio.cpp
+)
+
+source_group("objects" FILES ${crypto_objects})
+
+
 # define the crypto lib
 set (crypto_lib
   ${crypto_cpp}
   ${crypto_h}
+  ${crypto_objects}
 )
 
 if(WIN32)

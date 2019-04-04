@@ -12,6 +12,8 @@
 #include <string>
 #include <openssl/sha.h>
 #include <openssl/aes.h>
+#include <openssl/rand.h>
+
 #include <cyng/intrinsics/buffer.h>
 #include <array>
 #include <cstdint>
@@ -20,62 +22,64 @@ namespace cyng
 {
 	namespace crypto
 	{
-		struct aes_128_key
+		template <std::size_t N>
+		struct aes_key
 		{
-			//	16 bytes
-			using key_type = std::array<std::uint8_t, 128 / 8>;
-			key_type	aes_key_;
-			
-			aes_128_key()
-			: aes_key_({ { 0 } })
+			using key_type = std::array<std::uint8_t, N / 8>;
+			key_type	key_;
+
+			/**
+			 * Interface for ::AES_set_encrypt_key()
+			 */
+			constexpr int size() const
+			{
+				return N;
+			}
+
+			/**
+			 * Interface for ::AES_set_encrypt_key()
+			 */
+			constexpr unsigned char const* get_key() const
+			{
+				return key_.data();
+			}
+
+			/**
+			 * Default constructor
+			 */
+			aes_key()
+				: key_({ { 0 } })
 			{}
-			
-			aes_128_key(key_type const& key)
-			: aes_key_(key)
+
+			aes_key(key_type const& key)
+				: key_(key)
 			{}
-			
-			aes_128_key(key_type&& key)
-			: aes_key_(std::forward<key_type>(key))
+
+			aes_key(key_type&& key)
+				: key_(std::forward<key_type>(key))
 			{}
+
+			/**
+			 * Copy constructor
+			 */
+			aes_key(aes_key const& key)
+				: key_(key.key_)
+			{}
+
+			/**
+			 * Fill with a random value
+			 */
+			void randomize()
+			{
+				::RAND_bytes(key_.data(), N);
+			}
+
 		};
 
-		struct aes_192_key
-		{
-			//	24 bytes
-			using key_type = std::array<std::uint8_t, 192 / 8>;
-			key_type aes_key_;
-			
-			aes_192_key()
-			: aes_key_({ { 0 } })
-			{}
-			
-			aes_192_key(key_type const& key)
-			: aes_key_(key)
-			{}
-			
-			aes_192_key(key_type&& key)
-			: aes_key_(std::forward<key_type>(key))
-			{}
-		};
+		using aes_128_key = aes_key<128>;	//	16 bytes
+		using aes_192_key = aes_key<192>;	//	24 bytes
+		using aes_256_key = aes_key<256>;	//	32 bytes
 
-		struct aes_256_key
-		{
-			//	32 bytes
-			using key_type = std::array<std::uint8_t, 256 / 8>;
-			key_type aes_key_;
-
-			aes_256_key()
-			: aes_key_({ { 0 } })
-			{}
-			
-			aes_256_key(key_type const& key)
-			: aes_key_(key)
-			{}
-			
-			aes_256_key(key_type&& key)
-			: aes_key_(std::forward<key_type>(key))
-			{}
-		};
 	}
 }
 

@@ -10,7 +10,6 @@ set (unit_test_cpp
 	test/unit-test/src/test-vm-001.cpp
 	test/unit-test/src/test-sql-001.cpp
 	test/unit-test/src/test-json-001.cpp
-	test/unit-test/src/test-crypto-001.cpp
 	test/unit-test/src/test-xml-001.cpp
 	test/unit-test/src/test-chrono-001.cpp
 	test/unit-test/src/test-sys-001.cpp
@@ -24,7 +23,6 @@ set (unit_test_h
 	test/unit-test/src/test-vm-001.h
 	test/unit-test/src/test-sql-001.h
 	test/unit-test/src/test-json-001.h
-	test/unit-test/src/test-crypto-001.h
 	test/unit-test/src/test-xml-001.h
 	test/unit-test/src/test-chrono-001.h
 	test/unit-test/src/test-sys-001.h
@@ -88,7 +86,15 @@ set (unit_test_parser
 	test/unit-test/src/test-parser-002.h
 )
 
+set (unit_test_crypto
+	test/unit-test/src/test-crypto-001.h
+	test/unit-test/src/test-crypto-002.h
+	test/unit-test/src/test-crypto-001.cpp
+	test/unit-test/src/test-crypto-002.cpp
+)
+
 source_group("core" FILES ${unit_test_core})
+source_group("crypto" FILES ${unit_test_crypto})
 source_group("async" FILES ${unit_test_async})
 source_group("io" FILES ${unit_test_io})
 source_group("store" FILES ${unit_test_store})
@@ -99,6 +105,7 @@ set (unit_test
   ${unit_test_cpp}
   ${unit_test_h}
   ${unit_test_core}
+  ${unit_test_crypto}
   ${unit_test_async}
   ${unit_test_io}
   ${unit_test_store}

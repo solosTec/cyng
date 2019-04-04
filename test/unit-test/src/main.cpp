@@ -253,12 +253,18 @@ BOOST_AUTO_TEST_CASE(json_001)
 BOOST_AUTO_TEST_SUITE_END()	//	JSON
 
 #include "test-crypto-001.h"
+#include "test-crypto-002.h"
 
 BOOST_AUTO_TEST_SUITE(CRYPTO)
 BOOST_AUTO_TEST_CASE(crypto_001)
 {
 	using namespace cyng;
 	BOOST_CHECK(test_crypto_001());
+}
+BOOST_AUTO_TEST_CASE(crypto_002)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_crypto_002());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	CRYPTO
 

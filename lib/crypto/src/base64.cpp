@@ -6,13 +6,14 @@
  */ 
 
 #include <cyng/crypto/base64.h>
+#include <cyng/crypto/bio.h>
 #include <cyng/crypto.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <openssl/buffer.h>
 #include <openssl/evp.h>
-#include <openssl/bio.h>
+//#include <openssl/bio.h>
 
 namespace cyng
 {
@@ -22,7 +23,7 @@ namespace cyng
 		{
 // 			std::cout << "base64_encode: " << std::string(in, len) << std::endl;
 			//	get the base64 BIO method
-			BIO_ptr_all b64(::BIO_new(BIO_f_base64()), ::BIO_free_all);
+			auto b64 = create_bio_base64();
 			BIO *bmem = ::BIO_new(BIO_s_mem());
 			bmem = ::BIO_push(b64.get(), bmem);
 			
@@ -52,8 +53,9 @@ namespace cyng
 		{
 // 			std::cout << "base64_decode: " << std::string(in, len) << std::endl;
 			//	get the base64 BIO method
-			BIO_ptr_all b64(::BIO_new(BIO_f_base64()), ::BIO_free_all);
-			
+			//BIO_ptr_all b64(::BIO_new(BIO_f_base64()), ::BIO_free_all);
+			auto b64 = create_bio_base64();
+
 			//	Don't require trailing newlines
 			::BIO_set_flags(b64.get(), BIO_FLAGS_BASE64_NO_NL); 
  			BIO *bmem = ::BIO_new_mem_buf(const_cast<char*>(in), len);
