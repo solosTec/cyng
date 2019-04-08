@@ -34,6 +34,15 @@ namespace cyng
 			}
 
 			/**
+			 * Fill key with random values
+			 */
+			void randomize(aes_128_key&);
+			void randomize(aes_192_key&);
+			void randomize(aes_256_key&);
+			void randomize(iv_t&);
+
+
+			/**
 			 * @brief encrypt AES ECB
 			 * Only blocks with 16 bytes supported.
 			 * @see https://wiki.openssl.org/index.php/EVP_Authenticated_Encryption_and_Decryption

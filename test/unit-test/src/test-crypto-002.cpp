@@ -11,7 +11,6 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/compatibility/general.h>
 #include <cyng/crypto/aes.h>
-#include <openssl/rand.h>
 
 namespace cyng 
 {
@@ -23,8 +22,7 @@ namespace cyng
 			//
 
 			crypto::aes_128_key key;
-			//key.randomize();
-			RAND_bytes(key.key_.data(), key.key_.size());
+			crypto::aes::randomize(key);
 
 			cyng::buffer_t inp{ 'h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!' };
 			auto enc = crypto::aes::encrypt(inp, key);
@@ -40,11 +38,11 @@ namespace cyng
 			//
 
 			crypto::aes_128_key key;
-			RAND_bytes(key.key_.data(), key.key_.size());
+			crypto::aes::randomize(key);
 
 			crypto::aes::iv_t iv;
 			BOOST_ASSERT(iv.size() == AES_BLOCK_SIZE);
-			RAND_bytes(iv.data(), AES_BLOCK_SIZE);
+			crypto::aes::randomize(iv);
 
 			cyng::buffer_t inp{ 'h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!' };
 			auto enc = crypto::aes::encrypt(inp, key, iv);

@@ -247,9 +247,9 @@ namespace cyng
 		TC_DIGEST_SHA256	= type_tag_traits<crypto::digest_sha256>(),
 		TC_DIGEST_SHA512	= type_tag_traits<crypto::digest_sha512>(),
 		
-		TC_DIGEST_AES128 = type_tag_traits<crypto::aes_128_key>(),
-		TC_DIGEST_AES192 = type_tag_traits<crypto::aes_192_key>(),
-		TC_DIGEST_AES256 = type_tag_traits<crypto::aes_256_key>(),
+		TC_AES128 = type_tag_traits<crypto::aes_128_key>(),
+		TC_AES192 = type_tag_traits<crypto::aes_192_key>(),
+		TC_AES256 = type_tag_traits<crypto::aes_256_key>(),
 
 		TC_OBJECT	= type_tag_traits<object>(),
 	

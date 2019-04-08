@@ -96,9 +96,9 @@ namespace cyng
  				case TC_DIGEST_SHA256:		return deserialize_object<TC_DIGEST_SHA256>(is);
  				case TC_DIGEST_SHA512:		return deserialize_object<TC_DIGEST_SHA512>(is);
 // 				
-				case TC_DIGEST_AES128:		return deserialize_object<TC_DIGEST_AES128>(is);
-				case TC_DIGEST_AES192:		return deserialize_object<TC_DIGEST_AES192>(is);
-				case TC_DIGEST_AES256:		return deserialize_object<TC_DIGEST_AES256>(is);
+				case TC_AES128:		return deserialize_object<TC_AES128>(is);
+				case TC_AES192:		return deserialize_object<TC_AES192>(is);
+				case TC_AES256:		return deserialize_object<TC_AES256>(is);
 
 				//	The following data types will be serialized by there components
 				//	and should therefore never show up here.

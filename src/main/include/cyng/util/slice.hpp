@@ -105,7 +105,7 @@ namespace cyng
 	 * Slice a vector by copying elements into a new vector. In this means it's not a real
 	 * slicing. Since working with copies the original data are not affected. But it's
 	 * quit usefull when working with cyng objects. In this case only pointers are copied
-	 * so the sliced vector enables acces to original data.
+	 * so the sliced vector enables access to original data.
 	 */
 	template < typename T >
 	std::vector< T > slice(typename std::vector< T >::iterator first, typename std::vector< T >::iterator last)

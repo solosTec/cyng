@@ -14,6 +14,7 @@
 #ifndef CYNG_CRYPTO_AES_KEYS_H
 #define CYNG_CRYPTO_AES_KEYS_H
 
+#include <cyng/intrinsics/buffer.h>
 
 #include <array>
 #include <cstdint>
@@ -42,6 +43,11 @@ namespace cyng
 			constexpr unsigned char const* get_key() const
 			{
 				return key_.data();
+			}
+
+			buffer_t to_buffer() const
+			{
+				return buffer_t(key_.begin(), key_.end());
 			}
 
 			/**

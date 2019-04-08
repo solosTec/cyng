@@ -174,14 +174,14 @@ namespace cyng
 						do_write<typename std::tuple_element<type_code::TC_DIGEST_SHA512, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
 
-					case type_code::TC_DIGEST_AES128:
-						do_write<typename std::tuple_element<type_code::TC_DIGEST_AES128, cyng::traits::tag_t>::type, S>(os, obj);
+					case type_code::TC_AES128:
+						do_write<typename std::tuple_element<type_code::TC_AES128, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
-					case type_code::TC_DIGEST_AES192:
-						do_write<typename std::tuple_element<type_code::TC_DIGEST_AES192, cyng::traits::tag_t>::type, S>(os, obj);
+					case type_code::TC_AES192:
+						do_write<typename std::tuple_element<type_code::TC_AES192, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
-					case type_code::TC_DIGEST_AES256:
-						do_write<typename std::tuple_element<type_code::TC_DIGEST_AES256, cyng::traits::tag_t>::type, S>(os, obj);
+					case type_code::TC_AES256:
+						do_write<typename std::tuple_element<type_code::TC_AES256, cyng::traits::tag_t>::type, S>(os, obj);
 						break;
 
 						// 			

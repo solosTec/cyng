@@ -569,7 +569,7 @@ namespace cyng
 						return bind_value_by_code<TC_STRING>(obj, 64);
 					}
 
-					case TC_DIGEST_AES128:
+					case TC_AES128:
 					{
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
@@ -577,7 +577,7 @@ namespace cyng
 						return bind_value_by_code<TC_STRING>(obj, 16);
 					}
 
-					case TC_DIGEST_AES192:
+					case TC_AES192:
 					{
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);
@@ -585,7 +585,7 @@ namespace cyng
 						return bind_value_by_code<TC_STRING>(obj, 24);
 					}
 
-					case TC_DIGEST_AES256:
+					case TC_AES256:
 					{
 						object str = make_object(cyng::io::to_str(obj));
 						swap(obj, str);

@@ -6,7 +6,7 @@
 */
 
 #include <cyng/crypto/aes.h>
-#include <openssl/crypto.h>	//	OPENSSL_cleanse
+#include <openssl/rand.h>
 #include <boost/assert.hpp>
 
 namespace cyng 
@@ -16,14 +16,24 @@ namespace cyng
 		namespace aes
 		{
 
-			void decrypt(buffer_t& out, buffer_t const& inp, aes_256_key const& key)
+			void randomize(aes_128_key& key)
 			{
-				BOOST_ASSERT_MSG(inp.size() == 16, "wrong AES block size");
-				out.resize(inp.size());
+				RAND_bytes(key.key_.data(), key.key_.size());
+			}
 
-				::AES_KEY dec_key;
-				::AES_set_decrypt_key(key.get_key(), key.size(), &dec_key);
-				::AES_decrypt((const unsigned char*)inp.data(), (unsigned char*)out.data(), &dec_key);
+			void randomize(aes_192_key& key)
+			{
+				RAND_bytes(key.key_.data(), key.key_.size());
+			}
+
+			void randomize(aes_256_key& key)
+			{
+				RAND_bytes(key.key_.data(), key.key_.size());
+			}
+
+			void randomize(iv_t& iv)
+			{
+				RAND_bytes(iv.data(), iv.size());
 			}
 
 		}
