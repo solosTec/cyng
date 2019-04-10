@@ -1,0 +1,10 @@
+Source: oecp-cyng
+Section: lib
+Priority: optional
+Maintainer: solosTec <info@solostec.ch>
+Version: ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}
+Package: oecp-cyng
+Architecture: armel
+Installed-Size: 0
+Description: OECP package for @PROJECT_NAME@
+

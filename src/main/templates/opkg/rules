@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+
+INSTALLDIR := /tmp/oecp-cyng
+
+build: build-stamp
+	make -j8 -C build/v5te
+
+build-stamp:
+	touch build-stamp
+
+clean:
+	make -C build/v5te clean
+	rm -f build-stamp
+	rm -rf $(INSTALLDIR)
+
+install: build
+	install -d $(INSTALLDIR)/usr/local/lib
+	install -m 644 build/v5te/lib*.so $(INSTALLDIR)/usr/local/lib
+
+.PHONY: build clean install
