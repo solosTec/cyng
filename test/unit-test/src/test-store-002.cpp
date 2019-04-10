@@ -54,6 +54,9 @@ namespace cyng
 	
 	bool test_store_002()
 	{
+		//
+		//	test concurrent table access
+		//
 		auto dbmtp = table::make_meta_table<1, 2>("db", {"name", "table", "created"});
 		store::table db_tbl(dbmtp);
 		
@@ -83,20 +86,12 @@ namespace cyng
 		
 		for (std::size_t idx = 0; idx < 100; idx++)
 		{
-// 			std::async(std::launch::async, &fun_1, std::ref(db_1));
-// 			std::async(std::launch::async, &fun_2, std::ref(db_1));
 			std::thread t1(fun_1, std::ref(db_1));
 			std::thread t2(fun_2, std::ref(db_1));
 			t1.detach();
 			t2.detach();
 		}
 		
-// 		std::thread t1(fun_1, std::ref(db_1));
-// 		std::thread t2(fun_2, std::ref(db_1));
-// 		t1.detach();
-// 		t2.detach();
-// 		t1.join();
-// 		t2.join();
 		
 		db_1.access([](store::table* t1, const store::table* t2)->void{
 			

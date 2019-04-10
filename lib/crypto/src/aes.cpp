@@ -15,7 +15,6 @@ namespace cyng
 	{
 		namespace aes
 		{
-
 			void randomize(aes_128_key& key)
 			{
 				RAND_bytes(key.key_.data(), key.key_.size());

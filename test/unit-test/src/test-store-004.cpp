@@ -23,7 +23,10 @@ namespace cyng
 	
 	bool test_store_004()
 	{
-		
+		//
+		//	test min_record() and max_record() functions
+		//
+
 		store::db database;
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 1>("msg",
 			{ "pk", "evt" },

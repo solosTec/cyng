@@ -23,7 +23,9 @@ namespace cyng
 	
 	bool test_store_003()
 	{
-		
+		//
+		//	test multi_modify()
+		//
 		store::db database;
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 3>("table-1",
 			{ "pk", "field-1", "field-2", "field-2" },
