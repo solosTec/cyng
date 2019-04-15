@@ -41,6 +41,15 @@ namespace cyng
 			void randomize(aes_256_key&);
 			void randomize(iv_t&);
 
+			template <typename KEY>
+			KEY make_aes_key(cyng::buffer_t const& buffer) {
+				KEY key;
+				if (buffer.size() == key.key_.size()) {
+					std::copy(buffer.begin(), buffer.end(), key.key_.begin());
+				}
+				return key;
+			}
+
 
 			/**
 			 * @brief encrypt AES ECB

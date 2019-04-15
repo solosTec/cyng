@@ -23,6 +23,9 @@ namespace cyng
 {
 	namespace crypto
 	{
+		/**
+		 * @tparam N bitsize of AES key (possible values are 128, 196, 256)
+		 */
 		template <std::size_t N>
 		struct aes_key
 		{
