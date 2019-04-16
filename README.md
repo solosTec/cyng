@@ -48,11 +48,11 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
     
 ## Introduction ##
 
-* Current version is 0.6. Interfaces are stable now. 
+* Current version is 0.8. Interfaces are stable now. 
 * Linux (32/64 bit) are supported
 * Windows 7 (64 bit) or higher are supported.
-* Crosscompiling for Raspberry 3 is supported
-* Requires [g++](https://gcc.gnu.org/) >= 4.8 or cl 19.00.24215.1 (this is VS 14.0) and [boost](http://www.boost.org/) >= 1.61.0
+* Crosscompiling for Raspberry 3 and [OSELAS Toolchain](https://public.pengutronix.de/oselas/toolchain/) is supported
+* Requires [g++](https://gcc.gnu.org/) >= 4.8 or cl 19.00.24215.1 (this is VS 14.0) and [boost](http://www.boost.org/) >= 1.68.0
 
 ## How do I get set up? ##
 
@@ -90,12 +90,14 @@ To build with Visual Studion on Windows:
 mkdir projects
 cd projects
 cmake -Wno-dev -G "Visual Studio 15 2017 Win64" ..
-
+#cmake -Wno-dev -G "Visual Studio 16 2019 Win64" ..
 ```
+
 
 This will generate a Solution file for Visual Studio 15. Open this file and select **Build All**. 
 CMake may require a little help to find the Boost Library. In this case modify the variable *BOOST_ROOT* 
-in CMakeList.txt to the correct path.
+in CMakeList.txt to the correct path. To generate a Solution file for Visual Studio 16 2019 CMake v3.14.2 or higher
+is required.
 
 
 ## Hints for cross compiling ##
@@ -104,12 +106,12 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.bz2)
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_69_0.tar.bz2
-tar xjvf boost_1_69_0.tar.bz2
-cd boost_1_69_0
+wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2
+tar xjvf boost_1_70_0.tar.bz2
+cd boost_1_70_0
 ```
 
 (2) bootstrap
@@ -133,7 +135,7 @@ with one of the following lines (depends from the target platform)
 ```
     using gcc : arm : arm-rpi-linux-gnueabihf-g++
     using gcc : arm : arm-v5te-linux-gnueabi-c++ ;
-```    
+```
 
 Select the required libraries (to save time):
 
@@ -164,6 +166,8 @@ export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4
 ```
 ./b2 install toolset=gcc-arm --prefix=${HOME}/projects/install
 ```
+
+Note: In the latest version of the Boost library (1.70.0) is currently a bug when using b2 to crosscompile. Use Boost 1.69.0 instead.
 
 ### OpenSLL ###
 
@@ -253,7 +257,7 @@ set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib" CACHE PATH "BOOST_LIBRARYDIR")
 #
 # OpenSSL support
 #
-set(OPENSSL_ROOT_DIR  $ENV{HOME}/projects/install/openssl)    
+set(OPENSSL_ROOT_DIR  $ENV{HOME}/projects/install/openssl)
 set(OPENSSL_INCLUDE_DIR ${OPENSSL_ROOT_DIR}/include)
 set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_ROOT_DIR}/lib/libcrypto.so)
 set(OPENSLL_LIBRARY ${OPENSSL_ROOT_DIR}/lib/lbssl.so)
