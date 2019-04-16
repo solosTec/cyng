@@ -117,7 +117,7 @@ namespace cyng
             boost::asio::ip::tcp::resolver::query query(address, service);
             boost::asio::connect(s, resolver.resolve(query), ec);
 			
-#elif (BOOST_ASIO_VERSION <= 101202)
+#elif (BOOST_ASIO_VERSION < 101400)
 
 			//	< Boost 1.69
             boost::asio::ip::tcp::resolver resolver(s.get_executor().context());
