@@ -81,6 +81,27 @@ namespace cyng
 #endif
 		}
 
+		bool db::merge(std::string const& name
+			, cyng::table::key_type const& key
+			, cyng::table::data_type&& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source)
+		{
+#if defined(__CPP_SUPPORT_N3915)
+			return access([&](table* tbl)->bool {
+				return tbl->merge(key, std::move(data), generation, source);
+				}, write_access(name));
+#else
+			bool b = false;
+			access([&](table* tbl)->void {
+
+				b = tbl->merge(key, std::move(data), generation, source);
+
+				}, write_access(name));
+			return b;
+#endif
+		}
+
 		bool db::erase(std::string const& name, cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);
@@ -166,6 +187,32 @@ namespace cyng
 				if (ptr != nullptr)	const_cast<table*>(object_cast<table>(ptr->at(0)))->get_listener(isig, rsig,  csig, msig);
 			}
 			return connections_t();
+		}
+
+		boost::signals2::connection db::get_insert_listener(std::string const& name, const publisher::insert_signal::slot_type& slot)
+		{
+			shared_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)	const_cast<table*>(object_cast<table>(ptr->at(0)))->get_insert_listener(slot);
+			}
+			return boost::signals2::connection();
+		}
+
+		boost::signals2::connection db::get_modify_listener(std::string const& name, const publisher::modify_signal::slot_type& slot)
+		{
+			shared_lock_t ul(this->m_);
+			auto r = tables_.find(cyng::table::key_generator(name));
+			if (r.second)
+			{
+				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				BOOST_ASSERT(ptr != nullptr);
+				if (ptr != nullptr)	const_cast<table*>(object_cast<table>(ptr->at(0)))->get_modify_listener(slot);
+			}
+			return boost::signals2::connection();
 		}
 
 		void db::disconnect(std::string const& name)

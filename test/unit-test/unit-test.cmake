@@ -74,11 +74,13 @@ set (unit_test_store
     test/unit-test/src/test-store-003.cpp
     test/unit-test/src/test-store-004.cpp
     test/unit-test/src/test-store-005.cpp
+    test/unit-test/src/test-store-006.cpp
 	test/unit-test/src/test-store-001.h
 	test/unit-test/src/test-store-002.h
 	test/unit-test/src/test-store-003.h
 	test/unit-test/src/test-store-004.h
 	test/unit-test/src/test-store-005.h
+	test/unit-test/src/test-store-006.h
 )
 
 set (unit_test_parser

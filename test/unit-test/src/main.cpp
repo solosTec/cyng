@@ -155,6 +155,7 @@ BOOST_AUTO_TEST_SUITE_END()	//	LOG
 #include "test-store-003.h"
 #include "test-store-004.h"
 #include "test-store-005.h"
+#include "test-store-006.h"
 
 BOOST_AUTO_TEST_SUITE(STORE)
 BOOST_AUTO_TEST_CASE(store_001)
@@ -181,6 +182,11 @@ BOOST_AUTO_TEST_CASE(store_005)
 {
 	using namespace cyng;
 	BOOST_CHECK(test_store_005());
+}
+BOOST_AUTO_TEST_CASE(store_006)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_store_006());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	STORE
 

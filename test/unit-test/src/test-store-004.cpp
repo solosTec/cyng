@@ -10,10 +10,7 @@
 #include <cyng/table/body.hpp>
 #include <cyng/table/meta.hpp>
 #include <cyng/store/db.h>
-//#include <cyng/factory.h>
 #include <cyng/value_cast.hpp>
-//#include <chrono>
-//#include <future>
 #include <boost/test/unit_test.hpp>
 #include <boost/uuid/nil_generator.hpp>
 

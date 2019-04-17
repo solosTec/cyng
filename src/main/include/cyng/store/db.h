@@ -145,12 +145,31 @@ namespace cyng
 			/**
 			 * @param name table name
 			 * @param key the record key
-			 * @param body the body to insert
-			 * @return true if the pair was actually inserted.
+			 * @param data the body to insert
+			 * @param generation only needed for insert operations
+			 * @param source identifier for data source
+			 * @return true if the record was actually inserted.
 			 */
 			bool insert(std::string const& name
 				, cyng::table::key_type const& key
 				, cyng::table::data_type const& data
+				, std::uint64_t generation
+				, boost::uuids::uuid source);
+
+			/**
+			 * Place a new record into the table. If a records
+			 * with the same key already exists it will be replaced.
+			 *
+			 * @param name table name
+			 * @param key the record key
+			 * @param data the body to insert
+			 * @param generation only needed for insert operations
+			 * @param source identifier for data source
+			 * @return true if the record was actually inserted or modified
+			 */
+			bool merge(std::string const& name
+				, cyng::table::key_type const& key
+				, cyng::table::data_type&& data
 				, std::uint64_t generation
 				, boost::uuids::uuid source);
 
@@ -242,6 +261,16 @@ namespace cyng
 				, publisher::modify_signal::slot_type const& msig);
 
 			void disconnect(std::string const& name);
+
+			/**
+			 * Connect to insert record slot
+			 */
+			boost::signals2::connection get_insert_listener(std::string const& name, const publisher::insert_signal::slot_type&);
+
+			/**
+			 * Connect to modify record slot
+			 */
+			boost::signals2::connection get_modify_listener(std::string const& name, const publisher::modify_signal::slot_type&);
 
 			/**
 			 * @return The number of all connected slots of specified table

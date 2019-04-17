@@ -78,12 +78,32 @@ namespace cyng
 			void clear(boost::uuids::uuid source);
 			
 			/**
+			 * Place a new record into the table. Failes if a records
+			 * with the same key already exists.
+			 * 
 			 * @param key the record key
-			 * @param body the body to insert
-			 * @return true if the pair was actually inserted.
+			 * @param data the body to insert
+			 * @param generation only needed for insert operations
+			 * @param source identifier for data source
+			 * @return true if the record was actually inserted.
 			 */
 			bool insert(cyng::table::key_type const& key
 				, cyng::table::data_type const& data
+				, std::uint64_t generation
+				, boost::uuids::uuid source);
+
+			/**
+			 * Place a new record into the table. If a records
+			 * with the same key already exists it will be replaced.
+			 *
+			 * @param key the record key
+			 * @param data the body to insert
+			 * @param generation only needed for insert operations
+			 * @param source identifier for data source
+			 * @return true if the record was actually inserted or modified
+			 */
+			bool merge(cyng::table::key_type const& key
+				, cyng::table::data_type&& data
 				, std::uint64_t generation
 				, boost::uuids::uuid source);
 

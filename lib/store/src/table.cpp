@@ -77,6 +77,65 @@ namespace cyng
 			return false;
 		}
 		
+		bool table::merge(cyng::table::key_type const& key
+			, cyng::table::data_type&& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source)
+		{
+			//	prevent structural integrity
+			if (meta_->check_record(key, data))
+			{
+				//	second is true if the pair was actually inserted.
+				auto r = data_.emplace(std::piecewise_construct
+					, std::forward_as_tuple(key)
+					, std::forward_as_tuple(make_object(data), generation));
+
+				if (!r.second) {
+
+					//
+					//	key already exists - overwrite with new data
+					//
+					unique_lock_t ul((*r.first).second.m_);
+
+					BOOST_ASSERT((*r.first).second.obj_.get_class().tag() == TC_VECTOR);
+					cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+
+					//
+					//	walk over all attributes and update/modify if required
+					//
+					BOOST_ASSERT(ptr->size() == data.size());
+					for (std::size_t idx = 0; idx < ptr->size(); ++idx) {
+
+						if (data.at(idx) != (*ptr).at(idx)) {
+
+							//
+							//	increase generation counter
+							//
+							++const_cast<std::uint64_t&>((*r.first).second.generation_);
+
+							//
+							//	broadcast modification
+							//
+							this->publisher::modify_signal_(this, key, attr_t(idx, data.at(idx)), (*r.first).second.generation_, source);
+
+							//
+							//	apply modification
+							//
+							swap(data.at(idx), (*const_cast<cyng::table::data_type*>(ptr)).at(idx));
+						}
+					}
+				}
+				else {
+					//
+					//	new key inserted
+					//
+					this->publisher::insert_signal_(this, key, data, generation, source);
+				}
+				return true;
+			}
+			return false;
+		}
+
 		bool table::erase(cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
 			//	prevent structural integrity
@@ -141,7 +200,6 @@ namespace cyng
 				: make_object()
 				;
 		}
-
 		
 		bool table::modify(cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source)
 		{
@@ -156,7 +214,7 @@ namespace cyng
 				//
 				unique_lock_t ul((*r.first).second.m_);
 
-				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 				BOOST_ASSERT(ptr != nullptr);
 				BOOST_ASSERT(attr.first < (*ptr).size());
 

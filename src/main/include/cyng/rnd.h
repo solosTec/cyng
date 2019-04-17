@@ -37,16 +37,6 @@ namespace cyng
 			boost::random::uniform_int_distribution<std::size_t> index_dist_;
 		};
 
-		/**
-		 * Generator for alphanumeric strings
-		 */
-		rnd make_rnd_alnum();
-
-		/**
-		 * Generator for numeric strings
-		 */
-		rnd make_rnd_num();
-
 		template <typename T>
 		class rnd_num
 		{
@@ -73,6 +63,24 @@ namespace cyng
 			boost::random::uniform_int_distribution<T> monitor_dist_;
 		};
 
+		/**
+		 * Generator for alphanumeric strings
+		 */
+		rnd make_rnd_alnum();
+
+		/**
+		 * Generator for numeric strings
+		 */
+		rnd make_rnd_num();
+
+		/**
+		 * Generator for integers
+		 */
+		template <typename T>
+		auto make_rnd<T>(T min_arg, T max_arg) -> rnd_num<T>
+		{
+			return rnd_num<T>(min_arg, max_arg);
+		}
 	}
 	
 }
