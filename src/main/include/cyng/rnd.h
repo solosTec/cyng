@@ -77,7 +77,7 @@ namespace cyng
 		 * Generator for integers
 		 */
 		template <typename T>
-		auto make_rnd<T>(T min_arg, T max_arg) -> rnd_num<T>
+		auto make_rnd(T min_arg, T max_arg) -> rnd_num<T>
 		{
 			return rnd_num<T>(min_arg, max_arg);
 		}
