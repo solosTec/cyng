@@ -86,7 +86,7 @@ namespace cyng
 		friend vector_t& operator<<(vector_t&, invoke&&);
 		
 	private:
-		const std::string name_;
+		std::string const name_;
 	};
 		
 	 
@@ -107,7 +107,7 @@ namespace cyng
 		friend vector_t& operator<<(vector_t&, defer&&);
 		
 	private:
-		const code code_;
+		code const code_;
 	};
 	
 	/**
@@ -129,7 +129,7 @@ namespace cyng
 		friend vector_t& operator<<(vector_t&, reflect&&);
 		
 	private:
-		const code code_;
+		code const code_;
 	};
 	
 	/**
@@ -149,7 +149,7 @@ namespace cyng
 		friend vector_t& operator<<(vector_t&, invoke_remote&&);
 		
 	private:
-		const std::string name_;
+		std::string const name_;
 	};
 
 	/**
@@ -169,7 +169,7 @@ namespace cyng
 		friend vector_t& operator<<(vector_t&, invoke_reflect&&);
 
 	private:
-		const std::string name_;
+		std::string const name_;
 	};
 	
 	/**
@@ -289,6 +289,56 @@ namespace cyng
 	 * call unwind_vec as stream operator
 	 */
 	vector_t& operator<<(vector_t&, unwind_vec&&);
+
+	/**
+	 * append a value N times
+	 */
+	template <typename T>
+	class times
+	{
+	public:
+		times(std::size_t n, T&& val)
+			: val_(std::forward<T>(val))
+			, count_(n)
+		{}
+		times(times&& other)
+			: val_(std::move(other.val_))
+			, count_(other.count_)
+		{}
+
+		friend vector_t& operator<<(vector_t& vec, times&& m)
+		{
+			for (std::size_t idx = 0u; idx < m.count_; ++idx) {
+				vec << m.val_;
+			}
+			return vec;
+		}
+
+	private:
+		T val_;
+		std::size_t const count_;
+	};
+
+	/**
+	 * insert PR op n times with relative target 
+	 * position on stack (starts with 1)
+	 */
+	class pr_n
+	{
+	public:
+		pr_n(std::size_t);
+		pr_n(pr_n const&);
+
+		friend vector_t& operator<<(vector_t&, pr_n&&);
+
+	private:
+		std::size_t count_;
+	};
+
+	/**
+	 * call pr_n as stream operator
+	 */
+	vector_t& operator<<(vector_t&, pr_n&&);
 
 }
 

@@ -24,6 +24,7 @@ namespace cyng
 		void write(std::ostream&, object const&);
 		std::string to_string(object const&);
 		std::string to_string(tuple_t const&);
+		std::string to_string(vector_t const&);
 	}
 }
 #endif

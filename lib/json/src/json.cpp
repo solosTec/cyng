@@ -74,6 +74,13 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_string(vector_t const& tpl)
+		{
+			std::stringstream ss;
+			cyng::io::serializer <vector_t, cyng::io::SERIALIZE_JSON>::write(ss, tpl);
+			return ss.str();
+		}
+
 	}
 }
 

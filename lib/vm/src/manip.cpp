@@ -201,6 +201,25 @@ namespace cyng
 		return vec;
 	}
 
+	pr_n::pr_n(std::size_t count)
+		: count_(count)
+	{}
+
+	pr_n::pr_n(pr_n const& other)
+		: count_(other.count_)
+	{}
+
+	vector_t& operator<<(vector_t& vec, pr_n&& op)
+	{
+		for (std::uint64_t idx = 0; idx < op.count_; ++idx) {
+			vec
+				<< (idx + 1)	//	position to move to
+				<< cyng::code::PR
+				;
+		}
+		return vec;
+	}
+
 }
 
 
