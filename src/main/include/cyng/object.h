@@ -58,6 +58,8 @@ namespace cyng
 		friend const T* object_cast(object const&) noexcept;
 		template <typename T>
 		friend T value_cast(object const&, T const&) noexcept;
+		template < typename T, typename U >
+		friend T construct_cast(object const&, U const&) noexcept;
 		template <typename T>
 		friend struct std::less;
 

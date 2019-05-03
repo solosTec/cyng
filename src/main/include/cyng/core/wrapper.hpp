@@ -36,8 +36,10 @@ namespace cyng
 			
 			template < typename U >
 			friend U cyng::value_cast(object const&, U const&) noexcept;
-// 			friend const U& cyng::value_cast(object const&, U const&) noexcept;
 					
+			template < typename T, typename U >
+			friend T cyng::construct_cast(object const&, U const&) noexcept;
+
 			using class_t = class_impl< T >;
 			
 			using this_type = wrapper< T >;
