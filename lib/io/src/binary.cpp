@@ -522,7 +522,14 @@ namespace cyng
 				write_binary(os, boost::numeric_cast<std::uint32_t>(tag));
 			}
 			catch (boost::numeric::positive_overflow const& ex) {
-				std::cerr << std::endl << "*** error: " << ex.what() << std::endl;
+				std::cerr 
+					<< std::endl 
+					<< "*** error write_binary(" 
+					<< io::to_str(obj)
+					<< "): "
+					<< ex.what() 
+					<< std::endl;
+
 #if defined(__CPP_SUPPORT_N2347)
 				const std::uint32_t tag = static_cast<std::uint32_t>(traits::predef_type_code::PREDEF_CUSTOM);
 #else

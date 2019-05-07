@@ -82,7 +82,13 @@ namespace cyng
 				write_binary(os, tag);
 			}
 			catch (boost::numeric::positive_overflow const& ex) { 
-				std::cerr << std::endl << "*** error: " << ex.what() << std::endl;
+
+				std::cerr 
+					<< std::endl 
+					<< "*** error serialize_type_tag: " 
+					<< ex.what() 
+					<< std::endl;
+
 				const std::uint32_t tag = 0;
 				write_binary(os, tag);
 			}
