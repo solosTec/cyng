@@ -14,6 +14,7 @@
 #include <boost/uuid/random_generator.hpp>
 #include <cyng/vm/domain/log_domain.h>
 #include <cyng/vm/domain/fs_domain.h>
+#include <cyng/vm/binder.hpp>
 #include <cyng/async/scheduler.h>
 #include <cyng/io/serializer.h>
 
@@ -85,6 +86,13 @@ namespace cyng
 // 		ctrl.async_run(generate_invoke("log.msg.trace", 42) << generate_invoke_unwinded("log.msg.trace", 43));
 
 		ctrl.async_run({ generate_invoke("log.msg.trace", 44), generate_invoke("log.msg.info", 45) });
+
+		//
+		//	binder
+		//
+		binder b(ctrl, "log.msg.trace", 46);
+		b();
+
 		//
 		//	halt VM, stop execution engine
 		//

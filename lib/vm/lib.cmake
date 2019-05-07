@@ -28,6 +28,7 @@ set (vm_h
     src/main/include/cyng/vm/context.h
     src/main/include/cyng/vm/procedure.h
     src/main/include/cyng/vm/generator.h
+    src/main/include/cyng/vm/binder.hpp
 )
 
 

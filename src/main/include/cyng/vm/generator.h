@@ -57,30 +57,6 @@ namespace cyng
 			vec << std::forward<T>(v);
 		}
 
-		/**
-		 * An attribute map (attr_map_t) will be converted into
-		 * a tuple of attributes
-		 */
-		//template <>
-		//inline void code_builder<attr_map_t>(vector_t& vec, attr_map_t&& am)
-		//{
-		//	std::for_each(am.begin(), am.end(), [&vec](attr_map_t::value_type const& attr) {
-		//		vec << attr_t(attr.first, attr.second);
-		//	});
-		//}
-
-		/**
-		 * A parameter map (param_map_t) will be converted into
-		 * a tuple of parameters
-		 */
-		//template <>
-		//inline void code_builder<param_map_t>(vector_t& vec, param_map_t&& pm)
-		//{
-		//	std::for_each(pm.begin(), pm.end(), [&vec](param_map_t::value_type const& param) {
-		//		vec << param_t(param.first, param.second);
-		//	});
-		//}
-
 		template < typename T, typename ...Args >
 		void code_builder(vector_t& vec, T&& v, Args&&... args)
 		{
