@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/282b117236244ea2b9c4752b29cb05f8)](https://www.codacy.com/app/solosTec/cyng?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=solosTec/cyng&amp;utm_campaign=Badge_Grade)
+
 # CYNG C++ Library #
 
 The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamically typed values in C++, in several respects:
