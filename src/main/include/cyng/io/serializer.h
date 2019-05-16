@@ -87,6 +87,16 @@ namespace cyng
 		 * serialize a tuple with tag SERIALIZE_PLAIN
 		 */
 		std::string to_str(tuple_t const&);
+		
+		/**
+		 * serialize a attr_map_t with tag SERIALIZE_PLAIN
+		 */
+		std::string to_str(attr_map_t const&);
+		
+		/**
+		 * serialize a param_map_t with tag SERIALIZE_PLAIN
+		 */
+		std::string to_str(param_map_t const&);
 	}
 }
 

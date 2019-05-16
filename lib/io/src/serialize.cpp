@@ -61,6 +61,20 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_str(attr_map_t const& attributes)
+		{
+			std::stringstream ss;
+			serializer <attr_map_t, SERIALIZE_PLAIN>::write(ss, attributes);
+			return ss.str();
+		}
+		
+		std::string to_str(param_map_t const& params)
+		{
+			std::stringstream ss;
+			serializer <param_map_t, SERIALIZE_PLAIN>::write(ss, params);
+			return ss.str();
+		}
+		
 		std::ostream& operator<<(std::ostream& os, attr_t const& attr)
 		{
 			boost::io::ios_flags_saver  ifs(os);
