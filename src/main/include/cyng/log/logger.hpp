@@ -13,6 +13,7 @@
 #include <boost/predef.h>	//	requires Boost 1.55
 #include <cyng/compatibility/io_service.h>
 #include <stdexcept>
+#include <iomanip>
 #if BOOST_OS_WINDOWS
 #include <process.h>
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
@@ -65,7 +66,7 @@ namespace cyng
 			/**
 			 * append a new log entry synchronously 
 			 */
-			virtual bool push(typename log_base< R >::record_ptr ptr) override
+			virtual bool push(typename log_base< R >::record_ptr) override
 			{
 				return false;
 			}

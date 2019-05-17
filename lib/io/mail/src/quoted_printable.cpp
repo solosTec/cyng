@@ -207,7 +207,7 @@ string quoted_printable::decode(const vector<string>& text) const
             throw codec_error("Bad line policy.");
 
         bool soft_break = false;
-        for (string::const_iterator ch = line.begin(); ch != line.end(); ch++)
+		for (string::const_iterator ch = line.begin(); ch != line.end(); ++ch)
         {
             if (!is_allowed(*ch))
                 throw codec_error("Bad character `" + string(1, *ch) + "`.");
