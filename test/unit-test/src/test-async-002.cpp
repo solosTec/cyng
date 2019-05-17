@@ -64,7 +64,7 @@ namespace cyng
 			}
 			return continuation::TASK_CONTINUE;
 		}
-		void stop(bool shutdown)
+		void stop(bool /*shutdown*/)
 		{
 			std::cout << "simple::stop(" << base_->get_id() << ")" << std::endl;			
 		}
@@ -72,7 +72,7 @@ namespace cyng
 	private:
 		async::base_task* base_;
 		std::size_t counter_;
-		bool shutdown_;
+//		bool shutdown_;
 	};
 
 	//
