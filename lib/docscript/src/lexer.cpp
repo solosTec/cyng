@@ -199,7 +199,7 @@ namespace cyng
 				return std::make_pair(state_, true);
 
 			case U'¶':	//	0xb6
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+				emit(symbol(SYM_FUN_PAR, 0xB6));
 				return std::make_pair(state_, true);
 
 			case std::numeric_limits<std::uint32_t>::max():	//	eof
@@ -218,7 +218,7 @@ namespace cyng
 		{
 			switch (c) {
 			case U'¶':	//	0xb6
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+				emit(symbol(SYM_FUN_PAR, 0xB6));
 				return std::make_pair(pop(STATE_START_), true);
 			default:
 				break;
@@ -600,7 +600,7 @@ namespace cyng
 				break;
 
  			case U'¶':	//	0xb6
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+				emit(symbol(SYM_FUN_PAR, 0xB6));
 				return std::make_pair(STATE_START_, true);
 
 			default:
@@ -683,7 +683,7 @@ namespace cyng
 			switch (c)
 			{
 			case '\n':
-				emit(symbol(SYM_FUN_PAR, u8"¶"));
+				emit(symbol(SYM_FUN_PAR, 0xB6));
 
 				//
 				//	fall through

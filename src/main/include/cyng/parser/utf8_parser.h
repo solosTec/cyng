@@ -66,6 +66,16 @@ namespace cyng
 		 * Parse a pair of strings separated by an colon (:)
 		 */
 		u32_string_pair_t parse_pair(std::string const& input);
+
+#if defined(__CPP_SUPPORT_P0482R6)
+		std::string from_utf8(char8_t const* p);
+
+		template <std::size_t N>
+		std::string from_utf8(const char8_t(&sp)[N])
+		{
+			return std::string((const char*)&sp[0], (const char*)&sp[N]);
+		}
+#endif
 		
 		/**
 		 * parse a single UTF-8 char into a UTF-32 representation (std::uint32_t)

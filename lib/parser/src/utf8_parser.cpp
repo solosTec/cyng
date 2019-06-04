@@ -64,8 +64,14 @@ namespace cyng
  				std::cerr << "whoops at position #" << std::distance(saved, f) << "\n";
  			}
 			return result;
-
 		}
+
+#if defined(__CPP_SUPPORT_P0482R6)
+		std::string from_utf8(char8_t const* p)
+		{
+			return std::string((const char*)p);
+		}
+#endif
 		
 		std::pair<object, bool> parse_utf8_object(std::string const& input)
 		{

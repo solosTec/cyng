@@ -651,7 +651,9 @@ namespace cyng
 			insert(library_, std::make_shared<function>("contents", 1, NL_), {});
 			insert(library_, std::make_shared<function>("item", 1, NL_), { "entry" });
 
-			insert(library_, std::make_shared<function>("paragraph", 1, NL_), { u8"¶" });
+
+			insert(library_, std::make_shared<function>("paragraph", 1, NL_), {  });
+//			insert(library_, std::make_shared<function>("paragraph", 1, NL_), { u8"Â¶" });
 			insert(library_, std::make_shared<function>("header", 1, NL_), { "h" });
 			insert(library_, std::make_shared<function>("header.1", 1, NL_), { "h1" });
 			insert(library_, std::make_shared<function>("header.2", 1, NL_), { "h2" });
