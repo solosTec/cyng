@@ -75,9 +75,7 @@ namespace cyng
 		BOOST_ASSERT_MSG(!vt::stack_t::empty(), "stack is empty" );
 		BOOST_ASSERT_MSG(bp_ != 0, "invalid base pointer (1)");
 		BOOST_ASSERT_MSG((bp_ - 1) < vt::stack_t::size(), "invalid base pointer (2)");
-		//BOOST_ASSERT_MSG(bp_ < vt::stack_t::size(), "invalid base pointer");
-		//std::cerr << c[bp_ - 1].get_class().type_name() << std::endl;
-		BOOST_ASSERT_MSG(c[bp_ - 1].get_class().tag() == TC_UINT64, "not a base pointer");
+		BOOST_ASSERT_MSG(c[bp_ - 1].get_class().tag() == type_tag_traits<std::size_t>(), "not a base pointer");
 		return value_cast<std::size_t>(this->vt::stack_t::c[bp_ -  1], 0);
 	}
 	
@@ -148,7 +146,7 @@ namespace cyng
 	void stack::assemble_attr()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (attr)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (attr)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == type_tag_traits<std::size_t>(), "size_t expected (attr)");
 		const auto idx = value_cast<std::size_t>(top(), 0u);
 		pop();
 		push(set_factory(idx, top()));
@@ -171,7 +169,7 @@ namespace cyng
 	void stack::assemble_attr_map()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (attr_map)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (attr_map)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == type_tag_traits<std::size_t>(), "size_t expected (attr_map)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 
@@ -198,7 +196,7 @@ namespace cyng
 	void stack::assemble_param_map()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (param_map)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (param_map)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == type_tag_traits<std::size_t>(), "size_t expected (param_map)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 
@@ -225,7 +223,7 @@ namespace cyng
 	void stack::assemble_tuple()
 	{
 		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (tuple)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (tuple)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == type_tag_traits<std::size_t>(), "size_t expected (tuple)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 		if (size > c.size())
@@ -247,7 +245,7 @@ namespace cyng
 	void stack::assemble_vector()
 	{
 		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (vector)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (vector)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == type_tag_traits<std::size_t>(), "size_t expected (vector)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 		if (size > c.size())
@@ -269,7 +267,7 @@ namespace cyng
 	void stack::assemble_set()
 	{
 		BOOST_ASSERT_MSG(!c.empty(), "not enough parameters (set)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_UINT64, "size_t expected (set)");
+		BOOST_ASSERT_MSG(top().get_class().tag() == type_tag_traits<std::size_t>(), "size_t expected (set)");
 		auto size = value_cast<std::size_t>(top(), 0u);
 		pop();
 		//BOOST_ASSERT_MSG(size < c.size(), "not enough parameters (set)");

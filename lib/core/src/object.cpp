@@ -58,8 +58,9 @@ namespace cyng
 		return !!value_;
 	}
 	
-	core::class_interface const& object::get_class () const noexcept
+	core::class_interface const& object::get_class() const
 	{
+		if (!value_)	throw std::invalid_argument("null pointer");
 		return value_->get_class();
 	}
 	
@@ -88,6 +89,7 @@ namespace cyng
 	
 	bool equal_by_value(object const& o1, object const& o2) noexcept
 	{
+		if (!o1.value_) return false;	//	there is no value
 		return o1.value_->equal_to(o2);
 	}
 	
