@@ -45,7 +45,7 @@ namespace cyng
 		try {
 			switch (obj.get_class().tag())	{
 				
-				case TC_NULL:	return static_cast<T>(0);
+				case TC_NULL:	return def;
 				
 				case TC_BOOL:	
 					return value_cast(obj, false) 
