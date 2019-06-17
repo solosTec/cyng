@@ -659,13 +659,13 @@ target_link_libraries(cyng_csv
 	cyng_parser)
 
 #
-#	cyng SML library
+#	cyng XML library
 #
 include (lib/xml/lib.cmake)
 add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
 
 if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	target_link_libraries(cyng_xml cyng_parser)
+	target_link_libraries(cyng_xml cyng_parser cyng_table)
 endif()
 
 
