@@ -85,7 +85,7 @@ namespace cyng
 
 		private:
 			container	workers_;
-			std::atomic_flag	running_;
+			std::atomic_flag running_ = ATOMIC_FLAG_INIT;
 		};
 
 	}

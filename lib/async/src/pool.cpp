@@ -13,7 +13,7 @@ namespace cyng
 	{
 		pool::pool()
 		: workers_()
-		, running_{ ATOMIC_FLAG_INIT }
+		//, running_{ ATOMIC_FLAG_INIT }
 		{}
 		
 		pool::~pool()
