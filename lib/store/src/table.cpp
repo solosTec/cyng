@@ -95,35 +95,7 @@ namespace cyng
 					//
 					//	key already exists - overwrite with new data
 					//
-					unique_lock_t ul((*r.first).second.m_);
-
-					BOOST_ASSERT((*r.first).second.obj_.get_class().tag() == TC_VECTOR);
-					cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
-
-					//
-					//	walk over all attributes and update/modify if required
-					//
-					BOOST_ASSERT(ptr->size() == data.size());
-					for (std::size_t idx = 0; idx < ptr->size(); ++idx) {
-
-						if (data.at(idx) != (*ptr).at(idx)) {
-
-							//
-							//	increase generation counter
-							//
-							++const_cast<std::uint64_t&>((*r.first).second.generation_);
-
-							//
-							//	broadcast modification
-							//
-							this->publisher::modify_signal_(this, key, attr_t(idx, data.at(idx)), (*r.first).second.generation_, source);
-
-							//
-							//	apply modification
-							//
-							swap(data.at(idx), (*const_cast<cyng::table::data_type*>(ptr)).at(idx));
-						}
-					}
+					update(r.first, key, std::move(data), source);
 				}
 				else {
 					//
@@ -132,6 +104,27 @@ namespace cyng
 					this->publisher::insert_signal_(this, key, data, generation, source);
 				}
 				return true;
+			}
+			return false;
+		}
+
+		bool table::update(cyng::table::key_type const& key, cyng::table::data_type&& data, std::uint64_t generation, boost::uuids::uuid source)
+		{
+			//	prevent structural integrity
+			if (meta_->check_record(key, data))
+			{
+				//
+				//	search for key
+				//
+				auto r = find(key);
+				if (r.second) {
+
+					//
+					//	key exists - overwrite with new data
+					//
+					update(r.first, key, std::move(data), source);
+					return true;
+				}
 			}
 			return false;
 		}
@@ -161,6 +154,48 @@ namespace cyng
 			return std::make_pair(data_.end(), false);
 		}
 		
+		void table::update(table::table_type::const_iterator pos
+			, cyng::table::key_type const& key
+			, cyng::table::data_type&& data
+			, boost::uuids::uuid source)
+		{
+			//
+			//	key exists - overwrite with new data
+			//
+			unique_lock_t ul((*pos).second.m_);
+
+			BOOST_ASSERT((*pos).second.obj_.get_class().tag() == TC_VECTOR);
+			cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*pos).second.obj_);
+
+			//
+			//	walk over all attributes and update/modify if required
+			//
+			BOOST_ASSERT(ptr->size() == data.size());
+			for (std::size_t idx = 0; idx < ptr->size(); ++idx) {
+
+				//
+				//	compare each column
+				//
+				if (data.at(idx) != (*ptr).at(idx)) {
+
+					//
+					//	increase generation counter
+					//
+					++const_cast<std::uint64_t&>((*pos).second.generation_);
+
+					//
+					//	broadcast modification
+					//
+					this->publisher::modify_signal_(this, key, attr_t(idx, data.at(idx)), (*pos).second.generation_, source);
+
+					//
+					//	apply modification
+					//
+					swap(data.at(idx), (*const_cast<cyng::table::data_type*>(ptr)).at(idx));
+				}
+			}
+		}
+
 		bool table::exist(cyng::table::key_type const& key) const
 		{
 			return find(key).second;

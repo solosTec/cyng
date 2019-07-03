@@ -102,6 +102,27 @@ namespace cyng
 #endif
 		}
 
+		bool db::update(std::string const& name
+			, cyng::table::key_type const& key
+			, cyng::table::data_type&& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source)
+		{
+#if defined(__CPP_SUPPORT_N3915)
+			return access([&](table* tbl)->bool {
+				return tbl->update(key, std::move(data), generation, source);
+				}, write_access(name));
+#else
+			bool b = false;
+			access([&](table* tbl)->void {
+
+				b = tbl->update(key, std::move(data), generation, source);
+
+				}, write_access(name));
+			return b;
+#endif
+		}
+
 		bool db::erase(std::string const& name, cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
 			shared_lock_t ul(this->m_);

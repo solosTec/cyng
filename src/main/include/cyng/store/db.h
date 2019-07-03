@@ -174,6 +174,22 @@ namespace cyng
 				, boost::uuids::uuid source);
 
 			/**
+			 * Update existing record. 
+			 *
+			 * @param name table name
+			 * @param key the record key
+			 * @param data the body to insert
+			 * @param generation only needed for insert operations
+			 * @param source identifier for data source
+			 * @return true if the record was actually updated. false if record was not found
+			 */
+			bool update(std::string const& name
+				, cyng::table::key_type const& key
+				, cyng::table::data_type&& data
+				, std::uint64_t generation
+				, boost::uuids::uuid source);
+
+			/**
 			 * @param name table name
 			 * @param key the record key
 			 * @return true if the record was actually deleted

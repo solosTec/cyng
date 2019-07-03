@@ -14,6 +14,20 @@ namespace cyng
 	namespace table 
 	{
 		/**
+		 * Define a policy for insert/update operations
+		 */
+		enum policy {
+			POLICY_APPEND,		//!< Only new elements are inserted. Existing elements remain unchanged (insert)
+			POLICY_MERGE,		//!< New elements are inserted, existing elements are updated (merge)
+			POLICY_SUBSTITUTE,	//!< Only existing elements are updated (update)
+		};
+
+		/**
+		 * If no string is matching, POLICY_APPEND is assumed
+		 */
+		policy to_policy(std::string);
+
+		/**
 		 * Representation of a table record.
 		 * 
 		 * Internally data are not stored as records. This is a reference

@@ -8,7 +8,7 @@
 #define CYNG_STORE_TABLE_H
 
 
-#include <cyng/table/meta_interface.h>
+//#include <cyng/table/meta_interface.h>
 #include <cyng/store/publisher.h>
 #include <cyng/table/record.h>
 #include <cyng/intrinsics/traits.hpp>
@@ -103,6 +103,21 @@ namespace cyng
 			 * @return true if the record was actually inserted or modified
 			 */
 			bool merge(cyng::table::key_type const& key
+				, cyng::table::data_type&& data
+				, std::uint64_t generation
+				, boost::uuids::uuid source);
+
+			/**
+			 * Place a new record into the table. If a records
+			 * with the same key already exists it will be replaced.
+			 *
+			 * @param key the record key
+			 * @param data the body to insert
+			 * @param generation only needed for insert operations
+			 * @param source identifier for data source
+			 * @return true if the record was actually inserted or modified
+			 */
+			bool update(cyng::table::key_type const& key
 				, cyng::table::data_type&& data
 				, std::uint64_t generation
 				, boost::uuids::uuid source);
@@ -227,6 +242,11 @@ namespace cyng
 			 * was found. If nothing was found, the body is empty (or an undefined state).
 			 */
 			std::pair<table_type::const_iterator, bool> find(cyng::table::key_type const& key) const;
+
+			void update(table::table_type::const_iterator pos
+				, cyng::table::key_type const& key
+				, cyng::table::data_type&& data
+				, boost::uuids::uuid source);
 
 		private:
 			cyng::table::meta_table_ptr meta_;

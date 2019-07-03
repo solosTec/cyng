@@ -7,6 +7,7 @@
 
 #include <cyng/table/record.h>
 #include <cyng/factory/factory.hpp>
+#include <boost/algorithm/string.hpp>
 
 namespace cyng 
 {
@@ -160,6 +161,13 @@ namespace cyng
 			});
 
 			return tpl;
+		}
+
+		policy to_policy(std::string str)
+		{
+			if (boost::algorithm::equals(str, "merge"))	return POLICY_MERGE;
+			else if (boost::algorithm::starts_with(str, "subst"))	return POLICY_SUBSTITUTE;
+			return POLICY_APPEND;
 		}
 
 	}	//	table	
