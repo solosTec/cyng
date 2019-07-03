@@ -668,21 +668,6 @@ if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
 	target_link_libraries(cyng_xml cyng_parser cyng_table)
 endif()
 
-
-#
-#	cyng docScript library
-#
-if(${PROJECT_NAME}_SSL_SUPPORT)
-	include (lib/docscript/lib.cmake)
-	add_library(cyng_docscript ${GLOBAL_LIBRARY_TYPE} ${docscript_lib})
-	target_link_libraries(cyng_docscript
-		cyng_core
-		cyng_async
-		cyng_crypto
-		cyng_vm
-		cyng_json)
-endif()
-
 #
 #	cyng system library
 #
@@ -773,35 +758,6 @@ if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
 
     #message(STATUS "** unit-test libs    : ${unittest_link_libs}")
     target_link_libraries(unit_test ${unittest_link_libs})
-endif()
-
-#
-# docScript compiler
-#
-if(${PROJECT_NAME}_SSL_SUPPORT)
-    include (tools/docc/prg.cmake)
-    add_executable(docc ${docc})
-    set(docc_link_libs cyng_io cyng_vm cyng_async cyng_crypto cyng_log cyng_docscript)
-    if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-        if (UNIX)
-            list(APPEND docc_link_libs pthread "${Boost_LIBRARIES}")
-        endif()
-    endif()
-    target_link_libraries(docc ${docc_link_libs})
-    install(TARGETS docc
-        RUNTIME
-        DESTINATION bin)
-
-
-    include (tools/docc/batch/prg.cmake)
-    add_executable(batch ${batch})
-    set(batch_link_libs cyng_io cyng_vm cyng_async cyng_crypto cyng_log cyng_docscript)
-    if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-        if (UNIX)
-            list(APPEND batch_link_libs pthread "${Boost_LIBRARIES}")
-        endif()
-    endif()
-    target_link_libraries(batch ${batch_link_libs})
 endif()
 
 #
