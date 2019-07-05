@@ -14,6 +14,7 @@ namespace cyng
 		class db;
 	}
 	class context;
+	class controller;
 
 	/**
 	 * Register database operations:
@@ -26,6 +27,7 @@ namespace cyng
 	 * </ul>
 	 */
 	void register_store(store::db& db, context& vm);
+	void register_store(store::db& db, controller& vm);
 }
 
 #endif	//	CYNG_VM_STORE_DOMAIN_H

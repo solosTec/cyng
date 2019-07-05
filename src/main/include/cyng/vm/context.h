@@ -19,6 +19,10 @@ namespace cyng
 	class vm;
 	class memory;
 	class librarian;
+
+	/**
+	 * Execution context of an VM function call
+	 */
 	class context
 	{
 		friend class librarian;

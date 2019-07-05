@@ -10,11 +10,13 @@
 #include <cyng/vm/controller.h>
 #include <cyng/vm/generator.h>
 #include <cyng/factory.h>
+#include <cyng/compatibility/file_system.hpp>
+
 #include <boost/core/ignore_unused.hpp>
 
 namespace cyng 
 {
-    void register_fs(controller& vm)
+	void register_fs(controller& vm)
 	{
 		//
 		//	create_directories(const path& p, system::error_code& ec)
@@ -26,7 +28,8 @@ namespace cyng
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
 			boost::filesystem::create_directories(p, ec);
- 			ctx.set_register(ec);
+			//filesystem::create_directory(p);
+			ctx.set_register(ec);
 
 		});
 

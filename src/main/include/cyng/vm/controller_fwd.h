@@ -23,6 +23,11 @@ namespace cyng
 	class controller;
 
 	/**
+	 * Execution context of an VM function call
+	 */
+	class context;
+
+	/**
 	 * @return occurence count of specified op
 	 */
 	std::size_t op_counter(vector_t const& prg, code op);

@@ -9,6 +9,7 @@
 #include <cyng/vm/domain/store_domain.h>
 #include <cyng/store/db.h>
 #include <cyng/vm/context.h>
+#include <cyng/vm/controller.h>
 #include <cyng/vm/generator.h>
 #include <cyng/tuple_cast.hpp>
 #include <algorithm>
@@ -225,7 +226,17 @@ namespace cyng
 		ctx.queue(register_function("db.req.modify.by.param", 3, std::bind(&db_req_modify_by_param, std::ref(db), std::placeholders::_1)));
 		ctx.queue(register_function("db.req.remove", 2, std::bind(&db_req_remove, std::ref(db), std::placeholders::_1)));
 		ctx.queue(register_function("db.clear", 1, std::bind(&db_clear, std::ref(db), std::placeholders::_1)));
+	}
 
+	void register_store(store::db& db, controller& vm)
+	{
+		vm.register_function("db.req.insert", 4, std::bind(&db_req_insert, std::ref(db), std::placeholders::_1));
+		vm.register_function("db.req.merge", 4, std::bind(&db_req_merge, std::ref(db), std::placeholders::_1));
+		vm.register_function("db.req.update", 4, std::bind(&db_req_update, std::ref(db), std::placeholders::_1));
+		vm.register_function("db.req.modify.by.attr", 3, std::bind(&db_req_modify_by_attr, std::ref(db), std::placeholders::_1));
+		vm.register_function("db.req.modify.by.param", 3, std::bind(&db_req_modify_by_param, std::ref(db), std::placeholders::_1));
+		vm.register_function("db.req.remove", 2, std::bind(&db_req_remove, std::ref(db), std::placeholders::_1));
+		vm.register_function("db.clear", 1, std::bind(&db_clear, std::ref(db), std::placeholders::_1));
 	}
 
 }
