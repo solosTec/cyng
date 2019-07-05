@@ -21,7 +21,10 @@ namespace cyng
 		object read(std::string const&);
 		object read(buffer_t const&);
 		object read_file(std::string const&);
+
 		void write(std::ostream&, object const&);
+		void write(std::ostream&, tuple_t const&);
+
 		std::string to_string(object const&);
 		std::string to_string(tuple_t const&);
 		std::string to_string(vector_t const&);

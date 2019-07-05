@@ -72,10 +72,10 @@ namespace cyng
 			io::serialize_csv(os, obj);
 		}
 
-		//void write(std::ostream& os, vector_t const& vec)
-		//{
-		//	io::serialize_csv(os, vec);
-		//}
+		void write(std::ostream& os, vector_t const& vec)
+		{
+			cyng::io::serializer <vector_t, cyng::io::SERIALIZE_CSV>::write(os, vec);
+		}
 
 		std::string to_string(object const& obj)
 		{
@@ -88,6 +88,13 @@ namespace cyng
 		{
 			std::stringstream ss;
 			cyng::io::serializer <tuple_t, cyng::io::SERIALIZE_CSV>::write(ss, tpl);
+			return ss.str();
+		}
+
+		std::string to_string(vector_t const& vec)
+		{
+			std::stringstream ss;
+			cyng::io::serializer <vector_t, cyng::io::SERIALIZE_CSV>::write(ss, vec);
 			return ss.str();
 		}
 

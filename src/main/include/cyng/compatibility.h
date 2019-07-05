@@ -12,6 +12,7 @@
 #include <cyng/compatibility/async.h>
 #include <cyng/compatibility/io_service.h>
 #include <cyng/compatibility/legacy_mode.hpp>
+#include <cyng/compatibility/file_system.hpp>
 
 #endif 	//	CYNG_COMPATIBILITY_H
 

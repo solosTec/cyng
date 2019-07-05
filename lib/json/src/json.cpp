@@ -60,6 +60,11 @@ namespace cyng
 			io::serialize_json(os, obj);
 		}
 
+		void write(std::ostream& os, tuple_t const& tpl)
+		{
+			cyng::io::serializer <tuple_t, cyng::io::SERIALIZE_JSON>::write(os, tpl);
+		}
+
 		std::string to_string(object const& obj)
 		{
 			std::stringstream ss;

@@ -18,6 +18,7 @@
 # 19.14 => Visual Studio 2017 version 15.7
 # 19.15 => Visual Studio 2017 version 15.8
 # 19.16 => Visual Studio 2017 version 15.9
+# 19.21.27702.2 => Visual Studio 2019 version 16.1.5
 #
 
 function(emit_compiler_support PAPER DESCR MIN_VER)

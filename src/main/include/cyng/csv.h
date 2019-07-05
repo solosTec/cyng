@@ -29,8 +29,11 @@ namespace cyng
 		 * of the same size.
 		 */
 		void write(std::ostream&, object const&);
+		void write(std::ostream&, vector_t const&);
+
 		std::string to_string(object const&);
 		std::string to_string(tuple_t const&);
+		std::string to_string(vector_t const&);
 	}
 }
 #endif

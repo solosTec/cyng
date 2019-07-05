@@ -23,8 +23,6 @@ namespace cyng
 {	
 	namespace io
 	{
-		
-		
 		std::ostream& serializer<param_t, SERIALIZE_JSON>::write(std::ostream& os, param_t const& param)
 		{
 		
@@ -36,7 +34,18 @@ namespace cyng
 			<< ' '
 			;
 
-			serialize_json(os, param.second);
+			auto const tag = param.second.get_class().tag();
+			switch (tag)
+			{
+			case TC_ATTR:
+			case TC_PARAM:
+				os << '{';
+				serialize_json(os, param.second);
+				os << '}';
+				break;
+			default:
+				serialize_json(os, param.second);
+			}
 
 			return os;
 		}
@@ -52,7 +61,18 @@ namespace cyng
 			<< ' '
 			;
 
-			serialize_json(os, attr.second);
+			auto const tag = attr.second.get_class().tag();
+			switch (tag)
+			{
+			case TC_ATTR:
+			case TC_PARAM:
+				os << '{';
+				serialize_json(os, attr.second);
+				os << '}';
+				break;
+			default:
+				serialize_json(os, attr.second);
+			}
 
 			return os;
 		}
