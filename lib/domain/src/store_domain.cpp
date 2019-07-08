@@ -21,6 +21,12 @@ namespace cyng
 {
 	void db_req_insert(store::db& db, cyng::context& ctx)
 	{
+		//
+		//	* table name
+		//	* record key
+		//	* record data
+		//	* generation
+		//	
 		auto const frame = ctx.get_frame();
 		auto tpl = cyng::tuple_cast<
 			std::string,			//	[0] table name
