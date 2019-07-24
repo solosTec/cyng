@@ -134,7 +134,7 @@ namespace cyng
 				for (auto const& v : values) {
 					if (v.size() == 2) {
 						auto n = std::stoul(v, 0, 16);
-						io::write_binary<std::uint8_t>(fout, n);
+						io::write_binary<std::uint8_t>(fout, static_cast<std::uint8_t>(n));
 					}
 				}
 			}

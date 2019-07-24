@@ -20,7 +20,7 @@ namespace cyng
 	{}
 	
 	version::version(double d)
-		: this_type(d, std::round(std::fabs(d - std::trunc(d)) * 1e4))
+		: this_type(static_cast<std::uint16_t>(d), static_cast<std::uint16_t>(std::round(std::fabs(d - std::trunc(d)) * 1e4)))
 	{}
 
 	version::version(version const& v)

@@ -19,6 +19,7 @@
 # 19.15 => Visual Studio 2017 version 15.8
 # 19.16 => Visual Studio 2017 version 15.9
 # 19.21.27702.2 => Visual Studio 2019 version 16.1.5
+# 19.21.27702.2 => Visual Studio 2019 version 16.1.6
 #
 
 function(emit_compiler_support PAPER DESCR MIN_VER)
@@ -54,9 +55,9 @@ endfunction()
 #   C++2a features
 #
 message(STATUS "** test ${CMAKE_CXX_COMPILER_ID} compiler ${CMAKE_CXX_COMPILER_VERSION} for C++2a features")
-define_compiler_support("P0409R2" "Allow lambda-capture [=, this]" "8.0" "6.0" "999.9" "999.9")
+define_compiler_support("P0409R2" "Allow lambda-capture [=, this]" "8.0" "6.0" "19.21" "999.9")
 define_compiler_support("P0306R4" "__VA_OPT__" "8.0" "6.0" "999" "999")
-define_compiler_support("P0329R4" "Designated initializers" "8.0" "999" "999" "999")
+define_compiler_support("P0329R4" "Designated initializers" "8.0" "999" "19.21" "999")
 define_compiler_support("P0428R2" "template-parameter-list for generic lambdas" "8.0" "999" "999" "999")
 define_compiler_support("P0683R1" "Default member initializers for bit-fields" "8.0" "6.0" "999" "999")
 define_compiler_support("P0702R1" "Initializer list constructors in class template argument deduction" "8.0" "6.0" "999" "999")
@@ -67,7 +68,7 @@ define_compiler_support("P0515R3" "Three-way comparison operator" "999" "999" "1
 define_compiler_support("P0588R1" "Simplifying implicit lambda capture" "8.0" "999" "999" "999")
 define_compiler_support("P0614R1" "init-statements for range-based for" "9.0" "8.0" "999" "999")
 define_compiler_support("P0624R2" "Default constructible and assignable stateless lambdas" "9.0" "8.0" "999" "999")
-define_compiler_support("P0641R2" "const mismatch with defaulted copy constructor" "9.0" "8.0" "999" "999")
+define_compiler_support("P0641R2" "const mismatch with defaulted copy constructor" "9.0" "8.0" "19.21" "999")
 define_compiler_support("P0692R1" "Access checking on specializations" "1.0" "8.0" "999" "999")
 define_compiler_support("P0846R0" "ADL and function templates that are not visible" "9.0" "999" "999" "999")
 define_compiler_support("P0859R0" "Less eager instantiation of constexpr functions" "9.0" "999" "999" "999")
@@ -80,7 +81,7 @@ define_compiler_support("P0722R3" "Destroying operator delete" "9.0" "6.0" "999"
 define_compiler_support("P0732R2" "Class types in non-type template parameters" "9.0" "999" "999" "999")
 define_compiler_support("P0892R2" "explicit(bool)" "9.0" "999" "999" "999")
 define_compiler_support("P0941R2" "Integrating feature-test macros" "5.0" "3.4" "19.15" "999")
-define_compiler_support("P1008R1" "Prohibit aggregates with user-declared constructors" "9.0" "8.0" "999" "999")
+define_compiler_support("P1008R1" "Prohibit aggregates with user-declared constructors" "9.0" "8.0" "10.0" "999")
 define_compiler_support("P1064R0" "constexpr virtual function" "9.0" "999" "999" "999")
 define_compiler_support("P0482R6" "char8_t" "9.0" "7.0" "999" "999")
 define_compiler_support("P0595R2" "std::is_constant_evaluated()" "9.0" "999" "999" "999")
@@ -88,7 +89,7 @@ define_compiler_support("P1002R1" "constexpr try-catch blocks" "9.0" "8.0" "999"
 define_compiler_support("P1073R3" "Immediate function" "999" "999" "999" "999")
 define_compiler_support("P1094R2" "Nested inline namespaces" "9.0" "8.0" "999" "999")
 define_compiler_support("P1327R1" "constexpr dynamic_cast and polymorphic typeid" "999" "999" "999" "999")
-define_compiler_support("P1330R0" "Changing the active member of a union inside constexpr" "9.0" "999" "999" "999")
+define_compiler_support("P1330R0" "Changing the active member of a union inside constexpr" "9.0" "999" "14.0" "999")
 define_compiler_support("P1091R3" "Structured binding extensions" "999" "999" "999" "999")
 define_compiler_support("P1041R4" "Stronger Unicode requirements" "999" "1.0" "999" "999")
 define_compiler_support("P0960R3" "Parenthesized initialization of aggregates" "999" "999" "999" "999")
