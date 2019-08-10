@@ -166,6 +166,8 @@ define_compiler_support("P0522R0" "DR: Matching of template template-arguments e
 define_compiler_support("N3921" "std::string_view" "7.0" "4.0" "19.10" "999")
 define_compiler_support("N4259" "std::uncaught_exceptions()" "6.0" "3.7" "19.0" "999")
 define_compiler_support("N4387" "Improving std::pair and std::tuple" "6.0" "4.0" "19.0" "999")
+# see also N4315, N4065, N4031, N3824
+define_compiler_support("N4391" "Library Fundamentals 2 TS - make_array", "7.1", "4.0", "19.20", "999")
 # compare with N3659
 define_compiler_support("N4508" "std::shared_mutex (untimed)" "6.1" "3.4" "19.0" "999")
 define_compiler_support("P0024R2" "Standardization of Parallelism TS" "999" "999" "19.14" "18.0")
