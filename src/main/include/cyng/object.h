@@ -201,6 +201,28 @@ namespace std
 	{
 		size_t operator()(cyng::object const& obj) const noexcept;
 	};
+
+	/**
+	 * Specialize std::less<> in case the overloaded < operator doesn't match.
+	 */
+	template <>
+	struct less<cyng::object>
+	{
+		typedef cyng::object type;
+
+		bool operator()(const type& lhs, const type& rhs) const;
+	};
+
+	template <>
+	struct equal_to<cyng::object>
+	{
+		using result_type = bool;
+		using first_argument_type = cyng::object;
+		using second_argument_type = cyng::object;
+
+		bool operator()(first_argument_type const& o1, second_argument_type const& o2) const noexcept;
+	};
+
 }
  
 

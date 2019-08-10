@@ -33,7 +33,7 @@ namespace cyng
 			{ 0, 128, 0 })));
 
 		crypto::aes_128_key key;
-		for (std::uint32_t idx = 0u; idx < 100; ++idx)
+		for (std::uint32_t idx = 0u; idx < 100u; ++idx)
 		{
 			//
 			//	new key
@@ -51,7 +51,7 @@ namespace cyng
 		database.access([](store::table const* tbl)->void {
 
 			crypto::aes_128_key key;
-			for (std::uint32_t idx = 0u; idx < 100; ++idx) {
+			for (std::uint32_t idx = 0u; idx < 100u; ++idx) {
 				auto rec = tbl->lookup(table::key_generator(idx));
 				BOOST_CHECK(!rec.empty());
 

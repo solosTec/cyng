@@ -115,7 +115,7 @@ namespace cyng
 				auto hours = boost::fusion::at_c< 0 >(arg);
 				
 				//return cyng::chrono::create(year, month, day, hour, minute, sec);
-				std::chrono::microseconds::rep count = (secs * 1000ULL * 1000ULL)
+				std::chrono::microseconds::rep count = static_cast<std::chrono::microseconds::rep>(secs * 1000ULL * 1000ULL)
 				+ (minutes * 60ULL * 1000ULL * 1000ULL)
 				+ (hours * 60ULL * 60ULL * 1000ULL * 1000ULL)
 				;

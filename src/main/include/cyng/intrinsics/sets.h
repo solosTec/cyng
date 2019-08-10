@@ -14,10 +14,11 @@
 #include <map>
 #include <string>
 #include <cstddef>	//	std::size_t
-#include <cyng/intrinsics/policy/compare.hpp>
 
 namespace cyng 
 {
+	class object;
+
 	/*
 	 * Define container classes
 	 */

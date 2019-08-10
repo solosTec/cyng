@@ -23,6 +23,8 @@ namespace std
 		typedef cyng::object type;
 		
 		/**
+		 * Compare by address (not by value!)
+		 *
 		 * @return true of lhs pointer is less than rhs
 		 */
 		bool operator()( const type& lhs, const type& rhs) const;

@@ -54,7 +54,7 @@ namespace cyng
 		//	* u8_to_u32_string()
 		//	* u32_to_u8_string()
 		//
-  		std::string s0 = u8"άλφα";
+  		std::string s0 = /*u8*/"άλφα";
   		std::string s1 = "\\u03ac\\u03bb\\u03c6\\u03b1";	// alpha
 		std::pair<utf::u32_string, bool> s2 = utf::u8_to_u32_string(s0);
 		BOOST_CHECK(s2.second);
@@ -87,8 +87,8 @@ namespace cyng
 		//	test 
 		//	* quote_parser()
 		//
-		std::string sq0 = u8"λάμδα";
-		std::string sq1 = u8"\"" + sq0 + u8"\"";	//	the quote
+		std::string sq0 = /*u8*/"λάμδα";
+		std::string sq1 = /*u8*/"\"" + sq0 + /*u8*/"\"";	//	the quote
 		std::pair<utf::u32_string, bool> sq2 = utf::parse_utf8_quote(sq1);
 		BOOST_CHECK(sq2.second);
 		auto sq3 = utf::u32_to_u8_string(sq2.first);

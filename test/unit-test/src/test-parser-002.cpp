@@ -41,7 +41,7 @@ namespace cyng
 //		std::cout << cyng::to_str(r.first);
 
 		//std::pair<object, bool > r1 = parse_object(u8"20chrono:sec");
- 		std::pair<object, bool > r1 = parse_object(u8"\"30.09.2016 08:29:09\"chrono:tp");
+ 		std::pair<object, bool > r1 = parse_object("\"30.09.2016 08:29:09\"chrono:tp");
 		BOOST_CHECK(r1.second);
 // 		2017-11-26 19:14:42.00000000
 //		io::serialize_typed(std::cout, r1.first);

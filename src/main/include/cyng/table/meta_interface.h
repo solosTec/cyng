@@ -110,6 +110,12 @@ namespace cyng
 			 * @return true if table has a primary key
 			 */
 			virtual bool has_pk() const = 0;
+
+			/**
+			 * @return true if table maintains an index
+			 */
+			virtual bool has_index() const = 0;
+			virtual std::pair<std::size_t, bool> get_index() const = 0;
 		};
 		
 		/**

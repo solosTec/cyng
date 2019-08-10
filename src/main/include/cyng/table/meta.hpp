@@ -15,12 +15,20 @@ namespace cyng
 {
 	namespace table 
 	{
-		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE>
-		class meta_table : public meta_table_interface, public std::enable_shared_from_this<meta_table<KEY_SIZE, BODY_SIZE>>
+		/**
+		 * @tparam KEY_SIZE dimension of key
+		 * @tparam BODY_SIZE dimension of data body
+		 * @tparam IDX optional index (0 == no index)
+		 * 
+		 * The index is maintained as an optional index of the data body
+		 */
+		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
+		class meta_table : public meta_table_interface, public std::enable_shared_from_this<meta_table<KEY_SIZE, BODY_SIZE, IDX>>
 		{
 			using col_names_t = std::array<std::string, KEY_SIZE + BODY_SIZE>;
 			using col_types_t = std::array<std::size_t, KEY_SIZE + BODY_SIZE>;
 			using col_width_t = std::array<std::size_t, KEY_SIZE + BODY_SIZE>;
+			static_assert(IDX < BODY_SIZE, "IDX exceeds BODY_SIZE");
 			
 		public:
 			meta_table(std::string const& name)
@@ -208,7 +216,20 @@ namespace cyng
 			{
 				return KEY_SIZE != 0;
 			}
-			
+
+			/**
+			 * @return true if table maintains an index
+			 */
+			virtual bool has_index() const override
+			{
+				return IDX != 0u;
+			}
+
+			virtual std::pair<std::size_t, bool> get_index() const override
+			{
+				return std::make_pair(IDX - 1, has_index());
+			}
+
 		private:
 			bool check_body(data_type const& data) const
 			{
@@ -273,7 +294,7 @@ namespace cyng
 		 * auto dbp = store::make_meta_table<1, 2>("name", {"table", "age"});
 		 * @endcode
 		 */
-		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE>
+		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		meta_table_ptr
 		make_meta_table(std::string const& name
 		, std::array<std::string, KEY_SIZE + BODY_SIZE> const& cols
@@ -281,7 +302,7 @@ namespace cyng
 		, std::array<std::size_t, KEY_SIZE + BODY_SIZE> const& widths = {}
 		)
 		{
-			using type = meta_table<KEY_SIZE, BODY_SIZE>;
+			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
 			return std::static_pointer_cast<meta_table_interface>(std::make_shared<type>(name, cols, types, widths));
 		}
 		

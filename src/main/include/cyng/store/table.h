@@ -8,13 +8,13 @@
 #define CYNG_STORE_TABLE_H
 
 
-//#include <cyng/table/meta_interface.h>
 #include <cyng/store/publisher.h>
 #include <cyng/table/record.h>
 #include <cyng/intrinsics/traits.hpp>
 #include <cyng/compatibility/async.h>
 #include <functional>
 #include <unordered_map>
+#include <map>
 
 namespace cyng 
 {
@@ -41,13 +41,14 @@ namespace cyng
 			
 		public:
 			using table_type = std::unordered_map< cyng::table::key_type, cyng::table::body_type, std::hash<cyng::table::key_type>, std::equal_to<cyng::table::key_type> >;
+			using index_type = std::map<object, cyng::table::key_type>;
 			
 		public:
 			table() = delete;
 			table(table const&);
 			
 			/**
-			 * establich a tables from meta data 
+			 * establish a table from meta data 
 			 */
 			table(cyng::table::meta_table_ptr);
 			
@@ -143,6 +144,12 @@ namespace cyng
 			 * @brief simple record lookup
 			 */
 			cyng::table::record lookup(cyng::table::key_type const& key) const;
+
+			/**
+			 * Search by specified index.
+			 * If no index is specified function returns an empty record.
+			 */
+			cyng::table::record lookup_by_index(object idx) const;
 
 			/**
 			 * Lookup a single value.
@@ -251,6 +258,7 @@ namespace cyng
 		private:
 			cyng::table::meta_table_ptr meta_;
  			table_type data_;
+			index_type index_;
 		};
 		
 	}	//	store	

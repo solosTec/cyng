@@ -71,7 +71,7 @@ namespace cyng
 		//
 		//	insert [0..20] records
 		//
-		for (std::uint32_t idx = 0u; idx < 20; ++idx)
+		for (std::uint32_t idx = 0u; idx < 20u; ++idx)
 		{
 			database.insert("tbl.06"
 				, table::key_generator(idx)
@@ -94,8 +94,8 @@ namespace cyng
 
 		}, store::write_access("tbl.06"));
 
-		BOOST_CHECK_EQUAL(m_inserts, 30);
-		BOOST_CHECK_EQUAL(m_updates, 10);
+		BOOST_CHECK_EQUAL(m_inserts, 30u);
+		BOOST_CHECK_EQUAL(m_updates, 10u);
 
 		return true;
 	}

@@ -121,4 +121,15 @@ namespace std
 	{
 		return obj.hash();
 	}
+
+	bool less<cyng::object>::operator()(type const& o1, type const& o2) const
+	{
+		return cyng::less_by_value(o1, o2);
+	}
+
+	bool equal_to<cyng::object>::operator()(first_argument_type const& o1, second_argument_type const& o2) const noexcept
+	{
+		return cyng::equal_by_value(o1, o2);
+	}
+
 }

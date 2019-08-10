@@ -91,7 +91,11 @@ namespace cyng
 					{
 						return std::equal_to<T>()(this->held_, wp->held_);
 					}
-					return true;
+
+					//
+					//	compare by memory address (identity)
+					//
+					return this == obj.value_.get();
 				}
 				return false;
 			}
@@ -109,7 +113,12 @@ namespace cyng
 					{
 						return std::less<T>()(this->held_, wp->held_);
 					}
-					return true;
+						
+					//
+					//	compare by memory address (identity)
+					//
+					return this < obj.value_.get();
+
 				}
 				return false;
 			}

@@ -15,20 +15,23 @@ namespace cyng
 	{
 		table::table(table const& other)
 		: publisher()
-		, meta_(other.meta_)
-		, data_()
+			, meta_(other.meta_)
+			, data_()
+			, index_()
 		{}
 
 		table::table(cyng::table::meta_table_ptr mtp)
 		: publisher()
-		, meta_(mtp)
- 		, data_()
+			, meta_(mtp)
+ 			, data_()
+			, index_()
 		{}
 		
 		table::table(table&& tbl)
 		: publisher(std::move(tbl))
-		, meta_(std::move(tbl.meta_))
- 		, data_(std::move(tbl.data_))
+			, meta_(std::move(tbl.meta_))
+ 			, data_(std::move(tbl.data_))
+			, index_(std::move(tbl.index_))
 		{}
 		
 		table::~table()
@@ -54,6 +57,7 @@ namespace cyng
 		void table::clear(boost::uuids::uuid source)
 		{
 			data_.clear();
+			index_.clear();
  			this->publisher::clear_signal_(this, source);
 		}
 		
@@ -70,6 +74,11 @@ namespace cyng
  				, std::forward_as_tuple(key)
  				, std::forward_as_tuple(make_object(data), generation)).second)	
 				{
+					auto const idx = meta_->get_index();
+					if (idx.second) {
+						index_.emplace(data.at(idx.first), key);
+					}
+
 					this->publisher::insert_signal_(this, key, data, generation, source);
 					return true;
 				}
@@ -98,6 +107,12 @@ namespace cyng
 					update(r.first, key, std::move(data), source);
 				}
 				else {
+
+					auto const idx = meta_->get_index();
+					if (idx.second) {
+						index_.emplace(data.at(idx.first), key);
+					}
+
 					//
 					//	new key inserted
 					//
@@ -131,9 +146,35 @@ namespace cyng
 
 		bool table::erase(cyng::table::key_type const& key, boost::uuids::uuid source)
 		{
-			//	prevent structural integrity
-			if (meta_->check_key(key))
+			auto const idx = meta_->get_index();
+			if (idx.second) {
+
+				//
+				//	update index
+				//
+				auto r = find(key);
+				if (r.second) {
+					BOOST_ASSERT((*r.first).second.obj_.get_class().tag() == TC_VECTOR);
+					cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
+					BOOST_ASSERT(ptr != nullptr);
+					if (ptr == nullptr)	return false;
+					//auto pos = index_.find(ptr->at(idx.first));
+
+					//
+					//	remove from index (no check)
+					//
+					index_.erase(ptr->at(idx.first));
+
+					//
+					//	remove by iterator
+					//
+					data_.erase(r.first);
+					return true;
+				}
+			}
+			else if (meta_->check_key(key))
 			{
+
 				//	second is true if the pair was actually inserted.
 				if (data_.erase(key) != 0)
 				{
@@ -166,6 +207,8 @@ namespace cyng
 
 			BOOST_ASSERT((*pos).second.obj_.get_class().tag() == TC_VECTOR);
 			cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*pos).second.obj_);
+			BOOST_ASSERT(ptr != nullptr);
+			if (ptr == nullptr)	return;
 
 			//
 			//	walk over all attributes and update/modify if required
@@ -214,6 +257,19 @@ namespace cyng
 			return cyng::table::record(meta_);
 		}
 		
+		cyng::table::record table::lookup_by_index(object obj) const
+		{
+			if (meta_->has_index()) {
+				auto const pos = index_.find(obj);
+				if (pos != index_.end()) {
+					return lookup(pos->second);
+				}
+			}
+
+			//	empty result
+			return cyng::table::record(meta_);
+		}
+
 		object table::lookup(cyng::table::key_type const& key, std::size_t idx) const
 		{
 			std::pair<table::table_type::const_iterator, bool> r = find(key);
