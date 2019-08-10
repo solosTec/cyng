@@ -12,6 +12,10 @@
 #if BOOST_OS_WINDOWS
 #include <Windows.h>
 #endif
+#include <boost/stacktrace.hpp>
+#include <boost/filesystem.hpp>
+#include <iostream>
+ 
 namespace cyng
 {
 
@@ -29,12 +33,17 @@ namespace cyng
 		async::promise< int > result_;
 		signal_handler()
 			: result_()
-		{   //  CTRL-C
+		{   
+            check_stacktrace();
+            
+            //  CTRL-C
 #if BOOST_OS_WINDOWS
 			::SetConsoleCtrlHandler(&handle_signal, TRUE);
 #else
 			std::signal(SIGINT, &handle_signal);
 			std::signal(SIGHUP, &handle_signal);
+            std::signal(SIGSEGV, &handle_signal);
+            std::signal(SIGABRT, &handle_signal);
 #endif
 		}
 		~signal_handler()
@@ -44,6 +53,8 @@ namespace cyng
 #else
 			std::signal(SIGINT, SIG_DFL);
 			std::signal(SIGHUP, SIG_DFL);
+            std::signal(SIGSEGV, SIG_DFL);
+            std::signal(SIGABRT, SIG_DFL);
 #endif
 		}
 
@@ -57,6 +68,21 @@ namespace cyng
 		{
 			result_.set_value(sig);
 		}
+		
+		void check_stacktrace()
+        {
+            if (boost::filesystem::exists(CYNG::backtrace_file)) {
+                // there is a backtrace
+                std::ifstream ifs(CYNG::backtrace_file);
+
+                boost::stacktrace::stacktrace st = boost::stacktrace::stacktrace::from_dump(ifs);
+                std::cerr << "Previous run crashed:\n" << st << std::endl;
+
+                // cleaning up
+                ifs.close();
+                boost::filesystem::remove(CYNG::backtrace_file);
+            }            
+        }
 	};
 
 #if BOOST_OS_WINDOWS
@@ -81,7 +107,15 @@ namespace cyng
 	void handle_signal(int sig)
 	{
 		BOOST_ASSERT_MSG(signal_mgr::impl_, "signal handler not initialized");
-		forward_signal(sig);
+        switch(sig) {
+            case SIGSEGV:
+            case SIGABRT:
+                backtrace();
+                break;
+            default:
+                forward_signal(sig);
+                break;
+        }
 	}
 #endif
 
@@ -125,5 +159,10 @@ namespace cyng
 		}
 	}
 #endif
+
+    void backtrace()
+    {
+        boost::stacktrace::safe_dump_to(CYNG::backtrace_file);
+    }
 
 }

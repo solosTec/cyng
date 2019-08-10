@@ -46,7 +46,11 @@ namespace cyng
 #else
 	void forward_signal(int);
 #endif
-
+    
+    /**
+     * write a backtrace dump
+     */
+    void backtrace();
 }
 
 #endif	//	CYNG_SIGNAL_HANDLER_H
