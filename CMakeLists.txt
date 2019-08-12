@@ -700,6 +700,11 @@ target_link_libraries(play ${play_link_libs})
 
 
 #
+#   Generate documentation
+#
+include(GenerateDoxygenDoc)
+
+#
 # GeneratING OPKG files requires the OPKG tools (https://git.yoctoproject.org/cgit/cgit.cgi/opkg-utils)
 # fakeroot opkg/opkg-tools/opkg-buildpackage
 # Install with: opkg --force-space install /tmp/oecp-cyng_0.x_armel.ipk

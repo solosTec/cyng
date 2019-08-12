@@ -7,6 +7,9 @@
 #ifndef CYNG_VM_H
 #define CYNG_VM_H
 
+/*! \file
+ * Interface of the virtual machine
+ */
 
 #include <cyng/intrinsics/op.h>
 #include <cyng/vm/stack.h>
