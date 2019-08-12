@@ -21,48 +21,6 @@
 #include <boost/spirit/home/support/attributes.hpp>	//	transform_attribute
 #include <boost/spirit/include/phoenix.hpp>	//	enable assignment of values like cyng::object
 
-//namespace boost		
-//{ 
-//	namespace spirit	
-//	{ 
-//		namespace traits	
-//		{ 
-//	
-//			template <> 
-//			struct transform_attribute< cyng::object, cyng::tuple_t, boost::spirit::qi::domain > 
-//			{ 
-//				typedef cyng::tuple_t type; 
-//				static cyng::tuple_t pre(cyng::object& v) 
-//				{ 
-//					return cyng::tuple_t(); 
-//				} 
-//				static void post(cyng::object& val, cyng::tuple_t const& attr) 
-//				{
-//					val = cyng::make_object(attr);
-//				} 
-//				static void fail(cyng::object&) {}
-//			}; 
-//
-//			template <> 
-//			struct transform_attribute< cyng::object, cyng::vector_t, boost::spirit::qi::domain > 
-//			{ 
-//				typedef cyng::vector_t type; 
-//				static cyng::vector_t pre(cyng::object& v) 
-//				{ 
-//					return cyng::vector_t(); 
-//					
-//				} 
-//				static void post(cyng::object& val, cyng::vector_t const& attr) 
-//				{
-//					val = cyng::make_object(attr);
-//				} 
-//				static void fail(cyng::object&) {}
-//			}; 
-//
-//		}	//	traits
-//	}	//	spirit
-//}	//	boost
-	
 namespace cyng	
 {
 	namespace

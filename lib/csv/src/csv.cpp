@@ -64,7 +64,7 @@ namespace cyng
 				//std::string const inp{ std::istream_iterator<char>(fs), std::istream_iterator<char>() };
 				//return read(inp);
 			}
-			return vec;;
+			return vec;
 		}
 		
 		void write(std::ostream& os, object const& obj)

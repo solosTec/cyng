@@ -32,6 +32,11 @@ namespace cyng
 		signal_mgr();
 		virtual ~signal_mgr();
 		
+		/**
+		 * Wait for a signal.
+		 *
+		 * @return recived signal
+		 */
 		int wait();
 
 		static std::unique_ptr< signal_handler >    impl_;
