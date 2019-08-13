@@ -487,6 +487,7 @@ install(TARGETS cyng_vm
 #
 include (lib/async/lib.cmake)
 add_library(cyng_async ${GLOBAL_LIBRARY_TYPE} ${async_lib})
+target_link_libraries(cyng_async dl)
 
 #
 #	cyng table library
