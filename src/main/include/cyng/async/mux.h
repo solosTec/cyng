@@ -16,7 +16,6 @@
 
 namespace cyng 
 {
-	using tuple_t = std::list<object>;
 	namespace async 
 	{
 		/** @brief message multiplexer for tasks
@@ -56,14 +55,23 @@ namespace cyng
 
 		public:
 			/**
-			 *	constructor
+			 * constructor
 			 */
 			mux();
-			mux(unsigned int);
+
+			/**
+			 * constructor
+			 * @param count thread pool size
+			 */
+			mux(std::size_t count);
+
 			virtual ~mux();
 			
-			/**
-			 * @param f function object that is called with the result.
+			/** @brief calls function f with the task list size.
+			 * 
+			 * Callback function is called asynchonously.
+			 *
+			 * @param f callback function - is called with the result.
 			 * @return true if task list is accessible
 			 */
 			bool size(std::function<void(std::size_t)> f) const;
@@ -99,11 +107,50 @@ namespace cyng
 			void shutdown();
 			
 			/**
-			 * Terminate all tasks. Doesn't stop the scheduler.
-			 * @return true if stop was successful
+			 * Terminate all tasks. This function can only be called once.
+			 *
+			 * @param delay specify a maximum time to wait if stop is incomplete
+			 * @param count max. number of loop passes
+			 * @return true if stop was successful and complete
+			 * @note Doesn't stop the scheduler.
 			 */
-			bool stop();
-			
+			template <typename R, typename P>
+			bool stop(std::chrono::duration<R, P> delay, std::size_t count)
+			{
+				if (shutdown_)	return false;
+
+				std::atomic<bool> complete{ false };
+				stop([&](bool success, std::size_t) {
+					complete.store(success);
+				});
+
+				//
+				//	wait for callback
+				//
+				std::this_thread::yield();
+
+				while(!complete)
+				{
+					std::this_thread::sleep_for(delay);
+					--count;
+					if (count == 0)	break;
+				}
+
+				return complete.load();
+			}
+
+			/**
+			 * Terminate all tasks. Doesn't stop the scheduler.
+			 * 
+			 * @param cb callback function - will be running in a different thread then the caller function.
+			 * The function signature of the callback must be:
+			 * @code void cb(bool, std::size_t); @endcode
+			 *
+			 * The first parameter is the success flag. If true the mux has stopped. The second parameter contains 
+			 * the number of all terminated tasks.
+			 */
+			void stop(std::function<void(bool, std::size_t)> cb);
+
 			/**
 			 * Stop a specific task and remove it from task list. 
 			 * Works asynchronously.
@@ -227,6 +274,12 @@ namespace cyng
 			 * Requirements: Task is already stopped.
 			 */
 			void remove(std::size_t);
+
+			/**
+			 * Set shutdown flag and stop all tasks.
+			 * @return true if successful
+			 */
+			bool clear();
 
 		private:
 			/**

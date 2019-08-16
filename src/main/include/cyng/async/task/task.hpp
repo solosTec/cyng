@@ -146,6 +146,9 @@ namespace cyng
 			}
 
 		protected:
+			/**
+			 * timeout() is called when timer has expired
+			 */
 			virtual void timeout() override
 			{
 				if (!shutdown_)	eval_rc(impl_.run());

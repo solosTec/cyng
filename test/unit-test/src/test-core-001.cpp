@@ -68,6 +68,9 @@ namespace cyng
 		auto o8 = factory<int>::create_object<int>(1);
 		
 		auto green = make_object<color_8>(0, 255, 0);
+
+		auto o9 = make_object({ 1,2,3 });
+
 		
 		return true;
 	}	

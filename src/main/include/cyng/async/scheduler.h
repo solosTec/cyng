@@ -84,6 +84,8 @@ namespace cyng
 		private:
 			/**
 			 * startup thread pool
+			 * 
+			 * @param count thread pool size
 			 */
 			bool start(std::size_t count);
 			

@@ -59,6 +59,7 @@ BOOST_AUTO_TEST_SUITE_END()	//	CORE
 #include "test-async-004.h"
 #include "test-async-005.h"
 #include "test-async-006.h"
+#include "test-async-007.h"
 
 //	Start with:
 //	./unit_test --run_test=ASYNC/async_001
@@ -105,6 +106,14 @@ BOOST_AUTO_TEST_CASE(async_006)
 	//
 	using namespace cyng;
 	BOOST_CHECK(test_async_006());
+}
+BOOST_AUTO_TEST_CASE(async_007)
+{
+	//
+	//	TMux
+	//
+	using namespace cyng;
+	BOOST_CHECK(test_async_007());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	ASYNC
 

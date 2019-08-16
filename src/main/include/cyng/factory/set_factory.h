@@ -13,6 +13,7 @@
 #include <type_traits>
 #include <tuple>
 #include <iterator>
+#include <algorithm>
 
 namespace cyng 
 {	
@@ -149,9 +150,7 @@ namespace cyng
 		using input_type = typename std::tuple< Args... >;
 		using factory_type = detail::tuple_generator_impl< argc::value - 1, tuple_t, Args...>;
 		
-		//input_type inp(std::forward<Args>(args)...);
 		tuple_t tpl;
-		//factory_type::append(std::front_inserter(tpl), inp);
 		factory_type::append(std::front_inserter(tpl), input_type(std::forward<Args>(args)...));
 		
 		return tpl;
@@ -189,16 +188,15 @@ namespace cyng
 	}
 	
 	template < typename T >
-	vector_t vector_factory(std::initializer_list<T> ilist)
+	vector_t vector_factory(std::initializer_list<T> list)
 	{
 		vector_t vec;
-		vec.reserve(ilist.size());
-		for (auto const& v : ilist)
-		{
-			vec.push_back(make_object(v));
-		}
+		vec.reserve(list.size());
+		std::transform(list.begin(), list.end(), std::back_inserter(vec), [](T const& v) {
+			return make_object(v);
+		});
 		return vec;
-	}	
+	}
 
 	/**
 	 * example

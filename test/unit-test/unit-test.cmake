@@ -51,12 +51,14 @@ set (unit_test_async
 	test/unit-test/src/test-async-004.cpp
 	test/unit-test/src/test-async-005.cpp
 	test/unit-test/src/test-async-006.cpp
+	test/unit-test/src/test-async-007.cpp
 	test/unit-test/src/test-async-001.h
 	test/unit-test/src/test-async-002.h
 	test/unit-test/src/test-async-003.h
 	test/unit-test/src/test-async-004.h
 	test/unit-test/src/test-async-005.h
 	test/unit-test/src/test-async-006.h
+	test/unit-test/src/test-async-007.h
 )
 
 set (unit_test_io

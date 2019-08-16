@@ -11,6 +11,7 @@
 #include <cyng/core/wrapper.hpp>
 #include <cyng/intrinsics/null.h>
 #include <iostream>
+#include <initializer_list>
 #include <boost/core/demangle.hpp>
 
 namespace cyng 
@@ -143,8 +144,33 @@ namespace cyng
 		return factory<value_type>::create_object(std::forward<Args>(args)...);
 	}
 	
+	/** 
+	 * Initializer list generates an object of type vector_t.
+	 *
+	 * Example
+	 * @code
+	 auto obj = make_object({ 1, 2, 3 });
+	 * @endcode
+	 * 
+	 * @see vector_factory(std::initializer_list<T>)
+	 */
+	template <typename T>
+	object make_object(std::initializer_list<T> list)
+	{
+		vector_t vec;
+		vec.reserve(list.size());
+		std::transform(list.begin(), list.end(), std::back_inserter(vec), [](T const& v) {
+			return make_object(v);
+		});
+		return make_object(std::move(vec));
+	}
+
 	/**
 	 * Same target and source type.
+	 * 
+	 * @code
+	 * factory<T>::create_object(T&&);
+	 * @endcode
 	 */
 	template <typename T>
 	object make_object(T&& v)

@@ -79,7 +79,7 @@ namespace cyng
 	//	initialize static slot names
 	//
 	template <>
-	std::map<std::string, std::size_t> async::task<simple>::slot_names_({ {"slot-0", 0} });
+	std::map<std::string, std::size_t> async::task<simple>::slot_names_({ {"slot-0", 0}, {"slot-1", 1} });
 
 	bool test_async_002()
 	{
@@ -118,7 +118,7 @@ namespace cyng
 		
 		std::this_thread::sleep_for(std::chrono::seconds(20));
 		std::cout << "stop task manager..." << std::endl;	
-		task_manager.stop();
+		task_manager.stop(std::chrono::seconds(2), 2);
 // 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::cout << "stop I/O service..." << std::endl;	
 		task_manager.get_io_service().stop();

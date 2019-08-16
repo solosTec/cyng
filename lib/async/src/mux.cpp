@@ -21,25 +21,22 @@ namespace cyng
 			, next_tag_(NO_TASK)
 			, tasks_()
 			, shutdown_(false)
-			//, shutdown_counter_(0)
 		{
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 		}
 		
-		mux::mux(unsigned int count)
+		mux::mux(std::size_t count)
 		: scheduler_(count)
 			, dispatcher_(scheduler_.get_io_service())
 			, next_tag_(NO_TASK)
 			, tasks_()
 			, shutdown_(false)
-			//, shutdown_counter_(0)
 		{
 			BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");			
 		}
 
 		mux::~mux()
 		{
-			//BOOST_ASSERT(shutdown_counter_ == 0u);
 			BOOST_ASSERT(tasks_.empty());
 		}
 		
@@ -97,30 +94,26 @@ namespace cyng
 			scheduler_.stop(); 
 		}
 		
-		bool mux::stop()
+		bool mux::clear()
 		{
 			//
-			//	We can shutdown the multiplexer only once
+			//	We can shutdown the multiplexer only once.
+			//	Posting messages or inserting new tasks no longer possible.
 			//		
 			if (!shutdown_.exchange(true))
 			{
 				//
-				//	Stop all tasks.
+				//	small optimization
 				//
-
 				if (tasks_.empty())
 				{
 					return true;
 				}
 
 				//
-				//	When shutdown flag is set, the tasks are not longer allowed to access the tasks_ list.
-				//	Instead an (atomic) counter is initialized to track the shutdown process.
+				//	Stop all tasks.
 				//
-				//shutdown_counter_.exchange(tasks_.size());
-
-				//
-				//	send stop message to all remaining tasks in a separate thread
+				//	Send stop message to all remaining tasks in a separate thread
 				//
 				dispatcher_.dispatch([this]() {
 
@@ -133,9 +126,6 @@ namespace cyng
 						//	call stop()
 						//	This call is sync.
 						//
-#ifdef _DEBUG
-						//std::cerr << "STOP #" << (*pos).first << "/" << tasks_.size() << std::endl;
-#endif
 						(*pos).second->stop(true);
 
 					}
@@ -146,25 +136,61 @@ namespace cyng
 					tasks_.clear();
 				});
 
-				//
-				//	wait for pending references
-				//
-				std::this_thread::yield();
-				while (!tasks_.empty())
-				{
-#ifdef _DEBUG
-					std::cerr << "MUST WAIT FOR SHUTDOWN of " << tasks_.size() << " task(s)" << std::endl;
-#endif
-					//if (tasks_.empty())	shutdown_counter_ = 0u;
-					std::this_thread::sleep_for(std::chrono::seconds(1));
-				}
-
 				return true;
 			}
 
 			return false;
 		}
-		
+
+		void mux::stop(std::function<void(bool, std::size_t)> cb)
+		{
+			//
+			//	We can shutdown the multiplexer only once.
+			//	Posting messages or inserting new tasks no longer possible.
+			//		
+			if (!shutdown_.exchange(true))
+			{
+				//
+				//	Stop all tasks.
+				//
+				//	Send stop message to all remaining tasks in a separate thread
+				//
+				dispatcher_.dispatch([this, cb]() {
+
+					//
+					//	reverse order - latest entries first
+					//
+					for (auto pos = tasks_.rbegin(); pos != tasks_.rend(); ++pos) {
+
+						//
+						//	call stop()
+						//	This call is sync.
+						//
+						(*pos).second->stop(true);
+
+					}
+
+					//
+					//	callback
+					//
+					cb(false, tasks_.size());
+
+					//
+					//	empty task table to signal that shutdown is complete
+					//
+					tasks_.clear();
+				});
+
+			}
+			else {
+
+				//
+				//	failed
+				//
+				cb(false, tasks_.size());
+			}
+		}
+
 		bool mux::stop(std::size_t id)
 		{
 			if (shutdown_)	return false;
@@ -387,6 +413,7 @@ namespace cyng
 		{
 			if (!shutdown_)
 			{
+				BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
 				dispatcher_.dispatch([this, id]() {
 					tasks_.erase(id);
 				});

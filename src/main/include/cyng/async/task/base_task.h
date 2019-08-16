@@ -86,11 +86,12 @@ namespace cyng
 		protected:
 
 			/**
-			 * timeout() is called when timer expired
+			 * timeout() is called when timer has expired
 			 */
 			virtual void timeout() = 0;
 
-			/**
+			/** @brief Cancel any asynchronous operations that are waiting on the timer.
+			 * 
 			 * @return The number of asynchronous operations that were cancelled.
 			 */
 			std::size_t cancel_timer();
