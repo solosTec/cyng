@@ -162,7 +162,7 @@ namespace cyng
 		std::transform(list.begin(), list.end(), std::back_inserter(vec), [](T const& v) {
 			return make_object(v);
 		});
-		return make_object(std::move(vec));
+		return make_object<vector_t>(std::move(vec));
 	}
 
 	/**
