@@ -89,15 +89,15 @@ namespace cyng
 				: base(name)
 			{}
 
-			meta_table(std::string const& name, col_names_t && cols)
+			meta_table(std::string const& name, typename base::col_names_t && cols)
 				: base(name, std::move(cols))
 			{}
 
-			meta_table(std::string const& name, col_names_t && cols, col_types_t && types)
+			meta_table(std::string const& name, typename base::col_names_t && cols, typename base::col_types_t && types)
 				: base(name, std::move(cols), std::move(types))
 			{}
 
-			meta_table(std::string const& name, col_names_t && cols, col_types_t && types, col_width_t && widths)
+			meta_table(std::string const& name, typename base::col_names_t && cols, typename base::col_types_t && types, typename base::col_width_t && widths)
 				: base(name, std::move(cols), std::move(types), std::move(widths))
 			{}
 
@@ -106,7 +106,7 @@ namespace cyng
 			 */
 			virtual std::string get_name() const override
 			{
-				return name_;
+				return this->base::name_;
 			}
 			
 			/**
@@ -125,7 +125,7 @@ namespace cyng
 			 */
 			virtual std::string get_name(std::size_t col) const override 
 			{
-				return col_names_[col];
+				return this->base::col_names_[col];
 			}
 			
 			/**
@@ -135,7 +135,7 @@ namespace cyng
 			 */
 			virtual std::size_t get_type(std::size_t col) const override 
 			{
-				return col_types_[col];
+				return this->base::col_types_[col];
 			}
 			
 			/**
@@ -145,7 +145,7 @@ namespace cyng
 			 */
 			virtual std::size_t get_width(std::size_t col) const override 
 			{
-				return col_width_[col];
+				return this->base::col_width_[col];
 			}
 			
 			virtual bool check_key(key_type const& key) const override
@@ -177,7 +177,7 @@ namespace cyng
 			
 			virtual param_t to_param(attr_t const& attr) const override
 			{
-				return param_t{col_names_[attr.first + KEY_SIZE], attr.second};
+				return param_t{this->base::col_names_[attr.first + KEY_SIZE], attr.second};
 			}
 
 			virtual param_map_t to_param_map(attr_t const& attr) const override
@@ -192,7 +192,7 @@ namespace cyng
 					(idx < key.size()) && (idx < KEY_SIZE);
 					++idx)
 				{
-					params[col_names_[idx]] = key.at(idx);
+					params[this->base::col_names_[idx]] = key.at(idx);
 				}
 				return params;
 			}
@@ -203,9 +203,9 @@ namespace cyng
 			 */
 			virtual std::pair<std::ptrdiff_t, bool> get_record_index(std::string const& name) const override
 			{
-				auto const pos = std::find(col_names_.begin(), col_names_.end(), name);
-				return (pos != col_names_.end())
-					? std::make_pair(std::distance(col_names_.begin(), pos), true)
+				auto const pos = std::find(this->base::col_names_.begin(), this->base::col_names_.end(), name);
+				return (pos != this->base::col_names_.end())
+					? std::make_pair(std::distance(this->base::col_names_.begin(), pos), true)
 					: std::make_pair(std::numeric_limits<std::ptrdiff_t>::max(), false)
 					;
 			}
@@ -298,7 +298,7 @@ namespace cyng
 				col_types[KEY_SIZE] = TC_UINT64;
 				col_width[KEY_SIZE] = 0u;
 
-				return std::make_shared<ext_t>(name_, std::move(col_names), std::move(col_types), std::move(col_width));
+				return std::make_shared<ext_t>(this->base::name_, std::move(col_names), std::move(col_types), std::move(col_width));
 			}
 
 
