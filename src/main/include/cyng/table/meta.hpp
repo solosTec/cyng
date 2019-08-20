@@ -360,9 +360,9 @@ namespace cyng
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		meta_table_ptr
 			make_meta_table(std::string const& name
-		, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols
-		, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types
-		, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths
+				, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths = {}
 		)
 		{
 			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
@@ -377,9 +377,9 @@ namespace cyng
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		meta_table_ptr
 			make_meta_table_gen(std::string const& name
-				, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols
-				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types
-				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths
+				, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths = {}
 			)
 		{
 			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
