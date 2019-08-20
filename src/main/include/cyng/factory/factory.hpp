@@ -160,7 +160,7 @@ namespace cyng
 		vector_t vec;
 		vec.reserve(list.size());
 		std::transform(list.begin(), list.end(), std::back_inserter(vec), [](T const& v) {
-			return make_object(v);
+			return make_object<T>(v);
 		});
 		return make_object<vector_t>(std::move(vec));
 	}
