@@ -15,6 +15,59 @@ namespace cyng
 {
 	namespace table 
 	{
+		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
+		class meta_table_base
+		{
+			static_assert(IDX < BODY_SIZE, "IDX exceeds BODY_SIZE");
+
+		public:
+			using col_names_t = std::array<std::string, KEY_SIZE + BODY_SIZE>;
+			using col_types_t = std::array<std::size_t, KEY_SIZE + BODY_SIZE>;
+			using col_width_t = std::array<std::size_t, KEY_SIZE + BODY_SIZE>;
+
+
+			meta_table_base(std::string const& name)
+				: name_(name)
+				, col_names_()
+				, col_types_()
+				, col_width_()
+			{}
+
+			meta_table_base(std::string const& name, col_names_t && cols)
+				: name_(name)
+				, col_names_(std::move(cols))
+				, col_types_()
+				, col_width_()
+			{
+				BOOST_ASSERT_MSG(std::none_of(cols.begin(), cols.end(), [](std::string const& str) {
+					return str.empty();
+				}), "column names incomplete");
+			}
+
+			meta_table_base(std::string const& name, col_names_t && cols, col_types_t && types)
+				: name_(name)
+				, col_names_(std::move(cols))
+				, col_types_(types)
+				, col_width_()
+			{}
+
+			meta_table_base(std::string const& name, col_names_t && cols, col_types_t && types, col_width_t && widths)
+				: name_(name)
+				, col_names_(std::move(cols))
+				, col_types_(types)
+				, col_width_(widths)
+			{}
+
+		protected:
+			/**
+			 * table name
+			 */
+			std::string const name_;
+			col_names_t const col_names_;
+			col_types_t const col_types_;
+			col_width_t const col_width_;
+		};
+
 		/**
 		 * @tparam KEY_SIZE dimension of key
 		 * @tparam BODY_SIZE dimension of data body
@@ -23,44 +76,29 @@ namespace cyng
 		 * The index is maintained as an optional index of the data body
 		 */
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
-		class meta_table : public meta_table_interface, public std::enable_shared_from_this<meta_table<KEY_SIZE, BODY_SIZE, IDX>>
+		class meta_table : public meta_table_base<KEY_SIZE, BODY_SIZE, IDX>, public meta_table_interface, public std::enable_shared_from_this<meta_table<KEY_SIZE, BODY_SIZE, IDX>>
 		{
-			using col_names_t = std::array<std::string, KEY_SIZE + BODY_SIZE>;
-			using col_types_t = std::array<std::size_t, KEY_SIZE + BODY_SIZE>;
-			using col_width_t = std::array<std::size_t, KEY_SIZE + BODY_SIZE>;
-			static_assert(IDX < BODY_SIZE, "IDX exceeds BODY_SIZE");
+			using base = meta_table_base<KEY_SIZE, BODY_SIZE, IDX>;
+
+		public:
+			using ext_t = meta_table<KEY_SIZE, BODY_SIZE + 1, IDX>;
+			using ext_p = std::shared_ptr<ext_t>;
 			
 		public:
 			meta_table(std::string const& name)
-			: name_(name)
-			, col_names_()
-			, col_types_()
-			, col_width_()
+				: base(name)
 			{}
 
-			meta_table(std::string const& name, col_names_t const& cols)
-			: name_(name)
-			, col_names_(cols)
-			, col_types_()
-			, col_width_()
-			{
-				BOOST_ASSERT_MSG(std::none_of(cols.begin(), cols.end(), [](std::string const& str) {
-					return str.empty();
-				}), "column names incomplete");
-			}
-
-			meta_table(std::string const& name, col_names_t const& cols, col_types_t const& types)
-			: name_(name)
-			, col_names_(cols)
-			, col_types_(types)
-			, col_width_()
+			meta_table(std::string const& name, col_names_t && cols)
+				: base(name, std::move(cols))
 			{}
 
-			meta_table(std::string const& name, col_names_t const& cols, col_types_t const& types, col_width_t const& widths)
-			: name_(name)
-			, col_names_(cols)
-			, col_types_(types)
-			, col_width_(widths)
+			meta_table(std::string const& name, col_names_t && cols, col_types_t && types)
+				: base(name, std::move(cols), std::move(types))
+			{}
+
+			meta_table(std::string const& name, col_names_t && cols, col_types_t && types, col_width_t && widths)
+				: base(name, std::move(cols), std::move(types), std::move(widths))
 			{}
 
 			/**
@@ -230,6 +268,40 @@ namespace cyng
 				return std::make_pair(IDX - 1, has_index());
 			}
 
+			/**
+			 * generate extended meta data
+			 */
+			ext_p get_gen_table() const
+			{
+				typename ext_t::col_names_t col_names;
+				typename ext_t::col_types_t col_types;
+				typename ext_t::col_width_t col_width;
+
+				loop([&](column&& col)->void {
+					if (col.pk_) {
+						col_names[col.pos_] = col.name_;
+						col_types[col.pos_] = col.type_;
+						col_width[col.pos_] = col.width_;
+					}
+					else {
+						col_names[col.pos_ + 1] = col.name_;
+						col_types[col.pos_ + 1] = col.type_;
+						col_width[col.pos_ + 1] = col.width_;
+					}
+					});
+
+				//
+				//	additional generation column
+				//
+				BOOST_ASSERT(col_names[KEY_SIZE].empty());
+				col_names[KEY_SIZE] = "gen";
+				col_types[KEY_SIZE] = TC_UINT64;
+				col_width[KEY_SIZE] = 0u;
+
+				return std::make_shared<ext_t>(name_, std::move(col_names), std::move(col_types), std::move(col_width));
+			}
+
+
 		private:
 			bool check_body(data_type const& data) const
 			{
@@ -274,15 +346,6 @@ namespace cyng
 					&& (idx != std::numeric_limits<std::size_t>::max())
 					;
 			}
-
-		private:
-			/**
-			 * table name
-			 */
-			const std::string name_;
-			const col_names_t col_names_;
-			const col_types_t col_types_;
-			const col_width_t col_width_;
 		};
 		
 		
@@ -296,16 +359,36 @@ namespace cyng
 		 */
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		meta_table_ptr
-		make_meta_table(std::string const& name
-		, std::array<std::string, KEY_SIZE + BODY_SIZE> const& cols
-		, std::array<std::size_t, KEY_SIZE + BODY_SIZE> const& types = {}
-		, std::array<std::size_t, KEY_SIZE + BODY_SIZE> const& widths = {}
+			make_meta_table(std::string const& name
+				, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths = {}
 		)
 		{
 			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
-			return std::static_pointer_cast<meta_table_interface>(std::make_shared<type>(name, cols, types, widths));
+			return std::static_pointer_cast<meta_table_interface>(std::make_shared<type>(name, std::move(cols), std::move(types), std::move(widths)));
 		}
 		
+		/**
+		 * Use the same meta data to generate a meta table with a "gen" column.
+		 * The "gen" column is used to store the inherit "generation" of in-memory
+		 * tables as explicit SQL column.
+		 */
+		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
+		meta_table_ptr
+			make_meta_table_gen(std::string const& name
+				, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths = {}
+			)
+		{
+			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
+			using ext_t = typename type::ext_t;
+
+			type tbl(name, std::move(cols), std::move(types), std::move(widths));
+			return std::static_pointer_cast<meta_table_interface>(tbl.get_gen_table());
+		}
+
 	}	//	table	
 }
 

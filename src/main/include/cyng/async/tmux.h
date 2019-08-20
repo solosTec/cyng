@@ -29,6 +29,11 @@ namespace cyng
 			mux& get_mux();
 
 			/**
+			 * @param tid id of task to stop
+			 */
+			void stop(std::size_t) const;
+
+			/**
 			 * @return the task id from the internal back channel
 			 */
 			std::size_t get_tid() const;

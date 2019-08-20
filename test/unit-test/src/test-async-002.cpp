@@ -16,7 +16,7 @@
 namespace cyng 
 {
 	
-	class simple
+	class task_002
 	{
 	public:
 		using msg_0 = std::tuple<int, std::string>;
@@ -24,31 +24,31 @@ namespace cyng
 		using signatures_t = std::tuple<msg_0, msg_1>;
 		
 	public:
-		simple(async::base_task* bt, int i, std::string name)
+		task_002(async::base_task* bt, int i, std::string name)
 		: base_(bt)
 		, counter_(0)
 		{
-			std::cout << "constructor simple: " << i << ", " << name << std::endl;
+			std::cout << "constructor task_002: " << i << ", " << name << std::endl;
 		}
 		
 		//	slot 0
 		continuation process(int i, std::string name)
 		{
-			std::cout << "simple::slot-0($" << base_->get_id() << ", " << i  << ", " << name << ")" << std::endl;
+			std::cout << "task_002::slot-0($" << base_->get_id() << ", " << i  << ", " << name << ")" << std::endl;
 			return continuation::TASK_CONTINUE;
 		}
 		
 		//	slot 1
 		continuation process(boost::uuids::uuid tag)
 		{
-			std::cout << "simple::slot-1($" << base_->get_id() << ", " << tag  << ")" << std::endl;
+			std::cout << "task_002::slot-1($" << base_->get_id() << ", " << tag  << ")" << std::endl;
 			return continuation::TASK_CONTINUE;
 		}
 		
 		continuation run()
 		{
 			counter_++;
-			std::cout << "simple::run(" << base_->get_id() << ", #" << counter_ << ")" << std::endl;
+			std::cout << "task_002::run(" << base_->get_id() << ", #" << counter_ << ")" << std::endl;
 			if (base_->get_id() > counter_)
 			{
 				base_->suspend(std::chrono::seconds(base_->get_id()) - std::chrono::seconds(counter_));
@@ -66,31 +66,37 @@ namespace cyng
 		}
 		void stop(bool /*shutdown*/)
 		{
-			std::cout << "simple::stop(" << base_->get_id() << ")" << std::endl;			
+			std::cout << "task_002::stop(" << base_->get_id() << ")" << std::endl;			
 		}
 
 	private:
 		async::base_task* base_;
 		std::size_t counter_;
-//		bool shutdown_;
 	};
 
 	//
 	//	initialize static slot names
 	//
 	template <>
-	std::map<std::string, std::size_t> async::task<simple>::slot_names_({ {"slot-0", 0}, {"slot-1", 1} });
+	std::map<std::string, std::size_t> async::task<task_002>::slot_names_({ {"slot-0", 0}, {"slot-1", 1} });
 
 	bool test_async_002()
 	{
 	
+		//
+		//	task multiplexer
+		//
 		async::mux task_manager;
-		
-	
+			
+		//
+		//	start 100 + 1 tasks
+		//
 		for (int idx = 0; idx < 100; )
 		{
-			async::start_task_delayed<simple>(task_manager, std::chrono::seconds(idx), idx++, "welcome-" + std::to_string(idx));
-			async::start_task_sync<simple>(task_manager, idx++, "welcome-" + std::to_string(idx));
+			++idx;
+			async::start_task_delayed<task_002>(task_manager, std::chrono::seconds(idx), idx, "welcome-" + std::to_string(idx));
+			++idx;
+			async::start_task_sync<task_002>(task_manager, idx, "welcome-" + std::to_string(idx));
 		}
 		
 		std::cout << "wait..." << std::endl;
@@ -107,7 +113,7 @@ namespace cyng
 		//
 #if !BOOST_COMP_GNUC
 		//	doesn't compile with g++
-		task_manager.send<simple, 0ul>(tuple_factory(200, "event-5"));
+		task_manager.send<task_002, 0ul>(tuple_factory(200, "event-5"));
 #endif
 		
 		for (int idx = 0; idx < 10; idx++)
@@ -119,7 +125,6 @@ namespace cyng
 		std::this_thread::sleep_for(std::chrono::seconds(20));
 		std::cout << "stop task manager..." << std::endl;	
 		task_manager.stop(std::chrono::seconds(2), 2);
-// 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::cout << "stop I/O service..." << std::endl;	
 		task_manager.get_io_service().stop();
 		

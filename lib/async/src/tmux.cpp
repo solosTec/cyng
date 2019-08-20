@@ -8,6 +8,7 @@
 #include <cyng/async/tmux.h>
 #include <cyng/async/task/base_task.h>
 #include <cyng/async/task/task_builder.hpp>
+#include <cyng/factory/set_factory.h>
 
 namespace cyng 
 {
@@ -60,6 +61,11 @@ namespace cyng
 		mux& tmux::get_mux()
 		{
 			return mux_;
+		}
+
+		void tmux::stop(std::size_t tid) const
+		{
+			mux_.post(get_tid(), 0u, cyng::tuple_factory(tid));
 		}
 
 		std::size_t tmux::get_tid() const

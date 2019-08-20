@@ -37,12 +37,26 @@ namespace cyng
 			, width_(width)
 			{}
 		};
+
+		/**
+		 * Define an abstract shared pointer
+		 */
+		class meta_table_interface;
+		using meta_table_ptr = std::shared_ptr<meta_table_interface>;
+
 		
 		/**
 		 * interface to table meta data.
 		 * The interface provides data about all columns (name, data type, width), the primary key(s)
 		 * and the table name.
-		 * ToDo: support for table index / secondary keys
+		 * Contains support for (one) table index / secondary keys.
+		 *
+		 * The following method would be nice but connot be implemented due the inherited
+		 * infinite template recursion:
+		 * @code
+		 * virtual meta_table_ptr derive_gen_table() const = 0;
+		 * @endcode
+		 * @see make_meta_table_gen for a replacement.
 		 */
 		class meta_table_interface
 		{
@@ -116,12 +130,9 @@ namespace cyng
 			 */
 			virtual bool has_index() const = 0;
 			virtual std::pair<std::size_t, bool> get_index() const = 0;
+
 		};
 		
-		/**
-		 * Define an abstract shared pointer
-		 */
-		using meta_table_ptr = std::shared_ptr<meta_table_interface>;
 
 		/**
 		 * provide a map of meta data
