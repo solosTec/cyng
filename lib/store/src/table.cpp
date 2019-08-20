@@ -169,6 +169,7 @@ namespace cyng
 					//	remove by iterator
 					//
 					data_.erase(r.first);
+					this->publisher::remove_signal_(this, key, source);
 					return true;
 				}
 			}
