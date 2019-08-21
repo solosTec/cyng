@@ -36,16 +36,18 @@ namespace cyng
 	/**
 	 * @brief copy tuple into vector
 	 *
-	 * No check for duplicates
+	 * The data types are not verified.
 	 */
-	vector_t to_vector(tuple_t const&);
+	inline vector_t to_vector(tuple_t const& tpl)	{
+		return vector_t(tpl.begin(), tpl.end());
+	}
 
 	/**
 	 * @brief copy tuple into vector
-	 *
-	 * No check for duplicates
 	 */
-	 tuple_t to_tuple(vector_t const&);
+	inline tuple_t to_tuple(vector_t const& vec)	{
+		return tuple_t(vec.begin(), vec.end());
+	}
 
 }
 

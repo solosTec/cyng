@@ -122,8 +122,8 @@ namespace cyng
 			| boost::spirit::qi::lit("true")[boost::spirit::_val = make_object(true)]
 			| boost::spirit::qi::lit("false")[boost::spirit::_val = make_object(false)]
 			| boost::spirit::qi::lit("null")[boost::spirit::_val = make_object()]
-			| ('[' > (r_vector | boost::spirit::eps[boost::spirit::_val = vector_factory()])> ']')	//	automatic conversion 
-			| ('{' > (r_members | boost::spirit::eps[boost::spirit::_val = tuple_factory()]) > '}')	//	automatic conversion 
+			| ('[' > (r_vector | boost::spirit::eps[boost::spirit::_val = make_vector()])> ']')	//	automatic conversion 
+			| ('{' > (r_members | boost::spirit::eps[boost::spirit::_val = make_tuple()]) > '}')	//	automatic conversion 
 			;
 		
 		r_members

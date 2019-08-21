@@ -9,18 +9,17 @@
 
 namespace cyng 
 {	
-
-	object tuple_factory()
+	object make_tuple()
 	{
 		return make_object(tuple_t());
 	}
 	
-	object vector_factory()
+	object make_vector()
 	{
 		return make_object(vector_t());
 	}
 	
-	object set_factory()
+	object make_set()
 	{
 		return make_object(set_t());
 	}

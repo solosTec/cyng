@@ -62,9 +62,9 @@ namespace cyng
 					case TC_STRING:	next(make_object(std::string()));	break;
 					case TC_BUFFER:	next(make_object(buffer_t()));	break;
 
-					case TC_TUPLE:	next(tuple_factory()); break;
-					case TC_VECTOR:	next(vector_factory()); break;
-					case TC_SET:	next(set_factory()); break;
+					case TC_TUPLE:	next(make_tuple()); break;
+					case TC_VECTOR:	next(make_vector()); break;
+					case TC_SET:	next(make_set()); break;
 					case TC_ATTR_MAP:	next(attr_map_factory()()); break;
 					case TC_PARAM_MAP:	next(param_map_factory()()); break;
 

@@ -51,17 +51,6 @@ namespace cyng
 		});
 		return amap;
 	}
-
-	vector_t to_vector(tuple_t const& tpl)
-	{
-		return vector_t(tpl.begin(), tpl.end());
-	}
-
-	tuple_t to_tuple(vector_t const& vec)
-	{
-		return tuple_t(vec.begin(), vec.end());
-	}
-
 }
 
 

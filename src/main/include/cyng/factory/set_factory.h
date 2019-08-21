@@ -83,18 +83,27 @@ namespace cyng
 	/**
 	 * create empty tuple object
 	 */
-	object tuple_factory();
+	inline tuple_t tuple_factory() {
+		return tuple_t();
+	}
+	object make_tuple();
 
 	/**
 	 * create empty vector object
 	 */
-	object vector_factory();
+	inline vector_t vector_factory() {
+		return vector_t();
+	}
+	object make_vector();
 
 	/**
 	 * create empty set object
 	 */
-	object set_factory();
-	
+	inline set_t set_factory() {
+		return set_t();
+	}
+	object make_set();
+
 	//
 	//	tuple builder
 	//
