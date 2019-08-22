@@ -11,7 +11,6 @@
 #include <iomanip>
 #include <boost/assert.hpp>
 #include <boost/range.hpp>
-//#include <cyng/util/brute_cast.hpp>
 
 namespace cyng 
 {

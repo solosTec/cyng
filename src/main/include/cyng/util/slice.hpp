@@ -95,10 +95,19 @@ namespace cyng
 	template < typename R, std::size_t FROM, typename T, std::size_t DIM >
 	R& slicer(std::array< T, DIM >& a)
 	{
-		static_assert(FROM + sizeof(R) <= DIM, "index out of range");
+		static_assert(FROM + sizeof(R) <= (DIM * sizeof(R)), "index out of range");
 
 		//typedef std::array< T, TO - FROM >	result_type;
 		return *reinterpret_cast< R* >(&a[FROM]);
+	}
+
+	template < typename R, std::size_t FROM, typename T, std::size_t DIM >
+	constexpr R slicer(std::array< T, DIM > const& a)
+	{
+		static_assert(FROM + sizeof(R) <= (DIM * sizeof(R)), "index out of range");
+
+		//typedef std::array< T, TO - FROM >	result_type;
+		return *reinterpret_cast<R const*>(&a[FROM]);
 	}
 
 	/**
@@ -139,12 +148,17 @@ namespace cyng
 		result_type a;
         
         //  requires C++17
-// 		std::reverse_copy(begin, end, a.begin());
+#if defined(__CPP_SUPPORT_N3291)
+
+ 		std::reverse_copy(begin, end, a.begin());
+
+#else
         
         auto dest = a.begin();
         while (begin != end) {
             *(dest++) = *(--end);
         }
+#endif
 
 		return a;
 	}

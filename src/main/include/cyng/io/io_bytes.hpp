@@ -18,14 +18,16 @@
 namespace cyng 
 {	
 
-
-	template <typename T>
-	std::string bytes_to_str(T v)
+	template<typename CharT, typename Traits, typename T>
+	inline std::basic_ostream<CharT, Traits >& bytes_to_str(std::basic_ostream<CharT, Traits>& os, T v)
 	{
 		static_assert(std::is_integral<T>::value, "integral required");
 		static_assert(std::is_unsigned<T>::value, "unsigned required");
 
-		const char* units[] = { "Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+		//	store and reset stream state
+		boost::io::ios_flags_saver  ifs(os);
+
+		static const char* units[] = { "Bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 		std::size_t idx = 0;
 		auto d = boost::numeric_cast<double>(v);
 		while ((d >= 1024) && (idx < 8)) {
@@ -33,11 +35,21 @@ namespace cyng
 			idx++;
 		}
 
-		std::stringstream ss;
-		ss.flags(std::ios::fixed);
-		ss.precision(2);
+		if (idx > 0) {
+			os.flags(std::ios::fixed);
+			os.precision(2);
+		}
 
-		ss << std::dec << d << ' ' << units[idx];
+		os << std::dec << d << ' ' << units[idx];
+		return os;
+	}
+
+
+	template <typename T>
+	std::string bytes_to_str(T v)
+	{
+		std::stringstream ss;
+		bytes_to_str(ss, v);
 		return ss.str();
 	}
 

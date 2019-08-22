@@ -107,10 +107,9 @@ namespace cyng
 			return ss.str();
 		}
 
-		std::string to_hex(buffer_t const& buffer, char sp)
+		std::ostream& to_hex(std::ostream& os, buffer_t const& buffer, char sp)
 		{
-			std::stringstream ss;
-			ss
+			os
 				<< std::setfill('0')
 				<< std::hex
 				;
@@ -119,20 +118,24 @@ namespace cyng
 			bool flag = false;
 			for (const char c : buffer)
 			{
-				if (flag)
-				{
-					ss << sp;
+				if (flag)	{
+					os << sp;
 				}
-				else
-				{
+				else {
 					flag = true;
 				}
-				ss
+				os
 					<< std::setw(2)
 					<< (+c & 0xFF)
 					;
 			}
+			return os;
+		}
 
+		std::string to_hex(buffer_t const& buffer, char sp)
+		{
+			std::stringstream ss;
+			to_hex(ss, buffer, sp);
 			return ss.str();
 		}
 	}

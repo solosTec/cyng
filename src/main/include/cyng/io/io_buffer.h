@@ -28,7 +28,7 @@ namespace cyng
 		std::string to_ascii(buffer_t const&);
 
 		/**
-		 * Writes a binary buffer as hex values
+		 * Writes a binary buffer as hex values without spaces
 		 */
 		std::ostream& to_hex(std::ostream&, buffer_t const&);
 		std::string to_hex(buffer_t const&);
@@ -37,6 +37,7 @@ namespace cyng
 		 * Writes a binary buffer as hex values separated
 		 * by a single character (preferrable a white space)
 		 */
+		std::ostream& to_hex(std::ostream&, buffer_t const&, char);
 		std::string to_hex(buffer_t const&, char);
 
 		/**
