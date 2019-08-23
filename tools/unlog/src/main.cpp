@@ -212,9 +212,15 @@ int main(int argc, char* argv[]) {
 		//	Construct selected filter
 		//
 		if (boost::algorithm::equals("hexdump", filter)) {
+			//
+			//	Example:
+			//	[0000]  1b 1b 1b 1b 1b 1b 1b 1b  01 01 01 01 76 81 06 31  ........ ....v..1
+			//	[0010]  39 30 38 32 33 32 30 33  38 33 38 38 39 32 36 32  90823203 83889262
+			//	[0020]  35 2d 31 62 00 62 00 72  63 01 00 77 01 07 00 50  5-1b.b.r c..w...P
+
 			return cyng::hexdump(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
 		}
-		else if (boost::algorithm::equals("hexdumcpp", filter)) {
+		else if (boost::algorithm::equals("cpp", filter)) {
 			if (vm["output"].defaulted()) {
 				//
 				//	Derive an output name from the input name
