@@ -124,6 +124,7 @@ define_compiler_support("P1209R0" "Consistent container erasure" "9.0" "8.0" "99
 message(STATUS "** test ${CMAKE_CXX_COMPILER_ID} compiler ${CMAKE_CXX_COMPILER_VERSION} for C++17 features")
 # not really sure about support of N3915 - maybe C++ 2015 CTP, GCC 4.9.2, and Clang 3.5 are sufficient
 define_compiler_support("N3291" "reverse_copy" "7.1" "5.0" "19.21" "999")
+define_compiler_support("N3911" "std::void_t" "6.0" "3.6" "19.0" "999")
 define_compiler_support("N3915" "apply() call a function with arguments from a tuple" "7.1" "5.0" "19.14" "999")
 define_compiler_support("N3922" "New auto rules for direct-list-initialization" "5.0" "3.8" "19.0" "17.0")
 define_compiler_support("N3928" "static_assert with no message" "6.0" "2.5" "19.10" "18.0")
@@ -181,7 +182,7 @@ define_compiler_support("P0083R3" "Splicing Maps and Sets" "7.0" "8.0" "19.12" "
 define_compiler_support("P0088R3" "std::variant" "7.0" "4.0" "19.10" "999")
 define_compiler_support("P0067R5" "Elementary string conversions" "8.0" "999" "19.11" "999")
 define_compiler_support("P0298R3" "std::byte" "7.0" "5.0" "19.11" "999")
-
+define_compiler_support("P0156R0" "std::scoped_lock" "7.0" "5.0" "19.11" "999")
 
 #
 #   C++14 features
