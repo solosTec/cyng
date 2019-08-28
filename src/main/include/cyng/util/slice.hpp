@@ -10,6 +10,7 @@
 #include <array>
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 
 namespace cyng 
 {
