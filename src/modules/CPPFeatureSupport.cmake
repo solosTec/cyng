@@ -157,7 +157,8 @@ define_compiler_support("P0127R2" "Non-type template parameters with auto type" 
 define_compiler_support("P0135R1" "Guaranteed copy elision" "7.0" "4.0" "19.13" "19.1")
 define_compiler_support("P0137R1" "Replacement of class objects containing reference members" "7.0" "6.0" "19.14" "999")
 define_compiler_support("P0145R3" "Stricter expression evaluation order" "7.0" "4.0" "19.14" "999")
-define_compiler_support("P0217R3" "Structured Bindings" "7.0" "4.0" "19.11" "18.1")
+# there is a bug in gcc 7.2.0 (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81888) so this feature is effecive available since gcc 8.0
+define_compiler_support("P0217R3" "Structured Bindings (like auto [...] = f())" "8.0" "4.0" "19.11" "18.1")
 define_compiler_support("P0283R2" "Ignore unknown attributes" "1.0" "3.9" "19.11" "18.0")
 define_compiler_support("P0292R2" "constexpr if statements" "7.0" "3.9" "19.11" "19.0")
 define_compiler_support("P0305R1" "init-statements for if and switch" "7.0" "3.9" "19.11" "18.0")
