@@ -81,7 +81,7 @@ namespace cyng
 											<< std::endl
 											;
 									}
-									io::write_binary<std::uint16_t>(fout, n);
+									io::write_binary<std::uint16_t>(fout, static_cast<std::uint16_t>(n));
 								}
 								catch (std::invalid_argument const& ex) {
 									std::cerr << "error in line #" << line_counter << '\t' << '[' << v << ']' << ' ' << ex.what() << std::endl;

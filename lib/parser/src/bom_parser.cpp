@@ -12,63 +12,9 @@
 
 namespace cyng
 {
-	namespace 	//	*local*
-	{
-		const static std::uint8_t prefix_vector[bom::OTHER][16] =
-		{
-			//	UTF8,		//	EF BB BF
-			{ 0xEF, 0xBB, 0xBF },
-			//	UTF16BE,	//	FE FF big endian
-			{ 0xFE, 0xFF },
-			//	UTF16LE,	//	FF FE
-			{ 0xFF, 0xFE },
-			//	UTF32BE,	//	00 00 FE FF
-			{ 0x00, 0x00, 0xFE, 0xFF },
-			//	UTF32LE,	//	FF FE 00 00
-			{ 0xFF, 0xFE, 0x00, 0x00 },
-			//	UTF7,		//	2B 2F 76 38, 2B 2F 76 39, 2B 2F 76 2B, 2B 2F 76 2F
-			{ 0x2B, 0x2F, 0x76, 0x38, 0x2B, 0x2F, 0x76, 0x39, 0x2B, 0x2F, 0x76, 0x2B, 0x2B, 0x2F, 0x76, 0x2F },
-			//	UTF1,		//	F7 64 4C
-			{ 0xF7, 0x64, 0x4C },
-			//	UTFEBCDIC,	//	DD 73 66 73
-			{ 0xDD, 0x73, 0x66, 0x73 },
-			//	SCSU,		//	0E FE FF
-			{ 0x0E, 0xFE, 0xFF },
-			//	BOCU1,		//	FB EE 28
-			{ 0xFB, 0xEE, 0x28 },
-			//	GB18030,	//	84 31 95 33
-			{ 0x84, 0x31, 0x95, 0x33 },
-		};
-
-		const static std::size_t prefix_length[bom::OTHER] =
-		{
-			//	UTF8,		//	EF BB BF
-			3,
-			//	UTF16BE,	//	FE FF big endian
-			2,
-			//	UTF16LE,	//	FF FE
-			2,
-			//	UTF32BE,	//	00 00 FE FF
-			4,
-			//	UTF32LE,	//	FF FE 00 00
-			4,
-			//	UTF7,		//	2B 2F 76 38, 2B 2F 76 39, 2B 2F 76 2B, 2B 2F 76 2F
-			16,
-			//	UTF1,		//	F7 64 4C
-			3,
-			//	UTFEBCDIC,	//	DD 73 66 73
-			4,
-			//	SCSU,		//	0E FE FF
-			3,
-			//	BOCU1,		//	FB EE 28
-			3,
-			//	GB18030,	//	84 31 95 33
-			4,
-		};
-	}	//	*local*
-	//	+-----------------------------------------------------------------+
-	//	| yap::io::bom_parser [definition]
-	//	+-----------------------------------------------------------------+
+	//	
+	//	bom_parser [definition]
+	//	
 	bom_parser::bom_parser()
 		: state_(INITIAL)
 		, code_(bom::OTHER)
@@ -77,10 +23,6 @@ namespace cyng
 		, cache_()
 	{}
 
-	/**
-	*	Possible future additional features: sanity check UTF16 byte stream length is even,
-	*	UTF32 is divisible by 4; advance byte stream by length of BOM.
-	*/
 	bom::code bom_parser::parse(std::ifstream& infile)
 	{
 		while (infile.good() && state_ != READY)
@@ -180,9 +122,12 @@ namespace cyng
 			state(bom::UTF32BE);
 			break;
 
-			//	2B 2F 76 38, 2B 2F 76 39, 2B 2F 76 2B, 2B 2F 76 2F
+			//	2B 2F 76 38, 
+			//	2B 2F 76 39, 
+			//	2B 2F 76 2B, 
+			//	2B 2F 76 2F
 		case TEST_UTF7:
-			state(bom::UTF7);
+			state(bom::UTF7a);
 			break;
 
 			//	F7 64 4C
@@ -210,9 +155,9 @@ namespace cyng
 	bool bom_parser::state(bom::code bc) 	
 	{
 		BOOST_ASSERT(bc != bom::OTHER);
-		BOOST_ASSERT(count_ < boost::numeric_cast<std::streamsize>(prefix_length[bc]));
+		BOOST_ASSERT(count_ < boost::numeric_cast<std::streamsize>(cyng::bom_length(bc)));
 
-		if (prefix_vector[bc][count_] == static_cast<std::uint8_t>(c_)) 	
+		if (cyng::bom_prefix(bc)[count_] == static_cast<std::uint8_t>(c_))
 		{
 			if (count_ == boost::numeric_cast<std::streamsize>(max_prefix_length(bc))) 	
 			{
@@ -252,7 +197,7 @@ namespace cyng
 
 	std::size_t bom_parser::max_prefix_length(bom::code c) 	
 	{
-		return prefix_length[c] - 1;
+		return cyng::bom_length(c) - 1;
 	}
 
 	bom_parser::cache_type const& bom_parser::cache() const 
@@ -274,10 +219,7 @@ namespace cyng
 
 	std::size_t bom_parser::bom_length() const 	
 	{
-		return (code_ == bom::OTHER)
-			? 0
-			: prefix_length[code_]
-			;
+		return cyng::bom_length(code_);
 	}
 
 }	//	namespace cyng

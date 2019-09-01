@@ -12,31 +12,13 @@
   #pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include <cyng/io/bom.h>
 #include <vector>
 #include <fstream>
 #include <boost/utility.hpp>
 
 namespace cyng	
 {
-	namespace bom
-	{
-		enum code
-		{
-			UTF8 = 0,	//	EF BB BF
-			UTF16BE,	//	FE FF big endian
-			UTF16LE,	//	FF FE
-			UTF32BE,	//	00 00 FE FF
-			UTF32LE,	//	FF FE 00 00
-			UTF7,		//	2B 2F 76 38, 2B 2F 76 39, 2B 2F 76 2B, 2B 2F 76 2F
-			UTF1,		//	F7 64 4C
-			UTFEBCDIC,	//	DD 73 66 73
-			SCSU,		//	0E FE FF
-			BOCU1,		//	FB EE 28
-			GB18030,	//	84 31 95 33
-			OTHER,
-		};
-	}
-
 	class bom_parser
 		: private boost::noncopyable
 	{
@@ -45,6 +27,11 @@ namespace cyng
 
 	public:
 		bom_parser();
+
+		/**
+		 *	Possible future additional features: sanity check UTF16 byte stream length is even,
+		 *	UTF32 is divisible by 4; advance byte stream by length of BOM.
+		 */
 		bom::code parse(std::ifstream&);
 
 		template < typename I >
