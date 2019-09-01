@@ -56,11 +56,13 @@ namespace cyng
 						for (auto const& v : values) {
 							if (!v.empty()) {
 								try {
-									if (verbose_ > 8) {
-										std::cout << "process line #" << line_counter << '\t' << '[' << v << ']' << std::endl;
+									if ((v.size() == 2) && (v.at(0) > 47) && (v.at(0) < 58)) {
+										if (verbose_ > 8) {
+											std::cout << "process line #" << line_counter << '\t' << '[' << v << ']' << std::endl;
+										}
+										auto const n = static_cast<std::uint8_t>(std::stoul(v, 0, 16));
+										io::write_binary<std::uint8_t>(fout, n);
 									}
-									auto n = std::stoul(v, 0, 16);
-									io::write_binary<std::uint8_t>(fout, n);
 								}
 								catch (std::invalid_argument const& ex) {
 									std::cerr << "error in line #" << line_counter << '\t' << '[' << v << ']' << ' ' << ex.what() << std::endl;

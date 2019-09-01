@@ -49,7 +49,7 @@ namespace cyng
 // 				}
 				
 				return (((obj.get_class() == TC_PARAM) && (object_cast<param_t>(obj)->first == name))
-				|| ((obj.get_class() == TC_STRING) && (object_cast<param_t>(obj)->first == name)));
+				|| ((obj.get_class() == TC_STRING) && (*object_cast<std::string>(obj) == name)));
 			});
 		}
 	}

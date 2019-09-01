@@ -122,8 +122,9 @@ define_compiler_support("P1209R0" "Consistent container erasure" "9.0" "8.0" "99
 #	cl /std:c++latest
 #
 message(STATUS "** test ${CMAKE_CXX_COMPILER_ID} compiler ${CMAKE_CXX_COMPILER_VERSION} for C++17 features")
-# not really sure about support of N3915 - maybe C++ 2015 CTP, GCC 4.9.2, and Clang 3.5 are sufficient
 define_compiler_support("N3291" "reverse_copy" "8.1" "6.0" "19.21" "999")
+define_compiler_support("N3911" "std::void_t" "6.0" "3.6" "19.0" "999")
+# not really sure about support of N3915 - maybe C++ 2015 CTP, GCC 4.9.2, and Clang 3.5 are sufficient
 define_compiler_support("N3915" "apply() call a function with arguments from a tuple" "7.1" "5.0" "19.14" "999")
 define_compiler_support("N3922" "New auto rules for direct-list-initialization" "5.0" "3.8" "19.0" "17.0")
 define_compiler_support("N3928" "static_assert with no message" "6.0" "2.5" "19.10" "18.0")
@@ -156,7 +157,8 @@ define_compiler_support("P0127R2" "Non-type template parameters with auto type" 
 define_compiler_support("P0135R1" "Guaranteed copy elision" "7.0" "4.0" "19.13" "19.1")
 define_compiler_support("P0137R1" "Replacement of class objects containing reference members" "7.0" "6.0" "19.14" "999")
 define_compiler_support("P0145R3" "Stricter expression evaluation order" "7.0" "4.0" "19.14" "999")
-define_compiler_support("P0217R3" "Structured Bindings" "7.0" "4.0" "19.11" "18.1")
+# there is a bug in gcc 7.2.0 (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81888) so this feature is effecive available since gcc 8.0
+define_compiler_support("P0217R3" "Structured Bindings (like auto [...] = f())" "8.0" "4.0" "19.11" "18.1")
 define_compiler_support("P0283R2" "Ignore unknown attributes" "1.0" "3.9" "19.11" "18.0")
 define_compiler_support("P0292R2" "constexpr if statements" "7.0" "3.9" "19.11" "19.0")
 define_compiler_support("P0305R1" "init-statements for if and switch" "7.0" "3.9" "19.11" "18.0")
@@ -181,7 +183,7 @@ define_compiler_support("P0083R3" "Splicing Maps and Sets" "7.0" "8.0" "19.12" "
 define_compiler_support("P0088R3" "std::variant" "7.0" "4.0" "19.10" "999")
 define_compiler_support("P0067R5" "Elementary string conversions" "8.0" "999" "19.11" "999")
 define_compiler_support("P0298R3" "std::byte" "7.0" "5.0" "19.11" "999")
-
+define_compiler_support("P0156R0" "std::scoped_lock" "7.0" "5.0" "19.11" "999")
 
 #
 #   C++14 features
