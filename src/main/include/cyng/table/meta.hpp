@@ -117,15 +117,17 @@ namespace cyng
 				return KEY_SIZE + BODY_SIZE;
 			}
 
-
 			/**
-			 * Could throw.
+			 * If col is out of range return value is an empty string.
 			 * 
 			 * @return the name of the specified column
 			 */
 			virtual std::string get_name(std::size_t col) const override 
 			{
-				return this->base::col_names_[col];
+				return (col < size()) 
+                    ? this->base::col_names_[col]
+                    : ""
+                    ;
 			}
 			
 			/**
@@ -298,7 +300,7 @@ namespace cyng
 				col_types[KEY_SIZE] = TC_UINT64;
 				col_width[KEY_SIZE] = 0u;
 
-				return std::make_shared<ext_t>(this->base::name_, std::move(col_names), std::move(col_types), std::move(col_width));
+				return std::make_shared<ext_t>(get_name(), std::move(col_names), std::move(col_types), std::move(col_width));
 			}
 
 
