@@ -78,6 +78,19 @@ namespace cyng
 		return false;
 	}
 	
+	reader<object> tuple_reader::operator[](std::string const& name) const
+	{
+		return make_reader(get(name));
+	}
+
+	/**
+	 * Nested array subscript operator
+	 */
+	reader<object> tuple_reader::operator[](std::size_t idx) const
+	{
+		return make_reader(get(idx));
+	}
+
 	//
 	//	vector
 	//
@@ -92,7 +105,7 @@ namespace cyng
 	
 	reader<object> vector_reader::operator[](std::size_t idx) const
 	{
-		return reader<object>(get(idx));
+		return make_reader(get(idx));
 	}
 	
 	//
