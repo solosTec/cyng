@@ -16,7 +16,7 @@ namespace cyng
 		*	@base Handle to a registry base key.
 		*	@note that value names are not case sensitive.
 		*/
-		registry_value::registry_value(const std::string& path, HKEY base)
+		registry_value::registry_value(std::string const& path, HKEY base)
 			: key_(0)
 			, base_(base)
 		{
@@ -24,18 +24,25 @@ namespace cyng
 		}
 
 		/**
-		*	@note that value names are not case sensitive.
-		*/
-		registry_value::registry_value(const std::string& keyName, const std::string& valueName, HKEY base)
+		 *	@note that value names are not case sensitive.
+		 */
+		registry_value::registry_value(std::string const& key_name, std::string const& valueName, HKEY base)
 			: key_(0)
 			, base_(base)
-			, key_name_(keyName)
+			, key_name_(key_name)
 			, value_name_(valueName)
 		{}
 
+		registry_value::registry_value(std::string const& key_name, unsigned idx, HKEY base)
+			: key_(0)
+			, base_(base)
+			, key_name_(key_name)
+			, value_name_(std::to_string(idx))
+		{}
+
 		/**
-		*	Copy constructor
-		*/
+		 *	Copy constructor
+		 */
 		registry_value::registry_value(const registry_value& other)
 			: key_(other.key_)
 			, base_(other.base_)
@@ -215,10 +222,14 @@ namespace cyng
 		{}
 
 		/**
-		*	Constructor
-		*/
-		registry_string<std::string>::registry_string(const std::string& keyName, const std::string& valueName, HKEY base)
-			: registry_value(keyName, valueName, base)
+		 *	Constructor
+		 */
+		registry_string<std::string>::registry_string(std::string const& key_name, std::string const& valueName, HKEY base)
+			: registry_value(key_name, valueName, base)
+		{}
+
+		registry_string<std::string>::registry_string(std::string const& key_name, unsigned idx, HKEY base)
+			: registry_value(key_name, idx, base)
 		{}
 
 		registry_string< std::string >::operator std::string()
@@ -258,7 +269,7 @@ namespace cyng
 			return *this;
 		}
 
-		registry_string< std::string > registry_string< std::string >::operator[](const std::string& valueName)
+		registry_string< std::string > registry_string< std::string >::operator[](std::string const& valueName)
 		{
 			return registry_string(get_key_name(), valueName, get_base_key());
 		}
@@ -270,14 +281,14 @@ namespace cyng
 		/**
 		*	Constructor
 		*/
-		registry_array::registry_array(const std::string& path, HKEY base)
+		registry_array::registry_array(std::string const& path, HKEY base)
 			: registry_value(path, base)
 		{}
 
 		/**
 		*	Constructor
 		*/
-		registry_array::registry_array(const std::string& key_name, const std::string& value_name, HKEY base)
+		registry_array::registry_array(std::string const& key_name, std::string const& value_name, HKEY base)
 			: registry_value(key_name, value_name, base)
 		{}
 
@@ -356,14 +367,14 @@ namespace cyng
 			delete[] lpBuffer;
 		}
 
-		bool registry_array::contains(const std::string& comp)
+		bool registry_array::contains(std::string const& comp)
 		{
 			value_type value;
 			read(value);
 			return value.end() == std::find(value.begin(), value.end(), comp);
 		}
 
-		bool registry_array::operator +=(const std::string& comp)
+		bool registry_array::operator +=(std::string const& comp)
 		{
 			value_type value;
 			read(value);
@@ -377,7 +388,7 @@ namespace cyng
 			return false;
 		}
 
-		bool registry_array::operator -=(const std::string& comp)
+		bool registry_array::operator -=(std::string const& comp)
 		{
 			value_type value;
 			read(value);

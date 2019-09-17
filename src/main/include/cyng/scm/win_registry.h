@@ -106,8 +106,9 @@ namespace cyng
 			};
 
 		public:
-			registry_value(const std::string&, HKEY);
-			registry_value(const std::string&, const std::string&, HKEY);
+			registry_value(std::string const&, HKEY);
+			registry_value(std::string const&, std::string const&, HKEY);
+			registry_value(std::string const&, unsigned, HKEY);
 			registry_value(const registry_value&);
 			virtual ~registry_value();
 
@@ -126,7 +127,7 @@ namespace cyng
 			size_t query_max_value_length();
 
 		private:
-			void split_path(const std::string&);
+			void split_path(std::string const&);
 
 			HKEY key_;
 			HKEY base_;
@@ -146,11 +147,14 @@ namespace cyng
 		class registry_string : public registry_value
 		{
 		public:
-			registry_string(const std::string& path, HKEY base)
+			registry_string(std::string const& path, HKEY base)
 				: registry_value(path, base)
 			{}
-			registry_string(const std::string& key_name, const std::string& value_name, HKEY base)
+			registry_string(std::string const& key_name, std::string const& value_name, HKEY base)
 				: registry_value(key_name, value_name, base)
+			{}
+			registry_string(std::string const& key_name, unsigned idx, HKEY base)
+				: registry_value(key_name, idx, base)
 			{}
 
 			operator T()
@@ -198,7 +202,7 @@ namespace cyng
 				return *this;
 			}
 
-			registry_string operator[](const std::string& valueName)
+			registry_string operator[](std::string const& valueName)
 			{
 				return registry_string(get_key_name(), valueName, get_base_key());
 			}
@@ -215,12 +219,13 @@ namespace cyng
 		class registry_string< std::string > : public registry_value
 		{
 		public:
-			registry_string(const std::string&, HKEY);
-			registry_string(const std::string&, const std::string&, HKEY);
+			registry_string(std::string const&, HKEY);
+			registry_string(std::string const&, std::string const&, HKEY);
+			registry_string(std::string const&, unsigned, HKEY);
 
 			operator std::string();
-			const registry_string & operator=(const std::string&);
-			registry_string operator[](const std::string&);
+			const registry_string & operator=(std::string const&);
+			registry_string operator[](std::string const&);
 		};
 
 		//	+-----------------------------------------------------------------+
@@ -236,7 +241,7 @@ namespace cyng
 			registry_u32(const std::string & name, HKEY base)
 				: registry_value(name, base)
 			{}
-			registry_u32(const std::string& keyName, const std::string& valueName, HKEY base)
+			registry_u32(std::string const& keyName, std::string const& valueName, HKEY base)
 				: registry_value(keyName, valueName, base)
 			{}
 
@@ -270,7 +275,7 @@ namespace cyng
 				return *this;
 			}
 
-			registry_u32 operator[](const std::string& valueName)
+			registry_u32 operator[](std::string const& valueName)
 			{
 				return registry_u32(get_key_name(), valueName, get_base_key());
 			}
@@ -333,18 +338,18 @@ namespace cyng
 		class registry_array : public registry_value
 		{
 		public:
-			typedef std::list< std::string >	value_type;
-			typedef value_type::iterator		value_iterator;
-			typedef value_type::const_iterator	value_const_iterator;
+			using value_type = std::list< std::string >;
+			using value_iterator = value_type::iterator;
+			using value_const_iterator = value_type::const_iterator;
 
 		public:
-			registry_array(const std::string&, HKEY);
-			registry_array(const std::string&, const std::string&, HKEY);
+			registry_array(std::string const&, HKEY);
+			registry_array(std::string const&, std::string const&, HKEY);
 			size_t read(value_type&);
 			void write(const value_type&);
-			bool contains(const std::string&);
-			bool operator +=(const std::string&);
-			bool operator -=(const std::string&);
+			bool contains(std::string const&);
+			bool operator +=(std::string const&);
+			bool operator -=(std::string const&);
 		};
 
 	}	//	sys

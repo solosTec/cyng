@@ -9,6 +9,7 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/sys/fsys.h>
 #include <cyng/sys/mac.h>
+#include <cyng/sys/ntp.h>
 #include <cyng/io/serializer.h>
 
 namespace cyng 
@@ -29,6 +30,13 @@ namespace cyng
             using namespace io;
             std::cout << m << std::endl;
         }
+#endif
+
+		auto srvs =	sys::get_ntp_servers();
+#ifdef _DEBUG
+		for (auto const& srv : srvs) {
+			std::cout << srv << std::endl;
+		}
 #endif
 
 		return true;

@@ -10,6 +10,7 @@ set (sys_cpp
   	lib/sys/src/mac.cpp
   	lib/sys/src/info.cpp
   	lib/sys/src/fsys.cpp
+  	lib/sys/src/ntp.cpp
 )
     
 set (sys_h
@@ -19,6 +20,7 @@ set (sys_h
 	src/main/include/cyng/sys/mac.h
 	src/main/include/cyng/sys/info.h
 	src/main/include/cyng/sys/fsys.h
+	src/main/include/cyng/sys/ntp.h
 )
 
 # define the sys lib
@@ -26,3 +28,8 @@ set (sys_lib
   ${sys_cpp}
   ${sys_h}
 )
+
+if (WIN32)
+	list(APPEND sys_lib src/main/include/cyng/scm/win_registry.h)
+	list(APPEND sys_lib lib/scm/src/win_registry.cpp)
+endif(WIN32)
