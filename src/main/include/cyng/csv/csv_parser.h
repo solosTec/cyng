@@ -39,9 +39,9 @@ namespace cyng
 	std::pair<tuple_t, bool> parse_csv(buffer_t const& inp);
 
 	/**
-	 * Parse CSV data into a list of CYY objects. 
+	 * Parse CSV data into a list of CYNG objects. 
 	 * This demonstrates quite impressively, how powerful 
-	 * the CYY object system could be.
+	 * the CYNG object system could be.
 	 * 
 	 * Contains support for date time with following format:
 	 @code

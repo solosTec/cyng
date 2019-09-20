@@ -39,9 +39,9 @@ namespace cyng
 	std::pair<object, bool> parse_json(buffer_t const& inp);
 
 	/**
-		* Parse JSON data into a tree of CYY objects. 
+		* Parse JSON data into a tree of CYNG objects. 
 		* This demonstrates quite impressively, how powerful 
-		* the CYY object system could be.
+		* the CYNG object system could be.
 		* 
 		* Contains support for date time with following format:
 		@code

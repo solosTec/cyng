@@ -4,6 +4,6 @@
  * Copyright (c) 2019 Sylko Olzscher
  *
  */
-#include <cyy/scm/service.hpp>
+#include <cyng/scm/service.hpp>
 #include <string.h>
 

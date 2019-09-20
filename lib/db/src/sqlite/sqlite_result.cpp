@@ -653,7 +653,7 @@ namespace cyng
 	// 			CYNG_VECTOR,		//!<	std::vector<object>
 	// 			CYNG_SET,		//!<	std::set<object>
 	// 			CYNG_LOCKABLE,		//!<	std::pair<T,mutex>
-	// 			CYNG_TABLE,		//!<	defined in CYY store library
+	// 			CYNG_TABLE,		//!<	defined in CYNG store library
 	// 			
 	// 			//	datatypes from boost library
 						case TC_UUID:	return get_value_by_code<TC_UUID>(*statement_, index);

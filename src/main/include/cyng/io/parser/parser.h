@@ -130,7 +130,7 @@ namespace cyng
 	}
 
 	/**
-	 * Native parser for output from native CYY serializer.
+	 * Native parser for output from native CYNG serializer.
 	 * 
 	 * The parser maintains an internal state and is able
 	 * to work on data streams.
@@ -145,7 +145,7 @@ namespace cyng
 	 * and parameters are transfered as such but as an assembly 
 	 * instruction. To rebuild the original use the VM provided
 	 * by the cyng_vm library or build your own assembly line.
-	 * The CYY VM (cyng_vm) library provides such a VM.
+	 * The CYNG VM (cyng_vm) library provides such a VM.
 	 * 
 	 * @note A first implementation used the pimpl idiom. But we
 	 * found, that it's more easy to implement custom data types
