@@ -122,39 +122,14 @@ namespace boost
 namespace cyng	
 {
 	namespace utf
-	{
-
-// 		namespace		
-// 		{	//	*anonymous*
-// 			struct r_esc : boost::spirit::qi::symbols<const char, const std::uint32_t>
-// 			{
-// 				/**
-// 				 * same escape symbols as in C/C++
-// 				 */
-// 				r_esc()
-// 				{
-// 					add
-// 					("a", '\a')
-// 					("b", '\b')
-// 					("f", '\f')
-// 					("n", '\n')
-// 					("r", '\r')
-// 					("t", '\t')
-// 					("v", '\v')
-// 					("\\", '\\')
-// 					("\'", '\'')
-// 					("\"", '\"')
-// 					;
-// 				}
-// 			}	esc_symbols;
-// 		}	//	*anonymous*
-		
+	{		
 		template <typename Iterator>
 		char_parser< Iterator > ::char_parser()
 			: char_parser::base_type(r_start)
 		{
 			// entry point
 			r_start
+				//	accept all characters but '"' and '\'
 				= +(~boost::spirit::qi::standard_wide::char_(L"\"\\"))[boost::spirit::qi::_val += boost::spirit::qi::_1]
 				// \ ( == reverse solidus)
 				| boost::spirit::qi::lit(L"\x5C") >> r_char [boost::spirit::qi::_val += boost::spirit::qi::_1] 
@@ -180,14 +155,18 @@ namespace cyng
 		{
 			r_start
 				=  (*r_char);
-// 				= boost::spirit::qi::lexeme[ *r_char ];
 		}
 		
 		template <typename Iterator, typename Skipper>
 		quote_parser<Iterator, Skipper>::quote_parser()
 			: quote_parser::base_type(r_start)
 		{
-			//  this statement requires to include the phoenix library
+			//  This statement requires to include the phoenix library.
+			//	This works since r_string does not match the '"' symbol.
+			//	Otherwise something like 
+			//		quoted_string = '"' >> *(qi::char_ - '"') >> '"';
+			//	is required.
+			//
 			r_start
 				= boost::spirit::qi::lexeme[L'"' >> r_string >> L'"']
 				;

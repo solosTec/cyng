@@ -28,6 +28,7 @@ namespace cyng
 	 * @endcode
 	 */
 	std::pair<buffer_t, bool > parse_hex_string(std::string const& inp);
+	std::pair<buffer_t, bool > parse_hex_string_safe(std::string inp);
 
 	/**
 	* Parse a string of hex values that are separated by spaces.

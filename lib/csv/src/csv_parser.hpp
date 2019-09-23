@@ -21,6 +21,35 @@
 #include <boost/spirit/home/support/attributes.hpp>	//	transform_attribute
 #include <boost/spirit/include/phoenix.hpp>	//	enable assignment of values like cyng::object
 
+namespace boost
+{
+	namespace spirit
+	{
+		namespace traits
+		{
+			/**
+			 * convert a utf-32 attribute into a object of type string
+			 */
+			template <>
+			struct transform_attribute< cyng::object, cyng::utf::u32_string, boost::spirit::qi::domain >
+			{
+				typedef cyng::utf::u32_string type;
+				static type pre(cyng::object& v)
+				{
+					return type();
+				}
+				static void post(cyng::object& val, type const& attr)
+				{
+					std::cout << "transform_attribute<u32_string>: " << cyng::utf::u32_to_u8_string(attr) << std::endl;
+					val = cyng::make_object(cyng::utf::u32_to_u8_string(attr));
+				}
+				static void fail(cyng::object&)
+				{}
+			};
+		}
+	}
+}
+
 namespace cyng	
 {
 	namespace
@@ -73,17 +102,18 @@ namespace cyng
 			;
 			
 		r_line
-			%= r_value % ','
+			%= r_value % (boost::spirit::qi::lit(',') | boost::spirit::qi::lit(';'))
 			;
 
 		r_value
 			%= r_uuid_obj	//	auto detect UUIDs
-			| r_numeric		//	int, uint, double
+			//| boost::spirit::qi::hold[r_numeric]		//	int, uint, double
 			| r_string		//	already object
 			| (boost::spirit::qi::lit('@') > r_dt)[boost::spirit::_val = boost::spirit::_1]
 			| boost::spirit::qi::lit("true")[boost::spirit::_val = make_object(true)]
 			| boost::spirit::qi::lit("false")[boost::spirit::_val = make_object(false)]
 			| boost::spirit::qi::lit("null")[boost::spirit::_val = make_object()]
+			| r_literal	//	transform_attribute<>
 			;
 		
 		
@@ -101,11 +131,24 @@ namespace cyng
 			>> '"'
 			;
 
+		r_literal 
+			= (*r_char)
+			;
+
+		r_char
+			//	accept all characters but ',' and ';'
+			= +(~boost::spirit::qi::standard_wide::char_(L",;"))[boost::spirit::qi::_val += boost::spirit::qi::_1]
+			;
+		//	doesn't work as expected
+		//r_literal
+		//	= *(r_char - boost::spirit::qi::standard_wide::char_(L",;"));
+		//	;
+
 		r_csv.name("csv_parser");
 		
 	}
 } 	//	cyng
 
-#endif	// CYNG_csv_PARSER_HPP
+#endif
 
 

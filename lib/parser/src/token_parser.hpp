@@ -108,26 +108,7 @@ namespace cyng
 			| boost::spirit::qi::ascii::char_("_.")
 			| boost::spirit::qi::ascii::char_('-')
 			;
-	}
-
-// 	template <typename Iterator>
-// 	token_parser< Iterator >::token_parser()
-// 		: token_parser::base_type(r_start)
-// 	{
-// 
-// 		//
-// 		//	r_literal will be converted from string to object automatically
-// 		//
-// 		r_start
-// 			%= (r_obj | r_literal) % boost::spirit::omit[+boost::spirit::ascii::blank]
-// 			;
-// 			
-// 		r_literal
-// 			%= *(boost::spirit::qi::alnum | boost::spirit::qi::ascii::char_("_."))
-// 			;
-// 
-// 	}
-		
+	}		
 } 	//	cyng
 
 #endif	// CYNG_PARSER_TOKEN_HPP

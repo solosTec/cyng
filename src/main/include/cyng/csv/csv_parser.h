@@ -63,10 +63,17 @@ namespace cyng
 		boost::spirit::qi::rule<Iterator, object(), Skipper>	r_value;
 
 		numeric_parser<Iterator>	r_numeric;
+		//lit_obj_parser<Iterator>	r_literal;	//!< accept all alphanumeric values and "_" and "."
 		utf::obj_quote_parser<Iterator>	r_string;	//	object
 		utf::quote_parser<Iterator>	r_quote;		//	u32_string
 		identifier_parser<Iterator>	r_ident;	//	std::string
 		rfc3339_obj_parser<Iterator>	r_dt;	//	std::chrono::system_clock::time_point
+
+		boost::spirit::qi::rule<Iterator, utf::u32_string()>	r_char;	//	any UTF-8 character except ',' and ';'
+		boost::spirit::qi::rule<Iterator, utf::u32_string()>	r_literal;
+		//utf::char_parser<Iterator>	r_char;	//	any UTF-8 character
+		//boost::spirit::qi::rule<Iterator, std::u32string(), Skipper>	r_literal;
+
 
 		//	auto detect UUIDs
 		boost::spirit::qi::rule<Iterator, object(), Skipper> 	r_uuid_obj;

@@ -32,6 +32,14 @@ namespace cyng
 		return std::make_pair(result, r);
 	}
 
+	std::pair<buffer_t, bool > parse_hex_string_safe(std::string inp)
+	{
+		return (inp.size() % 2 == 0)
+			? parse_hex_string(inp)
+			: parse_hex_string(inp.insert(0, 1, '0'))
+			; 
+	}
+
 	std::pair<buffer_t, bool > parse_log_string(std::string const& inp)
 	{
 		buffer_t result;

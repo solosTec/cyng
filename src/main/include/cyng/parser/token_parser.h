@@ -14,8 +14,6 @@
 
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
-// #include <cyng/cyng_export.h>
-// #include <cyng/parser/object_parser.h>
 #include <cyng/parser/utf8_parser.h>
 #include <cyng/intrinsics/sets.h>
 
@@ -71,8 +69,8 @@ namespace cyng
 	};
 
 	/**
-		* Accept all alphanumeric values and "_" and "."
-		*/
+	 * Accept all alphanumeric values and "_" and "."
+	 */
 	template <typename Iterator>
 	struct lit_obj_parser
 		: boost::spirit::qi::grammar<Iterator, cyng::object()>
@@ -81,23 +79,6 @@ namespace cyng
 		boost::spirit::qi::rule<Iterator, cyng::object()> r_start;
 		literal_parser<Iterator>	r_literal;
 	};
-
-	
-	/**
-	 *	Parse any content separated by SPACEs. If it is a known datatype 
-	 *	the corresponding object will be generated otherwise a string object
-	 *	will be used.
-	 */
-// 	template <typename Iterator>
-// 	struct token_parser
-// 		: boost::spirit::qi::grammar<Iterator, tuple_t()>
-// 	{
-// 		token_parser();
-// 		boost::spirit::qi::rule<Iterator, tuple_t()>	r_start;
-// 		object_parser<Iterator>		r_obj;
-// 		literal_parser<Iterator>	r_literal;
-// 
-// 	};
 	
 } 	//	cyng
 
