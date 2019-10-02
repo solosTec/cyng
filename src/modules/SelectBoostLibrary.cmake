@@ -85,7 +85,7 @@ endif()
 
 set(Boost_ADDITIONAL_VERSIONS "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
-find_package(Boost 1.66 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework regex)
+find_package(Boost 1.67 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework regex)
 
 if(Boost_FOUND)
 

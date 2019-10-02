@@ -273,7 +273,7 @@ namespace cyng
 #if defined(__CPP_SUPPORT_N2347)
 				static_cast<std::size_t>(traits::predef_type_code::PREDEF_TABLE)
 #else
-				PREDEF_TABLE;
+				predef_type_code::PREDEF_TABLE
 #endif
 			>;
 

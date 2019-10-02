@@ -10,7 +10,6 @@ set (crypto_cpp
 	lib/crypto/src/sha512.cpp
 	lib/crypto/src/base64.cpp
 	lib/crypto/src/aes.cpp
-	lib/crypto/src/x509.cpp
 )
     
 set (crypto_h
@@ -23,7 +22,6 @@ set (crypto_h
     src/main/include/cyng/crypto/scrambler.hpp
     src/main/include/cyng/crypto/rotating_counter.hpp
     src/main/include/cyng/crypto/aes.h
-    src/main/include/cyng/crypto/x509.h
 )
 
 set (crypto_objects
@@ -36,8 +34,18 @@ set (crypto_intrinsics
     src/main/include/cyng/crypto/aes_keys.h
 )
 
+set (crypto_util
+    src/main/include/cyng/crypto/util/factory.h
+    src/main/include/cyng/crypto/util/x509.h
+    src/main/include/cyng/crypto/util/generate_key.h
+	lib/crypto/src/util/x509.cpp
+	lib/crypto/src/util/generate_key.cpp
+	lib/crypto/src/util/factory.cpp
+)
+
 source_group("objects" FILES ${crypto_objects})
 source_group("intrinsics" FILES ${crypto_intrinsics})
+source_group("util" FILES ${crypto_util})
 
 
 # define the crypto lib
@@ -46,6 +54,7 @@ set (crypto_lib
   ${crypto_h}
   ${crypto_objects}
   ${crypto_intrinsics}
+  ${crypto_util}
 )
 
 if(WIN32)

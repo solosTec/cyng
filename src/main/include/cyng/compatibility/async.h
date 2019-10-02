@@ -81,8 +81,8 @@ namespace cyng
 		template < typename Mutex >
 		using lock_guard = boost::lock_guard< Mutex >;
 
-		template< typename Mutex >
-		using scoped_lock = boost::scoped_lock<Mutex>;
+		//template< typename Mutex >
+		//using scoped_lock = mutex::scoped_lock<Mutex>;
 		
 		template < typename L1, typename L2, typename ...Ln >
 		inline void lock(L1& l1, L2& l2, Ln&... ln)

@@ -30,6 +30,7 @@ namespace cyng
 		 */
 		void write(std::ostream&, object const&);
 		void write(std::ostream&, vector_t const&);
+		bool write_file(std::string const&, vector_t const&);
 
 		std::string to_string(object const&);
 		std::string to_string(tuple_t const&);

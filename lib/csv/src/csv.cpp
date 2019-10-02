@@ -67,6 +67,17 @@ namespace cyng
 			return vec;
 		}
 		
+		bool write_file(std::string const& p, vector_t const& vec)
+		{
+			std::ofstream fs(p);
+			if (fs.is_open())
+			{
+				write(fs, vec);
+				return true;
+			}
+			return false;
+		}
+
 		void write(std::ostream& os, object const& obj)
 		{
 			io::serialize_csv(os, obj);
