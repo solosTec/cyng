@@ -68,7 +68,7 @@ namespace cyng
 			//if (EVP_DigestSignFinal(rsa_sign_ctxp.get(), reinterpret_cast<unsigned char*>(const_cast<char*>(enc.c_str())), &enc_length) <= 0) {
 			//	return std::vector<unsigned char>();
 			//}
-			return std::vector(&md_value[0], &md_value[enc_length]);
+			return std::vector<unsigned char>(&md_value[0], &md_value[enc_length]);
 		}
 
 		std::vector<unsigned char> hash_string(std::string const& msg, std::string digest_name)
@@ -114,7 +114,7 @@ namespace cyng
 			unsigned char md_value[EVP_MAX_MD_SIZE];
 			EVP_DigestFinal_ex(sign_ctxp.get(), md_value, &enc_length);
 
-			return std::vector(&md_value[0], &md_value[enc_length]);
+			return std::vector<unsigned char>(&md_value[0], &md_value[enc_length]);
 		}
 	}
 }

@@ -47,7 +47,12 @@ namespace cyng
 		bool write_certificate(X509* x509, const char* file_name);
 
 		/**
-		 * Generate a CA certificate and a private key
+		 * Generate a Private Key and a CSR
+         * @code
+           openssl req \
+            -newkey rsa:2048 -nodes -keyout domain.key \
+            -out domain.csr
+         * @endcode
 		 */
 		bool generate_ca_cert_write(const char* priv_key
 			, const char* cert_file
@@ -60,7 +65,13 @@ namespace cyng
 			, long days);
 
 		/**
-		 * Generate a CA certificate from a private key
+         * Generate a CSR from an Existing Private Key
+         * 
+         * @code
+           openssl req \
+            -key domain.key \
+            -new -out domain.csr
+         * @endcode
 		 */
 		bool generate_ca_cert_read(const char* priv_key
 			, const char* cert_file
@@ -71,6 +82,16 @@ namespace cyng
 			, const char* pComm	//	common
 			, long serial
 			, long days);
+        
+        /**
+         * ToDo: Generate a CSR from an Existing Certificate and Private Key
+         * @code
+           openssl x509 \
+            -in domain.crt \
+            -signkey domain.key \
+            -x509toreq -out domain.csr
+         * @endcode
+         */
 	}
 }
 
