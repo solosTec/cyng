@@ -70,9 +70,9 @@ namespace cyng
 			BOOST_CHECK_EQUAL(dec.size(), 16);
 			if (dec.size() == 16) {
 
-				BOOST_CHECK_EQUAL(dec.at(0), 0x2F);
-				BOOST_CHECK_EQUAL(dec.at(1), 0x2F);
-				BOOST_CHECK_EQUAL(dec.at(15), 0xFD);
+				BOOST_CHECK_EQUAL((dec.at(0) & 0xFF), 0x2F);
+				BOOST_CHECK_EQUAL((dec.at(1) & 0xFF), 0x2F);
+				BOOST_CHECK_EQUAL((dec.at(15) & 0xFF), 0xFD);
 			}
 		}
 

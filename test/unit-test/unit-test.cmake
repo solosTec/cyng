@@ -98,10 +98,19 @@ set (unit_test_crypto
 	test/unit-test/src/test-crypto-001.h
 	test/unit-test/src/test-crypto-002.h
 	test/unit-test/src/test-crypto-003.h
+	test/unit-test/src/test-crypto-004.h
+	test/unit-test/src/test-crypto-005.h
 	test/unit-test/src/test-crypto-001.cpp
 	test/unit-test/src/test-crypto-002.cpp
 	test/unit-test/src/test-crypto-003.cpp
+	test/unit-test/src/test-crypto-004.cpp
+	test/unit-test/src/test-crypto-005.cpp
 )
+
+if(WIN32)
+	list(APPEND unit_test_crypto lib/crypto/src/openssl/applink.c)
+endif()
+
 
 source_group("core" FILES ${unit_test_core})
 source_group("crypto" FILES ${unit_test_crypto})
@@ -147,4 +156,3 @@ if (CYNG_SQLITE3_INSTALLED)
 	)
 	list(APPEND unit_test ${unit_test_sqlite3})
 endif (CYNG_SQLITE3_INSTALLED)
-

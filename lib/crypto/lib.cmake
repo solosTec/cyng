@@ -38,9 +38,13 @@ set (crypto_util
     src/main/include/cyng/crypto/util/factory.h
     src/main/include/cyng/crypto/util/x509.h
     src/main/include/cyng/crypto/util/generate_key.h
+    src/main/include/cyng/crypto/util/digest.h
+    src/main/include/cyng/crypto/util/print.h
 	lib/crypto/src/util/x509.cpp
 	lib/crypto/src/util/generate_key.cpp
 	lib/crypto/src/util/factory.cpp
+	lib/crypto/src/util/digest.cpp
+	lib/crypto/src/util/print.cpp
 )
 
 source_group("objects" FILES ${crypto_objects})

@@ -58,6 +58,36 @@ namespace cyng
 		 */
 		BIO_ptr create_bio_socket(int sock, int close_flag);
 
+		/**
+		 * Create an un-encrypted connection
+		 * 
+		 * example:
+		 * @code
+		 auto biop = create_bio_connection("hostname:port");
+		 * @endcode
+		 */
+		BIO_ptr create_bio_connection(const char* target);
+
+		/**
+		 * Prepare an encrypted connection in SSL_MODE_AUTO_RETRY mode.
+		 *
+		 * example:
+		 * @code
+		 auto biop = create_bio_ssl_connection(ctx, "hostname:port");
+		 * @endcode
+		 */
+		BIO_ptr create_bio_ssl_connection(SSL_CTX* ctx, const char* target);
+
+		/**
+		 * using stdout
+		 */
+		BIO_ptr create_bio_stdout();
+
+		/**
+		 * using stderr
+		 */
+		BIO_ptr create_bio_stderr();
+
 		BIO_METHOD_ptr create_method_mem();
 		BIO_METHOD_ptr create_method_secmem();
 		BIO_METHOD_ptr create_method_socket();
@@ -66,6 +96,11 @@ namespace cyng
 		BIO_METHOD_ptr create_method_fd();
 		BIO_METHOD_ptr create_method_bio();
 		BIO_METHOD_ptr create_method_null();
+
+		/**
+		 * The BIO_ADDR type is a wrapper around all types of socket addresses.
+		 */
+		BIO_ADDR_ptr create_bio_addr();
 
 		/**
 		 * Joins two BIO chains.

@@ -27,7 +27,6 @@ namespace cyng
 			return BIO_ptr(BIO_new_fp(stream, flags), BIO_free);
 		}
 
-
 		BIO_ptr_all create_bio_base64()
 		{
 			return BIO_ptr_all(::BIO_new(BIO_f_base64()), ::BIO_free_all);
@@ -41,6 +40,43 @@ namespace cyng
 		BIO_ptr create_bio_socket(int sock, int close_flag)
 		{
 			return BIO_ptr(BIO_new_socket(sock, close_flag), BIO_free);
+		}
+
+		BIO_ptr create_bio_connection(const char* target)
+		{
+			return BIO_ptr(BIO_new_connect(target), BIO_free);
+		}
+
+		BIO_ptr create_bio_ssl_connection(SSL_CTX* ctx, const char* target)
+		{
+			BIO_ptr p(BIO_new_ssl_connect(ctx), BIO_free);
+
+			//
+			//	set target
+			//
+			BIO_set_conn_hostname(p.get(), target);
+
+			//
+			//	set SSL_MODE_AUTO_RETRY mode
+			//
+			SSL* ssl = nullptr;
+			BIO_get_ssl(p.get(), &ssl);
+			SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
+			return p;
+		}
+
+		BIO_ptr create_bio_stdout()
+		{
+			BIO* bio = nullptr;
+			bio = BIO_new_fp(stdout, BIO_NOCLOSE);
+			return BIO_ptr(bio, BIO_free);
+		}
+
+		BIO_ptr create_bio_stderr()
+		{
+			BIO* bio = nullptr;
+			bio = BIO_new_fp(stderr, BIO_NOCLOSE);
+			return BIO_ptr(bio, BIO_free);
 		}
 
 		BIO_METHOD_ptr create_method_mem()
@@ -86,6 +122,11 @@ namespace cyng
 		BIO_METHOD_ptr create_method_null()
 		{
 			return BIO_METHOD_ptr(const_cast<BIO_METHOD*>(BIO_s_null()), BIO_meth_free);
+		}
+
+		BIO_ADDR_ptr create_bio_addr()
+		{
+			return BIO_ADDR_ptr(BIO_ADDR_new(), BIO_ADDR_free);
 		}
 
 		BIO* push(BIO_ptr p, BIO_ptr append)
