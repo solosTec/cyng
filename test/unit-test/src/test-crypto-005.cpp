@@ -31,6 +31,8 @@ namespace cyng
 
 		OpenSSL_add_all_algorithms();
 		ERR_load_crypto_strings();
+		ERR_load_BIO_strings();
+		SSL_load_error_strings();
 		//OPENSSL_no_config();
 
 		//crypto::dump_evp("private.pem");

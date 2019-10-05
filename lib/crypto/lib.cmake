@@ -60,12 +60,3 @@ set (crypto_lib
   ${crypto_intrinsics}
   ${crypto_util}
 )
-
-if(WIN32)
-	set (crypto_open_ssl
-		lib/crypto/src/openssl/applink.c
-	)
-
-	source_group("OpenSSL" FILES ${crypto_open_ssl})
-	list(APPEND crypto_lib ${crypto_open_ssl})
-endif()
