@@ -8,13 +8,13 @@ set (crypto_cpp
 	lib/crypto/src/sha1.cpp
 	lib/crypto/src/sha256.cpp
 	lib/crypto/src/sha512.cpp
-	lib/crypto/src/base64.cpp
+#	lib/crypto/src/base64.cpp
 	lib/crypto/src/aes.cpp
 )
     
 set (crypto_h
 #    src/main/include/cyng/crypto.h
-    src/main/include/cyng/crypto/base64.h
+#    src/main/include/cyng/crypto/base64.h
     src/main/include/cyng/crypto/hash/md5.h
     src/main/include/cyng/crypto/hash/sha1.h
     src/main/include/cyng/crypto/hash/sha256.h

@@ -95,9 +95,7 @@ set (unit_test_parser
 )
 
 set (unit_test_crypto
-	test/unit-test/src/test-crypto-001.h
 	test/unit-test/src/test-crypto-002.h
-	test/unit-test/src/test-crypto-001.cpp
 	test/unit-test/src/test-crypto-002.cpp
 )
 
