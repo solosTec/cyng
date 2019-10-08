@@ -97,14 +97,11 @@ set (unit_test_parser
 set (unit_test_crypto
 	test/unit-test/src/test-crypto-001.h
 	test/unit-test/src/test-crypto-002.h
-	test/unit-test/src/test-crypto-003.h
-	test/unit-test/src/test-crypto-004.h
-	test/unit-test/src/test-crypto-005.h
 	test/unit-test/src/test-crypto-001.cpp
 	test/unit-test/src/test-crypto-002.cpp
-	test/unit-test/src/test-crypto-003.cpp
-	test/unit-test/src/test-crypto-004.cpp
-	test/unit-test/src/test-crypto-005ource_group("core" FILES ${unit_test_core})
+)
+
+source_group("core" FILES ${unit_test_core})
 source_group("crypto" FILES ${unit_test_crypto})
 source_group("async" FILES ${unit_test_async})
 source_group("io" FILES ${unit_test_io})

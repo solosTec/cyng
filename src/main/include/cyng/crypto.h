@@ -57,6 +57,13 @@ namespace cyng
 
 		using SSL_CTX_ptr = std::unique_ptr<SSL_CTX, decltype(&::SSL_CTX_free)>;
 
+		/**
+		 * An SSL structure is reference counted. Creating an SSL structure 
+		 * for the first time increments the reference count. Freeing it (using SSL_free) 
+		 * decrements it.
+		 */
+		using SSLptr = std::unique_ptr<SSL, decltype(&::SSL_free)>;
+
 		using EVP_MD_CTX_ptr = std::unique_ptr<EVP_MD_CTX, decltype(&::EVP_MD_CTX_free)>;
 
 		using ASN1_TIME_ptr = std::unique_ptr<ASN1_TIME, decltype(&ASN1_STRING_free)>;
