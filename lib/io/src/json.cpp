@@ -113,7 +113,10 @@ namespace cyng
 				else {
 					os << ", ";
 				}
-				BOOST_ASSERT_MSG(obj.get_class().tag() == tag, "inconsistent vector");
+				//
+				//	JSON is not really typesafe, so we accept 
+				//
+				//BOOST_ASSERT_MSG(obj.get_class().tag() == tag, "inconsistent vector");
 				switch (tag)
 				{
 					case TC_ATTR:
