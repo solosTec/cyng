@@ -11,6 +11,8 @@ set (sys_cpp
   	lib/sys/src/info.cpp
   	lib/sys/src/fsys.cpp
   	lib/sys/src/ntp.cpp
+  	lib/sys/src/dns.cpp
+  	lib/sys/src/ip.cpp
 )
     
 set (sys_h
@@ -21,6 +23,8 @@ set (sys_h
 	src/main/include/cyng/sys/info.h
 	src/main/include/cyng/sys/fsys.h
 	src/main/include/cyng/sys/ntp.h
+	src/main/include/cyng/sys/dns.h
+	src/main/include/cyng/sys/ip.h
 )
 
 # define the sys lib
