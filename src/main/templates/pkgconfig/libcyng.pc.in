@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/lib/x86_64-linux-gnu
+includedir=${prefix}/include
+
+Name: @PROJECT_NAME@
+Version: @CYNG_VERSION_MAJOR@.@CYNG_VERSION_MINOR@.@CYNG_VERSION_PATCH@
+Description: multi-platform support library with a focus on dynamic data types and asynchronous I/O.
+
+Libs: -L${libdir} -lcyng_core -lcyng_io -lcyng_async -lcyng_log -lcyng_json -lcyng_parser -lcyng_vm -lcyng_domain -lcyng_store -lcyng_table -lcyng_sys -lcyng_xml 
+Cflags: -I${includedir}

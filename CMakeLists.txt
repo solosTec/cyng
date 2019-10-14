@@ -418,6 +418,16 @@ configure_file (
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 #
+# configure a pkgconfig file 
+#
+if(UNIX)
+	configure_file (
+	  "${PROJECT_SOURCE_DIR}/src/main/templates/pkgconfig/libcyng.pc.in"
+	  "${CMAKE_CURRENT_BINARY_DIR}/libcyng.pc"
+	  @ONLY)
+endif(UNIX)
+
+#
 #	cyng meta library - header only
 #
 include (lib/meta/lib.cmake)
