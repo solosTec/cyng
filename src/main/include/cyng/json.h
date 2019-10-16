@@ -28,6 +28,11 @@ namespace cyng
 		std::string to_string(object const&);
 		std::string to_string(tuple_t const&);
 		std::string to_string(vector_t const&);
+
+		/**
+		 * Works for other content than JSON (partially) too.
+		 */
+		void pretty_print(std::ostream&, object const&);
 	}
 }
 #endif

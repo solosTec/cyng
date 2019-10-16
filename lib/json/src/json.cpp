@@ -12,6 +12,7 @@
 #include <cyng/io/serializer.h>
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/factory.h>
+#include <cyng/dom/tree_walker.h>
 #include <ios>
 #include <iterator>
 
@@ -84,6 +85,111 @@ namespace cyng
 			std::stringstream ss;
 			cyng::io::serializer <vector_t, cyng::io::SERIALIZE_JSON>::write(ss, tpl);
 			return ss.str();
+		}
+
+		class json_walker : public tree_walker
+		{
+		public:
+			json_walker(std::ostream& os)
+				: os_(os)
+			{}
+
+			virtual bool enter_node(std::size_t depth, cyng::object const& obj, std::size_t idx, std::size_t total, cyng::object parent) override
+			{
+
+				switch (obj.get_class().tag()) {
+				case cyng::TC_TUPLE:
+					//
+					//	If the parent element was a also a container insert a NL.
+					//	
+					if (parent.get_class().tag() == cyng::TC_TUPLE || parent.get_class().tag() == cyng::TC_VECTOR) {
+						os_
+							<< std::endl
+							<< indentation(depth)
+							;
+					}
+					os_ << '{';
+					break;
+				case cyng::TC_VECTOR:
+					os_ << '[';
+					break;
+				case cyng::TC_PARAM:
+				{
+					using type = typename std::tuple_element<cyng::type_code::TC_PARAM, cyng::traits::tag_t>::type;
+					const type* ptr = cyng::object_cast<type>(obj);
+					BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
+					os_
+						<< std::endl
+						<< indentation(depth)
+						<< ptr->first
+						<< ':'
+						<< ' '
+						;
+				}
+				break;
+
+				case cyng::TC_STRING:
+					os_
+						<< cyng::json::to_string(obj)
+						;
+					break;
+				default:
+					os_ << cyng::json::to_string(obj);
+					break;
+				}
+				return true;	//	continue
+			}
+
+			virtual void leave_node(std::size_t depth, cyng::object const& obj, std::size_t idx, std::size_t total, cyng::object previous) override
+			{
+				switch (obj.get_class().tag()) {
+				case cyng::TC_TUPLE:
+					os_
+						<< std::endl
+						<< indentation(depth)
+						<< '}'
+						;
+					if ((idx != 1) && (depth != 0))	os_ << ',';
+					break;
+				case cyng::TC_VECTOR:
+					//
+					//	If the previous element was a also a container insert a NL.
+					//	
+					if (previous.get_class().tag() == cyng::TC_TUPLE || previous.get_class().tag() == cyng::TC_VECTOR) {
+						os_
+							<< std::endl
+							<< indentation(depth)
+							;
+					}
+					os_ << ']';
+					if (idx != 1)	os_ << ',';
+					break;
+				case cyng::TC_PARAM:
+				case cyng::TC_ATTR:
+					break;
+				default:
+					if (idx != 1)	os_ << ',';
+					break;
+				}
+			}
+
+		private:
+			std::string indentation(std::size_t depth)
+			{
+				return (depth == 0)
+					? ""
+					: "  " + indentation(depth - 1)
+					;
+			}
+
+		private:
+			std::ostream& os_;
+		};
+
+		void pretty_print(std::ostream& os, object const& obj)
+		{
+			json_walker walker(os);
+			traverse(obj, walker, 0);
 		}
 
 	}
