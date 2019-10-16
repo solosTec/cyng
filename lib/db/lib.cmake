@@ -20,9 +20,9 @@ set (db_h
 
 	src/main/include/cyng/table/meta_interface.h
     src/main/include/cyng/db/sql_table.h
-    src/main/include/cyng/db/create_table.hpp
-    src/main/include/cyng/db/delete_table.hpp
-    src/main/include/cyng/db/drop_table.hpp
+#    src/main/include/cyng/db/create_table.hpp
+#    src/main/include/cyng/db/delete_table.hpp
+#    src/main/include/cyng/db/drop_table.hpp
     
 )
 
