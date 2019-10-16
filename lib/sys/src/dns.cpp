@@ -26,6 +26,8 @@
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 
 #else
 #warning unknow OS
@@ -38,23 +40,27 @@ namespace cyng
 #if BOOST_OS_LINUX
 		std::vector<boost::asio::ip::address>	get_dns_servers()
 		{
-			//struct state _res;
-			//res_ninit(&_res);
-			//res_state res = &_res;
-			//for (int i = 0; i < res->nscount; i++) {
-			//	sa_family_t family = res->nsaddr_list[i].sin_family;
-			//	int port = ntohs(res->nsaddr_list[i].sin_port);
-			//	if (family == AF_INET) { // IPV4 address
-			//		char str[INET_ADDRSTRLEN]; // String representation of address
-			//		inet_ntop(AF_INET, &(res->nsaddr_list[i].sin_addr.s_addr), str, INET_ADDRSTRLEN);
-			//	}
-			//	else if (family == AF_INET6) { // IPV6 address
-			//		char str[INET6_ADDRSTRLEN]; // String representation of address
-			//		inet_ntop(AF_INET6, &(res->nsaddr_list[i].sin_addr.s_addr), str, INET6_ADDRSTRLEN);
-			//	}
-			//}
-			//res_ndestroy(res);
-			return std::vector<boost::asio::ip::address>{};
+            std::vector<boost::asio::ip::address> dns;
+//             res_state rs;
+            struct __res_state rs;
+ 			::res_ninit(&rs);
+			for (int i = 0; i < rs.nscount; i++) {
+				sa_family_t family = rs.nsaddr_list[i].sin_family;
+// 				int port = ntohs(rs->nsaddr_list[i].sin_port);
+				if (family == AF_INET) { // IPV4 address
+					char str[INET_ADDRSTRLEN]; // String representation of address
+					inet_ntop(AF_INET, &(rs.nsaddr_list[i].sin_addr.s_addr), str, INET_ADDRSTRLEN);
+//                     printf("%s\n", str);
+                    dns.push_back(boost::asio::ip::address::from_string(str));
+				}
+				else if (family == AF_INET6) { // IPV6 address
+					char str[INET6_ADDRSTRLEN]; // String representation of address
+					inet_ntop(AF_INET6, &(rs.nsaddr_list[i].sin_addr.s_addr), str, INET6_ADDRSTRLEN);
+//                     printf("%s\n", str);
+                    dns.push_back(boost::asio::ip::address::from_string(str));
+				}
+			}
+			return dns;
 		}
 #endif
 

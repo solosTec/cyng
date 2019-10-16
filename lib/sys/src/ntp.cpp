@@ -26,7 +26,7 @@ namespace cyng
 	namespace sys 
 	{
 #if BOOST_OS_LINUX
-		std::vector<std::string>	get_ntp_servers()
+		std::vector<std::string> get_ntp_servers()
 		{
 			return std::vector<std::string>{};
 		}
@@ -34,7 +34,7 @@ namespace cyng
 
 
 #if BOOST_OS_WINDOWS
-		std::vector<std::string>	get_ntp_servers()
+		std::vector<std::string> get_ntp_servers()
 		{
 			//	Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DateTime\Servers
 			unsigned idx{ 0 };
