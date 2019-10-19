@@ -32,6 +32,11 @@ namespace cyng
 				, val_(val)
 			{}
 
+			assign(std::string name, T const& val)
+				: col_(name)
+				, val_(val)
+			{}
+
 			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 			{
 				col_.serialize(os, tbl, dia, true);
@@ -43,26 +48,26 @@ namespace cyng
 			const T val_;
 		};
 		
-		template < typename T >
-		auto make_assign(std::size_t index, constant<T> c) -> assign<constant<T>>
+		template < typename T, typename U >
+		auto make_assign(T index, constant<U> c) -> assign<constant<U>>
 		{
-			using A = assign<constant<T>>;
+			using A = assign<constant<U>>;
 			return A(index, c);
 		}
 
-		template < typename T >
-		auto make_assign(std::size_t index, variable<T> v) -> assign<variable<T>>
+		template < typename T, typename U >
+		auto make_assign(T index, variable<U> v) -> assign<variable<U>>
 		{
-			using A = assign<variable<T>>;
+			using A = assign<variable<U>>;
 			return A(index, v);
 		}
 
-		auto make_assign(std::size_t index, placeholder p) -> assign< placeholder >
+		template < typename T >
+		auto make_assign(T index, placeholder p) -> assign< placeholder >
 		{
 			using A = assign<placeholder>;
 			return A(index, p);
 		}
-
 	}
 }
 

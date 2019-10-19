@@ -23,13 +23,16 @@ namespace cyng
 		struct column
 		{
 			column(std::size_t index);
+			column(std::string name);
 
 			/**
 			 * @param lhe don't apply conversion rules on left hand expressions
 			 */
 			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			
-			const std::size_t index_;
+			std::size_t const index_;
+			std::string const name_;
+			bool is_index_;
 		};
 		
 		 column make_column(std::size_t index);

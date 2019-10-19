@@ -101,8 +101,8 @@ namespace cyng
 			mutable mutex_t mutex_;
 
 			/*
-			 * File based databases like SQLite doesn't support multiple connection
-			 * not very well. In single the pool contains only one connection.
+			 * File-based databases like SQLite don't support multiple connections at the same time 
+			 * very well. So the pool contains only one connection.
 			 */
 			std::size_t pool_size_;
 			std::chrono::seconds life_time_;

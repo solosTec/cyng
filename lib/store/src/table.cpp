@@ -46,6 +46,7 @@ namespace cyng
 		
 		cyng::table::meta_table_interface const& table::meta() const
 		{
+			BOOST_ASSERT(meta_);
 			return *meta_;
 		}
 		

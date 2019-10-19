@@ -140,6 +140,15 @@ namespace cyng
 				return this->base::col_types_[col];
 			}
 			
+			virtual std::size_t get_type(std::string name) const  override
+			{
+				auto const r = get_record_index(name);
+				return (r.second) 
+					? this->base::col_types_[r.first]
+					: TC_NULL
+					;
+			}
+
 			/**
 			 * Could throw.
 			 * 
@@ -203,13 +212,14 @@ namespace cyng
 			 * Simply search for a matching entry in the column name array and 
 			 * return the index.
 			 */
-			virtual std::pair<std::ptrdiff_t, bool> get_record_index(std::string const& name) const override
+			virtual std::pair<std::size_t, bool> get_record_index(std::string const& name) const override
 			{
 				auto const pos = std::find(this->base::col_names_.begin(), this->base::col_names_.end(), name);
-				return (pos != this->base::col_names_.end())
-					? std::make_pair(std::distance(this->base::col_names_.begin(), pos), true)
-					: std::make_pair(std::numeric_limits<std::ptrdiff_t>::max(), false)
-					;
+				if (pos != this->base::col_names_.end()) {
+					auto const dist = std::distance(this->base::col_names_.begin(), pos);
+					return std::make_pair(static_cast<std::size_t>(dist), true);
+				}
+				return std::make_pair(std::numeric_limits<std::size_t>::max(), false);
 			}
 
 			virtual bool is_body(std::size_t idx) const override

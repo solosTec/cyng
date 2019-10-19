@@ -27,13 +27,6 @@ namespace cyng
 		, generation_(generation)
 		{}
 		
-		record::record(record const& rec)
-		: meta_(rec.meta_)
-		, key_(rec.key_)
-		, data_(rec.data_)
-		, generation_(rec.generation_)
-		{}
-
 		record& record::operator=(record const& other)
 		{
 			if (this != &other)

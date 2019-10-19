@@ -12,7 +12,6 @@
 #include <string>
 #include <memory>
 #include <functional>
-#include <map>
 
 namespace cyng 
 {
@@ -84,6 +83,7 @@ namespace cyng
 			 * @return the data type of the specified column
 			 */
 			virtual std::size_t get_type(std::size_t) const = 0;
+			virtual std::size_t get_type(std::string name) const = 0;
 
 			/**
 			 * Could throw.
@@ -97,7 +97,7 @@ namespace cyng
 			
 			virtual std::pair<std::size_t, bool> get_body_index(std::size_t idx) const = 0;
 			virtual std::pair<std::size_t, bool> get_body_index(std::string const&) const = 0;
-			virtual std::pair<std::ptrdiff_t, bool> get_record_index(std::string const& name) const = 0;
+			virtual std::pair<std::size_t, bool> get_record_index(std::string const& name) const = 0;
 			
 			virtual bool is_body(std::size_t idx) const = 0;
 			virtual bool is_key(std::size_t idx) const = 0;
@@ -137,8 +137,13 @@ namespace cyng
 		/**
 		 * provide a map of meta data
 		 */
-		using mt_table = std::map<std::string, meta_table_ptr>;
-		
+		using meta_map_t = std::map<std::string, meta_table_ptr>;
+
+		/**
+		 * provide a vector of meta data
+		 */
+		using meta_vec_t = std::vector<meta_table_ptr>;
+
 	}	//	table	
 }
 

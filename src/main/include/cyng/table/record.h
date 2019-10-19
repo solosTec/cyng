@@ -38,7 +38,7 @@ namespace cyng
 		public:
 			record(meta_table_ptr);
 			record(meta_table_ptr, key_type const&, data_type const&, std::uint64_t);
-			record(record const&);
+			record(record const&) = default;
 			
 			record& operator=(record const&);
 

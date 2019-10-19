@@ -33,10 +33,43 @@ namespace cyng
  		class sql_remove;	//	SQL delete
 // 		class sql_drop;
 		
+		class base
+		{
+		public:
+			base(meta_table_ptr, dialect, std::ostream&);
+			base(base&) = default;
+
+			/**
+			 * return true if meta data available 
+			 */
+			bool is_valid() const;
+
+			meta_table_ptr get_meta() const;
+
+		protected:
+			bool do_skip(std::string) const;
+
+		protected:
+			/**
+			 * Provide table description
+			 */
+			meta_table_ptr meta_;
+
+			/**
+			 * target SQL type
+			 */
+			dialect const dialect_;
+
+			/**
+			 * contains the SQL statement
+			 */
+			std::ostream& stream_;
+		};
+
 		/**
 		 * CREATE ...
 		 */
-		class sql_create
+		class sql_create : public base
 		{
 		public:
 			sql_create(meta_table_ptr, dialect, std::ostream&);
@@ -44,46 +77,32 @@ namespace cyng
 		private:
 			void write_columns();
 			void write_pks();
-			
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
+			bool has_pk() const;
 		};
 
 		/**
 		 * ... ORDER BY ...
 		 */
-		class sql_order
+		class sql_order : public base
 		{
 		public:
 			sql_order(meta_table_ptr, dialect, std::ostream&);
-			
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 
 		/**
 		 * ... GROUP BY ...
 		 */
-		class sql_group
+		class sql_group : public base
 		{
 		public:
 			sql_group(meta_table_ptr, dialect, std::ostream&);
 			sql_order order_by(std::string const& term);
-
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 
 		/**
 		 * ... WHERE ...
 		 */
-		class sql_where
+		class sql_where : public base
 		{
 		public:
 			sql_where(meta_table_ptr, dialect, std::ostream&);
@@ -99,14 +118,9 @@ namespace cyng
 			}
 
 			sql_order order_by(std::string const& term);
-
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 
-		class sql_from
+		class sql_from : public base
 		{
 		public:
 			sql_from(meta_table_ptr, dialect, std::ostream&);
@@ -121,17 +135,12 @@ namespace cyng
 				stream_ << ' ';
 				return sql_where(meta_, dialect_, stream_);
 			}
-
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 		
 		/**
 		 * SELECT ...
 		 */
-		class sql_select
+		class sql_select : public base
 		{
 		public:
 			sql_select(meta_table_ptr, dialect, std::ostream&);
@@ -167,17 +176,12 @@ namespace cyng
 		private:
 			void write_columns(meta_table_ptr, bool& init_flag);
 			void write_pk(meta_table_ptr, meta_table_ptr);
-
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 		
 		/**
 		 * INSERT INTO ...
 		 */
-		class sql_insert
+		class sql_insert : public base
 		{
 		public:
 			sql_insert(meta_table_ptr, dialect, std::ostream&);
@@ -185,17 +189,12 @@ namespace cyng
 		private:
 			void write_columns();
  			void write_placholders();
-		
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 		
 		/**
 		 * UPDATE ...
 		 */
-		class sql_update
+		class sql_update : public base
 		{
 		public:
 			sql_update(meta_table_ptr, dialect, std::ostream&);
@@ -209,17 +208,12 @@ namespace cyng
 				expr.serialize(stream_, meta_, dialect_, false);
 				return sql_where(meta_, dialect_, stream_);
 			}
-		
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 
 		/**
 		 * DELETE ...
 		 */
-		class sql_remove
+		class sql_remove : public base
 		{
 		public:
 			sql_remove(meta_table_ptr, dialect, std::ostream&);
@@ -235,11 +229,6 @@ namespace cyng
 			}
 
 			sql_where by_key();
-
-		private:
-			meta_table_ptr meta_;
-			dialect dialect_;
-			std::ostream& stream_;
 		};
 
 
@@ -294,6 +283,14 @@ namespace cyng
 			 * @return assembled SQL command 
 			 */
 			std::string to_str() const;
+
+			/**
+			 * return true if meta data available
+			 */
+			bool is_valid() const;
+
+			meta_table_ptr get_meta() const;
+
 			
 		private:
 			void clear();
@@ -308,7 +305,7 @@ namespace cyng
 			/**
 			 * target SQL type 
 			 */
-			dialect dialect_;
+			dialect const dialect_;
 			
 			/**
 			 * contains the SQL statement 

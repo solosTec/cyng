@@ -13,36 +13,64 @@ namespace cyng
 	namespace sql 
 	{
 		column::column (std::size_t index)
-		: index_(index)
+			: index_(index)
+			, name_(std::to_string(index))
+			, is_index_(true)
 		{
-			BOOST_ASSERT_MSG(index_ != 0, "index out of range");
+			BOOST_ASSERT_MSG(index != 0, "index out of range");
 		}
 		
+		column::column(std::string name)
+			: index_(0u)
+			, name_(name)
+			, is_index_(false)
+		{
+			BOOST_ASSERT_MSG(!name_.empty(), "no column name");
+		}
+
 		void column::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
-			const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
-			if (b && !lhe)
+			if (is_index_) 
 			{
-				os << "datetime(";
-			}
+				const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
+				if (b && !lhe)
+				{
+					os << "datetime(";
+				}
 
-			if (index_ > tbl->size())
-			{ 
-				os
-					<< "index out of range: "
-					<< index_
-					;
-			}
-			else
-			{
-				os
-					<< tbl->get_name(index_ - 1)
-					;
-			}
+				if (index_ > tbl->size())
+				{
+					os
+						<< "index out of range: "
+						<< index_
+						;
+				}
+				else
+				{
+					os
+						<< tbl->get_name(index_ - 1)
+						;
+				}
 
-			if (b && !lhe)
+				if (b && !lhe)
+				{
+					os << ")";
+				}
+			}
+			else 
 			{
-				os << ")";
+				const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(name_) == TC_TIME_POINT);
+				if (b && !lhe)
+				{
+					os << "datetime(";
+				}
+
+				os << name_;
+
+				if (b && !lhe)
+				{
+					os << ")";
+				}
 			}
 		}
 
