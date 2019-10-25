@@ -15,10 +15,33 @@ namespace cyng
 {
 	namespace table 
 	{
+		template<typename T, std::size_t N, std::size_t KEY_SIZE>
+		std::array < T, N + 1> insert_gen(std::array < T, N>&& inp, T val) {
+			using array_t = std::array < T, N + 1>;
+			array_t out;
+			for (auto idx = 0; idx <= N; ++idx) {
+				if (idx > KEY_SIZE) {
+					out[idx] = inp[idx - 1];
+				}
+				else if (idx < KEY_SIZE) {
+					out[idx] = inp[idx];
+				}
+				else {
+					//
+					//	additional column data 
+					//
+					out[idx] = val;
+				}
+			}
+			return out;
+		}
+
+
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		class meta_table_base
 		{
 			static_assert(IDX < BODY_SIZE, "IDX exceeds BODY_SIZE");
+			static_assert(BODY_SIZE != 0, "no table body defined");
 
 		public:
 			using col_names_t = std::array<std::string, KEY_SIZE + BODY_SIZE>;
@@ -78,12 +101,18 @@ namespace cyng
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		class meta_table : public meta_table_base<KEY_SIZE, BODY_SIZE, IDX>, public meta_table_interface, public std::enable_shared_from_this<meta_table<KEY_SIZE, BODY_SIZE, IDX>>
 		{
+		protected:
 			using base = meta_table_base<KEY_SIZE, BODY_SIZE, IDX>;
 
 		public:
-			using ext_t = meta_table<KEY_SIZE, BODY_SIZE + 1, IDX>;
-			using ext_p = std::shared_ptr<ext_t>;
-			
+			/**
+			 * Derived data type for SQL tables that share the same
+			 * scheme but have an additional column "gen" to store
+			 * the "generation" information
+			 */
+			using gen_t = meta_table<KEY_SIZE, BODY_SIZE + 1, IDX>;
+			using gen_p = std::shared_ptr<gen_t>;
+
 		public:
 			meta_table(std::string const& name)
 				: base(name)
@@ -280,14 +309,31 @@ namespace cyng
 				return std::make_pair(IDX - 1, has_index());
 			}
 
-			/**
-			 * generate extended meta data
-			 */
-			ext_p get_gen_table() const
+			//virtual meta_table_ptr derive_gen_table() override
+			//{
+			//	return this->shared_from_this();
+
+			//	//
+			//	//	this kills the compiler because of recursive template definitions
+			//	//
+			//	//return std::static_pointer_cast<meta_table_interface>(get_gen_table());
+			//}
+
+			virtual meta_table_ptr derive_cache_table() override
 			{
-				typename ext_t::col_names_t col_names;
-				typename ext_t::col_types_t col_types;
-				typename ext_t::col_width_t col_width;
+				return this->shared_from_this();
+			}
+
+			/**
+			 * Generate extended meta data.
+			 * This cannot be part of the meta_table_interface because it
+			 * would lead to recursive type definitions (and crashing compilers)
+			 */
+			gen_p get_gen_table() const
+			{
+				typename gen_t::col_names_t col_names;
+				typename gen_t::col_types_t col_types;
+				typename gen_t::col_width_t col_width;
 
 				loop([&](column&& col)->void {
 					if (col.pk_) {
@@ -310,9 +356,8 @@ namespace cyng
 				col_types[KEY_SIZE] = TC_UINT64;
 				col_width[KEY_SIZE] = 0u;
 
-				return std::make_shared<ext_t>(get_name(), std::move(col_names), std::move(col_types), std::move(col_width));
+				return std::make_shared<gen_t>(get_name(), std::move(col_names), std::move(col_types), std::move(col_width));
 			}
-
 
 		private:
 			bool check_body(data_type const& data) const
@@ -381,6 +426,85 @@ namespace cyng
 			return std::static_pointer_cast<meta_table_interface>(std::make_shared<type>(name, std::move(cols), std::move(types), std::move(widths)));
 		}
 		
+		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
+		class meta_sql_table : public meta_table<KEY_SIZE, BODY_SIZE, IDX> 
+		{
+			using base_tbl = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
+
+		public:
+			using cache_t = meta_table<KEY_SIZE, ((BODY_SIZE > 1) ? (BODY_SIZE - 1) : BODY_SIZE), IDX>;
+			using cache_p = std::shared_ptr<cache_t>;
+
+			/**
+			 * provide a data type for the initialization parameters
+			 */
+			template <typename T >
+			using init_param_t = std::array<T, KEY_SIZE + BODY_SIZE - 1>;
+
+		public:
+			meta_sql_table(std::string const& name)
+				: base_tbl(name)
+			{}
+
+			meta_sql_table(std::string const& name, typename base::col_names_t&& cols)
+				: base_tbl(name, std::move(cols))
+			{}
+
+			meta_sql_table(std::string const& name
+				, init_param_t<std::string>&& cols
+				, init_param_t<std::size_t>&& types)
+			: base_tbl(name
+				, insert_gen<std::string, KEY_SIZE + BODY_SIZE - 1, KEY_SIZE>(std::move(cols), "gen")
+				, insert_gen<std::size_t, KEY_SIZE + BODY_SIZE - 1, KEY_SIZE>(std::move(types), TC_UINT64))
+			{}
+
+			meta_sql_table(std::string const& name
+				, init_param_t<std::string>&& cols
+				, init_param_t<std::size_t>&& types
+				, init_param_t<std::size_t>&& widths)
+			: base_tbl(name
+				, insert_gen<std::string, KEY_SIZE + BODY_SIZE - 1, KEY_SIZE>(std::move(cols), "gen")
+				, insert_gen<std::size_t, KEY_SIZE + BODY_SIZE - 1, KEY_SIZE>(std::move(types), TC_UINT64)
+				, insert_gen<std::size_t, KEY_SIZE + BODY_SIZE - 1, KEY_SIZE>(std::move(types), 0u))
+			{}
+
+			virtual meta_table_ptr derive_cache_table() override
+			{
+				return std::static_pointer_cast<meta_table_interface>(get_cache_table());
+			}
+
+			/** @brief strip "gen" column
+			 * Use the meta data from an SQL table (with the "gen" column) and generate
+			 * a cache compatible table with an intrinsic "gen" value.
+			 */
+			cache_p get_cache_table() const
+			{
+				typename cache_t::col_names_t col_names;
+				typename cache_t::col_types_t col_types;
+				typename cache_t::col_width_t col_width;
+
+				loop([&](column&& col)->void {
+					if (col.pk_) {
+						col_names[col.pos_] = col.name_;
+						col_types[col.pos_] = col.type_;
+						col_width[col.pos_] = col.width_;
+					}
+					else {
+						//
+						//	remove column "gen"
+						//
+						if (col.pos_ > KEY_SIZE) {
+							col_names[col.pos_ - 1] = col.name_;
+							col_types[col.pos_ - 1] = col.type_;
+							col_width[col.pos_ - 1] = col.width_;
+						}
+					}
+				});
+
+				return std::make_shared<cache_t>(get_name(), std::move(col_names), std::move(col_types), std::move(col_width));
+			}
+		};
+
 		/**
 		 * Use the same meta data to generate a meta table with a "gen" column.
 		 * The "gen" column is used to store the inherit "generation" of in-memory
@@ -389,18 +513,16 @@ namespace cyng
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		meta_table_ptr
 			make_meta_table_gen(std::string const& name
-				, std::array<std::string, KEY_SIZE + BODY_SIZE> && cols = {}
-				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && types = {}
-				, std::array<std::size_t, KEY_SIZE + BODY_SIZE> && widths = {}
+				, std::array<std::string, KEY_SIZE + BODY_SIZE>&& cols = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE>&& types = {}
+				, std::array<std::size_t, KEY_SIZE + BODY_SIZE>&& widths = {}
 			)
 		{
-			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
-			using ext_t = typename type::ext_t;
+			//	add "gen" column after key
+			using type = meta_sql_table<KEY_SIZE, BODY_SIZE + 1, IDX>;
 
-			type tbl(name, std::move(cols), std::move(types), std::move(widths));
-			return std::static_pointer_cast<meta_table_interface>(tbl.get_gen_table());
+			return std::static_pointer_cast<meta_table_interface>(std::make_shared<type>(name, std::move(cols), std::move(types), std::move(widths)));
 		}
-
 	}	//	table	
 }
 

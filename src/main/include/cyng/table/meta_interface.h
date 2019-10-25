@@ -131,6 +131,9 @@ namespace cyng
 			virtual bool has_index() const = 0;
 			virtual std::pair<std::size_t, bool> get_index() const = 0;
 
+			//virtual meta_table_ptr derive_gen_table() = 0;
+			virtual meta_table_ptr derive_cache_table() = 0;
+
 		};
 		
 

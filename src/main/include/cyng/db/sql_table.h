@@ -33,6 +33,10 @@ namespace cyng
 	/**
 	 * Read a result set into a key and and a body
 	 * object tuple.
+	 * The "gen" column from the SQL result will be stripped and
+	 * the meta data of the record will be adapted. 
+	 *
+	 * @note The meta data of the table and the record are different.
 	 */
 	table::record to_record(table::meta_table_ptr, db::result_ptr);
 

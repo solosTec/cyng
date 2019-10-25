@@ -141,7 +141,8 @@ namespace cyng
 				}
 			});
 
-			return table::record(meta, key, data, generation);
+			//return table::record(meta, key, data, generation);
+			return table::record(meta->derive_cache_table(), key, data, generation);
 		}
 
 		return table::record(meta);

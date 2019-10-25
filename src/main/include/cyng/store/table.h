@@ -167,8 +167,7 @@ namespace cyng
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
-			 * The modification signal is send in every case, even when old and new values
-			 * are equal. (This should be changed in an upcoming version).
+			 * The modification signal is send only in case the new and old values are different.
 			 *
 			 * @param key the record key
 			 * @param attr a specific attribute of the record body.
@@ -178,8 +177,7 @@ namespace cyng
 
 			/**
 			 * If a matching record was found, the record will be write/exclusive locked.
-			 * The modification signal is send in every case, even when old and new values
-			 * are equal. (This should be changed in an upcoming version).
+			 * The modification signal is send only in case the new and old values are different.
 			 *
 			 * @param key the record key
 			 * @param param a specific parameter of the record body.
