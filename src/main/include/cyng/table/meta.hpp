@@ -193,6 +193,11 @@ namespace cyng
 				return key.size() == KEY_SIZE;
 			}
 			
+			virtual bool check_body(data_type const& data) const  override
+			{
+				return data.size() == BODY_SIZE;
+			}
+
 			virtual bool check_record(key_type const& key, data_type const& data) const override
 			{
 				return check_key(key) && check_body(data);
@@ -360,10 +365,6 @@ namespace cyng
 			}
 
 		private:
-			bool check_body(data_type const& data) const
-			{
-				return data.size() == BODY_SIZE;
-			}
 			
 			std::pair<std::ptrdiff_t, bool> get_key_index(std::string const& name) const
 			{
@@ -423,7 +424,9 @@ namespace cyng
 		)
 		{
 			using type = meta_table<KEY_SIZE, BODY_SIZE, IDX>;
-			return std::static_pointer_cast<meta_table_interface>(std::make_shared<type>(name, std::move(cols), std::move(types), std::move(widths)));
+			auto ptr = new type(name, std::move(cols), std::move(types), std::move(widths));
+			auto sp = std::shared_ptr<type>(ptr);
+			return std::static_pointer_cast<meta_table_interface>(sp);
 		}
 		
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>

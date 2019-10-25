@@ -208,6 +208,8 @@ namespace cyng
 				expr.serialize(stream_, meta_, dialect_, false);
 				return sql_where(meta_, dialect_, stream_);
 			}
+
+			sql_where by_key();
 		};
 
 		/**

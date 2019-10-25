@@ -93,6 +93,7 @@ namespace cyng
 			virtual std::size_t get_width(std::size_t col) const = 0;
 			
 			virtual bool check_key(key_type const&) const = 0;
+			virtual bool check_body(data_type const& data) const = 0;
 			virtual bool check_record(key_type const&, data_type const&) const = 0;
 			
 			virtual std::pair<std::size_t, bool> get_body_index(std::size_t idx) const = 0;

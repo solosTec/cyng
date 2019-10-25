@@ -552,6 +552,36 @@ namespace cyng
 		sql_update::sql_update(meta_table_ptr m, dialect dia, std::ostream& os)
 			: base(m, dia, os)
 		{}
+
+		sql_where sql_update::by_key()
+		{
+			stream_
+				<< "WHERE "
+				;
+
+			bool init_flag = false;
+			meta_->loop([this, &init_flag](column&& col) {
+
+				if (col.pk_)
+				{
+					if (!init_flag)
+					{
+						init_flag = true;
+					}
+					else
+					{
+						stream_ << ", ";
+					}
+
+					stream_
+						<< col.name_
+						<< " = ?"
+						;
+				}
+			});
+
+			return sql_where(meta_, dialect_, stream_);
+		}
 	}	
 }
 
