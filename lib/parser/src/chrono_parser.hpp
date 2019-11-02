@@ -103,7 +103,7 @@ namespace cyng
 			}
 		};
 
-		struct time_span_factory
+		struct time_span_microsec_factory
 		{
 			template < typename A >
 			struct result { typedef std::chrono::microseconds type; };
@@ -123,6 +123,24 @@ namespace cyng
 			}
 		};
 		
+		struct time_span_minutes_factory
+		{
+			template < typename A >
+			struct result { typedef std::chrono::minutes type; };
+
+			std::chrono::minutes operator()(const boost::fusion::vector<std::uint8_t, std::uint8_t, double>& arg) const
+			{
+				auto secs = boost::fusion::at_c< 2 >(arg);
+				auto minutes = boost::fusion::at_c< 1 >(arg);
+				auto hours = boost::fusion::at_c< 0 >(arg);
+
+				std::chrono::minutes::rep count = static_cast<std::chrono::minutes::rep>(secs / 60ULL)
+					+ (minutes)
+					+ (hours * 60ULL)
+					;
+				return std::chrono::minutes(count);
+			}
+		};
 	}
 
 	template <typename Iterator, typename Skipper>
@@ -230,10 +248,10 @@ namespace cyng
 	}
 	
 	template <typename Iterator>
-	timespan_parser< Iterator >::timespan_parser()
-		: timespan_parser::base_type(r_start)
+	timespan_parser_microsec< Iterator >::timespan_parser_microsec()
+		: timespan_parser_microsec::base_type(r_start)
 	{
-		boost::phoenix::function<time_span_factory>	make_time_span;
+		boost::phoenix::function<time_span_microsec_factory>	make_time_span;
 
 		r_start
 			= boost::spirit::qi::lit("m:a:x")[boost::spirit::_val = std::chrono::microseconds::max()]
@@ -251,6 +269,28 @@ namespace cyng
 			;
 	}
 	
+	template <typename Iterator>
+	timespan_parser_minutes< Iterator >::timespan_parser_minutes()
+		: timespan_parser_minutes::base_type(r_start)
+	{
+		boost::phoenix::function<time_span_minutes_factory>	make_time_span;
+
+		r_start
+			= boost::spirit::qi::lit("m:a:x")[boost::spirit::_val = std::chrono::minutes::max()]
+			| boost::spirit::qi::lit("m:i:n")[boost::spirit::_val = std::chrono::minutes::min()]
+			| boost::spirit::qi::lit("n:i:l")[boost::spirit::_val = std::chrono::minutes::zero()]
+			| r_span[boost::spirit::_val = make_time_span(boost::spirit::_1)]
+			;
+
+		r_span
+			%= r_uint8	//	hour
+			>> ':'
+			>> r_uint8	//	min
+			>> ':'
+			>> boost::spirit::qi::double_	//	sec
+			;
+	}
+
 	template <typename Iterator>
 	rfc3339_timestamp_parser< Iterator > ::rfc3339_timestamp_parser()
 		: rfc3339_timestamp_parser::base_type(r_start)

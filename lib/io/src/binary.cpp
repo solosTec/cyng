@@ -369,8 +369,8 @@ namespace cyng
 		
 		std::ostream& serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_BINARY>::write(std::ostream& os, boost::asio::ip::tcp::endpoint const& v)
 		{
-			const auto address = v.address().to_string();
-			const auto port = v.port();
+			auto const address = v.address().to_string();
+			auto const port = v.port();
 
 			//
 			//	type - length - data

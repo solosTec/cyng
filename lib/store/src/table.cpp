@@ -92,7 +92,7 @@ namespace cyng
 			, std::uint64_t generation
 			, boost::uuids::uuid source)
 		{
-			//	prevent structural integrity
+			//	secure data consistency.
 			if (meta_->check_record(key, data))
 			{
 				//	second is true if the pair was actually inserted.

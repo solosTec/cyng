@@ -31,7 +31,8 @@ namespace cyng
 	/**
 	 * parse timespan with format hh:mm::ss.ffff
 	 */
-	std::pair<std::chrono::microseconds, bool > parse_timespan(std::string const&);
+	std::pair<std::chrono::microseconds, bool > parse_timespan_microsec(std::string const&);
+	std::pair<std::chrono::minutes, bool > parse_timespan_minutes(std::string const&);
 
 	/**
 	 * parse timespan with RFC 3339 format
@@ -159,18 +160,33 @@ namespace cyng
 	 * expect the format hh:mm:ss
 	 */
 	template <typename Iterator>
-	struct timespan_parser
+	struct timespan_parser_microsec
 	: boost::spirit::qi::grammar<Iterator, std::chrono::microseconds()>
 	{
-		timespan_parser();
+		timespan_parser_microsec();
 		boost::spirit::qi::rule<Iterator, std::chrono::microseconds()> 	r_start;
 
 		/**
-			* read parts of timespan string
-			*/
+		 * read parts of timespan string
+		 */
 		boost::spirit::qi::uint_parser<std::uint8_t, 10, 1, 2>		r_uint8;
 		boost::spirit::qi::rule<Iterator, boost::fusion::vector< std::uint8_t, std::uint8_t, double >()> r_span;
 		
+	};
+
+	template <typename Iterator>
+	struct timespan_parser_minutes
+		: boost::spirit::qi::grammar<Iterator, std::chrono::minutes()>
+	{
+		timespan_parser_minutes();
+		boost::spirit::qi::rule<Iterator, std::chrono::minutes()> 	r_start;
+
+		/**
+		 * read parts of timespan string
+		 */
+		boost::spirit::qi::uint_parser<std::uint8_t, 10, 1, 2>		r_uint8;
+		boost::spirit::qi::rule<Iterator, boost::fusion::vector< std::uint8_t, std::uint8_t, double >()> r_span;
+
 	};
 
 } 	//	cyng

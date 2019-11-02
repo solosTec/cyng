@@ -74,6 +74,26 @@ namespace cyng
 			os << '"';
 			return os;
 		}
+
+		std::ostream& serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_TYPED>::write(std::ostream& os, boost::asio::ip::tcp::endpoint const& v)
+		{
+			auto const address = v.address().to_string();
+			auto const port = v.port();
+
+			//
+			//	"address:port"protocolType
+			//
+			return os
+				<< '"'
+				<< address
+				<< ':'
+				<< port
+				<< '"'
+				<< (v.address().is_v4() ? "IPv4" : "IPv6")
+				;
+
+		}
+
 	}
 }
 

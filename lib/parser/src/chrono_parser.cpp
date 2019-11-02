@@ -17,8 +17,10 @@ namespace cyng
 	template struct chrono_parser <buffer_t::const_iterator>;
 	template struct chrono_parser <utf::convert_u8_to_u32>;
 	template struct db_timestamp_parser <std::string::const_iterator>;
-	template struct timespan_parser <std::string::const_iterator>;
-	template struct timespan_parser <utf::convert_u8_to_u32>;
+	template struct timespan_parser_microsec <std::string::const_iterator>;
+	template struct timespan_parser_microsec <utf::convert_u8_to_u32>;
+	template struct timespan_parser_minutes <std::string::const_iterator>;
+	template struct timespan_parser_minutes <utf::convert_u8_to_u32>;
 	template struct rfc3339_timestamp_parser <std::string::const_iterator>;
 	template struct rfc3339_timestamp_parser <buffer_t::const_iterator>;
 	template struct rfc3339_obj_parser <std::string::const_iterator>;
@@ -60,16 +62,26 @@ namespace cyng
 		return std::make_pair(result, r);
 	}
 
-	std::pair<std::chrono::microseconds, bool > parse_timespan(std::string const& inp)
+	std::pair<std::chrono::microseconds, bool > parse_timespan_microsec(std::string const& inp)
 	{
 		std::chrono::microseconds result(0);
-		timespan_parser< std::string::const_iterator >	g;
+		timespan_parser_microsec< std::string::const_iterator >	g;
 		std::string::const_iterator iter = inp.begin();
 		std::string::const_iterator end = inp.end();
 		const bool r = boost::spirit::qi::parse(iter, end, g, result);
 		return std::make_pair(result, r);
 	}
 	
+	std::pair<std::chrono::minutes, bool > parse_timespan_minutes(std::string const& inp)
+	{
+		std::chrono::minutes result(0);
+		timespan_parser_minutes< std::string::const_iterator >	g;
+		std::string::const_iterator iter = inp.begin();
+		std::string::const_iterator end = inp.end();
+		const bool r = boost::spirit::qi::parse(iter, end, g, result);
+		return std::make_pair(result, r);
+	}
+
 	object parse_rfc3339_obj(std::string const& inp)
 	{
 		object obj;
