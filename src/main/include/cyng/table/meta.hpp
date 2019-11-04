@@ -449,7 +449,7 @@ namespace cyng
 				: base_tbl(name)
 			{}
 
-			meta_sql_table(std::string const& name, typename base::col_names_t&& cols)
+			meta_sql_table(std::string const& name, typename base_tbl::col_names_t&& cols)
 				: base_tbl(name, std::move(cols))
 			{}
 
@@ -504,7 +504,7 @@ namespace cyng
 					}
 				});
 
-				return std::make_shared<cache_t>(get_name(), std::move(col_names), std::move(col_types), std::move(col_width));
+				return std::make_shared<cache_t>(this->get_name(), std::move(col_names), std::move(col_types), std::move(col_width));
 			}
 		};
 

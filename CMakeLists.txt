@@ -432,9 +432,13 @@ endif(UNIX)
 #
 include (lib/meta/lib.cmake)
 add_library(cyng_meta ${GLOBAL_LIBRARY_TYPE} ${meta_lib})
-install(FILES ${meta_lib}
-  DESTINATION include)
-
+install(FILES 
+        ${meta_lib}
+    DESTINATION 
+        include
+    COMPONENT
+        Devel
+    )
 
 #
 #	cyng core/object library
@@ -738,6 +742,58 @@ if(${PROJECT_NAME}_CROSS_COMPILE)
 		  
 endif()
 
+ set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_mail;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_sqlite3")
+ 
+install(TARGETS ${CYNG_TARGET_LIST} EXPORT CyngTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+configure_file (
+        "${PROJECT_SOURCE_DIR}/src/main/templates/CyngConfig.cmake.in"
+        "${PROJECT_SOURCE_DIR}/cmake/CyngConfig.cmake")
+
+#
+# Packaging
+#
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/cyng/ConfigVersion.cmake"
+  VERSION "${PROJECT_VERSION}"
+  COMPATIBILITY AnyNewerVersion
+)
+
+export(EXPORT CyngTargets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/cyng/CyngTargets.cmake"
+  NAMESPACE Cyng::
+)
+configure_file(cmake/CyngConfig.cmake
+  "${CMAKE_CURRENT_BINARY_DIR}/cyng/CyngConfig.cmake"
+  COPYONLY
+)
+
+set(ConfigPackageLocation lib/cmake/cyng)
+install(EXPORT CyngTargets
+  FILE
+    CyngTargets.cmake
+  NAMESPACE
+    Upstream::
+  DESTINATION
+    ${ConfigPackageLocation}
+)
+
+install(
+  FILES
+    cmake/CyngConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/cyng/CyngConfigVersion.cmake"
+  DESTINATION
+    ${ConfigPackageLocation}
+  COMPONENT
+    Devel
+)
 #
 # CPack configuration
 #
