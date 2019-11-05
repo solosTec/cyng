@@ -82,7 +82,6 @@ message(STATUS "** Timestamp       : ${${PROJECT_NAME}_NOW_UTC}")
 message(STATUS "** CPU Cores       : ${${PROJECT_NAME}_CPU_COUNT}")
 
 if(UNIX)
-	# has no meaning on VS
 	# set default cmake build type to RelWithDebInfo (None Debug Release RelWithDebInfo MinSizeRel)
 	if( NOT CMAKE_BUILD_TYPE )
 		set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
@@ -96,6 +95,7 @@ if(UNIX)
 	)
 	message(STATUS "** System          : ${LSB_RELEASE_ID_SHORT}")
 else()
+	# has no meaning on VS
 	if( NOT CMAKE_BUILD_TYPE )
 		set( CMAKE_BUILD_TYPE "Debug" )
 		message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
@@ -389,7 +389,7 @@ endif()
 #
 #   OLEDB is not supported yet
 #
-set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
+set(${PROJECT_NAME}_OLEDB_INSTALLED OFF CACHE BOOL "OLEDB Connector")
 
 #
 # pugixml-master (v1.9)
