@@ -169,6 +169,7 @@ export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4
 ```
 
 Note: In the latest version of the Boost library (1.70.0) is currently a bug when using b2 to crosscompile. Use Boost 1.69.0 instead.
+See [issues/258](https://github.com/boostorg/boost/issues/258#issuecomment-470158084).
 
 ### OpenSLL ###
 
