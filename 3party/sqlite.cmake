@@ -3,13 +3,13 @@ set (sqlite_lib)
 
 set (sqlite_cpp
 
-    3party/sqlite-amalgamation-3280000/sqlite3.c  
+    3party/sqlite-amalgamation-3300100/sqlite3.c  
 
 )
 
 set (sqlite_h
 
-    3party/sqlite-amalgamation-3280000/sqlite3.h 
+    3party/sqlite-amalgamation-3300100/sqlite3.h 
    
 )
 
@@ -22,8 +22,8 @@ set (sqlite_lib
 
 
 # 3250000
-set(SQLite3_VERSION "3.28.0")
-set(SQLite3_INCLUDE_DIR 3party/sqlite-amalgamation-3280000)
+set(SQLite3_VERSION "3.30.1")
+set(SQLite3_INCLUDE_DIR 3party/sqlite-amalgamation-3300100)
 set(SQLite3_FOUND ON)
 
 #

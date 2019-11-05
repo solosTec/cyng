@@ -3,16 +3,15 @@ set (shell)
 
 set (shell_cpp
 
-    3party/sqlite-amalgamation-3280000/shell.c  
+    3party/sqlite-amalgamation-3300100/shell.c  
 
 )
 
 set (shell_h
 
-    3party/sqlite-amalgamation-3280000/sqlite3.h
+    3party/sqlite-amalgamation-3300100/sqlite3.h
    
 )
-
 
 # define the SQLite3 shell
 set (shell

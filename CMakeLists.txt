@@ -394,18 +394,17 @@ set(${PROJECT_NAME}_OLEDB_INSTALLED OFF)
 #
 # pugixml-master (v1.9)
 # On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
-# Included as 3party software
+# Included as git submodule
 #
-set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/3party/pugixml-190")
+add_subdirectory(lib/xml/pugixml/)
+set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/xml/pugixml/src")
 message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
 add_definitions(-D${PROJECT_NAME}_PUGIXML_INSTALLED)
-include_directories(${PUGIXML_INCLUDE_DIR})
-set(${PROJECT_NAME}_PUGIXML_VERSION 190)
 
 #
 # include directories for all C/C++ projects
 #
-include_directories(src/main/include)
+include_directories(src/main/include ${PUGIXML_INCLUDE_DIR})
 
 #
 # configure a header file to pass some of the CMake settings

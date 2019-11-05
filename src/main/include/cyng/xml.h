@@ -8,7 +8,6 @@
 #ifndef NODE_XML_H
 #define NODE_XML_H
 
-
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/sets.h>
 #include <cyng/table/record.h>

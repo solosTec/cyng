@@ -486,7 +486,10 @@ namespace cyng
 				typename cache_t::col_types_t col_types;
 				typename cache_t::col_width_t col_width;
 
-				loop([&](column&& col)->void {
+                //
+                //  this-> is required to find the loop() function.
+                //
+				this->loop([&](column&& col)->void {
 					if (col.pk_) {
 						col_names[col.pos_] = col.name_;
 						col_types[col.pos_] = col.type_;
