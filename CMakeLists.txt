@@ -444,9 +444,6 @@ install(FILES
 #
 include (lib/core/lib.cmake)
 add_library(cyng_core ${GLOBAL_LIBRARY_TYPE} ${core_lib})
-if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	target_link_libraries(cyng_core boost_thread)
-endif()
 install(TARGETS cyng_core
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib/static)
@@ -465,8 +462,6 @@ install(TARGETS cyng_log
 #
 include (lib/io/lib.cmake)
 add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
-set(io_link_libs cyng_core)
-target_link_libraries(cyng_io ${io_link_libs})
 install(TARGETS cyng_io
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib/static)
@@ -488,9 +483,9 @@ endif()
 #
 include (lib/vm/lib.cmake)
 add_library(cyng_vm ${GLOBAL_LIBRARY_TYPE} ${vm_lib})
-target_link_libraries(cyng_vm
-	cyng_core
-	cyng_io)
+# target_link_libraries(cyng_vm
+# 	cyng_core
+# 	cyng_io)
 install(TARGETS cyng_vm
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib/static)
@@ -500,9 +495,9 @@ install(TARGETS cyng_vm
 #
 include (lib/async/lib.cmake)
 add_library(cyng_async ${GLOBAL_LIBRARY_TYPE} ${async_lib})
-if (UNIX)
-	target_link_libraries(cyng_async dl)
-endif()
+# if (UNIX)
+# 	target_link_libraries(cyng_async dl)
+# endif()
 
 #
 #	cyng table library
@@ -515,17 +510,17 @@ add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
 #
 include (lib/store/lib.cmake)
 add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
-target_link_libraries(cyng_store
-	cyng_core cyng_table)
+# target_link_libraries(cyng_store
+# 	cyng_core cyng_table)
 
 #
 #	cyng domain library
 #
 include (lib/domain/lib.cmake)
 add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
-target_link_libraries(cyng_domain
-	cyng_store
-	cyng_vm)
+# target_link_libraries(cyng_domain
+# 	cyng_store
+# 	cyng_vm)
 
 #
 #	cyng sql library
@@ -597,9 +592,10 @@ endif()
 include (lib/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
 # on windows:	-DPSAPI_VERSION=1
-set_target_properties(cyng_sys PROPERTIES 
-	COMPILE_FLAGS
-		$<$<CXX_COMPILER_ID:MSVC>:"-DPSAPI_VERSION=1">
+# This throws the error message: invalid arguments
+target_compile_options(cyng_sys 
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:"-DPSAPI_VERSION=1">
 )
 
 #
