@@ -44,7 +44,7 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
 	* Support for ODBC and SQLite3
 * and more
     * logging
-    * crypto
+    * [crypto](https://github.com/solosTec/crypto)
     
 ## Introduction ##
 
@@ -66,6 +66,7 @@ To build CYNG, run:
 #!shell
 
 git clone https://github.com/solosTec/cyng.git
+git submodule update --init --recursive
 mkdir build
 cd build
 cmake ..
@@ -106,12 +107,12 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2)
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2
-tar xjvf boost_1_70_0.tar.bz2
-cd boost_1_70_0
+wget https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
+tar xjvf boost_1_71_0.tar.bz2
+cd boost_1_71_0
 ```
 
 (2) bootstrap
@@ -168,6 +169,7 @@ export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4
 ```
 
 Note: In the latest version of the Boost library (1.70.0) is currently a bug when using b2 to crosscompile. Use Boost 1.69.0 instead.
+See [issues/258](https://github.com/boostorg/boost/issues/258#issuecomment-470158084).
 
 ### OpenSLL ###
 
