@@ -173,19 +173,19 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	#
 	
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "4.7")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
+		set(CMAKE_CXX_STANDARD 11)
 		message(STATUS "** C++ support     : C++11")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "5.1")
 	# default since  GCC 6.1
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14") 
+		set(CMAKE_CXX_STANDARD 14)
 		message(STATUS "** C++ support     : C++14")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "8.1")
     # partly since 5.0
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17") 
+		set(CMAKE_CXX_STANDARD 17)
 		message(STATUS "** C++ support     : C++17")
 	else()
     # partly since 8.0
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a") 
+		set(CMAKE_CXX_STANDARD 20)
 		message(STATUS "** C++ support     : C++2a")
 	endif()
 		
@@ -597,9 +597,10 @@ endif()
 include (lib/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
 # on windows:	-DPSAPI_VERSION=1
-if (WIN32)
-SET_TARGET_PROPERTIES(cyng_sys PROPERTIES COMPILE_FLAGS "-DPSAPI_VERSION=1")
-endif()
+set_target_properties(cyng_sys PROPERTIES 
+	COMPILE_FLAGS
+		$<$<CXX_COMPILER_ID:MSVC>:"-DPSAPI_VERSION=1">
+)
 
 #
 #	cyng db library
@@ -607,21 +608,19 @@ endif()
 include (lib/db/lib.cmake)
 add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
 set(db_link_libs cyng_sqlite3)
-if (${PROJECT_NAME}_ODBC_INSTALLED)
-	if(WIN32)
-		list(APPEND db_link_libs odbc32.lib)
-	else()
-		list(APPEND db_link_libs ${UnixODBC_LIBRARIES})
-#        set_property(TARGET cyng_db PROPERTY POSITION_INDEPENDENT_CODE ON)
- 	endif(WIN32)
-endif()
 if(UNIX)
     list(APPEND db_link_libs ${CMAKE_DL_LIBS} cyng_parser)
+
     if (${PROJECT_NAME}_MYSQL_INSTALLED)
         #    libmysqlcppconn8.so
         message(STATUS "** add mysql library")
         #list(APPEND db_link_libs mysqlcppconn8)
     endif()
+
+	if (${PROJECT_NAME}_ODBC_INSTALLED)
+		list(APPEND db_link_libs ${UnixODBC_LIBRARIES})
+	#        set_property(TARGET cyng_db PROPERTY POSITION_INDEPENDENT_CODE ON)
+	endif()
 endif(UNIX)
 target_link_libraries(cyng_db ${db_link_libs})
 message(STATUS "** db link library   : ${db_link_libs}")
