@@ -395,6 +395,7 @@ set(${PROJECT_NAME}_OLEDB_INSTALLED OFF CACHE BOOL "OLEDB Connector")
 # pugixml-master (v1.9)
 # On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
 # Included as git submodule
+# git submodule update --init --recursive
 #
 add_subdirectory(lib/xml/pugixml/)
 set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/xml/pugixml/src")
