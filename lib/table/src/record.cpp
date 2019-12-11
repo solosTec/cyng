@@ -60,6 +60,32 @@ namespace cyng
 			;
 		}
 		
+		void record::set(std::size_t idx, object obj)
+		{
+			if (meta_->is_key(idx))
+			{
+				key_.at(idx) = obj;
+			}
+			else if (meta_->is_body(idx))
+			{
+				//
+				//	fix the offset
+				//
+				const auto r = meta_->get_body_index(idx);
+				data_.at(r.first) = obj;
+			}
+		}
+
+		/**
+		 * write access by name
+		 */
+		void record::set(std::string col, object obj)
+		{
+			const auto r = meta_->get_record_index(col);
+			if (r.second) {
+				set(r.first, obj);
+			}
+		}
 
 		object record::get(std::size_t idx) const
 		{

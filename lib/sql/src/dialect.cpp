@@ -158,6 +158,11 @@ namespace cyng
 					case TC_MAC48:			return "CHAR(17)";
 					case TC_MAC64:			return "CHAR(19)";
 
+					case TC_DIGEST_MD5:		return "CHAR(32)";
+					case TC_DIGEST_SHA1:	return "CHAR(40)";
+					case TC_DIGEST_SHA256:	return "CHAR(64)";
+					case TC_DIGEST_SHA512:	return "CHAR(128)";
+
 					case TC_ATTR_MAP:		return "TEXT";
 					case TC_PARAM_MAP:		return "TEXT";
 					case TC_ATTR:			return "TEXT";	//	max_allowed_packet (1048576 bytes)
@@ -222,6 +227,11 @@ namespace cyng
 					case TC_MAC48:			return "TEXT";
 					case TC_MAC64:			return "TEXT";
 
+					case TC_DIGEST_MD5:		return "TEXT";	//	32 bytes
+					case TC_DIGEST_SHA1:	return "TEXT";	//	40 bytes
+					case TC_DIGEST_SHA256:	return "TEXT";	//	64 bytes
+					case TC_DIGEST_SHA512:	return "TEXT";	//	128 bytes
+
 					case TC_ATTR_MAP:		return "TEXT";
 					case TC_PARAM_MAP:		return "TEXT";
 					case TC_ATTR:			return "TEXT";	//	max_allowed_packet (1048576 bytes)
@@ -282,6 +292,11 @@ namespace cyng
 					case TC_MAC48:			return "CHAR(17)";
 					case TC_MAC64:			return "CHAR(19)";
 
+					case TC_DIGEST_MD5:		return "CHAR(32)";
+					case TC_DIGEST_SHA1:	return "CHAR(40)";
+					case TC_DIGEST_SHA256:	return "CHAR(64)";
+					case TC_DIGEST_SHA512:	return "CHAR(128)";
+
 					case TC_ATTR_MAP:		return "VARCHAR(2048)";
 					case TC_PARAM_MAP:		return "VARCHAR(2048)";
 					case TC_ATTR:			return "VARCHAR(512)";	
@@ -340,6 +355,11 @@ namespace cyng
 	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "CHAR(17)";
 					case TC_MAC64:			return "CHAR(19)";
+
+					case TC_DIGEST_MD5:		return "CHAR(32)";
+					case TC_DIGEST_SHA1:	return "CHAR(40)";
+					case TC_DIGEST_SHA256:	return "CHAR(64)";
+					case TC_DIGEST_SHA512:	return "CHAR(128)";
 
 					case TC_ATTR_MAP:		return "VARCHAR(2048)";
 					case TC_PARAM_MAP:		return "VARCHAR(2048)";
@@ -403,6 +423,11 @@ namespace cyng
 	// 				case TC_COLOR_16:	return "rgb16";
 					case TC_MAC48:			return "macaddr";	// !
 					case TC_MAC64:			return "macaddr";
+
+					case TC_DIGEST_MD5:		return "char(32)";
+					case TC_DIGEST_SHA1:	return "char(40)";
+					case TC_DIGEST_SHA256:	return "char(64)";
+					case TC_DIGEST_SHA512:	return "char(128)";
 
 					case TC_ATTR_MAP:		return "text";
 					case TC_PARAM_MAP:		return "text";

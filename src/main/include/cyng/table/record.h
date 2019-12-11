@@ -51,8 +51,25 @@ namespace cyng
 			 */
 			bool empty() const;
 			
+			/**
+			 * read access by index
+			 */
 			object operator[](std::size_t) const;
+
+			/**
+			 * read access name
+			 */
 			object operator[](std::string) const;
+
+			/**
+			 * write access by index
+			 */
+			void set(std::size_t, object);
+
+			/**
+			 * write access by name
+			 */
+			void set(std::string, object);
 
 			/**
 			 * @return the key of the record 

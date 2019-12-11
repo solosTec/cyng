@@ -243,6 +243,55 @@ namespace cyng
 				}
 
 				template <>
+				bool bind_value< crypto::digest_md5 >(sqlite3_stmt* stmt, int index, crypto::digest_md5 const* ptr) {
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+				template <>
+				bool bind_value< crypto::digest_sha1 >(sqlite3_stmt* stmt, int index, crypto::digest_sha1 const* ptr) {
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+				template <>
+				bool bind_value< crypto::digest_sha256 >(sqlite3_stmt* stmt, int index, crypto::digest_sha256 const* ptr) {
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+				template <>
+				bool bind_value< crypto::digest_sha512 >(sqlite3_stmt* stmt, int index, crypto::digest_sha512 const* ptr) {
+					if (ptr != nullptr)
+					{
+						std::stringstream ss;
+						using io::operator<<;
+						ss << *ptr;
+						std::string const str = ss.str();
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				template <>
 				bool bind_value< crypto::aes_128_key >(sqlite3_stmt* stmt, int index, crypto::aes_128_key const* ptr)
 				{
 					if (ptr != nullptr)
@@ -567,7 +616,11 @@ namespace cyng
 					case TC_MAC64:			return bind_value_by_code<TC_MAC64>(obj, column_size);
 
 
-					//
+					case TC_DIGEST_MD5:		return bind_value_by_code<TC_DIGEST_MD5>(obj, column_size);
+					case TC_DIGEST_SHA1:	return bind_value_by_code<TC_DIGEST_SHA1>(obj, column_size);
+					case TC_DIGEST_SHA256:	return bind_value_by_code<TC_DIGEST_SHA256>(obj, column_size);
+					case TC_DIGEST_SHA512:	return bind_value_by_code<TC_DIGEST_SHA512>(obj, column_size);
+							//
 					//	some data types are not implemented yet
 					//	...
 					//

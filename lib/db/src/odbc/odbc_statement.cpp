@@ -201,6 +201,31 @@ namespace cyng
 				}
 
 				//template <>
+				//bool bind_value< crypto::digest_md5 >(SQLHSTMT stmt, SQLSMALLINT index, crypto::digest_md5 const* ptr, std::size_t column_size) {
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->data_.data(), ptr->data_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+				//template <>
+				//bool bind_value< crypto::digest_sha1 >(SQLHSTMT stmt, SQLSMALLINT index, crypto::digest_sha1 const* ptr, std::size_t column_size) {
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->data_.data(), ptr->data_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+				//template <>
+				//bool bind_value< crypto::digest_sha256 >(SQLHSTMT stmt, SQLSMALLINT index, crypto::digest_sha256 const* ptr, std::size_t column_size) {
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->data_.data(), ptr->data_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+				//template <>
+				//bool bind_value< crypto::digest_sha512 >(SQLHSTMT stmt, SQLSMALLINT index, crypto::digest_sha512 const* ptr, std::size_t column_size) {
+				//	return (ptr != nullptr)
+				//		? bind_parameter(stmt, index, SQL_C_BINARY, SQL_BINARY, (SQLPOINTER)ptr->data_.data(), ptr->data_.size(), column_size)
+				//		: bind_null(stmt, index, SQL_CHAR, 128);
+				//}
+
+				//template <>
 				//bool bind_value< crypto::aes_128_key >(SQLHSTMT stmt, SQLSMALLINT index, crypto::aes_128_key const* ptr, std::size_t column_size)
 				//{
 				//	return (ptr != nullptr)
