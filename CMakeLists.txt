@@ -395,6 +395,7 @@ set(${PROJECT_NAME}_OLEDB_INSTALLED OFF CACHE BOOL "OLEDB Connector")
 # pugixml-master (v1.9)
 # On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
 # Included as git submodule
+# git submodule update --init --recursive
 #
 add_subdirectory(lib/xml/pugixml/)
 set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/xml/pugixml/src")
@@ -510,25 +511,21 @@ add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
 #
 include (lib/store/lib.cmake)
 add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
-# target_link_libraries(cyng_store
-# 	cyng_core cyng_table)
 
 #
 #	cyng domain library
 #
 include (lib/domain/lib.cmake)
 add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
-# target_link_libraries(cyng_domain
-# 	cyng_store
-# 	cyng_vm)
+
 
 #
 #	cyng sql library
 #
 include (lib/sql/lib.cmake)
 add_library(cyng_sql ${GLOBAL_LIBRARY_TYPE} ${sql_lib})
-target_link_libraries(cyng_sql
-	cyng_store)
+# target_link_libraries(cyng_sql
+# 	cyng_store)
 
 #
 #	cyng crypto library
@@ -553,28 +550,20 @@ add_library(cyng_rnd ${GLOBAL_LIBRARY_TYPE} ${rnd_lib})
 #
 include (lib/parser/lib.cmake)
 add_library(cyng_parser ${GLOBAL_LIBRARY_TYPE} ${parser_lib})
-target_link_libraries(cyng_parser
-	cyng_core)
 
 #
 #	cyng JSON library
 #
 include (lib/json/lib.cmake)
 add_library(cyng_json ${GLOBAL_LIBRARY_TYPE} ${json_lib})
-target_link_libraries(cyng_json
-	cyng_core
-	cyng_io
-	cyng_parser)
+# linker needs a hint of dependencies
+target_link_libraries(cyng_json cyng_parser)
 
 #
 #	cyng CSV library
 #
 include (lib/csv/lib.cmake)
 add_library(cyng_csv ${GLOBAL_LIBRARY_TYPE} ${csv_lib})
-target_link_libraries(cyng_csv
-	cyng_core
-	cyng_io
-	cyng_parser)
 
 #
 #	cyng XML library
@@ -582,9 +571,9 @@ target_link_libraries(cyng_csv
 include (lib/xml/lib.cmake)
 add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
 
-if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	target_link_libraries(cyng_xml cyng_parser cyng_table)
-endif()
+# if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
+# 	target_link_libraries(cyng_xml cyng_parser cyng_table)
+# endif()
 
 #
 #	cyng system library
