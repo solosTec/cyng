@@ -444,9 +444,14 @@ install(FILES
 #
 include (lib/core/lib.cmake)
 add_library(cyng_core ${GLOBAL_LIBRARY_TYPE} ${core_lib})
-install(TARGETS cyng_core
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static)
+# add_library(cyng_core_obj OBJECT ${core_lib})
+# set_property(TARGET cyng_core_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+# add_library(cyng_core SHARED $<TARGET_OBJECTS:cyng_core_obj>)
+# add_library(cyng_core_static STATIC $<TARGET_OBJECTS:cyng_core_obj>)
+# install(TARGETS cyng_core cyng_core_static
+#     LIBRARY DESTINATION lib
+#     ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng log library
