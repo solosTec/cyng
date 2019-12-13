@@ -444,6 +444,26 @@ namespace cyng
 			}
 			return os;
 		}
+		
+		std::ostream& serializer <crypto::digest_md5, SERIALIZE_JSON>::write(std::ostream& os, crypto::digest_md5 v)
+		{
+			return os << '"' << v << '"';
+		}
+		
+		std::ostream& serializer <crypto::digest_sha1, SERIALIZE_JSON>::write(std::ostream& os, crypto::digest_sha1 v)
+		{
+			return os << '"' << v << '"';
+		}
+		
+		std::ostream& serializer <crypto::digest_sha256, SERIALIZE_JSON>::write(std::ostream& os, crypto::digest_sha256 v)
+		{
+			return os << '"' << v << '"';
+		}
+		
+		std::ostream& serializer <crypto::digest_sha512, SERIALIZE_JSON>::write(std::ostream& os, crypto::digest_sha512 v)
+		{
+			return os << '"' << v << '"';
+		}
 	}
 }
 

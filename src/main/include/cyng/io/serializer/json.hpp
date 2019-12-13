@@ -185,6 +185,28 @@ namespace cyng
 		{
 			static std::ostream& write(std::ostream& os, double v);
 		};
+
+		template <>
+		struct serializer <crypto::digest_md5, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_md5 v);
+		};
+		template <>
+		struct serializer <crypto::digest_sha1, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_sha1 v);
+		};
+		template <>
+		struct serializer <crypto::digest_sha256, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_sha256 v);
+		};
+		template <>
+		struct serializer <crypto::digest_sha512, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, crypto::digest_sha512 v);
+		};
+
 	}
 }
 

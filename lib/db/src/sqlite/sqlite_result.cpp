@@ -286,7 +286,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 16, "invalid MD5 format");
+						BOOST_ASSERT_MSG(size == 32, "invalid MD5 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -308,7 +308,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 20, "invalid SHA1 format");
+						BOOST_ASSERT_MSG(size == 40, "invalid SHA1 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -330,7 +330,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 32, "invalid SHA256 format");
+						BOOST_ASSERT_MSG(size == 64, "invalid SHA256 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -352,7 +352,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 64, "invalid SHA512 format");
+						BOOST_ASSERT_MSG(size == 128, "invalid SHA512 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -639,9 +639,12 @@ namespace cyng
 	// 			TC_COLOR_16,	//!<	color with 16 bits per channel
 						case TC_MAC48:			return get_value_by_code<TC_MAC48>(*statement_, index);
 						case TC_MAC64:			return get_value_by_code<TC_MAC64>(*statement_, index);
-							// 			CYNG_MD5,	//!<	md5 digest
-	// 			CYNG_SHA1,	//!<	sha1 digest
-	// 			CYNG_SHA512,	//!<	sha512 digest
+
+						case TC_DIGEST_MD5:		return get_value_by_code<TC_DIGEST_MD5>(*statement_, index);
+						case TC_DIGEST_SHA1:	return get_value_by_code<TC_DIGEST_SHA1>(*statement_, index);
+						case TC_DIGEST_SHA256:	return get_value_by_code<TC_DIGEST_SHA256>(*statement_, index);
+						case TC_DIGEST_SHA512:	return get_value_by_code<TC_DIGEST_SHA512>(*statement_, index);
+
 	// 			
 						//	std::map< std::size_t, object >
 						case TC_ATTR_MAP:	return get_value_by_code<TC_ATTR_MAP>(*statement_, index);

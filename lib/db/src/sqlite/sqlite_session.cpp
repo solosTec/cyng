@@ -117,7 +117,7 @@ namespace cyng
 
 			void session::busy_monitor(int counter) 
 			{
-#ifdef _DEBUG
+#ifdef __DEBUG
 				std::cout
 					<< "sqlite::busy_monitor( "
 					<< counter

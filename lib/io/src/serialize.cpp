@@ -327,7 +327,7 @@ namespace cyng
 			for (const char c : digest.data_) {
 				os
 					<< std::setw(2)
-					<< (+c & 0xFF)	//	promote to integer
+					<< (c & 0xFF)
 					;
 			}
 

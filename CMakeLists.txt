@@ -1,4 +1,3 @@
-
 #
 #
 # CMake compatibility issues: don't modify this, please!
@@ -152,6 +151,11 @@ endif()
 #	The path to cmake modules
 #
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/src/modules/")
+
+#
+#	init submodules
+#
+include(InitSubmodules)
 
 #
 #	setup compiler features
@@ -394,9 +398,10 @@ set(${PROJECT_NAME}_OLEDB_INSTALLED OFF CACHE BOOL "OLEDB Connector")
 #
 # pugixml-master (v1.9)
 # On Windows set CMake variables PugiXML_INCLUDE_DIRS and PugiXML_LIBRARIES 
-# Included as git submodule
+# Included as git submodule with
+# git submodule update --init --recursive
 #
-add_subdirectory(lib/xml/pugixml/)
+add_subdirectory(lib/xml/pugixml)
 set(PUGIXML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/xml/pugixml/src")
 message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
 add_definitions(-D${PROJECT_NAME}_PUGIXML_INSTALLED)
@@ -444,33 +449,18 @@ install(FILES
 #
 include (lib/core/lib.cmake)
 add_library(cyng_core ${GLOBAL_LIBRARY_TYPE} ${core_lib})
-# add_library(cyng_core_obj OBJECT ${core_lib})
-# set_property(TARGET cyng_core_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-# add_library(cyng_core SHARED $<TARGET_OBJECTS:cyng_core_obj>)
-# add_library(cyng_core_static STATIC $<TARGET_OBJECTS:cyng_core_obj>)
-# install(TARGETS cyng_core cyng_core_static
-#     LIBRARY DESTINATION lib
-#     ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng log library
 #
 include (lib/log/lib.cmake)
 add_library(cyng_log ${GLOBAL_LIBRARY_TYPE} ${log_lib})
-install(TARGETS cyng_log
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng I/O library
 #
 include (lib/io/lib.cmake)
 add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
-install(TARGETS cyng_io
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static)
-
 
 #
 #	cyng mail library
@@ -488,21 +478,12 @@ endif()
 #
 include (lib/vm/lib.cmake)
 add_library(cyng_vm ${GLOBAL_LIBRARY_TYPE} ${vm_lib})
-# target_link_libraries(cyng_vm
-# 	cyng_core
-# 	cyng_io)
-install(TARGETS cyng_vm
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static)
 
 #
 #	cyng async library
 #
 include (lib/async/lib.cmake)
 add_library(cyng_async ${GLOBAL_LIBRARY_TYPE} ${async_lib})
-# if (UNIX)
-# 	target_link_libraries(cyng_async dl)
-# endif()
 
 #
 #	cyng table library
@@ -522,14 +503,11 @@ add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
 include (lib/domain/lib.cmake)
 add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
 
-
 #
 #	cyng sql library
 #
 include (lib/sql/lib.cmake)
 add_library(cyng_sql ${GLOBAL_LIBRARY_TYPE} ${sql_lib})
-# target_link_libraries(cyng_sql
-# 	cyng_store)
 
 #
 #	cyng crypto library
@@ -574,10 +552,6 @@ add_library(cyng_csv ${GLOBAL_LIBRARY_TYPE} ${csv_lib})
 #
 include (lib/xml/lib.cmake)
 add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
-
-# if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-# 	target_link_libraries(cyng_xml cyng_parser cyng_table)
-# endif()
 
 #
 #	cyng system library
@@ -640,6 +614,14 @@ add_executable(hello ${hello})
 include (test/demo.cmake)
 add_executable(demo ${demo})
 	
+set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_mail;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_sqlite3")	
+
+set_target_properties(${CYNG_TARGET_LIST}
+  PROPERTIES
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    VERSION ${PROJECT_VERSION}
+)
+    
 #
 # test unit using Boost.Test
 # BOOST_TEST_DYN_LINK is required to build a main() function
@@ -654,7 +636,7 @@ if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
         TARGET unit_test
         PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
 
-    set(unittest_link_libs cyng_core cyng_io cyng_async cyng_log cyng_store cyng_vm cyng_domain cyng_sql cyng_json cyng_parser cyng_mail cyng_crypto cyng_sys cyng_db cyng_table cyng_xml cyng_csv ${PUGIXML_LIBRARY})
+    set(unittest_link_libs ${CYNG_TARGET_LIST} ${PUGIXML_LIBRARY})
 
     if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
         list(APPEND unittest_link_libs ${Boost_LIBRARIES})
@@ -729,18 +711,20 @@ if(${PROJECT_NAME}_CROSS_COMPILE)
 		  
 endif()
 
- set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_mail;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_sqlite3")
  
-install(TARGETS ${CYNG_TARGET_LIST} EXPORT CyngTargets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
-
 configure_file (
         "${PROJECT_SOURCE_DIR}/src/main/templates/CyngConfig.cmake.in"
-        "${PROJECT_SOURCE_DIR}/cmake/CyngConfig.cmake")
+        "${PROJECT_SOURCE_DIR}/cmake/CyngConfig.cmake"
+)
+
+
+install(TARGETS ${CYNG_TARGET_LIST} 
+    EXPORT CyngTargets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
 
 #
 # Packaging
