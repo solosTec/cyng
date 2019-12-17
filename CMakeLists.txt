@@ -559,10 +559,9 @@ add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
 include (lib/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
 # on windows:	-DPSAPI_VERSION=1
-# This throws the error message: invalid arguments
-target_compile_options(cyng_sys 
+target_compile_definitions(cyng_sys 
     PRIVATE
-        $<$<CXX_COMPILER_ID:MSVC>:"-DPSAPI_VERSION=1">
+        $<$<CXX_COMPILER_ID:MSVC>:"PSAPI_VERSION=1">
 )
 
 #
