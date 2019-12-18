@@ -620,7 +620,12 @@ namespace cyng
 					case TC_DIGEST_SHA1:	return bind_value_by_code<TC_DIGEST_SHA1>(obj, column_size);
 					case TC_DIGEST_SHA256:	return bind_value_by_code<TC_DIGEST_SHA256>(obj, column_size);
 					case TC_DIGEST_SHA512:	return bind_value_by_code<TC_DIGEST_SHA512>(obj, column_size);
-							//
+
+					case TC_AES128:			return bind_value_by_code<TC_AES128>(obj, column_size);
+					case TC_AES192:			return bind_value_by_code<TC_AES192>(obj, column_size);
+					case TC_AES256:			return bind_value_by_code<TC_AES256>(obj, column_size);
+
+					//
 					//	some data types are not implemented yet
 					//	...
 					//
