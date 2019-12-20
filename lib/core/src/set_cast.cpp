@@ -51,6 +51,37 @@ namespace cyng
 		});
 		return amap;
 	}
+
+	tuple_t to_tuple(object obj)
+	{
+		tuple_t msg;
+		return value_cast<>(obj, msg);
+	}
+
+	vector_t to_vector(object obj)
+	{
+		vector_t msg;
+		return value_cast<>(obj, msg);
+	}
+
+	param_map_t to_param_map(object obj)
+	{
+		param_map_t pmap;
+		return value_cast<>(obj, pmap);
+	}
+
+	attr_map_t to_attr_map(object obj)
+	{
+		attr_map_t amap;
+		return value_cast<>(obj, amap);
+	}
+
+	//buffer_t to_buffer(object obj)
+	//{
+	//	buffer_t buffer;
+	//	return cyng::value_cast(obj, buffer);
+	//}
+
 }
 
 

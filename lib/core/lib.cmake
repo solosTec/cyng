@@ -13,7 +13,6 @@ set (core_cpp
   	
   	lib/core/src/tree_walker.cpp
   	lib/core/src/reader.cpp
-  	lib/core/src/set_cast.cpp
   	lib/core/src/algorithm.cpp
   	lib/core/src/split.cpp
 )
@@ -25,17 +24,9 @@ set (core_h
     src/main/include/cyng/core/class_interface.h
     src/main/include/cyng/core/class_impl.hpp
     src/main/include/cyng/core/object_interface.h
-    src/main/include/cyng/core/object_cast_fwd.h
     src/main/include/cyng/core/wrapper_fwd.h
     src/main/include/cyng/core/wrapper.hpp
 	src/main/include/cyng/core/enable_object_from_this.hpp
-    src/main/include/cyng/object_cast.hpp
-    src/main/include/cyng/core/value_cast_fwd.h
-    src/main/include/cyng/value_cast.hpp
-    src/main/include/cyng/vector_cast.hpp
-    src/main/include/cyng/set_cast.h
-    src/main/include/cyng/tuple_cast.hpp
-    src/main/include/cyng/numeric_cast.hpp
 	src/main/include/cyng/tracker.h
 	src/main/include/cyng/reference.h
 #     src/main/include/cyng/core/deleter.hpp
@@ -55,6 +46,20 @@ set (core_compatibility
     src/main/include/cyng/compatibility/legacy_mode.hpp	
 )
 endif()	
+
+set (core_casts
+    src/main/include/cyng/core/object_cast_fwd.h
+    src/main/include/cyng/object_cast.hpp
+     src/main/include/cyng/core/value_cast_fwd.h
+    src/main/include/cyng/value_cast.hpp
+    src/main/include/cyng/vector_cast.hpp
+    src/main/include/cyng/set_cast.h
+    src/main/include/cyng/tuple_cast.hpp
+    src/main/include/cyng/numeric_cast.hpp
+    src/main/include/cyng/buffer_cast.h
+ 	lib/core/src/set_cast.cpp
+ 	lib/core/src/buffer_cast.cpp
+)
 
 set (core_factory
     src/main/include/cyng/factory.h
@@ -105,6 +110,7 @@ set (core_intrinsics
 
 source_group("factory" FILES ${core_factory})
 source_group("intrinsics" FILES ${core_intrinsics})
+source_group("casts" FILES ${core_casts})
 
 # define the core lib
 set (core_lib
@@ -113,4 +119,5 @@ set (core_lib
   ${core_compatibility}
   ${core_factory}
   ${core_intrinsics}
+  ${core_casts}
 )

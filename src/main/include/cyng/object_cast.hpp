@@ -20,10 +20,9 @@ namespace cyng
 	template < typename T >
 	const T* object_cast(object const& obj) noexcept
 	{
-// 		using type = typename std::decay< T >::type
 		using value_type = core::wrapper< T >;
 
-		//	cast to the (hopefully) correct shared value pointer
+		//	cast to the correct shared value pointer
 		auto p = std::dynamic_pointer_cast< value_type >(obj.value_);
 		
 		//	if dynamic cast failed we return a null pointer

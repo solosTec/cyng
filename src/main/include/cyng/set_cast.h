@@ -8,7 +8,6 @@
 #define CYNG_SET_CAST_H
 
 #include <cyng/intrinsics/sets.h>
- 
 
 namespace cyng 
 {
@@ -49,6 +48,25 @@ namespace cyng
 		return tuple_t(vec.begin(), vec.end());
 	}
 
+	/**
+	 * Convinient value_cast<tuple_t>()
+	 */
+	tuple_t to_tuple(object obj);
+
+	/**
+	 * Convinient value_cast<vector_t>()
+	 */
+	vector_t to_vector(object obj);
+
+	/**
+	 * Convinient value_cast<param_map_t>()
+	 */
+	param_map_t to_param_map(object obj);
+
+	/**
+	 * Convinient value_cast<attr_map_t>()
+	 */
+	attr_map_t to_attr_map(object obj);
 }
 
 #endif 
