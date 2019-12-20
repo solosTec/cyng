@@ -27,6 +27,10 @@ namespace cyng
 		 * 
 		 * Internally a store is a table of tables. This offers a natural way
 		 * to use all table (lock) mechanisms for the database too.
+		 *
+		 * Each modifying operation requires to specify an event source (UUID),
+		 * so the receiver of modification events can identify events
+		 * triggered by itself.
 		 */
 		class db
 		{
@@ -139,6 +143,7 @@ namespace cyng
 			 * Clears the table contents.
 			 *
 			 * @param name table name
+			 * @param source identifier for data source
 			 */
 			void clear(std::string const& name, boost::uuids::uuid source);
 
@@ -192,6 +197,7 @@ namespace cyng
 			/**
 			 * @param name table name
 			 * @param key the record key
+			 * @param source identifier for data source
 			 * @return true if the record was actually deleted
 			 */
 			bool erase(std::string const& name, cyng::table::key_type const& key, boost::uuids::uuid source);
@@ -204,6 +210,7 @@ namespace cyng
 			 * @param name table name
 			 * @param key the record key
 			 * @param attr a specific attribute of the record body.
+			 * @param source identifier for data source
 			 * @return true if new value was sucessfully written.
 			 */
 			bool modify(std::string const& name, cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source);
@@ -216,6 +223,7 @@ namespace cyng
 			 * @param name table name
 			 * @param key the record key
 			 * @param param a specific parameter of the record body.
+			 * @param source identifier for data source
 			 * @return true if new value was sucessfully written.
 			 */
 			bool modify(std::string const& name, cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source);

@@ -203,6 +203,9 @@ namespace cyng
 				return check_key(key) && check_body(data);
 			}
 			
+			/**
+			 * @return idx - KEY_SIZE
+			 */
 			virtual std::pair<std::size_t, bool> get_body_index(std::size_t idx) const override
 			{
 				return adjust_record_to_body_index(idx);

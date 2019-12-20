@@ -374,7 +374,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 16, "invalid AESkey128 format");
+						BOOST_ASSERT_MSG(size == 32, "invalid AESkey128 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -396,7 +396,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 24, "invalid AESkey192 format");
+						BOOST_ASSERT_MSG(size == 48, "invalid AESkey192 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -418,7 +418,7 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 32, "invalid AESkey256 format");
+						BOOST_ASSERT_MSG(size == 64, "invalid AESkey256 format");
 						std::string const inp((const char*)ptr, size);
 
 						std::pair<buffer_t, bool > const r = parse_hex_string(inp);
@@ -644,6 +644,10 @@ namespace cyng
 						case TC_DIGEST_SHA1:	return get_value_by_code<TC_DIGEST_SHA1>(*statement_, index);
 						case TC_DIGEST_SHA256:	return get_value_by_code<TC_DIGEST_SHA256>(*statement_, index);
 						case TC_DIGEST_SHA512:	return get_value_by_code<TC_DIGEST_SHA512>(*statement_, index);
+
+						case TC_AES128:			return get_value_by_code<TC_AES128>(*statement_, index);
+						case TC_AES192:			return get_value_by_code<TC_AES192>(*statement_, index);
+						case TC_AES256:			return get_value_by_code<TC_AES256>(*statement_, index);
 
 	// 			
 						//	std::map< std::size_t, object >
