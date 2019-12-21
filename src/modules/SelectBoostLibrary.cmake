@@ -100,7 +100,7 @@ if(Boost_FOUND)
 	message(STATUS "** Boost Path       : ${Boost_LIBRARY_DIRS}")
 	message(STATUS "** Boost Libraries  : ${Boost_LIBRARIES}")
 
-	if(Boost_VERSION VERSION_LESS "1.66.0")
+	if(Boost_VERSION VERSION_LESS "106600")
 		#
 		# When working with a Boost version prior 1.66.0 newer versions of Asio and Beast 
 		# are required.
@@ -110,6 +110,15 @@ if(Boost_FOUND)
 		if(UNIX)
 			include_directories($ENV{HOME}/projects/beast/include)
 			include_directories($ENV{HOME}/projects/asio/include)
+		endif()
+
+	elseif(Boost_VERSION VERSION_EQUAL "107200")
+		if(WIN32)
+			#
+			# VC doesn't compile with concepts
+			#
+			message(WARNING "** Disable concepts for Boost.Asio")
+			add_definitions(-DBOOST_ASIO_DISABLE_CONCEPTS)	
 		endif()
 	endif()
 

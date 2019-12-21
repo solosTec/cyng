@@ -210,10 +210,11 @@ elseif(MSVC)
 
 	#	This is Windows 7 (and rules out windows vista)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /bigobj /std:c++latest /MP")	
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /bigobj /std:c++14 /MP")	
-	# When using /std:c++latest use _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING or _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS too
-	# _REMOVE_FPOS_SEEKPOS to remove std::fpos::seekpos entirely. Doesn't work for Boost 1.69.0
-	add_definitions(-D_WIN32_WINNT=0x0601 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+
+	#
+	#	Target is Windows 10
+	#
+	add_definitions(-D_WIN32_WINNT=0x0A00 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
 	
 	#
 	# help CMake to find OpenSSL
