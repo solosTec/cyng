@@ -18,6 +18,7 @@ set (store_h
     src/main/include/cyng/table/body.hpp
     src/main/include/cyng/table/record.h
 
+    src/main/include/cyng/store/store_fwd.h
     src/main/include/cyng/store/publisher.h
     src/main/include/cyng/store/table.h
     src/main/include/cyng/store/db.h
