@@ -230,6 +230,9 @@ namespace cyng
 				return sql_where(meta_, dialect_, stream_);
 			}
 
+			/**
+			 * Combine all conditions with AND
+			 */
 			sql_where by_key();
 		};
 

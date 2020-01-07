@@ -181,6 +181,7 @@ namespace cyng
 			/**
 			 * Could throw.
 			 * 
+			 * @param col index (null based)
 			 * @return the (display) width of the data type
 			 */
 			virtual std::size_t get_width(std::size_t col) const override 

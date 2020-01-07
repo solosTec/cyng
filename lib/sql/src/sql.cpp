@@ -462,7 +462,7 @@ namespace cyng
 					}
 					else
 					{
-						stream_ << ", ";
+						stream_ << " AND ";
 					}
 
 					stream_
