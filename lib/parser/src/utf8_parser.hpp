@@ -36,7 +36,7 @@ namespace boost
 				static void call(cyng::utf::u32_string const& val, std::string& attr)
 				{
 					attr.assign(Conv(val.begin()), Conv(val.end()));
-					std::cout << "assign_to_attribute_from_value<u32_string>: " << attr << std::endl;	
+					//std::cout << "assign_to_attribute_from_value<u32_string>: " << attr << std::endl;	
 				}
 			};
 	

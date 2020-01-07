@@ -40,7 +40,7 @@ namespace boost
 				}
 				static void post(cyng::object& val, type const& attr)
 				{
-					std::cout << "transform_attribute<u32_string>: " << cyng::utf::u32_to_u8_string(attr) << std::endl;
+					//std::cout << "transform_attribute<u32_string>: " << cyng::utf::u32_to_u8_string(attr) << std::endl;
 					val = cyng::make_object(cyng::utf::u32_to_u8_string(attr));
 				}
 				static void fail(cyng::object&)
