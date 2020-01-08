@@ -1,7 +1,10 @@
 #
 #   Generate documentation
 #
-option(${PROJECT_NAME}_BUILD_DOC "Build documentation" ON)
+if (NOT ${PROJECT_NAME}_BUILD_DOC)
+    option(${PROJECT_NAME}_BUILD_DOC "Build documentation")
+endif()
+
 if (${PROJECT_NAME}_BUILD_DOC) 
     # check if Doxygen is installed
     find_package(Doxygen)
@@ -15,7 +18,7 @@ if (${PROJECT_NAME}_BUILD_DOC)
 
         # request to configure the file
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-        message("Doxygen build started")
+        message(STATUS "Doxygen build started")
 
         # note the option ALL which allows to build the docs together with the application
         add_custom_target( doc_doxygen ALL
@@ -24,7 +27,9 @@ if (${PROJECT_NAME}_BUILD_DOC)
             COMMENT "Generating API documentation with Doxygen"
             VERBATIM )
     else (DOXYGEN_FOUND)
-        message("Doxygen need to be installed to generate the doxygen documentation")
+        message(WARNING "Doxygen need to be installed to generate the doxygen documentation")
     endif (DOXYGEN_FOUND)
+else()
+    message(STATUS "Skip generating documentation")
 endif()
 

@@ -82,11 +82,13 @@ message(STATUS "** CPU Cores       : ${${PROJECT_NAME}_CPU_COUNT}")
 
 if(UNIX)
 	# set default cmake build type to RelWithDebInfo (None Debug Release RelWithDebInfo MinSizeRel)
-	if( NOT CMAKE_BUILD_TYPE )
-		set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
+	if(NOT CMAKE_BUILD_TYPE)
+		set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE "Build Type")
 		message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
 	endif()
 	message(STATUS "** Build type      : ${CMAKE_BUILD_TYPE}")
+	
+	# get OS info
 	find_program(LSB_RELEASE lsb_release)
 	execute_process(COMMAND ${LSB_RELEASE} -is
 		OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
@@ -96,10 +98,12 @@ if(UNIX)
 else()
 	# has no meaning on VS
 	if( NOT CMAKE_BUILD_TYPE )
-		set( CMAKE_BUILD_TYPE "Debug" )
+		set(CMAKE_BUILD_TYPE "Debug" CACHE "Build Type")
 		message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
 	endif()
-	set( LSB_RELEASE_ID_SHORT ${CMAKE_SYSTEM_NAME} )
+	
+	# no lsb_release available
+	set(LSB_RELEASE_ID_SHORT ${CMAKE_SYSTEM_NAME} )
 
 endif(UNIX)
 
