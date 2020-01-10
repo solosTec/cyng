@@ -31,6 +31,11 @@ namespace cyng
 		//	forward declaration
 		//
 		class db;
+
+		/**
+		 * The table implementation uses internally a std::unordered_map with a time complexity
+		 * between O(1) and O(n) (worst case).
+		 */
 		class table : public publisher
 		{
 			friend class db;
@@ -198,10 +203,22 @@ namespace cyng
 			/**
 			 * Return record of the first row that matches the specified criteria
 			 *
+			 * Time complexity:  O(n)
+			 *
 			 * @return the matching record. If no match was found the record is empty
 			 */
 			cyng::table::record find_first(attr_t&& attr) const;
 			cyng::table::record find_first(param_t&& param) const;
+
+			/**
+			 * Return a list of table keys with rows that matches the specified criteria.
+			 *
+			 * Time complexity:  O(n)
+			 *
+			 * @return a list of table keys with all matching attributes
+			 */
+			cyng::table::key_list_t find_all(attr_t&& attr) const;
+			cyng::table::key_list_t find_all(param_t&& param) const;
 
 			/**
 			 * Finds the smallest key in the table and returns the record
@@ -224,6 +241,8 @@ namespace cyng
 			 * increment the iterator nth times.
 			 *
 			 * If the index is greater than the tables size the record is empty.
+			 *
+			 * Time complexity:  O(1)
 			 */
 			cyng::table::record nth_record(std::size_t) const;
 
@@ -261,6 +280,11 @@ namespace cyng
 		
 	}	//	store	
 	
+	/**
+	 * Remove a list of given records
+	 */
+	std::size_t erase(store::table*, table::key_list_t const& keys, boost::uuids::uuid source);
+
 	namespace traits
 	{
 		template <>
@@ -294,13 +318,6 @@ namespace cyng
 			using type = cyng::store::table;
 		};
 	}
-
-	/**
-	 * Remove a list of given records
-	 */
-	std::size_t erase(store::table*, table::key_list_t const& keys, boost::uuids::uuid source);
-
-
 }
 
 namespace std

@@ -86,9 +86,10 @@ namespace cyng
 				template < typename TSK >
 				static continuation invoke(TSK& tsk, std::size_t slot, tuple_t const& msg)
 				{
-					//std::cout << "visit slot 0" << std::endl;
+					//
+					//	This error indicates that slot may have been addressed that does not exist at all.
+					//
 					BOOST_ASSERT_MSG(slot == 0, "slot error");
-					//std::cout << "MATCH " << slot << std::endl;
 					typename converter_t::return_type tpl = converter_t::copy(msg.begin(), msg.end());
 					functor<TSK> f(tsk);
 					return meta::apply(f, tpl);

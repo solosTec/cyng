@@ -11,6 +11,7 @@ set (table_cpp
 )
     
 set (table_h
+    src/main/include/cyng/table/table_fwd.h
     src/main/include/cyng/table/meta_interface.h
     src/main/include/cyng/table/meta.hpp
     src/main/include/cyng/table/key.hpp

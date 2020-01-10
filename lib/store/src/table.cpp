@@ -422,6 +422,56 @@ namespace cyng
 			return result;
 		}
 
+		cyng::table::key_list_t table::find_all(attr_t&& attr) const
+		{
+			//	empty list
+			cyng::table::key_list_t result;
+
+			//
+			//	check range
+			//
+			if (meta_->size() < attr.first)	return result;
+
+			//
+			//	search first matching record
+			//
+			loop([&](cyng::table::record const& rec)->bool {
+
+				if (rec[attr.first] == attr.second)
+				{
+					result.push_back(rec.key());
+				}
+				return true;
+			});
+
+			return result;
+		}
+
+		cyng::table::key_list_t table::find_all(param_t&& param) const
+		{
+			//	empty list
+			cyng::table::key_list_t result;
+
+			//
+			//	check column name
+			//
+			auto const check = meta_->get_record_index(param.first);
+			if (!check.second)	return result;	//	param has no valid column name
+
+			//
+			//	search first matching record
+			//
+			loop([&](cyng::table::record const& rec)->bool {
+
+				if (rec[param.first] == param.second)
+				{
+					result.push_back(rec.key());
+				}
+				return true;
+			});
+			return result;
+		}
+
 		cyng::table::record table::min_record() const
 		{
 			auto pos = std::min_element(data_.begin(), data_.end(), [](table_type::value_type const& lhs, table_type::value_type const& rhs) {
