@@ -48,6 +48,7 @@ namespace cyng
 
 		protected:
 			bool do_skip(std::string) const;
+			std::string get_full_col_name(column const& col) const;
 
 		protected:
 			/**
@@ -135,6 +136,12 @@ namespace cyng
 				stream_ << ' ';
 				return sql_where(meta_, dialect_, stream_);
 			}
+
+			/**
+			 * WHERE clause as primary key
+			 */
+			sql_where by_key();
+
 		};
 		
 		/**
@@ -157,15 +164,18 @@ namespace cyng
  				return sql_from(meta_, dialect_, stream_);
 			}
 			
+			/**
+			 * Select all columns in same order as defined.
+			 */
 			sql_from all();
-
 
 			//
 			//	aggregate functions
 			//
- 			void count(std::size_t);
- 			void sum(std::size_t);
- 			void avg(std::size_t);
+			sql_from count();	//!< count(*)
+			sql_from count(std::size_t);
+			sql_from sum(std::size_t);
+			sql_from avg(std::size_t);
 			
 			/**
 			 * inner join of two tables over all columns.

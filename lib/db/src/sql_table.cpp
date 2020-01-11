@@ -106,7 +106,7 @@ namespace cyng
 			std::uint64_t generation{ 0 };
 			meta->loop([meta, result, &key, &data, &generation](cyng::table::column&& col) {
 
-				const auto obj = result->get(boost::numeric_cast<int>(col.pos_ + 1), col.type_, col.width_);
+				auto const obj = result->get(boost::numeric_cast<int>(col.pos_ + 1), col.type_, col.width_);
 				if (!obj)
 				{
 					std::cerr
@@ -141,7 +141,6 @@ namespace cyng
 				}
 			});
 
-			//return table::record(meta, key, data, generation);
 			return table::record(meta->derive_cache_table(), key, data, generation);
 		}
 

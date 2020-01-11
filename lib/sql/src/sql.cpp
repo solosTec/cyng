@@ -35,6 +35,14 @@ namespace cyng
 			return (SQLITE == dialect_) && boost::algorithm::equals(name, "ROWID");
 		}
 
+		std::string base::get_full_col_name(column const& col) const
+		{
+			return (!has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT))
+				? ("datetime(" + meta_->get_name() + "." + col.name_ + ")")
+				: (meta_->get_name() + "." + col.name_)
+				;
+		}
+
 		command::command(meta_table_ptr m, dialect dia)
 		: meta_(m)
 		, dialect_(dia)
@@ -79,18 +87,6 @@ namespace cyng
 			return sql_insert(meta_, dialect_, stream_);
 		}
 		
-// 		sql_update command::update()
-// 		{
-// 			clear("UPDATE");
-// 			
-// 			stream_
-// 			<< meta_->get_name()
-// 			<< " SET "
-// 			;
-// 			
-// 			return sql_update(meta_, dialect_, stream_);
-// 		}
-
 		std::string command::to_str() const
 		{
 			return stream_.str();
@@ -126,52 +122,49 @@ namespace cyng
 					stream_ << ", ";
 				}
 
-				if (!has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT))
-				{
-					stream_
-						<< "datetime("
-						<< col.name_
-						<< ")"
-						;
-
-				}
-				else
-				{
-					stream_
-						<< col.name_
-						;
-				}
+				stream_ << get_full_col_name(col);
 			});
 
 			stream_ << ' ';
 			return sql_from(meta_, dialect_, stream_);
 		}
 
-		void sql_select::count(std::size_t col)
+		sql_from sql_select::count()
+		{
+			stream_
+				<< "COUNT (*) ";
+			;
+			return sql_from(meta_, dialect_, stream_);
+		}
+
+		sql_from sql_select::count(std::size_t col)
 		{
 			stream_	
 				<< "COUNT ("
 				<< meta_->get_name(col - 1)
-				<< ")";
+				<< ") ";
 				;
+			return sql_from(meta_, dialect_, stream_);
 		}
 
-		void sql_select::sum(std::size_t col)
+		sql_from sql_select::sum(std::size_t col)
 		{
 			stream_
 				<< "SUM ("
 				<< meta_->get_name(col - 1)
 				<< ")";
 			;
+			return sql_from(meta_, dialect_, stream_);
 		}
 
-		void sql_select::avg(std::size_t col)
+		sql_from sql_select::avg(std::size_t col)
 		{
 			stream_
 				<< "AVG ("
 				<< meta_->get_name(col - 1)
 				<< ")";
 			;
+			return sql_from(meta_, dialect_, stream_);
 		}
 
 		sql_from sql_select::inner_join_all_on_pk(meta_table_ptr join)
@@ -216,25 +209,7 @@ namespace cyng
 					stream_ << ", ";
 				}
 
-				if (!has_feature(dialect_, DATE_TIME_SUPPORT) && (meta->get_type(col.pos_) == TC_TIME_POINT))
-				{
-					stream_
-						<< "datetime("
-						<< meta->get_name()
-						<< '.'
-						<< col.name_
-						<< ")"
-						;
-
-				}
-				else
-				{
-					stream_
-						<< meta->get_name()
-						<< '.'
-						<< col.name_
-						;
-				}
+				stream_ << get_full_col_name(col);
 			});
 		}
 
@@ -278,9 +253,40 @@ namespace cyng
 				<< "FROM "
 				<< m->get_name()
 				<< ' '
-				;
-			
+				;			
 		}
+
+		sql_where sql_from::by_key()
+		{
+			stream_
+				<< "WHERE "
+				;
+
+			bool init_flag = false;
+			meta_->loop([this, &init_flag](column&& col) {
+
+				if (col.pk_)
+				{
+					if (!init_flag)
+					{
+						init_flag = true;
+					}
+					else
+					{
+						stream_ << " AND ";
+					}
+
+					stream_
+						<< col.name_
+						<< " = ?"
+						;
+				}
+			});
+
+			return sql_where(meta_, dialect_, stream_);
+
+		}
+
 
 		sql_order::sql_order(meta_table_ptr m, dialect dia, std::ostream& os)
 			: base(m, dia, os)
