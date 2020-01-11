@@ -39,37 +39,58 @@ namespace cyng
 		/**
 		 * @return gregorian year
 		 */
-		int year(std::tm const& t);
-		
+		constexpr int year(std::tm const& t)
+		{
+			return t.tm_year + 1900;
+		}
+
 		/**
 		 * @return gregorian month
 		 */
-		int month(std::tm const& t);
-		
+		constexpr int month(std::tm const& t)
+		{
+			return t.tm_mon + 1;
+		}
+
 		/**
 		 * @return day of month
 		 */
-		int day(std::tm const& t);
+		constexpr int day(std::tm const& t)
+		{
+			return t.tm_mday;
+		}
 
 		/**
 		 * @return day of year
 		 */
-		int day_of_year(std::tm const& t);
-		
+		constexpr int day_of_year(std::tm const& t)
+		{
+			return t.tm_yday;
+		}
+
 		/**
 		 * @return hour of day
 		 */
-		int hour(std::tm const& t);
+		constexpr int hour(std::tm const& t)
+		{
+			return t.tm_hour;
+		}
 
 		/**
 		 * @return minute of hour
 		 */
-		int minute(std::tm const& t);
+		constexpr int minute(std::tm const& t)
+		{
+			return t.tm_min;
+		}
 
 		/**
 		 * @return second of minute
 		 */
-		int second(std::tm const& t);
+		constexpr int second(std::tm const& t)
+		{
+			return t.tm_sec;
+		}
 
 		/**
 		 *	@return seconds since midnight
@@ -149,7 +170,7 @@ namespace cyng
 		 * Note that the result can be the month after next. e.g. Adding one month to october 31st has
 		 * no corresponding counterpart. So the result is december 1st.
 		 *
-		 * Current implementation of std::chrono lacks full callendar support. There are libraries like
+		 * Current implementation of std::chrono lacks full calendar support. There are libraries like
 		 * https://howardhinnant.github.io/date/date.html that will be integrated in the near future.
 		 * But for current purposes this approach should be sufficient.
 		 */
@@ -164,6 +185,21 @@ namespace cyng
 		 * @return true if both time stamps from the same day.
 		 */
 		bool same_day(std::chrono::system_clock::time_point, std::chrono::system_clock::time_point);
+
+		/**
+		 * @return minutes since Unix epoch (00:00:00 UTC on 1 January 1970)
+		 */
+		std::uint64_t minutes_since_epoch(std::chrono::system_clock::time_point);
+
+		/**
+		 * @return hours since Unix epoch (00:00:00 UTC on 1 January 1970)
+		 */
+		std::uint64_t hours_since_epoch(std::chrono::system_clock::time_point);
+
+		/**
+		 * @return days since Unix epoch (00:00:00 UTC on 1 January 1970)
+		 */
+		std::uint64_t days_since_epoch(std::chrono::system_clock::time_point);
 	}
 }
 

@@ -20,41 +20,6 @@ namespace cyng
 {
 	namespace chrono 
 	{		
-		int year(std::tm const& t)
-		{
-			return t.tm_year + 1900;
-		}
-		
-		int month(std::tm const& t)
-		{
-			return t.tm_mon + 1;
-		}
-		
-		int day(std::tm const& t)
-		{
-			return t.tm_mday;
-		}
-		
-		int day_of_year(std::tm const& t)
-		{
-			return t.tm_yday;
-		}
-
-		int hour(std::tm const& t)
-		{
-			return t.tm_hour;
-		}
-
-		int minute(std::tm const& t)
-		{
-			return t.tm_min;
-		}
-
-		int second(std::tm const& t)
-		{
-			return t.tm_sec;
-		}
-
 		int time_of_day(std::tm const& t)	{
 			
 			BOOST_ASSERT_MSG(t.tm_mon > 0 && t.tm_mon < 13, "month is out of range");
@@ -322,6 +287,20 @@ namespace cyng
 			return (year(tm1) == year(tm2)) && (day_of_year(tm1) == day_of_year(tm2));
 		}
 
+		std::uint64_t minutes_since_epoch(std::chrono::system_clock::time_point tp)
+		{
+			return std::chrono::duration_cast<std::chrono::minutes>(tp.time_since_epoch()).count();
+		}
+
+		std::uint64_t hours_since_epoch(std::chrono::system_clock::time_point tp)
+		{
+			return std::chrono::duration_cast<std::chrono::hours>(tp.time_since_epoch()).count();
+		}
+
+		std::uint64_t days_since_epoch(std::chrono::system_clock::time_point tp)
+		{
+			return std::chrono::duration_cast<days>(tp.time_since_epoch()).count();
+		}
 	}
 }
 
