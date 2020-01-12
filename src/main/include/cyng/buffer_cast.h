@@ -9,6 +9,7 @@
 
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/object.h>
+#include <algorithm>
 
 namespace cyng 
 {

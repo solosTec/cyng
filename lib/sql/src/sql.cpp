@@ -106,6 +106,12 @@ namespace cyng
 			: base(m, dia, os)
 		{}
 
+#if __cplusplus < 201703L 
+		sql_select::sql_select(sql_select&& other)
+			: base(other.meta_, other.dialect_, other.stream_)
+		{}
+#endif
+		
 		sql_from sql_select::all()
 		{
 			//
@@ -256,6 +262,12 @@ namespace cyng
 				;			
 		}
 
+#if __cplusplus < 201703L
+		sql_from::sql_from(sql_from&& other)
+			: base(other.meta_, other.dialect_, other.stream_)
+		{}
+#endif
+		
 		sql_where sql_from::by_key()
 		{
 			stream_
@@ -292,6 +304,12 @@ namespace cyng
 			: base(m, dia, os)
 		{}
 
+#if __cplusplus < 201703L
+		sql_order::sql_order(sql_order&& other)
+			: base(other.meta_, other.dialect_, other.stream_)
+		{}
+#endif
+		
 		sql_group::sql_group(meta_table_ptr m, dialect dia, std::ostream& os)
 			: base(m, dia, os)
 		{}
@@ -369,6 +387,13 @@ namespace cyng
 			;
 			
 		}
+		
+#if __cplusplus < 201703L
+		sql_create::sql_create(sql_create&& other)
+			: base(other.meta_, other.dialect_, other.stream_)
+		{}
+#endif
+		
 		
 		bool sql_create::has_pk() const
 		{

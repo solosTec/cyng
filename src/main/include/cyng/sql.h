@@ -75,6 +75,13 @@ namespace cyng
 		public:
 			sql_create(meta_table_ptr, dialect, std::ostream&);
 			
+			/*
+			 * satisfy gcc < 5.5
+			 */
+#if __cplusplus < 201703L			
+			sql_create(sql_create&&);
+#endif
+			
 		private:
 			void write_columns();
 			void write_pks();
@@ -88,6 +95,11 @@ namespace cyng
 		{
 		public:
 			sql_order(meta_table_ptr, dialect, std::ostream&);
+			
+#if __cplusplus < 201703L
+			sql_order(sql_order&&);
+#endif
+			
 		};
 
 		/**
@@ -108,6 +120,13 @@ namespace cyng
 		public:
 			sql_where(meta_table_ptr, dialect, std::ostream&);
 			
+			/*
+			 * satisfy gcc < 5.5
+			 */
+#if __cplusplus < 201703L
+			sql_where(sql_where&&);
+#endif
+			
 			template < typename EXPR >
 			sql_group group_by(EXPR const& expr)
 			{
@@ -125,6 +144,13 @@ namespace cyng
 		{
 		public:
 			sql_from(meta_table_ptr, dialect, std::ostream&);
+			
+			/*
+			 * satisfy gcc < 5.5
+			 */
+#if __cplusplus < 201703L
+			sql_from(sql_from&&);
+#endif
 			
 			template < typename EXPR >
 			sql_where where(EXPR const& expr)
@@ -151,7 +177,14 @@ namespace cyng
 		{
 		public:
 			sql_select(meta_table_ptr, dialect, std::ostream&);
-
+			
+			/*
+			 * satisfy gcc < 5.5
+			 */
+#if __cplusplus < 201703L 
+			sql_select(sql_select&&);
+#endif
+			
 			/**
 			 * use expression templates to build 
 			 * an SQL expression.
@@ -196,6 +229,13 @@ namespace cyng
 		public:
 			sql_insert(meta_table_ptr, dialect, std::ostream&);
 			
+			/*
+			 * satisfy gcc < 5.5
+			 */
+#if __cplusplus < 201703L
+			sql_insert(sql_insert&&);
+#endif
+			
 		private:
 			void write_columns();
  			void write_placholders();
@@ -229,6 +269,13 @@ namespace cyng
 		{
 		public:
 			sql_remove(meta_table_ptr, dialect, std::ostream&);
+			
+			/*
+			 * satisfy gcc < 5.5
+			 */
+#if __cplusplus < 201703L
+			sql_remove(sql_remove&&);
+#endif
 			
 			template < typename EXPR >
 			sql_where where(EXPR const& expr)
