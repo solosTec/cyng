@@ -107,12 +107,12 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2)
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2
-tar xjvf boost_1_71_0.tar.bz2
-cd boost_1_71_0
+wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2
+tar xjvf boost_1_72_0.tar.bz2
+cd boost_1_72_0
 ```
 
 (2) bootstrap
