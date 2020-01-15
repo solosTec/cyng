@@ -14,9 +14,19 @@ namespace cyng
 		placeholder::placeholder()
 		{}
 		
-		void placeholder::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
+		void placeholder::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool is_tp) const
 		{
-			os << *this;
+			//	detect special datetime types to use with "julianday()"
+			if (is_tp) {
+				os
+					<< "julianday("
+					<< *this
+					<< ")"
+					;
+			}
+			else {
+				os << *this;
+			}
 		}
 
 		std::ostream& operator<<(std::ostream& os, placeholder const&)

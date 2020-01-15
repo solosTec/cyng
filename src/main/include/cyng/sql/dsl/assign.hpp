@@ -39,9 +39,9 @@ namespace cyng
 
 			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 			{
-				col_.serialize(os, tbl, dia, true);
+				auto const is_tp = col_.serialize(os, tbl, dia, true);
 				os << " = ";
-				val_.serialize(os, tbl, dia, false);
+				val_.serialize(os, tbl, dia, is_tp);
 			}
 			
 			const column col_;

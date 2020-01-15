@@ -19,7 +19,7 @@ namespace cyng
 		: v_(v)
 		{}
 			
-		void variable < std::string >::serialize(std::ostream& os, meta_table_ptr, dialect dia, bool lhe) const
+		void variable < std::string >::serialize(std::ostream& os, meta_table_ptr, dialect dia, bool is_tp) const
 		{
 			os << '\'' << v_ << '\'';
 		}

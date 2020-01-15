@@ -27,8 +27,9 @@ namespace cyng
 
 			/**
 			 * @param lhe don't apply conversion rules on left hand expressions
+			 * @return true if value requires special time point treatment
 			 */
-			void serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
+			bool serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const;
 			
 			std::size_t const index_;
 			std::string const name_;

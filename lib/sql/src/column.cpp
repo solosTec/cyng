@@ -28,12 +28,13 @@ namespace cyng
 			BOOST_ASSERT_MSG(!name_.empty(), "no column name");
 		}
 
-		void column::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
+		bool column::serialize(std::ostream& os, meta_table_ptr tbl, dialect dia, bool lhe) const
 		{
+			bool is_tp{ false };
 			if (is_index_) 
 			{
-				const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
-				if (b && !lhe)
+				is_tp = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(index_ - 1) == TC_TIME_POINT);
+				if (is_tp && !lhe)
 				{
 					os << "datetime(";
 				}
@@ -52,26 +53,27 @@ namespace cyng
 						;
 				}
 
-				if (b && !lhe)
+				if (is_tp && !lhe)
 				{
 					os << ")";
 				}
 			}
 			else 
 			{
-				const bool b = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(name_) == TC_TIME_POINT);
-				if (b && !lhe)
+				is_tp = !has_feature(dia, DATE_TIME_SUPPORT) && (tbl->get_type(name_) == TC_TIME_POINT);
+				if (is_tp && !lhe)
 				{
 					os << "datetime(";
 				}
 
 				os << name_;
 
-				if (b && !lhe)
+				if (is_tp && !lhe)
 				{
 					os << ")";
 				}
 			}
+			return is_tp;
 		}
 
 		column make_column(std::size_t index)
