@@ -176,9 +176,9 @@ See [issues/258](https://github.com/boostorg/boost/issues/258#issuecomment-47015
 (1) download and extract latest [OpenSSL library](http://www.openssl.org/source/openssl-1.1.1.tar.gz)
 
 ```
-wget http://www.openssl.org/source/openssl-1.1.1.tar.gz
-tar -xvzf openssl-1.1.1.tar.gz
-cd openssl-1.1.1
+wget http://www.openssl.org/source/openssl-1.1.1d.tar.gz
+tar -xvzf openssl-1.1.1d.tar.gz
+cd openssl-1.1.1d
 ```
 
 
