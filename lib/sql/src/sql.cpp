@@ -141,6 +141,11 @@ namespace cyng
 			return meta_;
 		}
 
+		bool command::is_tp(column const& col) const
+		{
+			return !has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT);
+		}
+
 		std::string command::get_placeholder(column const& col) const
 		{
 			return (is_tp(col))
