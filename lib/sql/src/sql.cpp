@@ -35,9 +35,22 @@ namespace cyng
 			return (SQLITE == dialect_) && boost::algorithm::equals(name, "ROWID");
 		}
 
+		bool base::is_tp(column const& col) const
+		{
+			return !has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT);
+		}
+
+		std::string base::get_placeholder(column const& col) const
+		{
+			return (is_tp(col))
+				? "julianday(?)"
+				: "?"
+				;
+		}
+
 		std::string base::get_full_col_name(column const& col) const
 		{
-			return (!has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT))
+			return (is_tp(col))
 				? ("datetime(" + meta_->get_name() + "." + col.name_ + ")")
 				: (meta_->get_name() + "." + col.name_)
 				;
@@ -87,6 +100,32 @@ namespace cyng
 			return sql_insert(meta_, dialect_, stream_);
 		}
 		
+		sql_update command::update()
+		{
+			clear("UPDATE");
+
+			stream_
+				<< meta_->get_name()
+				<< " SET "
+				;
+
+			meta_->loop([&](column&& col) {
+
+				if (!col.pk_)
+				{
+					stream_
+						<< col.name_
+						<< " = "
+						<< get_placeholder(col)
+						;
+				}
+			});
+
+			stream_ << ' ';
+
+			return sql_update(meta_, dialect_, stream_);
+		}
+
 		std::string command::to_str() const
 		{
 			return stream_.str();
@@ -100,6 +139,14 @@ namespace cyng
 		meta_table_ptr command::get_meta() const
 		{
 			return meta_;
+		}
+
+		std::string command::get_placeholder(column const& col) const
+		{
+			return (is_tp(col))
+				? "julianday(?)"
+				: "?"
+				;
 		}
 
 		sql_select::sql_select(meta_table_ptr m, dialect dia, std::ostream& os)
@@ -564,18 +611,7 @@ namespace cyng
 						stream_ << ", ";
 					}
 
-					if (!has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT))
-					{
-						stream_
-							<< "julianday(?)"
-							;
-					}
-					else
-					{
-						stream_
-							<< '?'
-							;
-					}
+					stream_ << get_placeholder(col);
 				}
 			});
 		}

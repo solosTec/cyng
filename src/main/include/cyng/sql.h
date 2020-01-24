@@ -48,6 +48,14 @@ namespace cyng
 
 		protected:
 			bool do_skip(std::string) const;
+
+			/**
+			 * @return true if column is of type time point and
+			 * database lacks support for this data type (SQLite).
+			 */
+			bool is_tp(column const& col) const;
+
+			std::string get_placeholder(column const& col) const;
 			std::string get_full_col_name(column const& col) const;
 
 		protected:
@@ -259,6 +267,9 @@ namespace cyng
 				return sql_where(meta_, dialect_, stream_);
 			}
 
+			/**
+			 * Constructs a WHERE clause for the key element(s) of the table.
+			 */
 			sql_where by_key();
 		};
 
@@ -297,7 +308,7 @@ namespace cyng
 		/**
 		 * Generate SQL commands for a single table.
 		 */
-		class command 
+		class command
 		{
 		public:
 			command(meta_table_ptr, dialect);
@@ -308,22 +319,22 @@ namespace cyng
 			sql_select select();
 			
 			/**
-			 * Assemble the SQL create statement for this table.
+			 * Constructs an SQL CREATE statement for this table.
 			 */
 			sql_create create();
 			
 			/**
-			 * Assemble the SQL delete statement for this table.
+			 * Constructs an SQL DELETE statement for this table.
 			 */
 			sql_remove remove();
 
 			/**
-			 * Assemble the SQL insert statement for this table.
+			 * Constructs an SQL INSERT statement for this table.
 			 */
 			sql_insert insert();
 
 			/**
-			 * Assemble the SQL update statement for this table.
+			 * Constructs an SQL UPDATE statement for this table.
 			 */
 			template < typename LIST >
 			sql_update update(LIST const& list)
@@ -342,7 +353,13 @@ namespace cyng
 			}
 
 			/**
-			 * @return assembled SQL command 
+			 * Constructs an SQL UPDATE for all data columns
+			 * of the table.
+			 */
+			sql_update update();
+
+			/**
+			 * @return constructed SQL command 
 			 */
 			std::string to_str() const;
 
@@ -358,6 +375,14 @@ namespace cyng
 			void clear();
 			void clear(std::string const&);
 			
+			/**
+			 * @return true if column is of type time point and
+			 * database lacks support for this data type (SQLite).
+			 */
+			bool is_tp(column const& col) const;
+
+			std::string get_placeholder(column const& col) const;
+
 		private:
 			/**
 			 * Provide table description 

@@ -32,6 +32,7 @@ namespace cyng
 	template < typename... Args >
 	param_t param_factory(std::string const& name, Args&&... args)
 	{
+		BOOST_ASSERT_MSG(!name.empty(), "parameter without a name");
 		return param_t(name, make_object(std::forward<Args>(args)...));
 	}
 	
@@ -50,6 +51,7 @@ namespace cyng
 	template < typename... Args >
 	object set_factory(std::string const& name, Args&&... args)
 	{
+		BOOST_ASSERT_MSG(!name.empty(), "parameter without a name");
 		return make_object(param_factory(name, std::forward<Args>(args)...));
 	}
 		
@@ -59,7 +61,6 @@ namespace cyng
 	template <typename T>
 	object make_object(std::pair<std::size_t, T>&& v)
 	{
-//  		std::cout << "attr factory\n";
 		return factory<attr_t>::create_object(attr_t(v.first, make_object<T>(std::forward<T>(v.second))));
 	}
 	
@@ -69,14 +70,14 @@ namespace cyng
 	template <typename T>
 	object make_object(std::pair<std::string, T>&& v)
 	{
-//  		std::cout << "param factory\n";
+		BOOST_ASSERT_MSG(!v.first.empty(), "parameter without a name");
 		return factory<param_t>::create_object(param_t(v.first, make_object<T>(std::forward<T>(v.second))));
 	}
 	
 	template <typename T>
  	object make_object(std::pair<const char*, T>&& v)
 	{
- 		std::cout << "param factory - C\n";
+		BOOST_ASSERT_MSG(v.first != nullptr, "parameter without a name");
 		return factory<param_t>::create_object(param_t(v.first, make_object<T>(std::forward<T>(v.second))));
 	}
 	
@@ -118,8 +119,6 @@ namespace cyng
 
 			static void append(iterator_t bi, std::tuple<Args...> const& inp)
 			{
-//  				std::cout << '[' << IDX << ']' << std::get< IDX >(inp) << std::endl;
-				
 				//
 				//	append next element
 				//
@@ -140,7 +139,6 @@ namespace cyng
 
 			static void append(iterator_t bi, std::tuple<Args...> const& inp)
 			{
-//  				std::cout << '[' << 0 << ']' << std::get< 0 >(inp) << std::endl;
 				bi = make_object(std::get< 0 >(inp));
 			}
 		};
@@ -254,12 +252,14 @@ namespace cyng
 		param_map_factory(std::string const& key, T&& v)
 			: map_()
 		{
+			BOOST_ASSERT_MSG(!key.empty(), "parameter without a name");
 			map_.emplace(key, make_object(v));
 		}
 
 		template < typename T >
 		param_map_factory operator()(std::string const& key, T&& v)
 		{
+			BOOST_ASSERT_MSG(!key.empty(), "parameter without a name");
 			map_.emplace(key, make_object(v));
 			return *this;
 		}
