@@ -650,7 +650,7 @@ if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
         endif()
     else()
         message(STATUS "** link unit-test        : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
-        list(APPEND unittest_link_libs ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+        list(APPEND unittest_link_libs ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} odbc32)
     #	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
     endif()
 

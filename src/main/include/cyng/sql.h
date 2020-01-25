@@ -36,8 +36,6 @@ namespace cyng
 		class base
 		{
 		public:
-			base(meta_table_ptr, dialect, std::ostream&);
-			base(base&) = default;
 
 			/**
 			 * return true if meta data available 
@@ -46,7 +44,24 @@ namespace cyng
 
 			meta_table_ptr get_meta() const;
 
+			/**
+			 * @return constructed SQL command
+			 */
+			std::string to_str() const;
+
+			/** @brief same as to_str()
+			 * 
+			 * @return constructed SQL command
+			 */
+			std::string operator()() const;
+
 		protected:
+			/**
+			 * Don't create instances of this class
+			 */
+			base(meta_table_ptr, dialect, std::stringstream&&);
+			base(base&&) = default;
+
 			bool do_skip(std::string) const;
 
 			/**
@@ -72,7 +87,7 @@ namespace cyng
 			/**
 			 * contains the SQL statement
 			 */
-			std::ostream& stream_;
+			std::stringstream stream_;
 		};
 
 		/**
@@ -80,16 +95,17 @@ namespace cyng
 		 */
 		class sql_create : public base
 		{
+			friend class command;
+			sql_create(meta_table_ptr, dialect, std::stringstream&&);
+
 		public:
-			sql_create(meta_table_ptr, dialect, std::ostream&);
-			
 			/*
 			 * satisfy gcc < 5.5
 			 */
 #if __cplusplus < 201703L			
 			sql_create(sql_create&&);
 #endif
-			
+
 		private:
 			void write_columns();
 			void write_pks();
@@ -101,8 +117,11 @@ namespace cyng
 		 */
 		class sql_order : public base
 		{
+			friend class sql_group;
+			friend class sql_where;
+			sql_order(meta_table_ptr, dialect, std::stringstream&&);
+
 		public:
-			sql_order(meta_table_ptr, dialect, std::ostream&);
 			
 #if __cplusplus < 201703L
 			sql_order(sql_order&&);
@@ -115,8 +134,10 @@ namespace cyng
 		 */
 		class sql_group : public base
 		{
+			friend class sql_where;
+			sql_group(meta_table_ptr, dialect, std::stringstream&&);
+
 		public:
-			sql_group(meta_table_ptr, dialect, std::ostream&);
 			sql_order order_by(std::string const& term);
 		};
 
@@ -125,16 +146,19 @@ namespace cyng
 		 */
 		class sql_where : public base
 		{
-		public:
-			sql_where(meta_table_ptr, dialect, std::ostream&);
-			
+			friend class sql_from;
+			friend class sql_update;
+			friend class sql_remove;
+			sql_where(meta_table_ptr, dialect, std::stringstream&&);
+
 			/*
 			 * satisfy gcc < 5.5
 			 */
 #if __cplusplus < 201703L
 			sql_where(sql_where&&);
 #endif
-			
+
+		public:		
 			template < typename EXPR >
 			sql_group group_by(EXPR const& expr)
 			{
@@ -142,7 +166,7 @@ namespace cyng
 					<< "GROUP BY "
 					;
 				expr.serialize(stream_, meta_, dialect_, false);
-				return sql_group(meta_, dialect_, stream_);
+				return sql_group(meta_, dialect_, std::move(stream_));
 			}
 
 			sql_order order_by(std::string const& term);
@@ -150,16 +174,17 @@ namespace cyng
 
 		class sql_from : public base
 		{
-		public:
-			sql_from(meta_table_ptr, dialect, std::ostream&);
-			
+			friend class sql_select;
+			sql_from(meta_table_ptr, dialect, std::stringstream&&);
+
 			/*
 			 * satisfy gcc < 5.5
 			 */
 #if __cplusplus < 201703L
 			sql_from(sql_from&&);
 #endif
-			
+
+		public:			
 			template < typename EXPR >
 			sql_where where(EXPR const& expr)
 			{
@@ -168,7 +193,7 @@ namespace cyng
 				;
 				expr.serialize(stream_, meta_, dialect_, true);
 				stream_ << ' ';
-				return sql_where(meta_, dialect_, stream_);
+				return sql_where(meta_, dialect_, std::move(stream_));
 			}
 
 			/**
@@ -184,7 +209,7 @@ namespace cyng
 		class sql_select : public base
 		{
 		public:
-			sql_select(meta_table_ptr, dialect, std::ostream&);
+			sql_select(meta_table_ptr, dialect, std::stringstream&&);
 			
 			/*
 			 * satisfy gcc < 5.5
@@ -202,7 +227,7 @@ namespace cyng
 			{
  				list.serialize(stream_, meta_, dialect_, false);
 				stream_ << ' ';
- 				return sql_from(meta_, dialect_, stream_);
+ 				return sql_from(meta_, dialect_, std::move(stream_));
 			}
 			
 			/**
@@ -235,7 +260,7 @@ namespace cyng
 		class sql_insert : public base
 		{
 		public:
-			sql_insert(meta_table_ptr, dialect, std::ostream&);
+			sql_insert(meta_table_ptr, dialect, std::stringstream&&);
 			
 			/*
 			 * satisfy gcc < 5.5
@@ -255,7 +280,7 @@ namespace cyng
 		class sql_update : public base
 		{
 		public:
-			sql_update(meta_table_ptr, dialect, std::ostream&);
+			sql_update(meta_table_ptr, dialect, std::stringstream&&);
 			
 			template < typename EXPR >
 			sql_where where(EXPR const& expr)
@@ -264,7 +289,7 @@ namespace cyng
 				<< "WHERE "
 				;
 				expr.serialize(stream_, meta_, dialect_, false);
-				return sql_where(meta_, dialect_, stream_);
+				return sql_where(meta_, dialect_, std::move(stream_));
 			}
 
 			/**
@@ -279,7 +304,7 @@ namespace cyng
 		class sql_remove : public base
 		{
 		public:
-			sql_remove(meta_table_ptr, dialect, std::ostream&);
+			sql_remove(meta_table_ptr, dialect, std::stringstream&&);
 			
 			/*
 			 * satisfy gcc < 5.5
@@ -295,7 +320,7 @@ namespace cyng
 					<< "WHERE "
 					;
 				expr.serialize(stream_, meta_, dialect_, false);
-				return sql_where(meta_, dialect_, stream_);
+				return sql_where(meta_, dialect_, std::move(stream_));
 			}
 
 			/**
@@ -308,7 +333,7 @@ namespace cyng
 		/**
 		 * Generate SQL commands for a single table.
 		 */
-		class command
+		class command : public base
 		{
 		public:
 			command(meta_table_ptr, dialect);
@@ -349,7 +374,7 @@ namespace cyng
  				list.serialize(stream_, meta_, dialect_, false);
 				stream_ << ' ';
 				
- 				return sql_update(meta_, dialect_, stream_);
+ 				return sql_update(meta_, dialect_, std::move(stream_));
 			}
 
 			/**
@@ -357,48 +382,11 @@ namespace cyng
 			 * of the table.
 			 */
 			sql_update update();
-
-			/**
-			 * @return constructed SQL command 
-			 */
-			std::string to_str() const;
-
-			/**
-			 * return true if meta data available
-			 */
-			bool is_valid() const;
-
-			meta_table_ptr get_meta() const;
-
 			
 		private:
 			void clear();
 			void clear(std::string const&);
-			
-			/**
-			 * @return true if column is of type time point and
-			 * database lacks support for this data type (SQLite).
-			 */
-			bool is_tp(column const& col) const;
-
-			std::string get_placeholder(column const& col) const;
-
-		private:
-			/**
-			 * Provide table description 
-			 */
-			meta_table_ptr meta_;
-			
-			/**
-			 * target SQL type 
-			 */
-			dialect const dialect_;
-			
-			/**
-			 * contains the SQL statement 
-			 */
-			std::stringstream stream_;
-		};
+					};
 	}	
 }
 

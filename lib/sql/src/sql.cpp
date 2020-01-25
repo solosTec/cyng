@@ -12,10 +12,10 @@ namespace cyng
 {
 	namespace sql 
 	{
-		base::base(meta_table_ptr m, dialect dia, std::ostream& os)
+		base::base(meta_table_ptr m, dialect dia, std::stringstream&& os)
 			: meta_(m)
 			, dialect_(dia)
-			, stream_(os)
+			, stream_(std::move(os))
 		{
 			BOOST_ASSERT_MSG(!!meta_, "no meta data");
 		}
@@ -23,6 +23,16 @@ namespace cyng
 		bool base::is_valid() const
 		{
 			return meta_.operator bool();
+		}
+
+		std::string base::to_str() const
+		{
+			return stream_.str();
+		}
+
+		std::string base::operator()() const
+		{
+			return to_str();
 		}
 
 		meta_table_ptr base::get_meta() const
@@ -57,9 +67,7 @@ namespace cyng
 		}
 
 		command::command(meta_table_ptr m, dialect dia)
-		: meta_(m)
-		, dialect_(dia)
-		, stream_()
+			: base(m, dia, std::stringstream())
 		{}
 		
 		void command::clear()
@@ -79,25 +87,25 @@ namespace cyng
 		sql_select command::select()
 		{
 			clear("SELECT");
-			return sql_select(meta_, dialect_, stream_);
+			return sql_select(meta_, dialect_, std::move(stream_));
 		}
 		
 		sql_create command::create()
 		{
 			clear("CREATE TABLE");
-			return sql_create(meta_, dialect_, stream_);
+			return sql_create(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_remove command::remove()
 		{
 			clear("DELETE FROM");
-			return sql_remove(meta_, dialect_, stream_);
+			return sql_remove(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_insert command::insert()
 		{
 			clear("INSERT INTO");
-			return sql_insert(meta_, dialect_, stream_);
+			return sql_insert(meta_, dialect_, std::move(stream_));
 		}
 		
 		sql_update command::update()
@@ -123,44 +131,16 @@ namespace cyng
 
 			stream_ << ' ';
 
-			return sql_update(meta_, dialect_, stream_);
+			return sql_update(meta_, dialect_, std::move(stream_));
 		}
 
-		std::string command::to_str() const
-		{
-			return stream_.str();
-		}
-
-		bool command::is_valid() const
-		{
-			return meta_.operator bool();
-		}
-
-		meta_table_ptr command::get_meta() const
-		{
-			return meta_;
-		}
-
-		bool command::is_tp(column const& col) const
-		{
-			return !has_feature(dialect_, DATE_TIME_SUPPORT) && (meta_->get_type(col.pos_) == TC_TIME_POINT);
-		}
-
-		std::string command::get_placeholder(column const& col) const
-		{
-			return (is_tp(col))
-				? "julianday(?)"
-				: "?"
-				;
-		}
-
-		sql_select::sql_select(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_select::sql_select(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{}
 
 #if __cplusplus < 201703L 
 		sql_select::sql_select(sql_select&& other)
-			: base(other.meta_, other.dialect_, other.stream_)
+			: base(other.meta_, other.dialect_, std::move(other.stream_))
 		{}
 #endif
 		
@@ -184,7 +164,7 @@ namespace cyng
 			});
 
 			stream_ << ' ';
-			return sql_from(meta_, dialect_, stream_);
+			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_from sql_select::count()
@@ -192,7 +172,7 @@ namespace cyng
 			stream_
 				<< "COUNT (*) ";
 			;
-			return sql_from(meta_, dialect_, stream_);
+			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_from sql_select::count(std::size_t col)
@@ -202,7 +182,7 @@ namespace cyng
 				<< meta_->get_name(col - 1)
 				<< ") ";
 				;
-			return sql_from(meta_, dialect_, stream_);
+			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_from sql_select::sum(std::size_t col)
@@ -212,7 +192,7 @@ namespace cyng
 				<< meta_->get_name(col - 1)
 				<< ")";
 			;
-			return sql_from(meta_, dialect_, stream_);
+			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_from sql_select::avg(std::size_t col)
@@ -222,7 +202,7 @@ namespace cyng
 				<< meta_->get_name(col - 1)
 				<< ")";
 			;
-			return sql_from(meta_, dialect_, stream_);
+			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
 		sql_from sql_select::inner_join_all_on_pk(meta_table_ptr join)
@@ -254,7 +234,7 @@ namespace cyng
 			//	only one PK is supported
 			//
 			write_pk(meta_, join);
-			return sql_from(meta_, dialect_, stream_);
+			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
 		void sql_select::write_columns(meta_table_ptr meta, bool& init_flag)
@@ -301,11 +281,8 @@ namespace cyng
 
 		}
 
-
-
-
-		sql_from::sql_from(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_from::sql_from(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{
 			stream_ 
 				<< "FROM "
@@ -316,7 +293,7 @@ namespace cyng
 
 #if __cplusplus < 201703L
 		sql_from::sql_from(sql_from&& other)
-			: base(other.meta_, other.dialect_, other.stream_)
+			: base(other.meta_, other.dialect_, std::move(other.stream_))
 		{}
 #endif
 		
@@ -347,23 +324,23 @@ namespace cyng
 				}
 			});
 
-			return sql_where(meta_, dialect_, stream_);
+			return sql_where(meta_, dialect_, std::move(stream_));
 
 		}
 
 
-		sql_order::sql_order(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_order::sql_order(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{}
 
 #if __cplusplus < 201703L
 		sql_order::sql_order(sql_order&& other)
-			: base(other.meta_, other.dialect_, other.stream_)
+			: base(other.meta_, other.dialect_, std::move(other.stream_))
 		{}
 #endif
 		
-		sql_group::sql_group(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_group::sql_group(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{}
 
 		sql_order sql_group::order_by(std::string const& term)
@@ -372,11 +349,11 @@ namespace cyng
 				<< "ORDER BY "
 				<< term
 				;
-			return sql_order(meta_, dialect_, stream_);
+			return sql_order(meta_, dialect_, std::move(stream_));
 		}
 
-		sql_where::sql_where(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_where::sql_where(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{}
 
 		sql_order sql_where::order_by(std::string const& term)
@@ -385,11 +362,11 @@ namespace cyng
 				<< "ORDER BY "
 				<< term
 				;
-			return sql_order(meta_, dialect_, stream_);
+			return sql_order(meta_, dialect_, std::move(stream_));
 		}
 
-		sql_create::sql_create(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_create::sql_create(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{
 			if (has_feature(dialect_, IF_NOT_EXISTS))
 			{
@@ -442,7 +419,7 @@ namespace cyng
 		
 #if __cplusplus < 201703L
 		sql_create::sql_create(sql_create&& other)
-			: base(other.meta_, other.dialect_, other.stream_)
+			: base(other.meta_, other.dialect_, std::move(other.stream_))
 		{}
 #endif
 		
@@ -519,8 +496,8 @@ namespace cyng
 			});
 		}
 		
-		sql_remove::sql_remove(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_remove::sql_remove(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{
 			stream_
 				<< meta_->get_name()
@@ -555,11 +532,11 @@ namespace cyng
 				}
 			});
 
-			return sql_where(meta_, dialect_, stream_);
+			return sql_where(meta_, dialect_, std::move(stream_));
 		}
 
-		sql_insert::sql_insert(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_insert::sql_insert(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{
 			stream_ 
 			<< m->get_name()
@@ -621,8 +598,8 @@ namespace cyng
 			});
 		}
 		
-		sql_update::sql_update(meta_table_ptr m, dialect dia, std::ostream& os)
-			: base(m, dia, os)
+		sql_update::sql_update(meta_table_ptr m, dialect dia, std::stringstream&& os)
+			: base(m, dia, std::move(os))
 		{}
 
 		sql_where sql_update::by_key()
@@ -652,7 +629,7 @@ namespace cyng
 				}
 			});
 
-			return sql_where(meta_, dialect_, stream_);
+			return sql_where(meta_, dialect_, std::move(stream_));
 		}
 	}	
 }
