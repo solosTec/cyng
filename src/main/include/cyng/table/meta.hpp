@@ -147,6 +147,14 @@ namespace cyng
 			}
 
 			/**
+			 * @return body size (BODY_SIZE)
+			 */
+			virtual std::size_t body_size() const override
+			{
+				return BODY_SIZE;
+			}
+
+			/**
 			 * If col is out of range return value is an empty string.
 			 * 
 			 * @return the name of the specified column
@@ -159,6 +167,14 @@ namespace cyng
                     ;
 			}
 			
+			virtual std::string get_body_name(std::size_t idx) const override
+			{
+				return (idx < BODY_SIZE)
+					? this->base::col_names_[KEY_SIZE + idx]
+					: ""
+					;
+			}
+
 			/**
 			 * Could throw.
 			 * 
@@ -226,6 +242,7 @@ namespace cyng
 			
 			virtual param_t to_param(attr_t const& attr) const override
 			{
+				BOOST_ASSERT_MSG(attr.first < BODY_SIZE, "index out of range");
 				return param_t{this->base::col_names_[attr.first + KEY_SIZE], attr.second};
 			}
 

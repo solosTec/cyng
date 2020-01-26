@@ -15,8 +15,8 @@ namespace cyng
 	{
 		record::record(meta_table_ptr meta)
 		: meta_(meta)
-		, key_()
-		, data_()
+		, key_(meta_->size() - meta_->body_size())
+		, data_(meta_->body_size())
 		, generation_(0)
 		{}
 
@@ -40,7 +40,25 @@ namespace cyng
 			return *this;
 		}
 
-		
+		record& record::operator=(data_type const& data)
+		{
+			if (meta_->check_body(data)) {
+				data_ = data;
+			}
+			else {
+				data_.resize(meta_->body_size());
+			}
+			return *this;
+		}
+
+		record& record::read_data(record const& rec)
+		{
+			rec.meta_->loop_body([&](column&& col) {
+				this->set(col.name_, rec[col.name_]);
+			});
+			return *this;
+		}
+
 		bool record::empty() const
 		{
 			return !meta_->check_record(key_, data_);
@@ -64,7 +82,8 @@ namespace cyng
 		{
 			if (meta_->is_key(idx))
 			{
-				key_.at(idx) = obj;
+				BOOST_ASSERT_MSG(idx < key_.size(), "key index out of range");
+				if (idx < key_.size()) key_.at(idx) = obj;
 			}
 			else if (meta_->is_body(idx))
 			{
@@ -72,26 +91,30 @@ namespace cyng
 				//	fix the offset
 				//
 				const auto r = meta_->get_body_index(idx);
-				data_.at(r.first) = obj;
+				BOOST_ASSERT_MSG(r.first < data_.size(), "body index out of range");
+				if (r.first < data_.size())	data_.at(r.first) = obj;
 			}
 		}
 
 		/**
 		 * write access by name
 		 */
-		void record::set(std::string col, object obj)
+		bool record::set(std::string col, object obj)
 		{
 			const auto r = meta_->get_record_index(col);
 			if (r.second) {
 				set(r.first, obj);
+				return true;
 			}
+			return false;
 		}
 
 		object record::get(std::size_t idx) const
 		{
 			if (meta_->is_key(idx))
 			{
-				return key_.at(idx);
+				BOOST_ASSERT_MSG(idx < key_.size(), "key index out of range");
+				if (idx < key_.size()) return key_.at(idx);
 			}
 			else if (meta_->is_body(idx))
 			{
@@ -101,7 +124,8 @@ namespace cyng
 				const auto r = meta_->get_body_index(idx);
 				if (r.second)
 				{
-					return data_.at(r.first);
+					BOOST_ASSERT_MSG(r.first < data_.size(), "body index out of range");
+					if (r.first < data_.size())	return data_.at(r.first);
 				}
 			}
 			return make_object();
@@ -181,6 +205,34 @@ namespace cyng
 
 			return tpl;
 		}
+
+		data_type record::shrink_data(std::initializer_list<std::string> il) const
+		{
+			std::vector<std::string> all_names, dif_names;
+
+			//
+			//	get all column names of the data body
+			//
+			meta_->loop_body([&](column&& col) {
+				all_names.push_back(col.name_);
+				});
+
+			//
+			//	get the difference
+			//
+			std::set_difference(all_names.begin(), all_names.end(), il.begin(), il.end(),
+				std::inserter(dif_names, dif_names.begin()));
+
+			//
+			//	collect reduced data body
+			//
+			data_type data;
+			for (auto const& name : dif_names) {
+				data.push_back((*this)[name]);
+			}
+			return data;
+		}
+
 
 		policy to_policy(std::string str)
 		{

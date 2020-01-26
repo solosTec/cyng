@@ -40,7 +40,22 @@ namespace cyng
 			record(meta_table_ptr, key_type const&, data_type const&, std::uint64_t);
 			record(record const&) = default;
 			
+			/**
+			 * assignment operator
+			 */
 			record& operator=(record const&);
+
+			/**
+			 * Substitute data body. Meta data and key remains
+			 * unchanged.
+			 * Precondition is that parameter data has the right size.
+			 */
+			record& operator=(data_type const& data);
+
+			/**
+			 * Overwrite all matching body data from the other record.
+			 */
+			record& read_data(record const& rec);
 
 			/**
 			 * @return true is record doesn't contain valid data
@@ -67,9 +82,11 @@ namespace cyng
 			void set(std::size_t, object);
 
 			/**
-			 * write access by name
+			 * write access by name.
+			 *
+			 * @return true if specified column exists.
 			 */
-			void set(std::string, object);
+			bool set(std::string, object);
 
 			/**
 			 * @return the key of the record 
@@ -107,6 +124,14 @@ namespace cyng
 			 * all meta data.
 			 */
 			tuple_t convert_data() const;
+
+			/**
+			 * Strip record data of some columns. 
+			 * Not existing columns are ignored.
+			 * 
+			 * @param il list of column names to remove from data body.
+			 */
+			data_type shrink_data(std::initializer_list<std::string> il) const;
 
 		private:
 			object get(std::size_t idx) const;

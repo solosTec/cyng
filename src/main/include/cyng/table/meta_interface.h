@@ -71,12 +71,18 @@ namespace cyng
 			virtual std::size_t size() const = 0;
 
 			/**
+			 * @return body size (BODY_SIZE)
+			 */
+			virtual std::size_t body_size() const = 0;
+
+			/**
 			 * Could throw.
 			 * 
 			 * @return the name of the specified column
 			 */
 			virtual std::string get_name(std::size_t) const = 0;
-			
+			virtual std::string get_body_name(std::size_t) const = 0;
+
 			/**
 			 * Could throw.
 			 * 
