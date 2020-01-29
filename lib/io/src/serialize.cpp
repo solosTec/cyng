@@ -54,6 +54,15 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string cat(vector_t const& vec)
+		{
+			std::stringstream ss;
+			for (auto const& obj : vec) {
+				serialize_plain(ss, obj);
+			}
+			return ss.str();
+		}
+
 		std::string to_str(tuple_t const& tpl)
 		{
 			std::stringstream ss;

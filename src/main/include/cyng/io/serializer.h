@@ -82,6 +82,7 @@ namespace cyng
 		 * serialize a vector with tag SERIALIZE_PLAIN
 		 */
 		std::string to_str(vector_t const&);
+		std::string cat(vector_t const&);
 
 		/**
 		 * serialize a tuple with tag SERIALIZE_PLAIN
