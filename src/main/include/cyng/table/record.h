@@ -36,6 +36,9 @@ namespace cyng
 		class record 
 		{
 		public:
+			/**
+			 * This generates an non-empty record!
+			 */
 			record(meta_table_ptr);
 			record(meta_table_ptr, key_type const&, data_type const&, std::uint64_t);
 			record(record const&) = default;
@@ -142,7 +145,12 @@ namespace cyng
 			data_type	data_;
 			std::uint64_t generation_;
 		};
-		
+
+		/**
+		 * Generates an empty record
+		 */
+		record make_empty_record(meta_table_ptr);
+
 	}	//	table	
 }
 

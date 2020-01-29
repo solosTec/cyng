@@ -271,7 +271,7 @@ namespace cyng
 			//
 			//	return empty record
 			//
-			return cyng::table::record(meta);
+			return cyng::table::make_empty_record(meta);
 
 		}
 	}

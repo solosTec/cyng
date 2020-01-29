@@ -256,7 +256,7 @@ namespace cyng
 			}
 
 			//	empty result
-			return cyng::table::record(meta_);
+			return cyng::table::make_empty_record(meta_);
 		}
 		
 		cyng::table::record table::lookup_by_index(object obj) const
@@ -269,7 +269,7 @@ namespace cyng
 			}
 
 			//	empty result
-			return cyng::table::record(meta_);
+			return cyng::table::make_empty_record(meta_);
 		}
 
 		object table::lookup(cyng::table::key_type const& key, std::size_t idx) const
@@ -489,7 +489,7 @@ namespace cyng
 				const cyng::table::data_type* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
 				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
 			}
-			return cyng::table::record(meta_);
+			return cyng::table::make_empty_record(meta_);
 		}
 
 		cyng::table::record table::max_record() const
@@ -509,7 +509,7 @@ namespace cyng
 				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
 				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
 			}
-			return cyng::table::record(meta_);
+			return cyng::table::make_empty_record(meta_);
 		}
 
 		cyng::table::record table::nth_record(std::size_t idx) const
@@ -520,7 +520,7 @@ namespace cyng
 				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>(pos->second.obj_);
 				return cyng::table::record(meta_, pos->first, *ptr, pos->second.generation_);
 			}
-			return cyng::table::record(meta_);
+			return cyng::table::make_empty_record(meta_);
 		}
 
 		vector_t table::convert(bool col_names) const

@@ -13,6 +13,11 @@ namespace cyng
 {
 	namespace table 
 	{
+		record make_empty_record(meta_table_ptr meta)
+		{
+			return record(meta, key_type(), data_type(), 0);
+		}
+
 		record::record(meta_table_ptr meta)
 		: meta_(meta)
 		, key_(meta_->size() - meta_->body_size())
