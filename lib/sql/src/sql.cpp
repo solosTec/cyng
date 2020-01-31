@@ -117,10 +117,19 @@ namespace cyng
 				<< " SET "
 				;
 
+			bool init_flag = false;
 			meta_->loop([&](column&& col) {
 
 				if (!col.pk_)
 				{
+					if (!init_flag)
+					{
+						init_flag = true;
+					}
+					else
+					{
+						stream_ << ", ";
+					}
 					stream_
 						<< col.name_
 						<< " = "
@@ -129,7 +138,7 @@ namespace cyng
 				}
 			});
 
-			stream_ << ' ';
+			if (init_flag)	stream_ << ' ';
 
 			return sql_update(meta_, dialect_, std::move(stream_));
 		}

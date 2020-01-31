@@ -292,15 +292,34 @@ namespace cyng
 			return std::chrono::duration_cast<std::chrono::minutes>(tp.time_since_epoch()).count();
 		}
 
+		std::chrono::system_clock::time_point ts_since_passed_minutes(std::uint64_t minutes)
+		{
+			auto const epoch = std::chrono::time_point<std::chrono::system_clock>{};
+			return epoch + std::chrono::minutes(minutes);
+		}
+
 		std::uint64_t hours_since_epoch(std::chrono::system_clock::time_point tp)
 		{
 			return std::chrono::duration_cast<std::chrono::hours>(tp.time_since_epoch()).count();
+		}
+
+		std::chrono::system_clock::time_point ts_since_passed_hours(std::uint64_t hours)
+		{
+			auto const epoch = std::chrono::time_point<std::chrono::system_clock>{};
+			return epoch + std::chrono::hours(hours);
 		}
 
 		std::uint64_t days_since_epoch(std::chrono::system_clock::time_point tp)
 		{
 			return std::chrono::duration_cast<days>(tp.time_since_epoch()).count();
 		}
+
+		std::chrono::system_clock::time_point ts_since_passed_days(std::uint64_t days)
+		{
+			auto const epoch = std::chrono::time_point<std::chrono::system_clock>{};
+			return epoch + std::chrono::hours(days * 24);
+		}
+
 	}
 }
 

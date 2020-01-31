@@ -192,14 +192,30 @@ namespace cyng
 		std::uint64_t minutes_since_epoch(std::chrono::system_clock::time_point);
 
 		/**
+		 * @return timepoint of minutes since epoch
+		 */
+		std::chrono::system_clock::time_point ts_since_passed_minutes(std::uint64_t minutes);
+
+		/**
 		 * @return hours since Unix epoch (00:00:00 UTC on 1 January 1970)
 		 */
 		std::uint64_t hours_since_epoch(std::chrono::system_clock::time_point);
 
 		/**
+		 * @return timepoint of hours since epoch
+		 */
+		std::chrono::system_clock::time_point ts_since_passed_hours(std::uint64_t hours);
+
+		/**
 		 * @return days since Unix epoch (00:00:00 UTC on 1 January 1970)
 		 */
 		std::uint64_t days_since_epoch(std::chrono::system_clock::time_point);
+
+		/**
+		 * @return timepoint of days since epoch
+		 */
+		std::chrono::system_clock::time_point ts_since_passed_days(std::uint64_t days);
+
 	}
 }
 
