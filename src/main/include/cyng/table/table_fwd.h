@@ -20,6 +20,12 @@ namespace cyng
         using body_type = lockable;
         using key_list_t = std::list<key_type>;	//	not unique
     }
+    namespace store
+    {
+        class publisher;
+        class table;
+        class db;
+    }
 }
 
 #endif	//	CYNG_TABLE_FWD_H

@@ -27,7 +27,12 @@ namespace cyng
 		class interface_result
 		{
 		public:
-			virtual object get(int, std::size_t, std::size_t /*= SQL_NTS*/ ) = 0;
+			/**
+			 * @param index columns index (starts with 1)
+			 * @param code CYNG data type that is expected
+			 * @param size columns size (relevant for some databases)
+			 */
+			virtual object get(int index, std::size_t code, std::size_t size) = 0;
 			virtual std::size_t column_count() = 0;
 		};
 		

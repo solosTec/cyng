@@ -197,7 +197,8 @@ namespace cyng
 			}
 
 			/**
-			 * WHERE clause as primary key
+			 * WHERE clause as primary key.
+			 * All conditions combined by AND
 			 */
 			sql_where by_key();
 
