@@ -159,7 +159,21 @@ namespace cyng
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (param)");
 		BOOST_ASSERT_MSG(top().get_class().tag() == TC_STRING, "string expected (param)");
 		const std::string key = value_cast<std::string>(top(), "");
+#ifdef _DEBUG
+		if (key.empty()) {
+			std::cerr
+				<< std::endl
+				<< std::endl
+				;
+			dump(std::cerr);
+			std::cerr
+				<< std::endl
+				<< std::endl
+				;
+		}
 		BOOST_ASSERT_MSG(!key.empty(), "key is empty (param)");
+#endif
+
 		pop();
 		push(set_factory(key, top()));
 		swap();
@@ -203,7 +217,20 @@ namespace cyng
 		param_map_t map;
 		while (size != 0)
 		{
+#ifdef _DEBUG
+			if (top().get_class().tag() != TC_PARAM) {
+				std::cerr
+					<< std::endl
+					<< std::endl
+					;
+				dump(std::cerr);
+				std::cerr
+					<< std::endl
+					<< std::endl
+					;
+			}
 			BOOST_ASSERT_MSG(top().get_class().tag() == TC_PARAM, "param expected (param_map)");
+#endif
 			auto pp = object_cast< param_t >(top());
 			BOOST_ASSERT_MSG(pp != nullptr, "wrong data type (param_map)");
 			if (pp != nullptr)
