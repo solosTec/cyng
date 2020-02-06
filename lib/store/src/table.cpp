@@ -374,7 +374,8 @@ namespace cyng
 		cyng::table::record table::find_first(attr_t&& attr) const
 		{
 			//	empty record
-			cyng::table::record result(meta_);
+			cyng::table::record result = cyng::table::make_empty_record(meta_);
+
 
 			//
 			//	check range
@@ -399,7 +400,7 @@ namespace cyng
 		cyng::table::record table::find_first(param_t&& param) const
 		{
 			//	empty record
-			cyng::table::record result(meta_);
+			cyng::table::record result = cyng::table::make_empty_record(meta_);
 
 			//
 			//	check column name
