@@ -193,11 +193,6 @@ namespace cyng
 	type_tag_traits()
 	{
 		//
-		//	one element after the last entry
-		//
-// 		return std::tuple_size<traits::tag_t>::value + 1;
-		
-		//
 		//	specialize type_tag<> for your custom data types
 		//
 		return cyng::traits::type_tag<T>::tag::value;

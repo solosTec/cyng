@@ -127,7 +127,7 @@ namespace cyng
 			io::serialize_binary(f, make_object());	//	test NULL value
 
 			io::serialize_binary(f, make_object(true));	
-			io::serialize_binary(f, make_object(static_cast<char>(33)));
+			io::serialize_binary(f, make_object(static_cast<char>(33)));	//	ASCII 33 == !, serialized as string
 			io::serialize_binary(f, make_object(boost::math::constants::e<float>()));	//	2.71828
 			io::serialize_binary(f, make_object(boost::math::constants::pi<double>()));	//	3.14159
 			//	differebt sizes on different compilers
@@ -186,6 +186,8 @@ namespace cyng
 		
 			//tuple_t,
 			//vector_t,
+			io::serialize_binary(f, make_object(vector_factory({ 1, 2, 3 })));
+			io::serialize_binary(f, make_vector());	//	empty vector
 			//set_t,
 
 			//attr_map_t,		//	std::map<std::size_t, object>;
@@ -229,17 +231,265 @@ namespace cyng
 		}
 		{
 			std::fstream f(file_name, std::ios::binary | std::ios::in);
-			BOOST_ASSERT_MSG(f.is_open(), "bad state");
+			BOOST_CHECK(f.is_open());
 			//	otherwise all whitespaces get lost
 			f >> std::noskipws;	//	same as  f.unsetf(std::ios::skipws);
 		
 			parser np([](vector_t&& prg){
 				//	empty callback
-				std::cout << prg.size() << std::endl;
+				//std::cout << prg.size() << std::endl;
+				BOOST_CHECK_EQUAL(prg.size(), 47);
+				std::size_t index{ 0 };
 				for (auto obj : prg)
 				{
-					io::serialize_plain(std::cout, obj);
-					std::cout << " ";
+					//io::serialize_plain(std::cout, obj);
+					//std::cout << " ";
+					auto const str = io::to_str(obj);
+
+					switch (index) {
+					case 0:
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_NULL);
+						BOOST_CHECK_EQUAL(str, "null");
+						break;
+					case 1:
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_BOOL);
+						BOOST_CHECK_EQUAL(str, "true");
+						break;
+					case 2:
+						//	get string (15)! - serialized as string
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_STRING);
+						BOOST_CHECK_EQUAL(str, "!");
+						break;
+					case 3:
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_FLOAT);
+						BOOST_CHECK_EQUAL(str, "2.71828");
+						break;
+					case 4: 
+						//d 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_DOUBLE);
+						BOOST_CHECK_EQUAL(str, "3.14159");
+						break;
+					case 5:
+						//u8 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UINT8);
+						BOOST_CHECK_EQUAL(str, "22");
+						break;
+					case 6:
+						//u16 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UINT16);
+						BOOST_CHECK_EQUAL(str, "0003");
+						break;
+					case 7:
+						//u32 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UINT32);
+						BOOST_CHECK_EQUAL(str, "00000004");
+						break;
+					case 8:
+						//u64 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UINT64);
+						BOOST_CHECK_EQUAL(str, "5");
+						break;
+					case 9:
+						//i8 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT8);
+						BOOST_CHECK_EQUAL(str, "35");
+						break;
+					case 10:
+						//i16 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT16);
+						BOOST_CHECK_EQUAL(str, "7");
+						break;
+					case 11:
+						//i32 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT32);
+						BOOST_CHECK_EQUAL(str, "8");
+						break;
+					case 12:
+						//i64 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT64);
+						BOOST_CHECK_EQUAL(str, "9");
+						break;
+					case 13:
+						//s
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_STRING);
+						break;
+					case 14: 
+						//s 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_STRING);
+						BOOST_CHECK_EQUAL(str, "hello, world!");
+						break;
+					case 15:
+						//	chrono:tp 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_TIME_POINT);
+						BOOST_CHECK_EQUAL(str, "2018-04-20 06:05:32.00000000");
+						break;
+					case 16:
+						//chrono:ns 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_NANO_SECOND);
+						BOOST_CHECK_EQUAL(str, "00:00:0.000000");
+						break;
+					case 17:
+						//chrono:us 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_MICRO_SECOND);
+						BOOST_CHECK_EQUAL(str, "00:00:0.000011");
+						break;
+					case 18:
+						//chrono:ms 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_MILLI_SECOND);
+						BOOST_CHECK_EQUAL(str, "00:00:0.012000");
+						break;
+					case 19:
+						//chrono:sec 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_SECOND);
+						BOOST_CHECK_EQUAL(str, "00:00:13.000000");
+						break;
+					case 20:
+						//chrono:min 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_MINUTE);
+						BOOST_CHECK_EQUAL(str, "00:14:0.000000");
+						break;
+					case 21:
+						//chrono:h 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_HOUR);
+						BOOST_CHECK_EQUAL(str, "15:00:0.000000");
+						break;
+					case 22:
+						//chrono:dtp 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_DBL_TP);
+						BOOST_CHECK_EQUAL(str, "2018-04-20 06:05:33.00000000");
+						break;
+					case 23:
+						//v 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_VERSION);
+						BOOST_CHECK_EQUAL(str, "1.5");
+						break;
+					case 24:
+						//rev 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_REVISION);
+						BOOST_CHECK_EQUAL(str, "1.6.7.8");
+						break;
+					case 25:
+						//op 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_CODE);
+						BOOST_CHECK_EQUAL(str, "op:ESBA");
+						break;
+					case 26:
+						//log:severity 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_SEVERITY);
+						BOOST_CHECK_EQUAL(str, "WARN ");
+						break;
+					case 27:
+						//binary 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_BUFFER);
+						BOOST_CHECK_EQUAL(str, "101112");
+						break;
+					case 28:
+						//mac48 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_MAC48);
+						BOOST_CHECK_EQUAL(str, "00:ff:b0:4b:be:aa");
+						break;
+					case 29:
+						//mac64 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_MAC64);
+						BOOST_CHECK_EQUAL(str, "ff00:4bb0:aabe:ccbb");
+						break;
+					case 30:
+						//crypto:MD5 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_DIGEST_MD5);
+						BOOST_CHECK_EQUAL(str, "17b31dce96b9d6c6d0a6ba95f47796fb");
+						break;
+					case 31:
+						//crypto:SHA1 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_DIGEST_SHA1);
+						BOOST_CHECK_EQUAL(str, "43f932e4f7c6ecd136a695b7008694bb69d517bd");
+						break;
+					case 32:
+						//crypto:SHA256 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_DIGEST_SHA256);
+						BOOST_CHECK_EQUAL(str, "eb201af5aaf0d60629d3d2a61e466cfc0fedb517add831ecac5235e1daa963d6");
+						break;
+					case 33:
+						//crypto:SHA512 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_DIGEST_SHA512);
+						BOOST_CHECK_EQUAL(str, "8529afcbc87cc6ea6eac37d12b60d9a87095170811b6b61036fda72a5e5446041b29ca48fc20aa3a493f62fd10b55e6ccaca4ce18e7bd7e285ec30929783bf59");
+						break;
+					case 34:
+						//i32 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT32);
+						BOOST_CHECK_EQUAL(str, "1");
+						break;
+					case 35:
+						//i32 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT32);
+						BOOST_CHECK_EQUAL(str, "2");
+						break;
+					case 36:
+						//i32 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_INT32);
+						BOOST_CHECK_EQUAL(str, "3");
+						break;
+					case 37:
+						//u64 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UINT64);
+						BOOST_CHECK_EQUAL(str, "3");
+						break;
+					case 38:
+						//op 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_CODE);
+						BOOST_CHECK_EQUAL(str, "op:VEC");
+						break;
+					case 39:
+						//u64 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UINT64);
+						BOOST_CHECK_EQUAL(str, "0");
+						break;
+					case 40:
+						//op 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_CODE);
+						BOOST_CHECK_EQUAL(str, "op:VEC");
+						break;
+					case 41:
+						//uuid 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_UUID);
+						BOOST_CHECK_EQUAL(str, "2f28413a-d69f-4fc6-b39b-14ff401b15d2");
+						break;
+					case 42:
+						//fs:path 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_FS_PATH);
+						BOOST_CHECK_EQUAL(str, "\"demo.txt\"");
+						break;
+					case 43:
+						//ip:tcp:endpoint 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_IP_TCP_ENDPOINT);
+						BOOST_CHECK_EQUAL(str, "127.0.0.1:20015");
+						break;
+					case 44:
+						//ip:udp:endpoint 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_IP_UDP_ENDPOINT);
+						BOOST_CHECK_EQUAL(str, "127.0.0.1:20016");
+						break;
+					case 45:
+						//ip:icmp:endpoint 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_IP_ICMP_ENDPOINT);
+						BOOST_CHECK_EQUAL(str, "127.0.0.1:20017");
+						break;
+					case 46:
+						//ip:address 
+						BOOST_CHECK_EQUAL(obj.get_class().tag(), TC_IP_ADDRESS);
+						BOOST_CHECK_EQUAL(str, "172.16.254.1");
+						break;
+
+					default:
+						std::cout
+							<< index
+							<< " "
+							<< obj.get_class().type_name()
+							<< " "
+							<< str
+							<< std::endl;
+						break;
+					}
+					++index;
 				}
 			});
 			np.read(std::istream_iterator<char>(f), std::istream_iterator<char>());			
