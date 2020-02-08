@@ -177,6 +177,30 @@ namespace cyng
 		return tpl;
 	}
 
+	template < typename T >
+	tuple_t tuple_factory(std::initializer_list<T> list)
+	{
+		tuple_t tpl;
+		std::transform(list.begin(), list.end(), std::back_inserter(tpl), [](T const& v) {
+			return make_object(v);
+			});
+		return tpl;
+	}
+
+	/**
+	 * Cannot use partial specialisation therefore a function
+	 * name other than tuple_factory() is required.
+	 */
+	template < typename I >
+	tuple_t tuple_from_range(I begin, typename I end)
+	{
+		using T = std::iterator_traits< I >::value_type;
+		tuple_t tpl;
+		std::transform(begin, end, std::back_inserter(tpl), [](T const& v) {
+			return make_object(v);
+			});
+		return tpl;
+	}
 
 	/**
 	 * Transform a C++ vector into a cyng vector.
