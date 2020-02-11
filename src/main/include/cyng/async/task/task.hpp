@@ -21,6 +21,9 @@ namespace cyng
 {
 	namespace async 
 	{
+		/**
+		 * Provide a basic implementation for a task object
+		 */
 		template <typename T>
 		class task : public base_task, public std::enable_shared_from_this< task < T > >
 		{
@@ -43,75 +46,8 @@ namespace cyng
 			
 			//	
 			//	public task interface:
-			//	
+			//		
 			
-			/**
-			 * run() is called at startup and from timer callback.
-			 */
-			virtual void run() override
-			{
-				if (shutdown_)	return;
-				auto sp{ this->shared_from_this() };
-				dispatcher_.post([this, sp](){
-					if (!shutdown_)	eval_rc(impl_.run());
-				});
-			}
-			
-			/**
-			 * stop() is called to shutdown a task.
-			 *
-			 * @param shutdown true if mux is in shutdown mode and task has to signal if termination
-			 *	process is complete
-			 * @return The number of asynchronous operations that were cancelled.
-			 */
-			virtual std::size_t stop(bool shutdown) override
-			{
-				if (shutdown_)	return 0u;
-				
-				//
-				// set shutdown flag
-				//
-				shutdown_ = true;
-				
-				try {
-					impl_.stop(shutdown);
-				}
-				catch(std::exception const& ex) {
-					boost::ignore_unused(ex);
-				}
-
-				//
-				//  Now it's safe to stop the timer.
-				//  Before stop() a task could restart the timer again.
-				//  It is the responsibility of the implementor to guarantee
-				//  this behavior. 
-				//	return the number of asynchronous operations that were cancelled.
-				//
-				return cancel_timer();
-			}
-			
-			/**
-			 * dispatch() receive messages and dispatch each message 
-			 * to the appropriate slot.
-			 */
-			virtual void dispatch(std::size_t slot, tuple_t msg) override
-			{
-				if (shutdown_ || (slot == NO_SLOT))	return;
-				auto sp{ this->shared_from_this() };
-				dispatcher_.post([this, sp, slot, msg]() {
-					if (!shutdown_)	eval_rc(select_signature<signatures_t>::invoke(impl_, slot, msg));
-				});
-			}
-
-			/**
-			 * dispatch() receive messages and dispatch each message 
-			 * to the appropriate slot.
-			 */
-			virtual void dispatch(std::string slot, tuple_t msg) override
-			{
-				if (!shutdown_)	dispatch(resolve_name(slot), msg);
-			}
-
 			/**
 			 * Compiler selects the SLOT. 
 			 * This is faster at runtime but doesn't work as virtual function.
@@ -146,6 +82,73 @@ namespace cyng
 			}
 
 		protected:
+			/**
+			 * run() is called at startup and from timer callback.
+			 */
+			virtual void run() override
+			{
+				if (shutdown_)	return;
+				auto sp{ this->shared_from_this() };
+				dispatcher_.post([this, sp]() {
+					if (!shutdown_)	eval_rc(impl_.run());
+					});
+			}
+
+			/**
+			 * stop() is called to shutdown a task.
+			 *
+			 * @param shutdown true if mux is in shutdown mode and task has to signal if termination
+			 *	process is complete
+			 * @return The number of asynchronous operations that were cancelled.
+			 */
+			virtual std::size_t stop(bool shutdown) override
+			{
+				if (shutdown_)	return 0u;
+
+				//
+				// set shutdown flag
+				//
+				shutdown_ = true;
+
+				try {
+					impl_.stop(shutdown);
+				}
+				catch (std::exception const& ex) {
+					boost::ignore_unused(ex);
+				}
+
+				//
+				//  Now it's safe to stop the timer.
+				//  Before stop() a task could restart the timer again.
+				//  It is the responsibility of the implementor to guarantee
+				//  this behavior. 
+				//	return the number of asynchronous operations that were cancelled.
+				//
+				return cancel_timer();
+			}
+
+			/**
+			 * dispatch() receive messages and dispatch each message
+			 * to the appropriate slot.
+			 */
+			virtual void dispatch(std::size_t slot, tuple_t msg) override
+			{
+				if (shutdown_ || (slot == NO_SLOT))	return;
+				auto sp{ this->shared_from_this() };
+				dispatcher_.post([this, sp, slot, msg]() {
+					if (!shutdown_)	eval_rc(select_signature<signatures_t>::invoke(impl_, slot, msg));
+					});
+			}
+
+			/**
+			 * dispatch() receive messages and dispatch each message
+			 * to the appropriate slot.
+			 */
+			virtual void dispatch(std::string slot, tuple_t msg) override
+			{
+				if (!shutdown_)	dispatch(resolve_name(slot), msg);
+			}
+
 			/**
 			 * timeout() is called when timer has expired
 			 */

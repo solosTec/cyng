@@ -21,6 +21,9 @@ namespace cyng
 	{
 		class base_task
 		{
+			//	hide run() method
+			friend class mux;
+
 		public:
 			base_task(mux&);
 			
@@ -28,6 +31,47 @@ namespace cyng
 			//	public task interface:
 			//	
 			
+			/**
+			 * gcc requires an implementation even though this
+			 * function is virtual. On the other side, this is a 
+			 * cool feature to detect pure virtual calls.
+			 */
+			virtual shared_task get_shared() = 0;
+
+			/*
+			 * Path to get the class name of a task and to group
+			 * by implementation classes.
+			 */
+			virtual std::string get_class_name() const = 0;
+			
+			/**
+			 * @return task id
+			 */
+			std::size_t get_id() const;		
+
+			/**
+			 * Suspend task for specific time span
+			 */
+			template < typename R, typename P >
+			void suspend(std::chrono::duration<R, P> d)
+			{
+				if (shutdown_)	return;
+
+				auto ptr = get_shared();
+				timer_.expires_from_now(d);
+				timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, ptr](boost::system::error_code const& ec) {
+					if (ec != boost::asio::error::operation_aborted && !this->shutdown_) {
+						ptr->timeout();
+					}
+					}));
+			}
+
+			/**
+			 * Suspend task until a specific time point
+			 */
+			void suspend_until(std::chrono::system_clock::time_point);
+
+		protected:
 			/**
 			 * run() is called at startup and from timer callback.
 			 */
@@ -50,42 +94,6 @@ namespace cyng
 			virtual void dispatch(std::string slot, tuple_t msg) = 0;
 
 			/**
-			 * gcc requires an implementation even though this
-			 * function is virtual. On the other side, this is a 
-			 * cool feature to detect pure virtual calls.
-			 */
-			virtual shared_task get_shared() = 0;
-
-			/*
-			 * Path to get the class name of a task and to group
-			 * by implementation classes.
-			 */
-			virtual std::string get_class_name() const = 0;
-			
-			/**
-			 * @return task id
-			 */
-			std::size_t get_id() const;
-			
-			template < typename R, typename P >
-			void suspend(std::chrono::duration<R, P> d)
-			{
-				if (shutdown_)	return;
-
-				auto ptr = get_shared();
-				timer_.expires_from_now(d);
-				timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, ptr](boost::system::error_code const& ec){
-					if (ec != boost::asio::error::operation_aborted && !this->shutdown_) {
-						ptr->timeout();
-					}
-				}));
-			}
-			
-			void suspend_until(std::chrono::system_clock::time_point);
-
-		protected:
-
-			/**
 			 * timeout() is called when timer has expired
 			 */
 			virtual void timeout() = 0;
@@ -105,11 +113,26 @@ namespace cyng
 			mux& mux_;
 
 		protected:
-			const std::size_t id_;
- 			boost::asio::steady_timer timer_;
-			dispatcher_t dispatcher_;
-			bool shutdown_;
+			/**
+			 * task ID
+			 */
+			std::size_t const id_;
 
+			/**
+			 * Internal timer for suspend mode
+			 */
+ 			boost::asio::steady_timer timer_;
+
+			/**
+			 * Internal strand to prevent concurrent calls 
+			 */
+			dispatcher_t dispatcher_;
+
+			/**
+			 * shutdown flag. If true task is in shutdown mode
+			 * and no longer available.
+			 */
+			bool shutdown_;
 		};
 		
 
