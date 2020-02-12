@@ -16,6 +16,8 @@ set (unlog_filter
 	tools/unlog/src/filters/cu.cpp
 	tools/unlog/src/filters/word.h
 	tools/unlog/src/filters/word.cpp
+	tools/unlog/src/filters/restore.h
+	tools/unlog/src/filters/restore.cpp
 )
 
 source_group("filter" FILES ${unlog_filter})

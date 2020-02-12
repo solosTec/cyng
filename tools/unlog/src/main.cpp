@@ -18,6 +18,7 @@
 #include "filters/hexdump_cpp.h"
 #include "filters/cu.h"
 #include "filters/word.h"
+#include "filters/restore.h"
 #if BOOST_OS_WINDOWS
 #define NOMINMAX
 #include <windows.h>
@@ -208,6 +209,14 @@ int main(int argc, char* argv[]) {
 		}
 #endif
 
+		auto const begin = vm["begin"].as< std::size_t >();
+		auto const end = vm["end"].as< std::size_t >();
+		std::cout
+			<< "***info: selected filter: "
+			<< filter
+			<< std::endl
+			;
+
 		//
 		//	Construct selected filter
 		//
@@ -218,7 +227,7 @@ int main(int argc, char* argv[]) {
 			//	[0010]  39 30 38 32 33 32 30 33  38 33 38 38 39 32 36 32  90823203 83889262
 			//	[0020]  35 2d 31 62 00 62 00 72  63 01 00 77 01 07 00 50  5-1b.b.r c..w...P
 
-			return cyng::hexdump(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+			return cyng::hexdump(inp_file, out_file, verbose).run(begin, end);
 		}
 		else if (boost::algorithm::equals("cpp", filter)) {
 			if (vm["output"].defaulted()) {
@@ -238,7 +247,7 @@ int main(int argc, char* argv[]) {
 						;
 				}
 			}
-			return cyng::hexdump_cpp(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+			return cyng::hexdump_cpp(inp_file, out_file, verbose).run(begin, end);
 		}
 		else if (boost::algorithm::equals("cu", filter)) {
 			if (vm["output"].defaulted()) {
@@ -258,7 +267,7 @@ int main(int argc, char* argv[]) {
 						;
 				}
 			}
-			return cyng::cu(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+			return cyng::cu(inp_file, out_file, verbose).run(begin, end);
 		}
 		else if (boost::algorithm::equals("word", filter)) {
 			//
@@ -268,7 +277,30 @@ int main(int argc, char* argv[]) {
 			//	example:
 			//	0000000 4436 2324 0796 0020 0e63 2972 6543 e687
 			//	0000010 bf1e b903 2000 4005 3ac8 a880 66e0 aa8c
-			return cyng::word(inp_file, out_file, verbose).run(vm["begin"].as< std::size_t >(), vm["end"].as< std::size_t >());
+			return cyng::word(inp_file, out_file, verbose).run(begin, end);
+		}
+		else if (boost::algorithm::equals("restore", filter)) {
+			//
+			//	read a binary file and create a hexdump
+			//
+			if (vm["output"].defaulted()) {
+				//
+				//	Derive an output name from the input name
+				//	if no name was explicitely defined.
+				//
+				boost::filesystem::path tmp = inp_file;
+				out_file = tmp.replace_extension(".log").string();
+
+				if (verbose > 1)
+				{
+					std::cout
+						<< "***info: output file is: "
+						<< out_file
+						<< std::endl
+						;
+				}
+			}
+			return cyng::restore(inp_file, out_file, verbose).run(begin, end);
 		}
 
 		std::cerr << "unknown filter: " << filter << std::endl;
