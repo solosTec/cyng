@@ -11,6 +11,7 @@
 #include <cyng/vm/generator.h>
 #include <cyng/factory.h>
 #include <cyng/value_cast.hpp>
+#include <cyng/buffer_cast.h>
 #include <boost/asio/version.hpp>
 
 namespace cyng 
@@ -95,7 +96,7 @@ namespace cyng
 		//
 		//	Connect the socket to the specified endpoint.
 		//
-		const vector_t frame = ctx.get_frame();
+		auto const frame = ctx.get_frame();
 		boost::system::error_code ec;
 		s.connect(value_cast(frame.at(0), boost::asio::ip::tcp::endpoint()), ec);
 		BOOST_ASSERT(s.is_open());
@@ -107,7 +108,7 @@ namespace cyng
 		//
 		//	Connect the socket to the specified endpoint using the resolver
 		//
-		const vector_t frame = ctx.get_frame();
+		auto const frame = ctx.get_frame();
 		boost::system::error_code ec;
 
 		const std::string address = value_cast<std::string>(frame.at(0), "");
@@ -155,8 +156,7 @@ namespace cyng
 		//
 		const vector_t frame = ctx.get_frame();
 		boost::system::error_code ec;
-		buffer_t buf;
-		buf = value_cast(frame.at(0), buf);
+		buffer_t const buf = to_buffer(frame.at(0));
 
 		//
 		//	returns the number of bytes written

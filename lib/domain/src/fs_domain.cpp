@@ -23,8 +23,9 @@ namespace cyng
 		//	Set error register.
 		//
 		vm.register_function("fs.create.directories", 1, [](context& ctx) {
-			const vector_t frame = ctx.get_frame();
-			
+
+			auto const frame = ctx.get_frame();
+
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
 			boost::filesystem::create_directories(p, ec);
@@ -52,7 +53,7 @@ namespace cyng
 		//
 		vm.register_function("fs.exists", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
@@ -69,7 +70,7 @@ namespace cyng
 		//
 		vm.register_function("fs.size", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
@@ -86,7 +87,7 @@ namespace cyng
 		//
 		vm.register_function("fs.is.directory", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
@@ -103,7 +104,7 @@ namespace cyng
 		//
 		vm.register_function("fs.is.empty", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
@@ -120,7 +121,7 @@ namespace cyng
 		//
 		vm.register_function("fs.is.regular", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
@@ -137,7 +138,7 @@ namespace cyng
 		//
 		vm.register_function("fs.last.write-time", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
@@ -154,7 +155,7 @@ namespace cyng
 		//
 		vm.register_function("fs.remove", 1, [](context& ctx) {
 
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 
 			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
 			boost::system::error_code ec;
