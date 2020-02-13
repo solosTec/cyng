@@ -414,7 +414,7 @@ include (3party/sqlite.cmake)
 add_library(cyng_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
 set_property(TARGET cyng_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_definitions(-D${PROJECT_NAME}_SQLITE3_INSTALLED)
-set(${PROJECT_NAME}_SQLITE3_INSTALLED ON CACHE BOOl "SQLite3 Connector")
+set(${PROJECT_NAME}_SQLITE3_INSTALLED ON CACHE BOOL "SQLite3 Connector")
 
 #
 #
@@ -485,7 +485,7 @@ elseif(WIN32)
 	#	ODBC is always available on windows
 	#
 	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D${PROJECT_NAME}_ODBC_INSTALLED" )
-	set(${PROJECT_NAME}_ODBC_INSTALLED ON CACHE BOOl "ODBC Connector")
+	set(${PROJECT_NAME}_ODBC_INSTALLED ON CACHE BOOL "ODBC Connector")
 
 else()
 	message(WARNING "** platform not supported")
@@ -522,7 +522,7 @@ if (UNIX)
         link_directories(${PROJECT_NAME}_MYSQL_LIB)
     endif()
 else()
-    set(${PROJECT_NAME}_MYSQL_INSTALLED OFF CACHE BOOl "MySQL Connector")
+    set(${PROJECT_NAME}_MYSQL_INSTALLED OFF CACHE BOOL "MySQL Connector")
     message(STATUS "** MySQL Connector not available")
 endif()
 
