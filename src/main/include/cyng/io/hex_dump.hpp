@@ -9,6 +9,7 @@
 
 #include <iterator>
 #include <iomanip>
+#include <sstream>
 #include <boost/assert.hpp>
 #include <boost/range.hpp>
 

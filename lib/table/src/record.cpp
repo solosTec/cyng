@@ -213,28 +213,18 @@ namespace cyng
 
 		data_type record::shrink_data(std::initializer_list<std::string> il) const
 		{
-			std::vector<std::string> all_names, dif_names;
-
-			//
-			//	get all column names of the data body
-			//
-			meta_->loop_body([&](column&& col) {
-				all_names.push_back(col.name_);
-				});
-
-			//
-			//	get the difference
-			//
-			std::set_difference(all_names.begin(), all_names.end(), il.begin(), il.end(),
-				std::inserter(dif_names, dif_names.begin()));
-
 			//
 			//	collect reduced data body
 			//
 			data_type data;
-			for (auto const& name : dif_names) {
-				data.push_back((*this)[name]);
-			}
+			meta_->loop_body([&](column&& col) {
+
+				if (std::find(il.begin(), il.end(), col.name_) == il.end()) {
+					data.push_back((*this)[col.name_]);
+				}
+				
+			});
+
 			return data;
 		}
 
