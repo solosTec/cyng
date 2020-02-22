@@ -192,9 +192,9 @@ namespace cyng
 	 * name other than tuple_factory() is required.
 	 */
 	template < typename I >
-	tuple_t tuple_from_range(I begin, typename I end)
+	tuple_t tuple_from_range(I begin, I end)
 	{
-		using T = std::iterator_traits< I >::value_type;
+		using T = typename std::iterator_traits< I >::value_type;
 		tuple_t tpl;
 		std::transform(begin, end, std::back_inserter(tpl), [](T const& v) {
 			return make_object(v);
