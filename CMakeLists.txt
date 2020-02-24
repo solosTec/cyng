@@ -181,20 +181,28 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	#
 	
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "4.7")
-		set(CMAKE_CXX_STANDARD 11)
+		set(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard to be used")
 		message(STATUS "** C++ support     : C++11")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "5.1")
 	# default since  GCC 6.1
-		set(CMAKE_CXX_STANDARD 14)
+		set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ standard to be used")
 		message(STATUS "** C++ support     : C++14")
 	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS  "8.1")
     # partly since 5.0
-		set(CMAKE_CXX_STANDARD 17)
+		set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to be used")
 		message(STATUS "** C++ support     : C++17")
 	else()
     # partly since 8.0
-		set(CMAKE_CXX_STANDARD 20)
-		message(STATUS "** C++ support     : C++2a")
+		if(${CMAKE_VERSION} VERSION_LESS "3.12.4") 
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a")			
+			message(STATUS "** C++ support     : C++2a")
+		else()
+			set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard to be used")
+			message(STATUS "** C++ support     : C++2a")
+		endif()
+		
+		#	suppress messages about ABI incompatibilities
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")			
 	endif()
 		
 	set(GLOBAL_LIBRARY_TYPE SHARED)
@@ -243,7 +251,6 @@ include(SelectBoostLibrary)
 #	setup SSL library
 #
 if(NOT DEFINED ${PROJECT_NAME}_SSL_SUPPORT)
-#	set(${PROJECT_NAME}_SSL_SUPPORT ON CACHE BOOL "SSL support")
 	option(${PROJECT_NAME}_SSL_SUPPORT "SSL support" ON)
 endif()
 
@@ -282,7 +289,6 @@ endif()
 #   Don't use a possibly installed SQLite3 library. Instead use
 #   version shipped with the repository 3rd library path.
 #   SQLite3 library is part of this project
-#
 include (3party/sqlite.cmake)
 add_library(cyng_sqlite3 ${LIBRARY_TYPE} ${sqlite_lib})
 set_property(TARGET cyng_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -299,7 +305,6 @@ if (WIN32)
 else()
     if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 		target_compile_definitions(sqlite3 PRIVATE HAVE_READLINE)
-#        target_compile_options(sqlite3 PRIVATE -DHAVE_READLINE)
         target_link_libraries(sqlite3 cyng_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
     else()
         target_link_libraries(sqlite3 cyng_sqlite3 pthread ${CMAKE_DL_LIBS})    
