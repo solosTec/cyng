@@ -17,8 +17,12 @@
 #include <memory>
 #include <functional>
 
+#include <boost/predef.h>
+
+#ifdef BOOST_COMP_MSVC
  //	set packing alignment to 1 (dense)
 #pragma pack( push, 1 )
+#endif
 
 namespace cyng 
 {
@@ -72,8 +76,12 @@ namespace cyng
 			std::size_t size_of_length_field() const;
 
 		private:
-			constexpr static std::size_t size_{ sizeof(std::uint64_t) + 1 };
-			union {
+			constexpr static std::size_t size_{ sizeof(std::uint64_t) + sizeof(char) };
+			union 
+#ifdef BOOST_COMP_GNUC
+			__attribute__((__packed__))
+#endif
+			{
 				unsigned char source_[size_];
 				struct {
 					char dummy_;
@@ -119,15 +127,17 @@ namespace cyng
 
 		private:
 			constexpr static std::size_t size_{ sizeof(std::uint32_t) };
-// 			alignas(std::uint32_t) unsigned char source_[size_];
-			union {
+			union 
+#ifdef BOOST_COMP_GNUC
+			__attribute__((__packed__))
+#endif
+			{
 				unsigned char source_[size_];
 				std::uint32_t l_;
 			} u_;
 			std::size_t pos_;
 		};
-
-	}
+	}	//	io
 
 	/**
 	 * Native parser for output from native CYNG serializer.
@@ -300,7 +310,9 @@ namespace cyng
 	
 }	//	cyng
 
+#ifdef BOOST_COMP_MSVC
 #pragma pack( pop )	//	reset packing alignment
+#endif
 
 
 #endif // CYNG_IO_NATIVE_PARSER_H

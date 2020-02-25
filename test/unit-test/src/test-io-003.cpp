@@ -27,8 +27,9 @@ namespace cyng
 		BOOST_CHECK_EQUAL(s, "0000BEEF");
 
 		char c{ std::numeric_limits<char>::min() };
+		BOOST_CHECK_EQUAL(c, CHAR_MIN);	
 		s = io::to_hex(c);
-		BOOST_CHECK_EQUAL(s, "80");
+		BOOST_CHECK_EQUAL(s, "80");	//	-128dec = 80hex
 
 		c = -1;
 		s = io::to_hex(c);

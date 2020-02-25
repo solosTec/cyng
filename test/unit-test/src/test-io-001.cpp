@@ -17,25 +17,34 @@ namespace cyng
 
 	bool test_io_001()
 	{
+// 		null
+// 		nullnull
+// 		i32
+// 		23, 23i32
+// 		object"object"
 		
 		auto o_null = factory<null>::create_object();
 		type null_t(o_null.get_class());
-		std::cout << o_null.get_class().type_name() << std::endl;
-		io::serialize_typed(std::cout, o_null);
-		std::cout << std::endl;
+		BOOST_CHECK_EQUAL(o_null.get_class().type_name(), "null");
+// 		io::serialize_typed(std::cout, o_null);	//	nullnull
 
+		std::stringstream ss;
  		auto o_i = make_object(23);
 		type i_t(o_i.get_class());
-		std::cout << o_i.get_class().type_name() << std::endl;
-		io::serialize_plain(std::cout, o_i);
-		std::cout << ", ";
-		io::serialize_typed(std::cout, o_i);
-		std::cout << std::endl;
+		BOOST_CHECK_EQUAL(o_i.get_class().type_name(), "i32");
+		io::serialize_plain(ss, o_i);
+		BOOST_CHECK_EQUAL(ss.str(), "23");
+		ss.str("");
+		io::serialize_typed(ss, o_i);
+		BOOST_CHECK_EQUAL(ss.str(), "23i32");
 		
 		auto o_s = make_object("object");
-		io::serialize_plain(std::cout, o_s);
-		io::serialize_json(std::cout, o_s);
-		std::cout << std::endl;
+		ss.str("");
+		io::serialize_plain(ss, o_s);
+		BOOST_CHECK_EQUAL(ss.str(), "object");
+		ss.str("");
+		io::serialize_json(ss, o_s);
+		BOOST_CHECK_EQUAL(ss.str(), "\"object\"");
 
 		return true;
 	}
