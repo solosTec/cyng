@@ -59,7 +59,7 @@ namespace cyng
 //    		std::cout << "a3: " << std::hex << object_cast<version>(a3.second)->full() << std::endl;
 // 		std::cout << "a3: " << std::boolalpha << a3.second.get_class().is_enum() << std::endl;
 		BOOST_CHECK_NE(nullptr, object_cast<version>(a3.second));
-		BOOST_CHECK_EQUAL(object_cast<version>(a3.second)->full(), 0x4005);
+		BOOST_CHECK_EQUAL(object_cast<version>(a3.second)->full(), 0x40005);
 // 		
 // 		auto op1 = make_object(code::NOOP);
 // 		std::cout << "op-1: " << std::boolalpha << op1.get_class().is_enum() << std::endl;
