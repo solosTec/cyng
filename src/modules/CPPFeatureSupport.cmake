@@ -4,6 +4,8 @@
 # see https://en.cppreference.com/w/cpp/compiler_support
 # see https://clang.llvm.org/cxx_status.html
 # see https://devblogs.microsoft.com/cppblog/announcing-msvc-conforms-to-the-c-standard/
+# see https://docs.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance?view=vs-2019
+# see https://gcc.gnu.org/projects/cxx-status.html
 #
 # 14.0  => Visual Studio 2005 version 8.0
 # 15.0  => Visual Studio 2008 version 9.0
@@ -18,8 +20,8 @@
 # 19.14 => Visual Studio 2017 version 15.7
 # 19.15 => Visual Studio 2017 version 15.8
 # 19.16 => Visual Studio 2017 version 15.9
-# 19.21.27702.2 => Visual Studio 2019 version 16.1.5
 # 19.21.27702.2 => Visual Studio 2019 version 16.1.6
+# 19.24.28316 => Visual Studio 2019 version 16.4.5
 #
 
 function(emit_compiler_support PAPER DESCR MIN_VER)
