@@ -824,6 +824,12 @@ install(TARGETS unlog
 #
 include (tools/play/prg.cmake)
 add_executable(play ${play})
+target_include_directories(play
+    PRIVATE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+        ${PUGIXML_INCLUDE_DIR}
+        ${BOOST_INCLUDE_DIR}
+)
 target_link_libraries(play 
 	cyng_core 
 	cyng_io
