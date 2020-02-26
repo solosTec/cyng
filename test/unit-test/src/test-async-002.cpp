@@ -9,9 +9,11 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/async/task/task_builder.hpp>
 #include <cyng/factory/set_factory.h>
+
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/random_generator.hpp>
+#include <boost/predef.h>
 
 namespace cyng 
 {

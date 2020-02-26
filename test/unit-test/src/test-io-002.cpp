@@ -21,6 +21,7 @@
 
 #include <boost/uuid/string_generator.hpp>
 #include <boost/math/constants/constants.hpp>
+#include <boost/predef.h>
 
 namespace cyng
 {
@@ -163,7 +164,7 @@ private:
 private:
     constexpr static std::size_t size_{ sizeof ( std::uint64_t ) + sizeof ( char ) };
     union
-#ifdef BOOST_COMP_GNUC
+#if BOOST_COMP_GNUC
         __attribute__ ( ( __packed__ ) )
 #endif
     {
@@ -213,7 +214,7 @@ public:
 private:
     constexpr static std::size_t size_{ sizeof ( std::uint32_t ) };
     union
-#ifdef BOOST_COMP_GNUC
+#if BOOST_COMP_GNUC
         __attribute__ ( ( __packed__ ) )
 #endif
     {

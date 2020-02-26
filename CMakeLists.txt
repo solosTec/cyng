@@ -302,7 +302,13 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 	# 	but to tricky on OECP platform
 	#
 	find_package(Readline)
+
+	if (${READLINE_FOUND})
+		message(STATUS "** readline include      : ${Readline_INCLUDE_DIR}")
+		message(STATUS "** readline library      : ${Readline_LIBRARY}")
+	endif()
 endif()
+
 
 #
 #
@@ -315,7 +321,7 @@ set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
 target_link_libraries(sqlite3 
 	PRIVATE
 		cyng_sqlite3 
-		"<${READLINE_FOUND}>:readline>"
+		"$<$<BOOL:${READLINE_FOUND}>:readline>"
 		"$<$<PLATFORM_ID:Linux>:pthread;${CMAKE_DL_LIBS}>"
 )
 
@@ -425,11 +431,6 @@ message(STATUS "** PugiXML Include   : ${PUGIXML_INCLUDE_DIR}")
 add_definitions(-D${PROJECT_NAME}_PUGIXML_INSTALLED)
 
 #
-# include directories for all C/C++ projects
-#
-include_directories(src/main/include ${PUGIXML_INCLUDE_DIR})
-
-#
 # configure a header file to pass some of the CMake settings
 # to the source code
 #
@@ -437,7 +438,6 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/src/main/templates/project_info.h.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_project_info.h"
 )
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 #
 # configure a pkgconfig file 
@@ -467,18 +467,36 @@ install(FILES
 #
 include (lib/core/lib.cmake)
 add_library(cyng_core ${GLOBAL_LIBRARY_TYPE} ${core_lib})
+target_include_directories(cyng_core
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng log library
 #
 include (lib/log/lib.cmake)
 add_library(cyng_log ${GLOBAL_LIBRARY_TYPE} ${log_lib})
+target_include_directories(cyng_log
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng I/O library
 #
 include (lib/io/lib.cmake)
 add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
+target_include_directories(cyng_io
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng mail library
@@ -492,7 +510,6 @@ if(${PROJECT_NAME}_SSL_SUPPORT)
 			${OPENSSL_INCLUDE_DIR}
 			${BOOST_INCLUDE_DIR}
 	)
-#     target_link_libraries(cyng_mail ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES})
 
 else()
     message(WARNING "** CYNG mail requires SSL support")
@@ -503,12 +520,24 @@ endif()
 #
 include (lib/vm/lib.cmake)
 add_library(cyng_vm ${GLOBAL_LIBRARY_TYPE} ${vm_lib})
+target_include_directories(cyng_vm
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng async library
 #
 include (lib/async/lib.cmake)
 add_library(cyng_async ${GLOBAL_LIBRARY_TYPE} ${async_lib})
+target_include_directories(cyng_async
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng table library
@@ -521,18 +550,36 @@ add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
 #
 include (lib/store/lib.cmake)
 add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
+target_include_directories(cyng_store
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng domain library
 #
 include (lib/domain/lib.cmake)
 add_library(cyng_domain ${GLOBAL_LIBRARY_TYPE} ${domain_lib})
+target_include_directories(cyng_domain
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng sql library
 #
 include (lib/sql/lib.cmake)
 add_library(cyng_sql ${GLOBAL_LIBRARY_TYPE} ${sql_lib})
+target_include_directories(cyng_sql
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng crypto library
@@ -540,6 +587,12 @@ add_library(cyng_sql ${GLOBAL_LIBRARY_TYPE} ${sql_lib})
 if(${PROJECT_NAME}_SSL_SUPPORT)
     include (lib/crypto/lib.cmake)
     add_library(cyng_crypto ${GLOBAL_LIBRARY_TYPE} ${crypto_lib})
+	target_include_directories(cyng_crypto
+		PRIVATE
+			"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+			${OPENSSL_INCLUDE_DIR}
+			${BOOST_INCLUDE_DIR}
+	)
     target_link_libraries(cyng_crypto
         ${OPENSSL_LIBRARIES})
 else()
@@ -551,18 +604,36 @@ endif()
 #
 include (lib/rnd/lib.cmake)
 add_library(cyng_rnd ${GLOBAL_LIBRARY_TYPE} ${rnd_lib})
+target_include_directories(cyng_rnd
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng parser library
 #
 include (lib/parser/lib.cmake)
 add_library(cyng_parser ${GLOBAL_LIBRARY_TYPE} ${parser_lib})
+target_include_directories(cyng_parser
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng JSON library
 #
 include (lib/json/lib.cmake)
 add_library(cyng_json ${GLOBAL_LIBRARY_TYPE} ${json_lib})
+target_include_directories(cyng_json
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 # linker needs a hint of dependencies
 target_link_libraries(cyng_json cyng_parser)
 
@@ -571,18 +642,37 @@ target_link_libraries(cyng_json cyng_parser)
 #
 include (lib/csv/lib.cmake)
 add_library(cyng_csv ${GLOBAL_LIBRARY_TYPE} ${csv_lib})
+target_include_directories(cyng_csv
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng XML library
 #
 include (lib/xml/lib.cmake)
 add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
+target_include_directories(cyng_xml
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${PUGIXML_INCLUDE_DIR}
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng system library
 #
 include (lib/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
+target_include_directories(cyng_sys
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 # on windows:	-DPSAPI_VERSION=1
 target_compile_definitions(cyng_sys 
     PRIVATE
@@ -594,6 +684,12 @@ target_compile_definitions(cyng_sys
 #
 include (lib/db/lib.cmake)
 add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
+target_include_directories(cyng_db
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 set(db_link_libs cyng_sqlite3)
 if(UNIX)
     list(APPEND db_link_libs ${CMAKE_DL_LIBS} cyng_parser)
@@ -610,7 +706,7 @@ if(UNIX)
 	endif()
 endif(UNIX)
 target_link_libraries(cyng_db ${db_link_libs})
-message(STATUS "** db link library   : ${db_link_libs}")
+#message(STATUS "** db link library   : ${db_link_libs}")
 
 #
 #	platform specific libraries
@@ -619,6 +715,12 @@ if (WIN32)
 
 	include (lib/scm/lib.cmake)
 	add_library(cyng_scm ${GLOBAL_LIBRARY_TYPE} ${scm_lib})
+	target_include_directories(cyng_scm
+		PRIVATE
+			"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+			${OPENSSL_INCLUDE_DIR}
+			${BOOST_INCLUDE_DIR}
+	)
 
 endif()
 
@@ -637,6 +739,10 @@ add_executable(hello ${hello})
 #
 include (test/demo.cmake)
 add_executable(demo ${demo})
+target_include_directories(demo
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+)
 	
 set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_mail;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_crypto;cyng_sqlite3")	
 
@@ -672,6 +778,7 @@ if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
 	target_include_directories(unit_test
 		PRIVATE
 			"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+			${PUGIXML_INCLUDE_DIR}
 			${OPENSSL_INCLUDE_DIR}
 			${BOOST_INCLUDE_DIR}
 	)
