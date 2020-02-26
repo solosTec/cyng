@@ -35,6 +35,11 @@ namespace cyng
 	
 	bool test_parser_001()
 	{
+//      2017-11-26 19:14:42.00000000
+//      42.2d
+//      λάμδα - λάμδα
+//      λάμδα
+        
 		/**
 		 * parse a SQL timestamp
 		 * "2015-11-28 11:06:44" and "30.09.2016 13:34:26"
@@ -42,12 +47,18 @@ namespace cyng
 		std::pair<std::chrono::system_clock::time_point, bool > r1 = parse_db_timestamp("2017-11-26 19:14:42");
 		BOOST_CHECK(r1.second);
 // 		2017-11-26 19:14:42.00000000
-		std::cout << r1.first << std::endl;
+        std::stringstream ss;
+// 		std::cout << r1.first << std::endl;
+        ss << r1.first;
+        BOOST_CHECK_EQUAL(ss.str(), "2017-11-26 19:14:42.00000000");
 		
 		std::pair<object, bool > r2 = parse_numeric("42.2");
 		BOOST_CHECK(r2.second);
-		io::serialize_plain(std::cout, r2.first);
-		std::cout << r2.first.get_class().type().name() << std::endl;
+        ss.str("");
+		io::serialize_plain(ss, r2.first);
+// 		std::cout << r2.first.get_class().type().name() << std::endl;
+        BOOST_CHECK_EQUAL(ss.str(), "42.2");
+        BOOST_CHECK_EQUAL(r2.first.get_class().tag(), TC_DOUBLE);
 		
 		//
 		//	test 
@@ -92,7 +103,7 @@ namespace cyng
 		std::pair<utf::u32_string, bool> sq2 = utf::parse_utf8_quote(sq1);
 		BOOST_CHECK(sq2.second);
 		auto sq3 = utf::u32_to_u8_string(sq2.first);
- 		std::cout << sq0 << " - " << sq3 << std::endl;
+//  		std::cout << sq0 << " - " << sq3 << std::endl;
 		BOOST_CHECK_EQUAL(sq0, sq3);
 		
 		//
@@ -101,7 +112,7 @@ namespace cyng
 		//
 		std::pair<object, bool> so0 = utf::parse_utf8_object(sq1);
 		BOOST_CHECK(so0.second);
-		io::serialize_plain(std::cout, so0.first);
+// 		io::serialize_plain(std::cout, so0.first);
 		
 		return true;
 	}

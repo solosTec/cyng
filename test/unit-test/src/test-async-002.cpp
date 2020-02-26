@@ -15,6 +15,7 @@
 
 namespace cyng 
 {
+    static std::size_t stop_counter{0};
 	
 	class task_002
 	{
@@ -28,27 +29,47 @@ namespace cyng
 		: base_(bt)
 		, counter_(0)
 		{
-			std::cout << "constructor task_002: " << i << ", " << name << std::endl;
+// 			std::cout << "constructor task_002: " << i << ", " << name << std::endl;
 		}
 		
 		//	slot 0
 		continuation process(int i, std::string name)
 		{
-			std::cout << "task_002::slot-0($" << base_->get_id() << ", " << i  << ", " << name << ")" << std::endl;
+//          task_002::slot-0($2, 100, event-1)
+//          task_002::slot-0($3, 101, event-3)
+//          task_002::slot-0($4, 102, event-4)
+            
+// 			std::cout << "task_002::slot-0($" << base_->get_id() << ", " << i  << ", " << name << ")" << std::endl;
+            switch(base_->get_id()) {
+                case 2:
+                    BOOST_CHECK_EQUAL(i, 100);
+                    BOOST_CHECK_EQUAL(name, "event-1");
+                    break;
+                case 3:
+                    BOOST_CHECK_EQUAL(i, 101);
+                    BOOST_CHECK_EQUAL(name, "event-3");
+                    break;
+                case 4:
+                    BOOST_CHECK_EQUAL(i, 102);
+                    BOOST_CHECK_EQUAL(name, "event-4");
+                    break;
+                default:
+                    break;
+            }
 			return continuation::TASK_CONTINUE;
 		}
 		
 		//	slot 1
 		continuation process(boost::uuids::uuid tag)
 		{
-			std::cout << "task_002::slot-1($" << base_->get_id() << ", " << tag  << ")" << std::endl;
+// 			std::cout << "task_002::slot-1($" << base_->get_id() << ", " << tag  << ")" << std::endl;
 			return continuation::TASK_CONTINUE;
 		}
 		
 		continuation run()
 		{
 			counter_++;
-			std::cout << "task_002::run(" << base_->get_id() << ", #" << counter_ << ")" << std::endl;
+// 			std::cout << "task_002::run(" << base_->get_id() << ", #" << counter_ << ")" << std::endl;
 			if (base_->get_id() > counter_)
 			{
 				base_->suspend(std::chrono::seconds(base_->get_id()) - std::chrono::seconds(counter_));
@@ -66,7 +87,9 @@ namespace cyng
 		}
 		void stop(bool /*shutdown*/)
 		{
-			std::cout << "task_002::stop(" << base_->get_id() << ")" << std::endl;			
+            BOOST_CHECK_EQUAL(stop_counter, base_->get_id());
+            --stop_counter;
+// 			std::cout << "task_002::stop(" << base_->get_id() << ")" << std::endl;			
 		}
 
 	private:
@@ -99,7 +122,7 @@ namespace cyng
 			async::start_task_sync<task_002>(task_manager, idx, "welcome-" + std::to_string(idx));
 		}
 		
-		std::cout << "wait..." << std::endl;
+// 		std::cout << "wait..." << std::endl;
 		task_manager.post(2, 0, tuple_factory(100, std::string("event-1")));
 		task_manager.post(3, 0, tuple_factory(101, "event-3"));
 
@@ -123,10 +146,12 @@ namespace cyng
 		}
 		
 		std::this_thread::sleep_for(std::chrono::seconds(20));
-		std::cout << "stop task manager..." << std::endl;	
+// 		std::cout << "stop task manager..." << std::endl;
+        stop_counter = 100u;
 		task_manager.stop(std::chrono::seconds(2), 2);
-		std::cout << "stop I/O service..." << std::endl;	
+// 		std::cout << "stop I/O service..." << std::endl;	
 		task_manager.get_io_service().stop();
+        BOOST_CHECK(task_manager.get_io_service().stopped());
 		
 		return true;
 	}

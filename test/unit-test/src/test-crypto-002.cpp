@@ -24,12 +24,17 @@ namespace cyng
 			crypto::aes_128_key key;
 			crypto::aes::randomize(key);
 
-			cyng::buffer_t inp{ 'h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!' };
+			cyng::buffer_t inp{ 'h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0' };
 			auto enc = crypto::aes::encrypt(inp, key);
 			auto dec = crypto::aes::decrypt(enc, key);
-			dec.at(13) = '\0';
-			//std::cout << std::string(dec.begin(), dec.end()) << std::endl;
-			//BOOST_CHECK_EQUAL(std::string(inp.begin(), inp.end()), std::string(dec.begin(), dec.end()));
+// 			dec.at(13) = '\0';
+// 			std::cout << std::string(dec.begin(), dec.end()) << std::endl;
+            BOOST_CHECK_EQUAL(inp.size(), 14);
+            BOOST_CHECK_EQUAL(dec.size(), 16);
+            for(std::size_t idx = 0; idx < inp.size(); ++idx) {
+                BOOST_CHECK_EQUAL(inp.at(idx), dec.at(idx));
+            }
+// 			BOOST_CHECK_EQUAL(std::string(inp.begin(), inp.end()), std::string(dec.begin(), dec.end()));
 		}
 
 		{
@@ -48,9 +53,14 @@ namespace cyng
 			auto enc = crypto::aes::encrypt(inp, key, iv);
 			auto dec = crypto::aes::decrypt(enc, key, iv);
 
-			dec.at(13) = '\0';
+// 			dec.at(13) = '\0';
 			//std::cout << std::string(dec.begin(), dec.end()) << std::endl;
 			//BOOST_CHECK_EQUAL(std::string(inp.begin(), inp.end()), std::string(dec.begin(), dec.end()));
+            BOOST_CHECK_EQUAL(inp.size(), 13);
+            BOOST_CHECK_EQUAL(dec.size(), 16);
+            for(std::size_t idx = 0; idx < inp.size(); ++idx) {
+                BOOST_CHECK_EQUAL(inp.at(idx), dec.at(idx));
+            }
 		}
 
 		{

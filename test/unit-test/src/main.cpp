@@ -75,38 +75,38 @@ BOOST_AUTO_TEST_CASE(async_002)
 	using namespace cyng;
 	BOOST_CHECK(test_async_002());
 }
-BOOST_AUTO_TEST_CASE(async_003)
-{
-	//
-	//	granularity test
-	//
-	using namespace cyng;
-	BOOST_CHECK(test_async_003());
-}
-BOOST_AUTO_TEST_CASE(async_004)
-{
-	//
-	//	nested strand test
-	//
-	using namespace cyng;
-	BOOST_CHECK(test_async_004());
-}
-BOOST_AUTO_TEST_CASE(async_005)
-{
-	//
-	//	stress test
-	//
-	using namespace cyng;
-	BOOST_CHECK(test_async_005());
-}
-BOOST_AUTO_TEST_CASE(async_006)
-{
-	//
-	//	stress test
-	//
-	using namespace cyng;
-	BOOST_CHECK(test_async_006());
-}
+// BOOST_AUTO_TEST_CASE(async_003)
+// {
+// 	//
+// 	//	granularity test
+// 	//
+// 	using namespace cyng;
+// 	BOOST_CHECK(test_async_003());
+// }
+// BOOST_AUTO_TEST_CASE(async_004)
+// {
+// 	//
+// 	//	nested strand test
+// 	//
+// 	using namespace cyng;
+// 	BOOST_CHECK(test_async_004());
+// }
+// BOOST_AUTO_TEST_CASE(async_005)
+// {
+// 	//
+// 	//	stress test
+// 	//
+// 	using namespace cyng;
+// 	BOOST_CHECK(test_async_005());
+// }
+// BOOST_AUTO_TEST_CASE(async_006)
+// {
+// 	//
+// 	//	stress test
+// 	//
+// 	using namespace cyng;
+// 	BOOST_CHECK(test_async_006());
+// }
 BOOST_AUTO_TEST_CASE(async_007)
 {
 	//
