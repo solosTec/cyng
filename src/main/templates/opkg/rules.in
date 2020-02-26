@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-INSTALLDIR := /tmp/oecp-cyng
+INSTALLDIR := /tmp/@OECP_NAME@
 
 build: build-stamp
 	make -j8 -C @PROJECT_BINARY_DIR@
