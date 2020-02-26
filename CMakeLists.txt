@@ -544,6 +544,12 @@ target_include_directories(cyng_async
 #
 include (lib/table/lib.cmake)
 add_library(cyng_table ${GLOBAL_LIBRARY_TYPE} ${table_lib})
+target_include_directories(cyng_table
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${OPENSSL_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng store library
@@ -798,7 +804,12 @@ endif()
 #
 include (tools/unlog/prg.cmake)
 add_executable(unlog ${unlog})
-set(unlog_link_libs cyng_core cyng_io)
+target_include_directories(unlog
+    PRIVATE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+        ${PUGIXML_INCLUDE_DIR}
+        ${BOOST_INCLUDE_DIR}
+)
 target_link_libraries(unlog 
 	cyng_core 
 	cyng_io
