@@ -76,6 +76,7 @@ message(STATUS "** CMake           : v${CMAKE_VERSION}")
 message(STATUS "** Generator       : ${CMAKE_GENERATOR}")
 message(STATUC "** Processor       : ${CMAKE_SYSTEM_PROCESSOR}")
 message(STATUS "** Platform        : ${CMAKE_SYSTEM}")
+message(STATUS "** System          : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "** Compiler        : ${CMAKE_CXX_COMPILER_ID} v${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "** Timestamp       : ${${PROJECT_NAME}_NOW_UTC}")
 message(STATUS "** CPU Cores       : ${${PROJECT_NAME}_CPU_COUNT}")
@@ -226,7 +227,7 @@ elseif(MSVC)
 	#
 	#	Target is Windows 10
 	#
-	add_definitions(-D_WIN32_WINNT=0x0A00 -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+	add_compile_definitions(_WIN32_WINNT=0x0A00 _SCL_SECURE_NO_WARNINGS _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
 	
 	#
 	# help CMake to find OpenSSL
@@ -240,6 +241,13 @@ else()
 
 	message( FATAL_ERROR "Unknown or missing compiler: ${CMAKE_CXX_COMPILER_ID}" )
 	
+endif()
+
+#
+#	add NODE_ADDRESS_MODEL=N
+#
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.4") 
+	add_compile_definitions(${PROJECT_NAME}_ADDRESS_MODEL=${${PROJECT_NAME}_ADDRESS_MODEL})
 endif()
 
 #
@@ -258,11 +266,7 @@ endif()
 if(${PROJECT_NAME}_SSL_SUPPORT)
     
     message(STATUS "** Search openSSL   : ${OPENSSL_ROOT_DIR}")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
-        find_package(OpenSSL 1.0.2 REQUIRED)
-    else()
-        find_package(OpenSSL 1.0.1 REQUIRED)
-    endif()
+    find_package(OpenSSL 1.1.0 REQUIRED)
     if(OPENSSL_FOUND)
 
         add_definitions(-D${PROJECT_NAME}_SSL_INSTALLED)
@@ -273,10 +277,7 @@ if(${PROJECT_NAME}_SSL_SUPPORT)
         message(STATUS "** openSSL crypto library: ${OPENSSL_CRYPTO_LIBRARY}")
         message(STATUS "** openSSL SSL library   : ${OPENSSL_SSL_LIBRARY}")
         message(STATUS "** openSSL Libraries     : ${OPENSSL_LIBRARIES}")
-    
-        include_directories(${OPENSSL_INCLUDE_DIR})
-        link_directories(${OPENSSL_LIBRARIES})
-        
+            
     endif()
     
 else()
@@ -295,22 +296,28 @@ set_property(TARGET cyng_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_definitions(-D${PROJECT_NAME}_SQLITE3_INSTALLED)
 set(${PROJECT_NAME}_SQLITE3_INSTALLED ON CACHE BOOL "SQLite3 Connector")
 
+if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+	#
+	#	SQLite3 shell works better with readline support,
+	# 	but to tricky on OECP platform
+	#
+	find_package(Readline)
+endif()
+
 #
 #
 #	SQLite3 shell
 include (3party/shell.cmake)
 add_executable(sqlite3 ${shell})
-if (WIN32)
-    target_link_libraries(sqlite3 cyng_sqlite3)
-else()
-    if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
-		target_compile_definitions(sqlite3 PRIVATE HAVE_READLINE)
-        target_link_libraries(sqlite3 cyng_sqlite3 pthread ${CMAKE_DL_LIBS} readline)
-    else()
-        target_link_libraries(sqlite3 cyng_sqlite3 pthread ${CMAKE_DL_LIBS})    
-    endif()
-endif()
+
 set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)
+
+target_link_libraries(sqlite3 
+	PRIVATE
+		cyng_sqlite3 
+		"<${READLINE_FOUND}>:readline>"
+		"$<$<PLATFORM_ID:Linux>:pthread;${CMAKE_DL_LIBS}>"
+)
 
 #
 #
@@ -479,7 +486,14 @@ add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
 if(${PROJECT_NAME}_SSL_SUPPORT)
     include (lib/io/mail/lib.cmake)
     add_library(cyng_mail ${GLOBAL_LIBRARY_TYPE} ${mail_lib})
-    target_link_libraries(cyng_mail ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES})
+	target_include_directories(cyng_mail
+		PRIVATE
+			"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+			${OPENSSL_INCLUDE_DIR}
+			${BOOST_INCLUDE_DIR}
+	)
+#     target_link_libraries(cyng_mail ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES})
+
 else()
     message(WARNING "** CYNG mail requires SSL support")
 endif()
@@ -626,41 +640,50 @@ add_executable(demo ${demo})
 	
 set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_mail;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_crypto;cyng_sqlite3")	
 
-set_target_properties(${CYNG_TARGET_LIST}
-  PROPERTIES
-    SOVERSION ${PROJECT_VERSION_MAJOR}
-    VERSION ${PROJECT_VERSION}
-)
-    
+if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+	#
+	# produce versioned libraries with softlinks 
+	# only for native builds. The hassle with the OPKG 
+	# toolchain to use symlinks is massive
+	#
+	set_target_properties(${CYNG_TARGET_LIST}
+	PROPERTIES
+		SOVERSION ${PROJECT_VERSION_MAJOR}
+		VERSION ${PROJECT_VERSION}
+	)
+endif()
+
 #
 # test unit using Boost.Test
 # BOOST_TEST_DYN_LINK is required to build a main() function
 # cmake -DCYNG_BUILD_TEST:bool=ON ..
 #
 if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
+
     include (test/unit-test/unit-test.cmake)
     add_executable(unit_test ${unit_test})
         
     # BOOST_TEST_DYN_LINK is required to build a main() function
-    set_property(
-        TARGET unit_test
-        PROPERTY COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE)
+    target_compile_definitions(unit_test
+    PRIVATE
+		BOOST_TEST_DYN_LINK BOOST_ASIO_HAS_MOVE
+    )
 
-    set(unittest_link_libs ${CYNG_TARGET_LIST} ${PUGIXML_LIBRARY})
+	target_include_directories(unit_test
+		PRIVATE
+			"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+			${OPENSSL_INCLUDE_DIR}
+			${BOOST_INCLUDE_DIR}
+	)
+	
+	target_link_libraries(unit_test 
+		${CYNG_TARGET_LIST} 
+		${PUGIXML_LIBRARY}
+		${OPENSSL_LIBRARIES}
+		"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
+		"$<$<PLATFORM_ID:Windows>:odbc32>"
+	)
 
-    if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-        list(APPEND unittest_link_libs ${Boost_LIBRARIES})
-        if (UNIX)
-            list(APPEND unittest_link_libs pthread)
-        endif()
-    else()
-        message(STATUS "** link unit-test        : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
-        list(APPEND unittest_link_libs ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} odbc32)
-    #	list(APPEND unittest_link_libs ${Boost_LIBRARIES})
-    endif()
-
-    #message(STATUS "** unit-test libs    : ${unittest_link_libs}")
-    target_link_libraries(unit_test ${unittest_link_libs})
 endif()
 
 #
@@ -669,13 +692,11 @@ endif()
 include (tools/unlog/prg.cmake)
 add_executable(unlog ${unlog})
 set(unlog_link_libs cyng_core cyng_io)
-if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	list(APPEND unlog_link_libs "${Boost_LIBRARIES}")
-    if (UNIX)
-        list(APPEND unlog_link_libs pthread)
-    endif()
-endif()
-target_link_libraries(unlog ${unlog_link_libs})
+target_link_libraries(unlog 
+	cyng_core 
+	cyng_io
+	"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
+	)
 install(TARGETS unlog
     RUNTIME
     DESTINATION bin)
@@ -685,14 +706,11 @@ install(TARGETS unlog
 #
 include (tools/play/prg.cmake)
 add_executable(play ${play})
-set(play_link_libs cyng_core cyng_io)
-if (${GLOBAL_LIBRARY_TYPE} STREQUAL "SHARED")
-	list(APPEND play_link_libs "${Boost_LIBRARIES}")
-    if (UNIX)
-        list(APPEND play_link_libs pthread)
-    endif()
-endif()
-target_link_libraries(play ${play_link_libs})
+target_link_libraries(play 
+	cyng_core 
+	cyng_io
+	"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
+)
 
 
 #
@@ -707,16 +725,18 @@ include(GenerateDoxygenDoc)
 #
 if(${PROJECT_NAME}_CROSS_COMPILE)
 
+	string(TOLOWER ${PROJECT_NAME} OECP_NAME)
+	
 	configure_file (
-		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/control"
+		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/control.in"
 		  "${PROJECT_BINARY_DIR}/opkg/control")
 
 	configure_file (
-		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/postinst"
+		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/postinst.in"
 		  "${PROJECT_BINARY_DIR}/opkg/postinst")
 
 	configure_file (
-		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/rules"
+		  "${PROJECT_SOURCE_DIR}/src/main/templates/opkg/rules.in"
 		  "${PROJECT_BINARY_DIR}/opkg/rules")
 		  
 endif()
