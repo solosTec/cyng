@@ -34,7 +34,7 @@ namespace cyng
 // 		
 		
 		core::wrapper<int> w(1);
-		BOOST_CHECK_EQUAL(w.get_class().type().name(), "i");
+		BOOST_CHECK_EQUAL(traits::get_type_name(w.get_class().tag()), "i32");
 		
 		using array_4 = int[4];
 		core::wrapper<array_4>();

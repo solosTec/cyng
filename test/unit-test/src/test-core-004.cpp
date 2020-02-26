@@ -25,7 +25,8 @@ namespace cyng
 // 39.1933
         
 // 		std::cout << chrono::to_string(std::chrono::system_clock::now()) << "---" << std::endl;
-        BOOST_CHECK_EQUAL(chrono::to_string(std::chrono::system_clock::now()).size(), 24);
+        auto const s = chrono::to_string(std::chrono::system_clock::now());
+        BOOST_CHECK_EQUAL(s.length(), 24);
 // 		
 // 		auto tp1 = make_object(std::chrono::system_clock::now());
 // 		tp1.serialize(std::cout) << std::endl;

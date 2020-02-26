@@ -21,7 +21,7 @@ namespace cyng
 		auto body = table::body_generator(1, 2, 3);
 		
 		
-		table::meta_table<2, 5> mt1("table-1");
+		//table::meta_table<2, 5> mt1("table-1");	//	crash
 		table::meta_table<2, 5> mt2("table-2", {"key-0", "key-1", "body-0", "body-1", "body-2", "body-3", "body-4"});
 		
 // 		std::cout << mt2.get_body_index("body-3").first << std::endl;

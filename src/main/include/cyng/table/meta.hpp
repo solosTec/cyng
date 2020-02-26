@@ -54,7 +54,9 @@ namespace cyng
 				, col_names_()
 				, col_types_()
 				, col_width_()
-			{}
+			{
+				BOOST_ASSERT_MSG(!name.empty(), "missing table name");
+			}
 
 			meta_table_base(std::string const& name, col_names_t && cols)
 				: name_(name)
@@ -62,7 +64,8 @@ namespace cyng
 				, col_types_()
 				, col_width_()
 			{
-				BOOST_ASSERT_MSG(std::none_of(cols.begin(), cols.end(), [](std::string const& str) {
+				BOOST_ASSERT_MSG(!name.empty(), "missing table name");
+				BOOST_ASSERT_MSG(std::none_of(col_names_.begin(), col_names_.end(), [](std::string const& str) {
 					return str.empty();
 				}), "column names incomplete");
 			}
@@ -72,14 +75,24 @@ namespace cyng
 				, col_names_(std::move(cols))
 				, col_types_(types)
 				, col_width_()
-			{}
+			{
+				BOOST_ASSERT_MSG(!name.empty(), "missing table name");
+				BOOST_ASSERT_MSG(std::none_of(col_names_.begin(), col_names_.end(), [](std::string const& str) {
+					return str.empty();
+					}), "column names incomplete");
+			}
 
 			meta_table_base(std::string const& name, col_names_t && cols, col_types_t && types, col_width_t && widths)
 				: name_(name)
 				, col_names_(std::move(cols))
 				, col_types_(types)
 				, col_width_(widths)
-			{}
+			{
+				BOOST_ASSERT_MSG(!name.empty(), "missing table name");
+				BOOST_ASSERT_MSG(std::none_of(col_names_.begin(), col_names_.end(), [](std::string const& str) {
+					return str.empty();
+					}), "column names incomplete");
+			}
 
 		protected:
 			/**

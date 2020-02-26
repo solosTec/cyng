@@ -178,11 +178,11 @@ namespace cyng
 #ifdef _MSC_VER
 			char str[26];
 			::ctime_s(str, sizeof str, &tt);
-			std::string s(str, sizeof str);
+			std::string const s(str, sizeof str);
 #else
-			std::string s = std::ctime(&tt);
+			std::string const s = std::ctime(&tt);
 #endif
-			return s.substr(0, s.size() - 1);	//	remove NL
+			return s.substr(0, 24);	//	remove NL
 		}
 		
 		std::tm make_utc_tm(std::chrono::system_clock::time_point tp)

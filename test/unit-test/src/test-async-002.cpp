@@ -138,7 +138,7 @@ namespace cyng
 		//
 #if !BOOST_COMP_GNUC
 		//	doesn't compile with g++
-		task_manager.send<task_002, 0ul>(tuple_factory(200, "event-5"));
+		//task_manager.send<task_002, 0ul>(tuple_factory(200, "event-5"));
 #endif
 		
 		for (int idx = 0; idx < 10; idx++)

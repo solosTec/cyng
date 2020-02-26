@@ -14,21 +14,26 @@
 #include <cyng/factory.h>
 #include <chrono>
 #include <future>
+#include <atomic>
 #include <boost/uuid/nil_generator.hpp>
 
 namespace cyng 
 {
+	static std::atomic<int> access_counter{ 0 };
 
 	void fun_1(store::db& v)
 	{
 		v.access([](store::table* t1, const store::table* t2)->void{
 			
-			std::cout 
-			<< "2a. attempt: "
-			<< t1->meta().get_name() 
-			<< ", "
-			<< t2->meta().get_name() 
-			<< std::endl;
+			++access_counter;
+			BOOST_CHECK_EQUAL(access_counter, 1);
+			--access_counter;
+			//std::cout 
+			//<< "2a. attempt: "
+			//<< t1->meta().get_name() 
+			//<< ", "
+			//<< t2->meta().get_name() 
+			//<< std::endl;
 			
 		}, store::write_access("table-1"), store::read_access("table-2"));
 		
@@ -39,12 +44,15 @@ namespace cyng
 	{
 		v.access([](const store::table* t1, store::table* t2)->void{
 			
-			std::cout 
-			<< "2b. attempt: "
-			<< t1->meta().get_name() 
-			<< ", "
-			<< t2->meta().get_name() 
-			<< std::endl;
+			++access_counter;
+			BOOST_CHECK_EQUAL(access_counter, 1);
+			--access_counter;
+			//std::cout 
+			//<< "2b. attempt: "
+			//<< t1->meta().get_name() 
+			//<< ", "
+			//<< t2->meta().get_name() 
+			//<< std::endl;
 			
 		}, store::read_access("table-1"), store::write_access("table-2"));
 		
@@ -73,12 +81,12 @@ namespace cyng
 		
 		db_1.access([](store::table const* t1, store::table* t2)->void{
 			
-			std::cout 
-			<< "1. attempt: "
-			<< t1->meta().get_name() 
-			<< ", "
-			<< t2->meta().get_name() 
-			<< std::endl;
+			//std::cout 
+			//<< "1. attempt: "
+			//<< t1->meta().get_name() 
+			//<< ", "
+			//<< t2->meta().get_name() 
+			//<< std::endl;
 			
 // 			std::this_thread::sleep_for(std::chrono::seconds(5));
 			
@@ -95,17 +103,17 @@ namespace cyng
 		
 		db_1.access([](store::table* t1, const store::table* t2)->void{
 			
-			std::cout 
-			<< "3. attempt: "
-			<< t1->meta().get_name() 
-			<< ", "
-			<< t2->meta().get_name() 
-			<< std::endl;
+			//std::cout 
+			//<< "3. attempt: "
+			//<< t1->meta().get_name() 
+			//<< ", "
+			//<< t2->meta().get_name() 
+			//<< std::endl;
 			
 		}, store::write_access("table-1"), store::read_access("table-2"));
 
 		std::this_thread::sleep_for(std::chrono::seconds(5));
-		return true;
+		return access_counter == 0;
 	}
 	
 }

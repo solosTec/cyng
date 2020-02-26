@@ -43,11 +43,13 @@ namespace cyng
 
 			auto rec = tbl->min_record();
 			BOOST_CHECK(!rec.empty());
-			std::cout << "min: " << cyng::value_cast<std::uint32_t>(rec["pk"], -1) << std::endl;
+			auto const lmin = cyng::value_cast<std::uint32_t>(rec["pk"], -1);
+			BOOST_CHECK_EQUAL(lmin, 0);
 
 			rec = tbl->max_record();
 			BOOST_CHECK(!rec.empty());
-			std::cout << "max: " << cyng::value_cast<std::uint32_t>(rec["pk"], 0) << std::endl;
+			auto const lmax = cyng::value_cast<std::uint32_t>(rec["pk"], -1);
+			BOOST_CHECK_EQUAL(lmax, 99);
 
 		}, store::read_access("msg"));
 
