@@ -176,6 +176,52 @@ namespace cyng
 			return sql_from(meta_, dialect_, std::move(stream_));
 		}
 
+		sql_from sql_select::pk()
+		{
+			//
+			//	only pk
+			//
+			bool init_flag = false;
+			meta_->loop([this, &init_flag](column&& col) {
+				if (col.pk_) {
+					if (!init_flag) {
+						init_flag = true;
+					}
+					else {
+						stream_ << ", ";
+					}
+
+					stream_ << get_full_col_name(col);
+				}
+			});
+
+			stream_ << ' ';
+			return sql_from(meta_, dialect_, std::move(stream_));
+		}
+
+		sql_from sql_select::body()
+		{
+			//
+			//	only NOT pk
+			//
+			bool init_flag = false;
+			meta_->loop([this, &init_flag](column&& col) {
+				if (!col.pk_) {
+					if (!init_flag) {
+						init_flag = true;
+					}
+					else {
+						stream_ << ", ";
+					}
+
+					stream_ << get_full_col_name(col);
+				}
+				});
+
+			stream_ << ' ';
+			return sql_from(meta_, dialect_, std::move(stream_));
+		}
+
 		sql_from sql_select::count()
 		{
 			stream_

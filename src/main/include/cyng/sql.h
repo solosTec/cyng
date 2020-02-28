@@ -62,6 +62,8 @@ namespace cyng
 			base(meta_table_ptr, dialect, std::stringstream&&);
 			base(base&&) = default;
 
+			base& operator=(base&&) = default;
+
 			bool do_skip(std::string) const;
 
 			/**
@@ -236,6 +238,16 @@ namespace cyng
 			 */
 			sql_from all();
 
+			/**
+			 * Select only columns of the primary key
+			 */
+			sql_from pk();
+
+			/**
+			 * Select only columns not part of the primary key
+			 */
+			sql_from body();
+
 			//
 			//	aggregate functions
 			//
@@ -338,7 +350,9 @@ namespace cyng
 		{
 		public:
 			command(meta_table_ptr, dialect);
-			
+			command(command&&) = default;
+			command& operator=(command&&) = default;
+
 			/**
 			 * Create a select clause.
 			 */
@@ -387,7 +401,7 @@ namespace cyng
 		private:
 			void clear();
 			void clear(std::string const&);
-					};
+		};
 	}	
 }
 

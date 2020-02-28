@@ -40,6 +40,10 @@ namespace cyng
 		//cmd.select()[sql::constant<int>(1), sql::column(2)].where(sql::column(2) == sql::make_placeholder());
 		//std::cout << cmd.to_str() << std::endl;
 
+		auto const tp = chrono::init_tp(2020, 10, 31, 11, 44, 21);
+		sql = cmd.select()[sql::column(2)].where(sql::column(3) < sql::constant(tp))();
+		BOOST_CHECK_EQUAL(sql, "SELECT name FROM employees WHERE (age < julianday('2020-10-31 11:44:21')) ");
+
 		sql = cmd.create().to_str();
 		BOOST_CHECK_EQUAL(sql, "CREATE TABLE IF NOT EXISTS employees (id INT, name TEXT, age FLOAT, PRIMARY KEY(id, name))");
 
