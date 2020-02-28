@@ -126,7 +126,7 @@ if(Boost_FOUND)
 	link_directories(${Boost_LIBRARY_DIRS})
 	
 	set(${PROJECT_NAME}_BOOST_LIBRARY ${PROJECT_NAME}_BOOST_LIBRARY_FOUND)
-	set(${PROJECT_NAME}_BOOST_VERSION ${PROJECT_NAME}_BOOST_${Boost_VERSION})
+	set(${PROJECT_NAME}_BOOST_VERSION ${Boost_VERSION})
 	
 	# support for unicode
 	# increase MPL list size for Boost.Variant
