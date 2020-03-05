@@ -10,10 +10,10 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/factory.h>
 #include <cyng/type.h>
-#include <cyng/crypto/hash/md5.h>
-#include <cyng/crypto/hash/sha1.h>
-#include <cyng/crypto/hash/sha256.h>
-#include <cyng/crypto/hash/sha512.h>
+//#include <cyng/crypto/hash/md5.h>
+//#include <cyng/crypto/hash/sha1.h>
+//#include <cyng/crypto/hash/sha256.h>
+//#include <cyng/crypto/hash/sha512.h>
 #include <cyng/io/serializer.h>
 #include <cyng/io/parser/parser.h>
 
@@ -495,13 +495,13 @@ void write_test_data(std::ostream& os)
 	//color_16,
 	
 	//crypto::digest_md5,
-	io::serialize_binary ( os, make_object ( crypto::digest_md5 ( md5_hash ( "hash me" ) ) ) );
+	//io::serialize_binary ( os, make_object ( crypto::digest_md5 ( md5_hash ( "hash me" ) ) ) );
 	//crypto::digest_sha1,
-	io::serialize_binary ( os, make_object ( crypto::digest_sha1 ( sha1_hash ( "hash me" ) ) ) );
+	//io::serialize_binary ( os, make_object ( crypto::digest_sha1 ( sha1_hash ( "hash me" ) ) ) );
 	//crypto::digest_sha256,
-	io::serialize_binary ( os, make_object ( crypto::digest_sha256 ( sha256_hash ( "hash me" ) ) ) );
+	//io::serialize_binary ( os, make_object ( crypto::digest_sha256 ( sha256_hash ( "hash me" ) ) ) );
 	//crypto::digest_sha512,
-	io::serialize_binary ( os, make_object ( crypto::digest_sha512 ( sha512_hash ( "hash me" ) ) ) );
+	//io::serialize_binary ( os, make_object ( crypto::digest_sha512 ( sha512_hash ( "hash me" ) ) ) );
 	
 	//object, 		//	embedded object - don't do this
 	
@@ -712,87 +712,87 @@ void read_test_data ( vector_t&& prg )
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_MAC64 );
 				BOOST_CHECK_EQUAL ( str, "ff00:4bb0:aabe:ccbb" );
 				break;
+			//case 30:
+			//	//crypto:MD5
+			//	BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_MD5 );
+			//	BOOST_CHECK_EQUAL ( str, "17b31dce96b9d6c6d0a6ba95f47796fb" );
+			//	break;
+			//case 31:
+			//	//crypto:SHA1
+			//	BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_SHA1 );
+			//	BOOST_CHECK_EQUAL ( str, "43f932e4f7c6ecd136a695b7008694bb69d517bd" );
+			//	break;
+			//case 32:
+			//	//crypto:SHA256
+			//	BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_SHA256 );
+			//	BOOST_CHECK_EQUAL ( str, "eb201af5aaf0d60629d3d2a61e466cfc0fedb517add831ecac5235e1daa963d6" );
+			//	break;
+			//case 33:
+			//	//crypto:SHA512
+			//	BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_SHA512 );
+			//	BOOST_CHECK_EQUAL ( str, "8529afcbc87cc6ea6eac37d12b60d9a87095170811b6b61036fda72a5e5446041b29ca48fc20aa3a493f62fd10b55e6ccaca4ce18e7bd7e285ec30929783bf59" );
+			//	break;
 			case 30:
-				//crypto:MD5
-				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_MD5 );
-				BOOST_CHECK_EQUAL ( str, "17b31dce96b9d6c6d0a6ba95f47796fb" );
-				break;
-			case 31:
-				//crypto:SHA1
-				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_SHA1 );
-				BOOST_CHECK_EQUAL ( str, "43f932e4f7c6ecd136a695b7008694bb69d517bd" );
-				break;
-			case 32:
-				//crypto:SHA256
-				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_SHA256 );
-				BOOST_CHECK_EQUAL ( str, "eb201af5aaf0d60629d3d2a61e466cfc0fedb517add831ecac5235e1daa963d6" );
-				break;
-			case 33:
-				//crypto:SHA512
-				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_DIGEST_SHA512 );
-				BOOST_CHECK_EQUAL ( str, "8529afcbc87cc6ea6eac37d12b60d9a87095170811b6b61036fda72a5e5446041b29ca48fc20aa3a493f62fd10b55e6ccaca4ce18e7bd7e285ec30929783bf59" );
-				break;
-			case 34:
 				//i32
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_INT32 );
 				BOOST_CHECK_EQUAL ( str, "1" );
 				break;
-			case 35:
+			case 31:
 				//i32
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_INT32 );
 				BOOST_CHECK_EQUAL ( str, "2" );
 				break;
-			case 36:
+			case 32:
 				//i32
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_INT32 );
 				BOOST_CHECK_EQUAL ( str, "3" );
 				break;
-			case 37:
+			case 33:
 				//u64
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_UINT64 );
 				BOOST_CHECK_EQUAL ( str, "3" );
 				break;
-			case 38:
+			case 34:
 				//op
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_CODE );
 				BOOST_CHECK_EQUAL ( str, "op:VEC" );
 				break;
-			case 39:
+			case 35:
 				//u64
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_UINT64 );
 				BOOST_CHECK_EQUAL ( str, "0" );
 				break;
-			case 40:
+			case 36:
 				//op
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_CODE );
 				BOOST_CHECK_EQUAL ( str, "op:VEC" );
 				break;
-			case 41:
+			case 37:
 				//uuid
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_UUID );
 				BOOST_CHECK_EQUAL ( str, "2f28413a-d69f-4fc6-b39b-14ff401b15d2" );
 				break;
-			case 42:
+			case 38:
 				//fs:path
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_FS_PATH );
 				BOOST_CHECK_EQUAL ( str, "\"demo.txt\"" );
 				break;
-			case 43:
+			case 39:
 				//ip:tcp:endpoint
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_IP_TCP_ENDPOINT );
 				BOOST_CHECK_EQUAL ( str, "127.0.0.1:20015" );
 				break;
-			case 44:
+			case 40:
 				//ip:udp:endpoint
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_IP_UDP_ENDPOINT );
 				BOOST_CHECK_EQUAL ( str, "127.0.0.1:20016" );
 				break;
-			case 45:
+			case 41:
 				//ip:icmp:endpoint
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_IP_ICMP_ENDPOINT );
 				BOOST_CHECK_EQUAL ( str, "127.0.0.1:20017" );
 				break;
-			case 46:
+			case 42:
 				//ip:address
 				BOOST_CHECK_EQUAL ( obj.get_class().tag(), TC_IP_ADDRESS );
 				BOOST_CHECK_EQUAL ( str, "172.16.254.1" );

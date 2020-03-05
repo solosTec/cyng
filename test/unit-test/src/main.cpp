@@ -139,15 +139,15 @@ BOOST_AUTO_TEST_CASE(io_003)
 }
 BOOST_AUTO_TEST_SUITE_END()	//	IO
 
-#include "test-mail-001.h"
+//#include "test-mail-001.h"
 
-BOOST_AUTO_TEST_SUITE(MAIL)
-BOOST_AUTO_TEST_CASE(mail_001)
-{
-	using namespace cyng;
-	BOOST_CHECK(test_mail_001());
-}
-BOOST_AUTO_TEST_SUITE_END()	//	MAIL
+//BOOST_AUTO_TEST_SUITE(MAIL)
+//BOOST_AUTO_TEST_CASE(mail_001)
+//{
+//	using namespace cyng;
+//	BOOST_CHECK(test_mail_001());
+//}
+//BOOST_AUTO_TEST_SUITE_END()	//	MAIL
 
 #include "test-log-001.h"
 
@@ -278,16 +278,6 @@ BOOST_AUTO_TEST_CASE(json_001)
 	BOOST_CHECK(test_json_001());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	JSON
-
-#include "test-crypto-002.h"
-
-BOOST_AUTO_TEST_SUITE(CRYPTO)
-BOOST_AUTO_TEST_CASE(crypto_002)
-{
-	using namespace cyng;
-	BOOST_CHECK(test_crypto_002());
-}
-BOOST_AUTO_TEST_SUITE_END()	//	CRYPTO
 
 #ifdef	CYNG_PUGIXML_INSTALLED
 #include "test-xml-001.h"

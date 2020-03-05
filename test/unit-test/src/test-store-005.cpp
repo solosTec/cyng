@@ -12,7 +12,7 @@
 #include <cyng/store/db.h>
 #include <cyng/value_cast.hpp>
 #include <cyng/intrinsics.h>
-#include <cyng/crypto/aes.h>
+//#include <cyng/crypto/aes.h>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/uuid/nil_generator.hpp>
@@ -38,14 +38,14 @@ namespace cyng
 			//
 			//	new key
 			//
-			crypto::aes::randomize(key);
+			//crypto::aes::randomize(key);
 
-			database.insert("tbl.05"
-				, table::key_generator(idx)
-				, table::data_generator(std::to_string(idx)
-				, key)
-				, 0	//	generation
-				, boost::uuids::nil_uuid());
+			//database.insert("tbl.05"
+			//	, table::key_generator(idx)
+			//	, table::data_generator(std::to_string(idx)
+			//	, key)
+			//	, 0	//	generation
+			//	, boost::uuids::nil_uuid());
 		}
 
 		database.access([](store::table const* tbl)->void {

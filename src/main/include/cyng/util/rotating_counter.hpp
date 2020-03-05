@@ -4,8 +4,8 @@
  * Copyright (c) 2017 Sylko Olzscher
  *
  */
-#ifndef CYNG_CRYPTO_ROTATING_COUNTER_HPP
-#define CYNG_CRYPTO_ROTATING_COUNTER_HPP
+#ifndef CYNG_UTIL_ROTATING_COUNTER_HPP
+#define CYNG_UTIL_ROTATING_COUNTER_HPP
 
 #include <boost/assert.hpp>
 
@@ -128,4 +128,4 @@ namespace cyng
 	
 }	//	cyng
 
-#endif // CYNG_CRYPTO_ROTATING_COUNTER_HPP
+#endif

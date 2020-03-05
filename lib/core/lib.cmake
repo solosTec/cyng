@@ -14,7 +14,6 @@ set (core_cpp
   	lib/core/src/tree_walker.cpp
   	lib/core/src/reader.cpp
   	lib/core/src/algorithm.cpp
-  	lib/core/src/split.cpp
 )
     
 set (core_h
@@ -37,8 +36,14 @@ set (core_h
     src/main/include/cyng/dom/algorithm.h
 
     src/main/include/cyng/compatibility/general.h
+)
+
+set (core_util
     src/main/include/cyng/util/slice.hpp    
     src/main/include/cyng/util/split.h
+    src/main/include/cyng/util/scrambler.hpp
+    src/main/include/cyng/util/rotating_counter.hpp
+  	lib/core/src/split.cpp
 )
 
 if (${PROJECT_NAME}_LEGACY_MODE EQUAL ${PROJECT_NAME}_LEGACY_MODE_ON)
@@ -106,11 +111,16 @@ set (core_intrinsics
     src/main/include/cyng/intrinsics/traits/tag.hpp
     src/main/include/cyng/intrinsics/traits/tag_names.hpp    
     src/main/include/cyng/intrinsics/traits.hpp
+
+    src/main/include/cyng/intrinsics/digest.h
+    src/main/include/cyng/intrinsics/aes_keys.hpp
+
 )
 
 source_group("factory" FILES ${core_factory})
 source_group("intrinsics" FILES ${core_intrinsics})
 source_group("casts" FILES ${core_casts})
+source_group("util" FILES ${core_util})
 
 # define the core lib
 set (core_lib
@@ -120,4 +130,5 @@ set (core_lib
   ${core_factory}
   ${core_intrinsics}
   ${core_casts}
+  ${core_util}
 )

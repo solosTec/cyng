@@ -19,14 +19,14 @@ set (crypto_h
     src/main/include/cyng/crypto/hash/sha1.h
     src/main/include/cyng/crypto/hash/sha256.h
     src/main/include/cyng/crypto/hash/sha512.h
-    src/main/include/cyng/crypto/scrambler.hpp
-    src/main/include/cyng/crypto/rotating_counter.hpp
+#    src/main/include/cyng/crypto/scrambler.hpp
+#    src/main/include/cyng/crypto/rotating_counter.hpp
     src/main/include/cyng/crypto/aes.h
 )
 
 set (crypto_intrinsics
-    src/main/include/cyng/intrinsics/digest.h
-    src/main/include/cyng/crypto/aes_keys.h
+#    src/main/include/cyng/intrinsics/digest.h
+#    src/main/include/cyng/crypto/aes_keys.h
 )
 
 source_group("intrinsics" FILES ${crypto_intrinsics})

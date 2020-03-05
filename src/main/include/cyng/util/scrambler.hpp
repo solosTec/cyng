@@ -4,10 +4,10 @@
  * Copyright (c) 2017 Sylko Olzscher
  *
  */
-#ifndef CYNG_CRYPTO_SCRAMBLER_HPP
-#define CYNG_CRYPTO_SCRAMBLER_HPP
+#ifndef CYNG_UTIL_SCRAMBLER_HPP
+#define CYNG_UTIL_SCRAMBLER_HPP
 
-#include <cyng/crypto/rotating_counter.hpp>
+#include <cyng/util/rotating_counter.hpp>
 #include <cstring>
 
 namespace cyng 
@@ -120,5 +120,5 @@ namespace cyng
 	}
 }
 
-#endif	//	CYNG_CRYPTO_SCRAMBLER_HPP
+#endif
 
