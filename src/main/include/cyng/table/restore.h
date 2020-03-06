@@ -15,6 +15,7 @@ namespace cyng
 	{
         /**
          * restore a data type from a string and a type code
+         * Note: could throw
          */
         object restore(std::string, std::uint32_t);
 		
