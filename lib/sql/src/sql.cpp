@@ -383,6 +383,11 @@ namespace cyng
 
 		}
 
+		sql_where sql_from::skip()
+		{
+			return sql_where(meta_, dialect_, std::move(stream_));
+		}
+
 
 		sql_order::sql_order(meta_table_ptr m, dialect dia, std::stringstream&& os)
 			: base(m, dia, std::move(os))

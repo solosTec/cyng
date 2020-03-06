@@ -204,6 +204,11 @@ namespace cyng
 			 */
 			sql_where by_key();
 
+			/**
+			 * skip any selection
+			 */
+			sql_where skip();
+
 		};
 		
 		/**
