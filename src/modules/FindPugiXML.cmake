@@ -40,6 +40,7 @@ find_package_handle_standard_args( PugiXML
 
 if(PugiXML_FOUND)
 
+    set(PUGIXML_VERSION ${PugiXML_VERSION})
     set(PUGIXML_LIBRARY ${PugiXML_LIBRARIES})
     set(PUGIXML_INCLUDE_DIR ${PugiXML_INCLUDE_DIRS})
     

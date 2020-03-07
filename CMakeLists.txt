@@ -97,11 +97,7 @@ if(UNIX)
 	)
 	message(STATUS "** System          : ${LSB_RELEASE_ID_SHORT}")
 else()
-	# has no meaning on VS
-	if( NOT CMAKE_BUILD_TYPE )
-		set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build Type")
-		message(STATUS "** Set build type  : ${CMAKE_BUILD_TYPE}")
-	endif()
+	# CMAKE_BUILD_TYPE has no meaning on VS (Multi-configuration)
 	
 	# no lsb_release available
 	set(LSB_RELEASE_ID_SHORT ${CMAKE_SYSTEM_NAME} )
@@ -143,6 +139,11 @@ endif()
 set (${PROJECT_NAME}_NULL_HASH "0x${__RND_VALUE_NULL}")
 set (${PROJECT_NAME}_EOD_HASH "0x${__RND_VALUE_EOD}")
 set (${PROJECT_NAME}_DUMMY_HASH "0x${__RND_VALUE_DUMMY}")
+
+#
+#   Produce some internal variables
+#
+string(LENGTH ${PROJECT_NAME} PROJECT_NAME_LENGTH)
 
 #
 # manage unit test: CYNG_BUILD_TEST
