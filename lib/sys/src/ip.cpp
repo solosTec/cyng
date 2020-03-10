@@ -40,7 +40,7 @@ namespace cyng
 				//
 				//	get hostname
 				//
-				std::string const host = boost::asio::ip::host_name();
+				auto const host = boost::asio::ip::host_name();
 
 				//
 				//	resolve all addresses of this hostname

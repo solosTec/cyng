@@ -28,7 +28,25 @@ namespace cyng
 #if BOOST_OS_LINUX
 		std::vector<std::string> get_ntp_servers()
 		{
-			return std::vector<std::string>{};
+			std::vector<std::string>	result;
+#if defined(CYNG_CROSS_COMPILE)
+// 			
+			boost::filesystem::path const p{"/usr/local/etc/ntphost"};
+			
+			//	open file
+			std::ifstream infile(p.string(), std::ios::in);
+			
+			//	read line by line
+			std::string line;
+			while (std::getline(infile, line))
+			{
+				result.push_back(line);
+			}
+			
+#else
+			//	ToDo:
+#endif
+			return result;
 		}
 #endif
 

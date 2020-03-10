@@ -32,6 +32,8 @@
 #cmakedefine01 CYNG_MYSQL_INSTALLED
 #cmakedefine01 CYNG_OLEDB_INSTALLED
 
+#cmakedefine CYNG_CROSS_COMPILE
+
 namespace @PROJECT_NAME@
 {
 	char const project_name[@PROJECT_NAME_LENGTH@ + 1] = "@PROJECT_NAME@";

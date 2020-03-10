@@ -35,8 +35,8 @@ namespace cyng
 			// sol@paramount:~> cat /sys/class/net/eno16777736/address
 			// 00:0c:29:cc:e3:d4
 
-			const boost::filesystem::path root("/sys/class/net/");
-			const boost::filesystem::path p = root / name / "address";
+			boost::filesystem::path const root("/sys/class/net/");
+			boost::filesystem::path const p = root / name / "address";
             std::vector<mac48>	result;
 
 			//	open file

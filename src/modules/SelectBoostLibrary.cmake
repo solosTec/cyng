@@ -98,7 +98,15 @@ if(Boost_FOUND)
 	message(STATUS "** Boost Version    : ${Boost_VERSION}")
 	message(STATUS "** Boost Include    : ${Boost_INCLUDE_DIRS}")
 	message(STATUS "** Boost Path       : ${Boost_LIBRARY_DIRS}")
+	
 	message(STATUS "** Boost Libraries  : ${Boost_LIBRARIES}")
+	message(STATUS "** Boost thread     : ${Boost_THREAD_LIBRARY}")
+	message(STATUS "** Boost system     : ${Boost_SYSTEM_LIBRARY}")
+	message(STATUS "** Boost filesystem : ${Boost_FILESYSTEM_LIBRARY}")
+	message(STATUS "** Boost program opt: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
+	message(STATUS "** Boost random     : ${Boost_RANDOM_LIBRARY}")
+	message(STATUS "** Boost regex      : ${Boost_REGEX_LIBRARY}")
+	message(STATUS "** Boost test       : ${Boost_UNIT_TEST_FRAMEWORK}")
 
 	if(Boost_VERSION VERSION_LESS "106600")
 		#
