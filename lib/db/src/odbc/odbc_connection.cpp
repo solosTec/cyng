@@ -23,9 +23,6 @@ namespace cyng
 			{
 				::SQLDisconnect(dbc_);
 				//	handles should be freed automatically
-				//	force a special order
-				//dbc_.~odbc_handle();
-				//env_.~odbc_handle();
 			}
 
 			connection::operator const SQLHDBC& () const	

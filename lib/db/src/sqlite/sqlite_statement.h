@@ -66,8 +66,17 @@ namespace cyng
 				 */
 				virtual void clear() override;
 				
+				/**
+				 * @return result set
+				 */
 				virtual result_ptr get_result() override;
 				
+				/**
+				 * This function returns the number of rows modified, inserted or deleted by the most recently
+				 * completed INSERT, UPDATE or DELETE statement on the database connection specified by the only parameter.
+				 */
+				virtual int changes() override;
+
 			private:
 				bool is_valid() const;
 //				bool bind_null(int index);

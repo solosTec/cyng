@@ -457,6 +457,13 @@ namespace cyng
 				return result_ptr();
 			}
 			
+			int statement::changes()
+			{
+				SQLLEN   row_count = 0;
+				::SQLRowCount(stmt_, &row_count);
+				return static_cast<int>(row_count);
+			}
+
 			bool statement::step() 
 			{
 				BOOST_ASSERT_MSG((state_ == STATE_EXECUTED) || (state_ == STATE_POSITIONED)

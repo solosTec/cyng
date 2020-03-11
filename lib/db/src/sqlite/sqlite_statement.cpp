@@ -558,6 +558,11 @@ namespace cyng
 				return result_ptr();
 			}
 			
+			int statement::changes()
+			{
+				return ::sqlite3_changes(connection_);
+			}
+
 			template < type_code C >
 			bool statement::bind_value_by_code(object obj, std::size_t column_size)
 			{

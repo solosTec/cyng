@@ -61,7 +61,17 @@ namespace cyng
 			 */
 			virtual void clear() = 0;
 
+			/**
+			 * @return result set
+			 */
 			virtual result_ptr get_result() = 0;
+
+			/**
+			 * This function returns the number of rows modified, inserted or deleted by the most recently 
+			 * completed INSERT, UPDATE or DELETE statement on the database connection specified by the only parameter.
+			 */
+			virtual int changes() = 0;
+
 		};
 		
 		typedef std::shared_ptr< interface_statement >	statement_ptr;

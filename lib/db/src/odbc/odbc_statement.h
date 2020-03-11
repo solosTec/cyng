@@ -67,8 +67,17 @@ namespace cyng
 				 */
 				virtual void clear() override;
 
+				/**
+				 * @return result set
+				 */
 				virtual result_ptr get_result() override;
 				
+				/**
+				 * This function returns the number of rows modified, inserted or deleted by the most recently
+				 * completed INSERT, UPDATE or DELETE statement on the database connection specified by the only parameter.
+				 */
+				virtual int changes() override;
+
 			public:
 				//	NULL data argument
 				static SQLLEN	null_data_;
@@ -76,35 +85,6 @@ namespace cyng
 				
 			private:
 				bool is_valid() const;
-				//bool bind_null(int index);
-				//bool bind_value(int index, std::string const* value);
-				//bool bind_value(int, std::int8_t);
-				//bool bind_value(int, std::uint8_t);
-				//bool bind_value(int, std::int16_t);
-				//bool bind_value(int, std::uint16_t);
-				//bool bind_value(int, std::int32_t);
-				//bool bind_value(int, std::uint32_t);
-				//bool bind_value(int, std::int64_t);
-				//bool bind_value(int, std::uint64_t);
-				//bool bind_value(int, bool);
-				//bool bind_value(int, float);
-				//bool bind_value(int, double);
-				//bool bind_value(int, cyng::buffer_t const*);
-				//bool bind_value(int, cyng::version);
-				//bool bind_value(int, cyng::revision);
-				//bool bind_value(int, cyng::chrono::days);
-				//bool bind_value(int, std::chrono::nanoseconds);
-				//bool bind_value(int, std::chrono::microseconds);
-				//bool bind_value(int, std::chrono::milliseconds);
-				//bool bind_value(int, std::chrono::seconds);
-				//bool bind_value(int, std::chrono::minutes);
-				//bool bind_value(int, std::chrono::hours);
-				//bool bind_value(int, std::chrono::system_clock::time_point);
-				//bool bind_value(int, cyng::attr_t const&);
-				//bool bind_value(int, cyng::param_t const&);
-				//
-				////	m2m data types
-				//bool bind_value(int, cyng::m2m::obis const&);
 
 				/**
 				 *	Guarantee ODBC statement is in proper state.
