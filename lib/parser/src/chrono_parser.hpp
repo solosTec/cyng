@@ -123,6 +123,25 @@ namespace cyng
 			}
 		};
 		
+		struct time_span_seconds_factory
+		{
+			template < typename A >
+			struct result { typedef std::chrono::seconds type; };
+
+			std::chrono::seconds operator()(const boost::fusion::vector<std::uint8_t, std::uint8_t, double>& arg) const
+			{
+				auto secs = boost::fusion::at_c< 2 >(arg);
+				auto minutes = boost::fusion::at_c< 1 >(arg);
+				auto hours = boost::fusion::at_c< 0 >(arg);
+
+				std::chrono::seconds::rep count = static_cast<std::chrono::seconds::rep>(secs)
+					+ (minutes * 60ULL * 1000ULL * 1000ULL)
+					+ (hours * 60ULL * 60ULL * 1000ULL * 1000ULL)
+					;
+				return std::chrono::seconds(count);
+			}
+		};
+
 		struct time_span_minutes_factory
 		{
 			template < typename A >
@@ -268,6 +287,29 @@ namespace cyng
 			>> boost::spirit::qi::double_	//	sec
 			;
 	}
+
+	template <typename Iterator>
+	timespan_parser_seconds< Iterator >::timespan_parser_seconds()
+		: timespan_parser_seconds::base_type(r_start)
+	{
+		boost::phoenix::function<time_span_seconds_factory>	make_time_span;
+
+		r_start
+			= boost::spirit::qi::lit("m:a:x")[boost::spirit::_val = std::chrono::minutes::max()]
+			| boost::spirit::qi::lit("m:i:n")[boost::spirit::_val = std::chrono::minutes::min()]
+			| boost::spirit::qi::lit("n:i:l")[boost::spirit::_val = std::chrono::minutes::zero()]
+			| r_span[boost::spirit::_val = make_time_span(boost::spirit::_1)]
+			;
+
+		r_span
+			%= r_uint8	//	hour
+			>> ':'
+			>> r_uint8	//	min
+			>> ':'
+			>> boost::spirit::qi::double_	//	sec
+			;
+	}
+
 	
 	template <typename Iterator>
 	timespan_parser_minutes< Iterator >::timespan_parser_minutes()

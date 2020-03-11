@@ -16,9 +16,18 @@
 namespace cyng
 {
 	
+	/**
+	 * Parse a string of the form "maj.min" into a 
+	 * version object
+	 */
 	std::pair<version, bool> parse_version(std::string);
-	std::pair<revision, bool> parse_revision(std::string);
 	std::pair<object, bool> parse_ver(std::string inp);
+
+	/**
+	 * Parse a string of the form "x.y.z.p" into a
+	 * revision object
+	 */
+	std::pair<revision, bool> parse_revision(std::string);
 
 	/**
 	 * Accept input of the the form uint16.uint16

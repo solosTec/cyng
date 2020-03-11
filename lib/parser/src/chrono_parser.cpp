@@ -72,6 +72,16 @@ namespace cyng
 		return std::make_pair(result, r);
 	}
 	
+	std::pair<std::chrono::seconds, bool > parse_timespan_seconds(std::string const& inp)
+	{
+		std::chrono::seconds result(0);
+		timespan_parser_seconds< std::string::const_iterator >	g;
+		std::string::const_iterator iter = inp.begin();
+		std::string::const_iterator end = inp.end();
+		const bool r = boost::spirit::qi::parse(iter, end, g, result);
+		return std::make_pair(result, r);
+	}
+
 	std::pair<std::chrono::minutes, bool > parse_timespan_minutes(std::string const& inp)
 	{
 		std::chrono::minutes result(0);

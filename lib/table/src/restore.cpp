@@ -10,6 +10,7 @@
 #include <cyng/factory.h>
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/mac_parser.h>
+#include <cyng/parser/version_parser.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -30,14 +31,16 @@ namespace cyng
 				return make_object(std::stod(val));
 			case cyng::TC_FLOAT80:
 				return make_object(std::stold(val));
-				//case cyng::TC_UINT8:
+			case cyng::TC_UINT8:
+				return make_object<std::uint8_t>(std::stoul(val));
 			case cyng::TC_UINT16:
 				return make_object<std::uint16_t>(std::stoul(val));
 			case cyng::TC_UINT32:
 				return make_object<std::uint32_t>(std::stoul(val));
 			case cyng::TC_UINT64:
 				return make_object<std::uint64_t>(std::stoull(val));
-				//case cyng::TC_INT8:
+			case cyng::TC_INT8:
+				return make_object<std::int8_t>(std::stoi(val));
 			case cyng::TC_INT16:
 				return make_object<std::int16_t>(std::stoi(val));
 			case cyng::TC_INT32:
@@ -60,7 +63,7 @@ namespace cyng
 			//case cyng::TC_SECOND:
 			case cyng::TC_MINUTE:
 			{
-				auto const r = cyng::parse_timespan_minutes(val);
+				auto const r = parse_timespan_minutes(val);
 				return (r.second)
 					? make_object(r.first)
 					: make_object(val)
@@ -70,8 +73,25 @@ namespace cyng
 			//case cyng::TC_HOUR:
 
 			//case cyng::TC_DBL_TP:
-			//case cyng::TC_VERSION:
-			//case cyng::TC_REVISION:
+			case cyng::TC_VERSION:
+			{
+				auto const r = parse_version(val);
+				return (r.second)
+					? make_object(r.first)
+					: make_object(val)
+					;
+			}
+			break;
+			case cyng::TC_REVISION:
+			{
+				auto const r = parse_revision(val);
+				return (r.second)
+					? make_object(r.first)
+					: make_object(val)
+					;
+			}
+			break;
+
 			//case cyng::TC_CODE:
 			//case cyng::TC_LABEL:
 			//case cyng::TC_SEVERITY:
