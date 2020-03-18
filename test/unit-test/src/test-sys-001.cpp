@@ -10,6 +10,7 @@
 #include <cyng/sys/fsys.h>
 #include <cyng/sys/mac.h>
 #include <cyng/sys/ntp.h>
+#include <cyng/sys/port.h>
 #include <cyng/io/serializer.h>
 
 namespace cyng 
@@ -36,6 +37,13 @@ namespace cyng
 #ifdef _DEBUG
 		for (auto const& srv : srvs) {
 			std::cout << srv << std::endl;
+		}
+#endif
+
+		auto ports = sys::get_ports();
+#ifdef _DEBUG
+		for (auto const& port : ports) {
+			std::cout << port << std::endl;
 		}
 #endif
 
