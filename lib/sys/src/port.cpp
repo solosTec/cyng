@@ -8,13 +8,20 @@
 #include <cyng/sys/port.h>
 #include <boost/predef.h>
 #include <boost/assert.hpp>
+#include <boost/filesystem.hpp>
 #include <iostream>
 
 #if BOOST_OS_WINDOWS
+
 #include <cyng/scm/win_registry.h>
 //#include <Windows.h>
 #include <Setupapi.h>
 #pragma comment(lib, "Setupapi.lib")
+
+#else
+
+#include <fstream> 
+
 #endif
 
 namespace cyng 
@@ -25,6 +32,22 @@ namespace cyng
 		std::vector<std::string> get_ports()
 		{
 			std::vector<std::string>	result;
+			//
+			//	get all serial interfaces by reading /etc/fstab
+			//
+// 			std::ifstream ifs("/sys/class/tty");
+			boost::filesystem::path const d("/sys/class/tty");
+			if (boost::filesystem::is_directory(d)) {
+				for (boost::filesystem::directory_entry& entry : boost::filesystem::directory_iterator(d)) {
+					//
+					//	test if /sys/class/tty/"entry"/device exists
+					//
+					auto const dev = entry.path() / "device";
+					if (boost::filesystem::exists(dev)) {
+						result.push_back(entry.path().filename().string());
+					}
+				}
+			}
 			return result;
 		}
 #endif
