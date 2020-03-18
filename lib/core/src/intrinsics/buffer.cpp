@@ -26,7 +26,6 @@ namespace cyng
 			return (c > 31) && (c < 126);
 		});
 	}
-
 }
 
 

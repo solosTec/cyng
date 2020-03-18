@@ -33,7 +33,7 @@ namespace cyng
 	}
 
 	/** 
-	 * @return true is all elements are printable ascii codes
+	 * @return true if all elements are printable ascii codes
 	 */
 	bool is_ascii(buffer_t const&);
 }

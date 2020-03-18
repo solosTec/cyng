@@ -48,6 +48,11 @@ namespace cyng
 			return rnd("0123456789");
 		}
 
+		rnd make_rnd_hex()
+		{
+			return rnd("0123456789ABCDEF");
+		}
+
 	}
 }
 

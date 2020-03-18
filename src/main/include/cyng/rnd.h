@@ -74,6 +74,11 @@ namespace cyng
 		rnd make_rnd_num();
 
 		/**
+		 * Generator for hexadecimal strings
+		 */
+		rnd make_rnd_hex();
+
+		/**
 		 * Generator for integers
 		 */
 		template <typename T>
