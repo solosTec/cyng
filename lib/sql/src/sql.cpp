@@ -465,12 +465,17 @@ namespace cyng
 			//
 			//	write (named) unique constraints
 			//
-// 			const bool has_uc = table_->has_unique_constraints();
-// 			if (has_uc)
-// 			{
-// 				write_unique_constraints(has_pk);
-// 			}
-			
+			auto const idx = meta_->get_index();
+			if (idx.second) {
+				//CONSTRAINT index_name UNIQUE(NAME, id)
+				stream_
+					<< " CONSTRAINT idx UNIQUE("
+					<< meta_->get_body_name(idx.first + 1)	//	skip "gen"
+					<< ")"
+					;
+
+			}
+
 			stream_ 
 			<< ')'
 			;
