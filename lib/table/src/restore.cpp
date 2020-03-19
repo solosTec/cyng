@@ -59,7 +59,15 @@ namespace cyng
 					;
 			}
 			break;
-			//case cyng::TC_MILLI_SECOND:
+			case cyng::TC_MILLI_SECOND:
+			{
+				auto const r = parse_timespan_millisec(val);
+				return (r.second)
+					? make_object(r.first)
+					: make_object(val)
+					;
+			}
+			break;
 			case cyng::TC_SECOND:
 			{
 				auto const r = parse_timespan_seconds(val);

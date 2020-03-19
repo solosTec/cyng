@@ -123,6 +123,25 @@ namespace cyng
 			}
 		};
 		
+		struct time_span_millisec_factory
+		{
+			template < typename A >
+			struct result { typedef std::chrono::milliseconds type; };
+
+			std::chrono::milliseconds operator()(const boost::fusion::vector<std::uint8_t, std::uint8_t, double>& arg) const
+			{
+				auto secs = boost::fusion::at_c< 2 >(arg);
+				auto minutes = boost::fusion::at_c< 1 >(arg);
+				auto hours = boost::fusion::at_c< 0 >(arg);
+
+				std::chrono::milliseconds::rep count = static_cast<std::chrono::milliseconds::rep>(secs * 1000ULL)
+					+ (minutes * 60ULL * 1000ULL)
+					+ (hours * 60ULL * 60ULL * 1000ULL)
+					;
+				return std::chrono::milliseconds(count);
+			}
+		};
+
 		struct time_span_seconds_factory
 		{
 			template < typename A >
@@ -135,8 +154,8 @@ namespace cyng
 				auto hours = boost::fusion::at_c< 0 >(arg);
 
 				std::chrono::seconds::rep count = static_cast<std::chrono::seconds::rep>(secs)
-					+ (minutes * 60ULL * 1000ULL * 1000ULL)
-					+ (hours * 60ULL * 60ULL * 1000ULL * 1000ULL)
+					+ (minutes * 60ULL)
+					+ (hours * 60ULL * 60ULL)
 					;
 				return std::chrono::seconds(count);
 			}
@@ -289,15 +308,37 @@ namespace cyng
 	}
 
 	template <typename Iterator>
+	timespan_parser_millisec< Iterator >::timespan_parser_millisec()
+		: timespan_parser_millisec::base_type(r_start)
+	{
+		boost::phoenix::function<time_span_millisec_factory>	make_time_span;
+
+		r_start
+			= boost::spirit::qi::lit("m:a:x")[boost::spirit::_val = std::chrono::milliseconds::max()]
+			| boost::spirit::qi::lit("m:i:n")[boost::spirit::_val = std::chrono::milliseconds::min()]
+			| boost::spirit::qi::lit("n:i:l")[boost::spirit::_val = std::chrono::milliseconds::zero()]
+			| r_span[boost::spirit::_val = make_time_span(boost::spirit::_1)]
+			;
+
+		r_span
+			%= r_uint8	//	hour
+			>> ':'
+			>> r_uint8	//	min
+			>> ':'
+			>> boost::spirit::qi::double_	//	sec
+			;
+	}
+
+	template <typename Iterator>
 	timespan_parser_seconds< Iterator >::timespan_parser_seconds()
 		: timespan_parser_seconds::base_type(r_start)
 	{
 		boost::phoenix::function<time_span_seconds_factory>	make_time_span;
 
 		r_start
-			= boost::spirit::qi::lit("m:a:x")[boost::spirit::_val = std::chrono::minutes::max()]
-			| boost::spirit::qi::lit("m:i:n")[boost::spirit::_val = std::chrono::minutes::min()]
-			| boost::spirit::qi::lit("n:i:l")[boost::spirit::_val = std::chrono::minutes::zero()]
+			= boost::spirit::qi::lit("m:a:x")[boost::spirit::_val = std::chrono::seconds::max()]
+			| boost::spirit::qi::lit("m:i:n")[boost::spirit::_val = std::chrono::seconds::min()]
+			| boost::spirit::qi::lit("n:i:l")[boost::spirit::_val = std::chrono::seconds::zero()]
 			| r_span[boost::spirit::_val = make_time_span(boost::spirit::_1)]
 			;
 
