@@ -76,11 +76,6 @@ namespace cyng
 		return value_cast<>(obj, amap);
 	}
 
-	//buffer_t to_buffer(object obj)
-	//{
-	//	buffer_t buffer;
-	//	return cyng::value_cast(obj, buffer);
-	//}
 
 }
 

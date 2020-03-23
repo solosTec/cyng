@@ -67,6 +67,23 @@ namespace cyng
 	 * Convinient value_cast<attr_map_t>()
 	 */
 	attr_map_t to_attr_map(object obj);
+
+	/**
+	 * @brief selects an entry from a parameter map and casts the
+	 * the object to the specified value type.
+	 *
+	 * @return if key wasn't found or cast doesn't work it returns the
+	 * default value.
+	 */
+	template< typename T >
+	T from_param_map(param_map_t const& pm, std::string const& key, T def) {
+		auto const pos = pm.find(key);
+		if (pos != pm.end()) {
+			return value_cast<T>(pos->second, def);
+		}
+		return def;
+	}
+
 }
 
 #endif 
