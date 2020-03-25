@@ -58,7 +58,6 @@ namespace cyng
 				return vec_;
 			}
 		};
-
 	}
 	
 	/**
@@ -73,6 +72,18 @@ namespace cyng
 		return sp(std::forward<T>(v));
 	}
 	
+	/**
+	 * insert all elements of vector v.
+	 */
+	template <typename T>
+	vector_t& operator<<(vector_t& vec, std::vector<T> const& v)
+	{
+		using type = typename std::decay<T>::type;
+		for (auto const& e : v) {
+			vec << e;
+		}
+		return vec;
+	}
 
 	/**
 	 * simple invoke call of a library function.
