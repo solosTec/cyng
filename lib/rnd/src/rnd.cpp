@@ -53,6 +53,11 @@ namespace cyng
 			return rnd("0123456789ABCDEF");
 		}
 
+		rnd make_rnd_pwd()
+		{
+			return rnd("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-=!?+@#%/()[]$");
+		}
+
 	}
 }
 

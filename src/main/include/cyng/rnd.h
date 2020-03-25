@@ -32,7 +32,7 @@ namespace cyng
 			std::string operator()(std::size_t);
 
 		private:
-			const std::string stock_;
+			std::string const stock_;
 			boost::random::random_device rng_;
 			boost::random::uniform_int_distribution<std::size_t> index_dist_;
 		};
@@ -77,6 +77,13 @@ namespace cyng
 		 * Generator for hexadecimal strings
 		 */
 		rnd make_rnd_hex();
+
+		/**
+		 * Generator for password strings
+		 * including all latin characters, all numbers 
+		 * and special characters -=!?+@#%/()[]$
+		 */
+		rnd make_rnd_pwd();
 
 		/**
 		 * Generator for integers
