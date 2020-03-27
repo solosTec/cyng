@@ -42,14 +42,14 @@ namespace cyng
 			}
 			catch (std::exception const& ex)
 			{
-				std::cerr 
-					<< "\n*** error in function "
-					<< ctx.get_name()
-					<< ": "
-					<< ex.what()
-					<< '\n'
-					<< std::endl;
-				ctx.set_register(boost::system::errc::invalid_argument);
+				//std::cerr 
+				//	<< "\n*** error in function "
+				//	<< ctx.get_name()
+				//	<< ": "
+				//	<< ex.what()
+				//	<< '\n'
+				//	<< std::endl;
+				//ctx.set_register(boost::system::errc::invalid_argument);
 				throw;	//	rethrow exception to librarian::invoke()
 			}
 		}

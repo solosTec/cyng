@@ -14,6 +14,7 @@
 
 #ifdef _DEBUG
 #include <iostream>
+#include <boost/algorithm/string.hpp>
 #endif
 #include <cyng/factory.h>
 
@@ -82,13 +83,10 @@ namespace cyng
 					//	reset
 					ss.str("");
 
-					//	print program to execute
-					ss
-						<< "*** program("
-						<< ctx.mem_.level()
-						<< "%): "
-						<< ctx.mem_;
-
+					//
+					//	print stack dump
+					//
+					ctx.vm_.stack_.dump(ss);
 					msg = ss.str();
 					if (!try_error_log(ctx, msg))
 					{

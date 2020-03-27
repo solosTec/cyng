@@ -73,19 +73,6 @@ namespace cyng
 	}
 	
 	/**
-	 * insert all elements of vector v.
-	 */
-	template <typename T>
-	vector_t& operator<<(vector_t& vec, std::vector<T> const& v)
-	{
-		using type = typename std::decay<T>::type;
-		for (auto const& e : v) {
-			vec << e;
-		}
-		return vec;
-	}
-
-	/**
 	 * simple invoke call of a library function.
 	 */
 	class invoke 
@@ -264,12 +251,38 @@ namespace cyng
 		{
 			//	no overlapping allowed
 			std::move(e.container_.begin(), e.container_.end(), std::back_inserter(vec));
-			//vec.insert(vec.end(), e.container_.begin(), e.container_.end());
 			return vec;
 		}
 
 	private:
 		T container_;
+	};
+
+	/**
+	 * insert all elements of vector v using the stream policy
+	 */
+	template <typename T>
+	class unwind<std::vector<T>>
+	{
+		using C = std::vector<T>;
+	public:
+		unwind(C const& c)
+			: container_(c)
+		{}
+		unwind(unwind&& other)
+			: container_(other.container_)
+		{}
+
+		friend vector_t& operator<<(vector_t& vec, unwind&& e)
+		{
+			for (auto const& v : e.container_) {
+				vec << v;
+			}
+			return vec;
+		}
+
+	private:
+		C const container_;
 	};
 
 	/**
@@ -281,6 +294,11 @@ namespace cyng
 		return unwind<T>(std::move(c));
 	}
 
+	template <typename T>
+	unwind<std::vector<T>> unwinder(std::vector<T> const& c)
+	{
+		return unwind<std::vector<T>>(c);
+	}
 
 	/**
 	 * post function.
