@@ -668,11 +668,11 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 	# only for native builds. The hassle with the OPKG 
 	# toolchain to use symlinks is massive
 	#
-	set_target_properties(${CYNG_TARGET_LIST}
-	PROPERTIES
-		SOVERSION ${PROJECT_VERSION_MAJOR}
-		VERSION ${PROJECT_VERSION}
-	)
+# 	set_target_properties(${CYNG_TARGET_LIST}
+# 	PROPERTIES
+# 		SOVERSION ${PROJECT_VERSION_MAJOR}
+# 		VERSION ${PROJECT_VERSION}
+# 	)
 endif()
 
 #

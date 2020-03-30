@@ -8,6 +8,7 @@
 #define CYNG_SET_CAST_H
 
 #include <cyng/intrinsics/sets.h>
+#include <cyng/value_cast.hpp>
 
 namespace cyng 
 {
