@@ -18,9 +18,17 @@ namespace cyng
 {
 	namespace csv 
 	{
+		/**
+		 * Read a single CSV line
+		 */
 		tuple_t read(std::string const&);
 		tuple_t read(buffer_t const&);
-		vector_t read_file(std::string const&);
+
+		/**
+		 * Read specified CSV file and put the result into a vector
+		 * of tuples
+		 */
+		vector_t read_file(std::string const& file_name);
 
 		/**
 		 * CSV has many restrictions to serialize data. 
