@@ -69,7 +69,7 @@ git clone https://github.com/solosTec/cyng.git
 git submodule update --init --recursive
 mkdir build
 cd build
-cmake ..
+cmake-D CMAKE_BUILD_TYPE=Release ..
 make -j4 all
 sudo make install
 
