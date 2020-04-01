@@ -29,10 +29,12 @@ namespace cyng
 #endif
 			, { 64, 0, 0, 0 }))
 		, m_()
+		, trx_signal_()
 		{}
 		
 		db::~db()
 		{
+			//trx_signal_.disconnect_all_slots();
 			tables_.clear(boost::uuids::nil_uuid());
 		}
 		
@@ -270,6 +272,27 @@ namespace cyng
 				return true;
 			});
 			return count;
+		}
+
+		boost::signals2::connection db::get_trx_listener(const trx_signal::slot_type& sig)
+		{
+			return trx_signal_.connect(sig);
+		}
+
+		std::size_t db::num_trx_slots() const
+		{
+			return trx_signal_.num_slots();
+		}
+
+		void db::set_trx_state(trx_type trx)
+		{
+			//	state machine?
+			trx_signal_(trx);
+		}
+
+		void db::disconnect_trx()
+		{
+			trx_signal_.disconnect_all_slots();
 		}
 
 		std::size_t db::size(std::string const& name) const

@@ -56,7 +56,7 @@ namespace cyng
 				, attr_t const&
 				, std::uint64_t
 				, boost::uuids::uuid)>;
-			
+
 		public:
 			publisher();
 			publisher(publisher const&) = delete;
@@ -140,7 +140,7 @@ namespace cyng
 			std::size_t num_modify_slots() const;
 
 			/**
-			 * @return The number of all connected slots
+			 * @return The number of all connected slots.
 			 */
 			std::size_t num_all_slots() const;
 
@@ -149,7 +149,6 @@ namespace cyng
 			remove_signal	remove_signal_;
 			clear_signal	clear_signal_;
 			modify_signal	modify_signal_;
-			
 		};
 
 		/**

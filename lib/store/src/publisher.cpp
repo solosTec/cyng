@@ -14,16 +14,16 @@ namespace cyng
 
 		publisher::publisher()
 		: insert_signal_()
-		, remove_signal_()
-		, clear_signal_()
-		, modify_signal_()
+			, remove_signal_()
+			, clear_signal_()
+			, modify_signal_()
 		{}
 		
 		publisher::publisher(publisher&& pub)
 		: insert_signal_(std::move(pub.insert_signal_))
-		, remove_signal_(std::move(pub.remove_signal_))
-		, clear_signal_(std::move(pub.clear_signal_))
-		, modify_signal_(std::move(pub.modify_signal_))
+			, remove_signal_(std::move(pub.remove_signal_))
+			, clear_signal_(std::move(pub.clear_signal_))
+			, modify_signal_(std::move(pub.modify_signal_))
 		{}
 		
 		publisher::~publisher()
@@ -96,7 +96,6 @@ namespace cyng
 				+ num_modify_slots()
 				;
 		}
-
 
 		void disconnect(connections_t& cs)
 		{

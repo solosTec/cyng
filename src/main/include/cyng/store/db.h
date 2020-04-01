@@ -20,6 +20,12 @@ namespace cyng
 {
 	namespace store 
 	{
+		enum class trx_type {
+			START,
+			COMMIT,
+			ROLLBACK
+		};
+
 		/**
 		 * A store consist of a list of named tables. Each table has a consistent
 		 * structure, described in a special structure named meta.
@@ -34,7 +40,9 @@ namespace cyng
 		 */
 		class db
 		{
-			
+		public:
+			using trx_signal = boost::signals2::signal<void(trx_type)>;
+
 		public:
 			db();
 			
@@ -313,6 +321,27 @@ namespace cyng
 			bool set_state(std::string const& name, std::uint32_t);
 			std::uint32_t get_state(std::string const& name);
 
+			/**
+			 * Connect to transaction slot
+			 */
+			boost::signals2::connection get_trx_listener(const trx_signal::slot_type&);
+
+			/**
+			 * @return The number of slots connected to the trx signal
+			 */
+			std::size_t num_trx_slots() const;
+
+			/**
+			 * set transaction state
+			 */
+			void set_trx_state(trx_type);
+
+			/**
+			 * remove all trx listener
+			 */
+			void disconnect_trx();
+			
+
 		private:
 			/**
 			 * Create a tuple of matching table pointer types 
@@ -376,9 +405,13 @@ namespace cyng
 			/**
 			 * A sync object for this database
 			 */
-// 			mutable cyng::async::shared_mutex m_;
             mutable mutex_t m_;
-			
+
+			/**
+			 * transaction signal
+			 */
+			trx_signal		trx_signal_;
+
 		};
 		
 	}	//	store	
