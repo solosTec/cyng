@@ -8,6 +8,7 @@ set (domain_cpp
     lib/domain/src/log_domain.cpp
     lib/domain/src/asio_domain.cpp
     lib/domain/src/store_domain.cpp
+    lib/domain/src/task_domain.cpp
 )
     
 set (domain_h
@@ -16,6 +17,7 @@ set (domain_h
     src/main/include/cyng/vm/domain/fs_domain.h
     src/main/include/cyng/vm/domain/asio_domain.h
     src/main/include/cyng/vm/domain/store_domain.h
+    src/main/include/cyng/vm/domain/task_domain.h
 )
 
 
