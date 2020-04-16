@@ -26,15 +26,16 @@ namespace cyng
 		 * File system library
 		 */
 		using path = std::filesystem::path;
-		//const auto absolute = std::filesystem::absolute;
-		//const auto begin = std::filesystem::begin;
-		//const auto create_directory = std::filesystem::create_directory; //(const std::filesystem::path& p, std::error_code& ec);
+		using space_info = std::filesystem::space_info;
 
 		//
 		//	this works fine
 		//
-		using F = bool (*) (const std::filesystem::path&);
-		const F create_directory = std::filesystem::create_directory;
+		using FN_CREATE_DIR = bool (*) (std::filesystem::path const&);
+		const FN_CREATE_DIR create_directory = std::filesystem::create_directory;
+
+		using FN_SPACE = space_info (*) (std::filesystem::path const&);
+		const FN_SPACE space = std::filesystem::space;
 
 		//
 		//	this not so
@@ -43,9 +44,11 @@ namespace cyng
 
 #else
 		using path = boost::filesystem::path;
+		using space_info = boost::filesystem::space_info;
 		//const auto absolute = boost::filesystem::absolute;
 		//const auto begin = boost::filesystem::begin;
 		//const auto create_directory = boost::filesystem::create_directory;
+
 
 #endif
 		
