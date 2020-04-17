@@ -35,7 +35,7 @@ namespace cyng
 			std::uint64_t			//	[3] generation
 		>(frame);
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.req.insert", std::get<0>(tpl), std::get<1>(tpl).size(), std::get<2>(tpl).size()));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		//
 		//	key
@@ -70,7 +70,7 @@ namespace cyng
 			std::uint64_t			//	[3] generation
 		>(frame);
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.req.merge", std::get<0>(tpl), std::get<1>(tpl).size(), std::get<2>(tpl).size()));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		//
 		//	key
@@ -111,7 +111,7 @@ namespace cyng
 			std::uint64_t			//	[3] generation
 		>(frame);
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.req.update", std::get<0>(tpl), std::get<1>(tpl).size(), std::get<2>(tpl).size()));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		//
 		//	key
@@ -146,7 +146,7 @@ namespace cyng
 	{
 		auto const frame = ctx.get_frame();
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.req.modify.by.attr", frame));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		auto tpl = cyng::tuple_cast<
 			std::string,			//	[0] table name
@@ -169,7 +169,7 @@ namespace cyng
 	{
 		auto const frame = ctx.get_frame();
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.req.modify.by.param", frame));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		auto tpl = cyng::tuple_cast<
 			std::string,		//	[0] table name
@@ -184,7 +184,11 @@ namespace cyng
 
 		if (!db.modify(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), ctx.tag()))
 		{
-			ctx.queue(generate_invoke("log.msg.warning", "db.req.modify.by.param - failed", std::get<0>(tpl), std::get<1>(tpl)));
+			ctx.queue(generate_invoke("log.msg.warning"
+				, "db.req.modify.by.param - failed: "
+				, std::get<0>(tpl)
+				, ", key: "
+				, std::get<1>(tpl)));
 		}
 	}
 
@@ -192,7 +196,7 @@ namespace cyng
 	{
 		auto const frame = ctx.get_frame();
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.req.remove", frame));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		auto tpl = cyng::tuple_cast<
 			std::string,			//	[0] table name
@@ -218,7 +222,7 @@ namespace cyng
 			std::string			//	[0] table name
 		>(frame);
 
-		ctx.queue(generate_invoke("log.msg.debug", "db.clear", std::get<0>(tpl)));
+		ctx.queue(generate_invoke("log.msg.debug", ctx.get_name(), " - ", frame));
 
 		db.clear(std::get<0>(tpl), ctx.tag());
 	}
