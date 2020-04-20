@@ -595,7 +595,11 @@ target_include_directories(cyng_sys
 target_compile_definitions(cyng_sys 
     PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:"PSAPI_VERSION=1">
+        $<$<CXX_COMPILER_ID:GNU>:"BOOST_NO_CXX11_SCOPED_ENUMS">
 )
+# target_link_libraries(cyng_sys
+# 	"$<$<PLATFORM_ID:Linux>:${Boost_FILESYSTEM_LIBRARY}>"
+# )
 
 #
 #	cyng db library

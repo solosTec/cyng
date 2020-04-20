@@ -1,5 +1,5 @@
 #
-# BOOST_VER is "1_67", "1_68", "1_69", "1_70", "1_71" or "1_72"
+# BOOST_VER is "1_67", "1_68", "1_69", "1_70", "1_71", "1_72" or "1_73"
 #
 function(windows_boost_fix BOOST_VER)
 #
@@ -22,16 +22,23 @@ function(windows_boost_fix BOOST_VER)
 	message(STATUS "** Boost Library   : ${BOOST_LIBRARYDIR}")
 
 	set(Boost_ATOMIC_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_atomic-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_ATOMIC_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_atomic-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_DATE_TIME_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_date_time-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_DATE_TIME_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_date_time-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_FILESYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_filesystem-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_FILESYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_filesystem-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_PROGRAM_OPTIONS_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_program_options-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/boost_program_options-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_RANDOM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_random-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_RANDOM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_random-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_REGEX_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_regex-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_REGEX_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_regex-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_SYSTEM_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_system-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_THREAD_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_thread-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_THREAD_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_thread-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 	set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc${_vcc}-mt-gd-x64-${BOOST_VER}.lib" PARENT_SCOPE)
+	set(Boost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_unit_test_framework-vc${_vcc}-mt-x64-${BOOST_VER}.lib" PARENT_SCOPE)
 
 endfunction()
 
@@ -43,7 +50,11 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 		#
 		# search for installation in path ~/projects/boost_X_YY_Z/install
 		#
-        if(EXISTS "$ENV{HOME}/projects/boost_1_72_0/install")
+        if(EXISTS "$ENV{HOME}/projects/boost_1_73_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_73_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_73_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
+        elseif(EXISTS "$ENV{HOME}/projects/boost_1_72_0/install")
             set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_72_0/install" CACHE PATH "BOOST_ROOT")
             set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_72_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
             message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
@@ -73,7 +84,9 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
             message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         endif()
     elseif(WIN32)
-        if(EXISTS "C:/local/boost_1_72_0")
+        if(EXISTS "C:/local/boost_1_73_0")
+            windows_boost_fix("1_73")
+        elseif(EXISTS "C:/local/boost_1_72_0")
             windows_boost_fix("1_72")
         elseif(EXISTS "C:/local/boost_1_71_0")
             windows_boost_fix("1_71")
@@ -89,7 +102,7 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
     endif(UNIX)
 endif()
 
-set(Boost_ADDITIONAL_VERSIONS "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0" "1.72.0")
+set(Boost_ADDITIONAL_VERSIONS "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0" "1.72.0" "1.73.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
 find_package(Boost 1.67 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework regex)
 
@@ -99,14 +112,14 @@ if(Boost_FOUND)
 	message(STATUS "** Boost Include    : ${Boost_INCLUDE_DIRS}")
 	message(STATUS "** Boost Path       : ${Boost_LIBRARY_DIRS}")
 	
-	message(STATUS "** Boost Libraries  : ${Boost_LIBRARIES}")
-	message(STATUS "** Boost thread     : ${Boost_THREAD_LIBRARY}")
-	message(STATUS "** Boost system     : ${Boost_SYSTEM_LIBRARY}")
-	message(STATUS "** Boost filesystem : ${Boost_FILESYSTEM_LIBRARY}")
-	message(STATUS "** Boost program opt: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
-	message(STATUS "** Boost random     : ${Boost_RANDOM_LIBRARY}")
-	message(STATUS "** Boost regex      : ${Boost_REGEX_LIBRARY}")
-	message(STATUS "** Boost test       : ${Boost_UNIT_TEST_FRAMEWORK}")
+	message(STATUS "** Boost_LIBRARIES              : ${Boost_LIBRARIES}")
+	message(STATUS "** Boost_THREAD_LIBRARY         : ${Boost_THREAD_LIBRARY}")
+	message(STATUS "** Boost_SYSTEM_LIBRARY         : ${Boost_SYSTEM_LIBRARY}")
+	message(STATUS "** Boost_FILESYSTEM_LIBRARY     : ${Boost_FILESYSTEM_LIBRARY}")
+	message(STATUS "** Boost_PROGRAM_OPTIONS_LIBRARY: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
+	message(STATUS "** Boost_RANDOM_LIBRARY         : ${Boost_RANDOM_LIBRARY}")
+	message(STATUS "** Boost_REGEX_LIBRARY          : ${Boost_REGEX_LIBRARY}")
+	message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : ${Boost_UNIT_TEST_FRAMEWORK}")
 
 	if(Boost_VERSION VERSION_LESS "106600")
 		#
