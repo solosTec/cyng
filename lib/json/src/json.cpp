@@ -94,7 +94,11 @@ namespace cyng
 				: os_(os)
 			{}
 
-			virtual bool enter_node(std::size_t depth, cyng::object const& obj, std::size_t idx, std::size_t total, cyng::object parent) override
+			virtual bool enter_node(std::size_t depth
+				, cyng::object const& obj
+				, std::size_t total
+				, bool last
+				, cyng::object parent) override
 			{
 
 				switch (obj.get_class().tag()) {
@@ -140,35 +144,41 @@ namespace cyng
 				return true;	//	continue
 			}
 
-			virtual void leave_node(std::size_t depth, cyng::object const& obj, std::size_t idx, std::size_t total, cyng::object previous) override
+			virtual void leave_node(std::size_t depth
+				, cyng::object const& obj
+				, std::size_t total
+				, bool last
+				, std::size_t size) override
 			{
 				switch (obj.get_class().tag()) {
 				case cyng::TC_TUPLE:
-					os_
-						<< std::endl
-						<< indentation(depth)
-						<< '}'
-						;
-					if ((idx != 1) && (depth != 0))	os_ << ',';
+					if (size > 0) {
+						os_
+							<< std::endl
+							<< indentation(depth)
+							;
+					}
+					os_ << '}' ;
+					if (!last && (depth != 0))	os_ << ',';
 					break;
 				case cyng::TC_VECTOR:
 					//
 					//	If the previous element was a also a container insert a NL.
 					//	
-					if (previous.get_class().tag() == cyng::TC_TUPLE || previous.get_class().tag() == cyng::TC_VECTOR) {
+					if (size > 0) {
 						os_
 							<< std::endl
 							<< indentation(depth)
 							;
 					}
 					os_ << ']';
-					if (idx != 1)	os_ << ',';
+					if (!last)	os_ << ',';
 					break;
 				case cyng::TC_PARAM:
 				case cyng::TC_ATTR:
 					break;
 				default:
-					if (idx != 1)	os_ << ',';
+					if (!last)	os_ << ',';
 					break;
 				}
 			}

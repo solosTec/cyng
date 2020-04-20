@@ -15,12 +15,17 @@ namespace cyng
 	//
 	//	local function
 	//
-	void traverse(object const& node, tree_walker& walker, std::size_t depth, std::size_t idx, std::size_t total, object parent)
+	void traverse(object const& node
+		, tree_walker& walker
+		, std::size_t depth
+		, std::size_t total
+		, std::size_t idx
+		, object parent)
 	{
 		//
 		//	entry node
 		//
-		if (!walker.enter_node(depth, node, idx, total, parent))	return;
+		if (!walker.enter_node(depth, node, total, (idx == total - 1), parent))	return;
 
 		switch (node.get_class().tag())
 		{
@@ -29,15 +34,14 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_TUPLE, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			std::size_t counter{ ptr->size() };
 			
+			std::size_t counter{ 0 };
 			for (auto obj : *ptr)
 			{
-				traverse(obj, walker, depth + 1, counter, ptr->size(), node);
-				--counter;
-				if (counter == 0)	walker.leave_node(depth, node, idx, total, obj);
+				traverse(obj, walker, depth + 1, ptr->size(), counter, node);
+				++counter;
 			}
-			
+			walker.leave_node(depth, node, total, (idx == total - 1), counter);
 		}
 		break;
 		case TC_VECTOR:
@@ -45,14 +49,14 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_VECTOR, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			std::size_t counter{ ptr->size() };
 
+			std::size_t counter{ 0 };
 			for (auto obj : *ptr)
 			{
-				traverse(obj, walker, depth + 1, counter, ptr->size(), node);
-				--counter;
-				if (counter == 0)	walker.leave_node(depth, node, idx, total, obj);
+				traverse(obj, walker, depth + 1, ptr->size(), counter, node);
+				++counter;
 			}
+			walker.leave_node(depth, node, total, (idx == total - 1), counter);
 		}
 		break;
 		case TC_SET:
@@ -60,14 +64,14 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_SET, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			std::size_t counter{ ptr->size() };
 
+			std::size_t counter{ 0 };
 			for (auto obj : *ptr)
 			{
-				traverse(obj, walker, depth + 1, counter, ptr->size(), node);
-				--counter;
-				if (idx == 0)	walker.leave_node(depth, node, idx, total, obj);
+				traverse(obj, walker, depth + 1, ptr->size(), counter, node);
+				++counter;
 			}
+			walker.leave_node(depth, node, total, (idx == total - 1), counter);
 		}
 		break;
 		case TC_ATTR_MAP:
@@ -75,13 +79,14 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_ATTR_MAP, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			std::size_t idx{ ptr->size() };
+
+			std::size_t counter{ 0 };
 			for (auto attr : *ptr)
 			{
-				traverse(attr.second, walker, depth, idx, ptr->size(), node);
-				--idx;
-				if (idx == 0)	walker.leave_node(depth, node, idx, total, attr.second);
+				traverse(attr.second, walker, depth, ptr->size(), counter, node);
+				++counter;
 			}
+			walker.leave_node(depth, node, total, (idx == total - 1), counter);
 		}
 		break;
 		case TC_PARAM_MAP:
@@ -89,13 +94,14 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_PARAM_MAP, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			std::size_t idx{ ptr->size() };
+
+			std::size_t counter{ 0 };
 			for (auto param : *ptr)
 			{
-				traverse(param.second, walker, depth, idx, ptr->size(), node);
-				--idx;
-				if (idx == 0)	walker.leave_node(depth, node, idx, total, param.second);
+				traverse(param.second, walker, depth, ptr->size(), counter, node);
+				++counter;
 			}
+			walker.leave_node(depth, node, total, (idx == total - 1), counter);
 		}
 		break;
 		case TC_ATTR:
@@ -103,8 +109,8 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_ATTR, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			traverse(ptr->second, walker, depth + 1, idx, 0u, node);
-			walker.leave_node(depth, node, idx, total, parent);
+			traverse(ptr->second, walker, depth, total, idx, node);
+			walker.leave_node(depth, node, total, (idx == total - 1), 1u);
 		}
 		break;
 		case TC_PARAM:
@@ -112,13 +118,13 @@ namespace cyng
 			using type = typename std::tuple_element<type_code::TC_PARAM, cyng::traits::tag_t>::type;
 			const type* ptr = object_cast<type>(node);
 			BOOST_ASSERT_MSG(ptr != nullptr, "invalid type info");
-			traverse(ptr->second, walker, depth + 1, idx, total, node);
-			walker.leave_node(depth, node, idx, total, parent);
+			traverse(ptr->second, walker, depth, total, idx, node);
+			walker.leave_node(depth, node, total, (idx == total - 1), 1u);
 		}
 		break;
 
 		default:
-			walker.leave_node(depth, node, idx, total, parent);
+			walker.leave_node(depth, node, total, (idx == total - 1), 1u);
 			break;
 		}
 
@@ -131,12 +137,20 @@ namespace cyng
 		: count_(count)
 		{}
 		
-		virtual bool enter_node(std::size_t depth, object const&, std::size_t idx, std::size_t total, object parent) override
+		virtual bool enter_node(std::size_t depth
+			, object const&
+			, std::size_t total
+			, bool last
+			, object parent) override
 		{
 			count_++;
 			return true;
 		}
-		virtual void leave_node(std::size_t depth, object const&, std::size_t idx, std::size_t total, object parent) override
+		virtual void leave_node(std::size_t depth
+			, object const&
+			, std::size_t total
+			, bool last
+			, std::size_t size) override
 		{}
 
 
