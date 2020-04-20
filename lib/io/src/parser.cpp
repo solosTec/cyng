@@ -30,14 +30,12 @@ namespace cyng
 	, stream_buffer_()
 	, input_(&stream_buffer_)
 	{
-		std::cout << "parser:parser()" << std::endl;
 		BOOST_ASSERT_MSG(cb_, "no callback specified");
 	}
 	
 	parser::~parser()
 	{
 	}
-
 	
 	void parser::put(char c)
 	{
