@@ -40,7 +40,7 @@ namespace cyng
 		template < std::size_t KEY_SIZE, std::size_t BODY_SIZE, std::size_t IDX = 0u>
 		class meta_table_base
 		{
-			static_assert(IDX < BODY_SIZE, "IDX exceeds BODY_SIZE");
+			static_assert(IDX <= BODY_SIZE, "IDX exceeds BODY_SIZE");
 			static_assert(BODY_SIZE != 0, "no table body defined");
 
 		public:

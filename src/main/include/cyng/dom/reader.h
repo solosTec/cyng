@@ -228,6 +228,12 @@ namespace cyng
 		 * @return true
 		 */
 		virtual bool is_leaf() const override;
+
+		/**
+		 * Nested array subscript operator
+		 */
+		reader<object> operator[](std::string const& name) const;
+
 	};
 
 	/**

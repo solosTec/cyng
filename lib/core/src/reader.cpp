@@ -144,6 +144,10 @@ namespace cyng
 		return false;
 	}
 
+	reader<object> param_map_reader::operator[](std::string const& name) const
+	{
+		return make_reader(get(name));
+	}
 }
 
 
