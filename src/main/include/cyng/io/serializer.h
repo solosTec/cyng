@@ -98,6 +98,12 @@ namespace cyng
 		 * serialize a param_map_t with tag SERIALIZE_PLAIN
 		 */
 		std::string to_str(param_map_t const&);
+
+		std::string to_str(crypto::digest_md5 const&);
+		std::string to_str(crypto::digest_sha1 const&);
+		std::string to_str(crypto::digest_sha256 const&);
+		std::string to_str(crypto::digest_sha512 const&);
+
 	}
 }
 

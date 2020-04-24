@@ -84,6 +84,34 @@ namespace cyng
 			return ss.str();
 		}
 		
+		std::string to_str(crypto::digest_md5 const& digest)
+		{
+			std::stringstream ss;
+			ss << digest;
+			return ss.str();
+		}
+
+		std::string to_str(crypto::digest_sha1 const& digest)
+		{
+			std::stringstream ss;
+			ss << digest;
+			return ss.str();
+		}
+
+		std::string to_str(crypto::digest_sha256 const& digest)
+		{
+			std::stringstream ss;
+			ss << digest;
+			return ss.str();
+		}
+
+		std::string to_str(crypto::digest_sha512 const& digest)
+		{
+			std::stringstream ss;
+			ss << digest;
+			return ss.str();
+		}
+
 		std::ostream& operator<<(std::ostream& os, attr_t const& attr)
 		{
 			boost::io::ios_flags_saver  ifs(os);
