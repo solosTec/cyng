@@ -83,21 +83,7 @@ namespace cyng
 
 		std::ostream& to_hex(std::ostream& os, buffer_t const& buffer)
 		{
-			boost::io::ios_flags_saver  ifs(os);
-			os
-				<< std::setfill('0')
-				<< std::hex
-				;
-
-			//	write buffer
-			for (const char c : buffer)
-			{
-				os
-					<< std::setw(2)
-					<< (+c & 0xFF)
-					;
-			}
-			return os;
+			return to_hex(os, buffer.begin(), buffer.end());
 		}
 
 		std::string to_hex(buffer_t const& buffer)
@@ -109,6 +95,7 @@ namespace cyng
 
 		std::ostream& to_hex(std::ostream& os, buffer_t const& buffer, char sp)
 		{
+			boost::io::ios_flags_saver  ifs(os);
 			os
 				<< std::setfill('0')
 				<< std::hex
@@ -138,6 +125,36 @@ namespace cyng
 			to_hex(ss, buffer, sp);
 			return ss.str();
 		}
+
+		std::ostream& to_hex(std::ostream& os, buffer_t::const_iterator pos, buffer_t::const_iterator end)
+		{
+			boost::io::ios_flags_saver  ifs(os);
+			os
+				<< std::setfill('0')
+				<< std::hex
+				;
+
+			//	write buffer
+			while (pos != end)
+			{
+				os
+					<< std::setw(2)
+					<< (*pos & 0xFF)
+					;
+
+				++pos;
+			}
+			return os;
+
+		}
+
+		std::string to_hex(buffer_t::const_iterator start, buffer_t::const_iterator end)
+		{
+			std::stringstream ss;
+			to_hex(ss, start, end);
+			return ss.str();
+		}
+
 	}
 }
 

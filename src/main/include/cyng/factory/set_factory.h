@@ -85,7 +85,7 @@ namespace cyng
 	 * create empty tuple object
 	 */
 	inline tuple_t tuple_factory() {
-		return tuple_t();
+		return tuple_t{};
 	}
 	object make_tuple();
 
@@ -93,7 +93,7 @@ namespace cyng
 	 * create empty vector object
 	 */
 	inline vector_t vector_factory() {
-		return vector_t();
+		return vector_t{};
 	}
 	object make_vector();
 

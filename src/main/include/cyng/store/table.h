@@ -233,7 +233,7 @@ namespace cyng
 			cyng::table::record max_record() const;
 
 			/**
-			 * The internal map has no index, so this index purely artifical. Since the underlying 
+			 * The internal map has no index, so this index is purely artifical. Since the underlying 
 			 * data type is an unordered_map there is no guarantee that the same index returns the same
 			 * record after insert/remove operations.
 			 *

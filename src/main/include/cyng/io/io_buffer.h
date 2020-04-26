@@ -41,6 +41,12 @@ namespace cyng
 		std::string to_hex(buffer_t const&, char);
 
 		/**
+		 * Convert a range
+		 */
+		std::ostream& to_hex(std::ostream&, buffer_t::const_iterator, buffer_t::const_iterator);
+		std::string to_hex(buffer_t::const_iterator, buffer_t::const_iterator);
+
+		/**
 		 * faster and lighter int to hex conversion compared to streams.
 		 * @see https://stackoverflow.com/a/33447587/3979819
 		 */
