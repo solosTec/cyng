@@ -15,6 +15,9 @@ namespace cyng
 	/**
 	 * @brief tuple to parameter map.
 	 *
+	 * Copy all elements in the tuple of type param_t 
+	 * to the parameter map.
+	 *
 	 * No check for duplicates
 	 */
 	param_map_t to_param_map(tuple_t const&);
@@ -84,6 +87,13 @@ namespace cyng
 		}
 		return def;
 	}
+
+	/**
+	 * Convert all parameters of the parameter map into objects
+	 * and copy these objects into a tuple of the same size.
+	 */
+	tuple_t to_tuple(param_map_t const& pm);
+
 
 }
 

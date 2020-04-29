@@ -10,6 +10,7 @@
 #include <cyng/value_cast.hpp>
 #include <cyng/core/class_interface.h>
 #include <cyng/intrinsics/traits/tag.hpp>
+#include <cyng/factory.h>
 #include <algorithm>
 
 namespace cyng 
@@ -29,11 +30,10 @@ namespace cyng
 	param_map_t to_param_map(vector_t const& vec)
 	{
 		param_map_t pmap;
-		tuple_t tpl;
-		param_t param;
 		for (auto const& obj : vec) {
-			tpl = value_cast(obj, tpl);
+			auto tpl = to_tuple(obj);
 			if (!tpl.empty()) {
+				param_t param;
 				pmap.insert(value_cast(tpl.front(), param));
 			}
 		}
@@ -76,6 +76,14 @@ namespace cyng
 		return value_cast<>(obj, amap);
 	}
 
+	tuple_t to_tuple(param_map_t const& pm)
+	{
+		tuple_t tpl{};
+		std::transform(std::begin(pm), std::end(pm), std::back_inserter(tpl), [](param_t const& param) {
+			return make_object(param);
+			});
+		return tpl;
+	}
 
 }
 
