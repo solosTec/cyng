@@ -7,8 +7,6 @@
 #ifndef CYNG_COMPATIBILITY_H
 #define CYNG_COMPATIBILITY_H
 
-#include <CYNG_project_info.h>
-
 //	string_view
 #if defined(__CPP_SUPPORT_N3921)	
 
