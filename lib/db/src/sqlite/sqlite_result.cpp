@@ -42,79 +42,185 @@ namespace cyng
 				template <>
 				object get_value<std::int8_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::int8_t result = boost::numeric::converter<std::int8_t, int>::convert(::sqlite3_column_int(stmt, index));
-					return make_object(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<std::int8_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::int8_t>("
+							<< n
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::int8_t>(0);
 				}
 				
 				template <>
 				object get_value<std::uint8_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::uint8_t result = boost::numeric::converter<std::uint8_t, int>::convert(::sqlite3_column_int(stmt, index));
-					return make_object(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<std::uint8_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::uint8_t>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::uint8_t>(0);
 				}
 				
 				template <>
 				object get_value<std::int16_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::int16_t result = boost::numeric::converter<std::int16_t, int>::convert(::sqlite3_column_int(stmt, index));
-					return make_object(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<std::int16_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::int16_t>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::int16_t>(0);
 				}
 				
 				template <>
 				object get_value<std::uint16_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::uint16_t result = boost::numeric::converter<std::uint16_t, int>::convert(::sqlite3_column_int(stmt, index));
-					return make_object(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<std::uint16_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::uint16_t>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::uint16_t>(0);
 				}
 
 				template <>
 				object get_value<std::int32_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::int32_t result = ::sqlite3_column_int(stmt, index);
-					return make_object(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<std::int32_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::int32_t>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::int32_t>(0);
 				}
 				
 				template <>
 				object get_value<std::uint32_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::uint32_t result = boost::numeric::converter<std::uint32_t, int>::convert(::sqlite3_column_int(stmt, index));
-					return make_object(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<std::uint32_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::uint32_t>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::uint32_t>(0);
 				}
 
 				template <>
 				object get_value<std::int64_t>(sqlite3_stmt* stmt, int index)
 				{
-					const std::int64_t result = ::sqlite3_column_int64(stmt, index);
-					//return cyng::numeric_factory_cast<std::uint64_t>(result);
-					return make_object<std::uint64_t>(result);
+					return make_object<std::uint64_t>(sqlite3_column_int64(stmt, index));
 				}
 				
 				template <>
 				object get_value<std::uint64_t>(sqlite3_stmt* stmt, int index)
 				{
-					const auto result = boost::numeric_cast<std::uint64_t>(::sqlite3_column_int64(stmt, index));
-					return make_object(result);
+					auto const n = sqlite3_column_int64(stmt, index);
+					try {
+						return make_object(boost::numeric_cast<std::uint64_t>(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<std::uint64_t>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<std::uint64_t>(0);
 				}
 
 				template <>
 				object get_value<float>(sqlite3_stmt* stmt, int index)
 				{
-					const float result = boost::numeric::converter<float, double>::convert(::sqlite3_column_double(stmt, index));
-					return make_object(result);
+					auto const f = sqlite3_column_double(stmt, index);
+					try {
+						return make_object(boost::numeric::converter<float, double>::convert(f));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<float>("
+							<< f
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<float>(0.f);
 				}
 				
 				template <>
 				object get_value<double>(sqlite3_stmt* stmt, int index)
 				{
-					const double result = ::sqlite3_column_double(stmt, index);
-					return make_object(result);
+					return make_object<double>(sqlite3_column_double(stmt, index));
 				}
 				
 				template <>
 				object get_value<long double>(sqlite3_stmt* stmt, int index)
 				{
-					const long double result = ::sqlite3_column_double(stmt, index);
-					return make_object(result);
+					return make_object<long double>(sqlite3_column_double(stmt, index));
 				}
 				
 				template <>
@@ -204,8 +310,23 @@ namespace cyng
 				template <>
 				object get_value<version>(sqlite3_stmt* stmt, int index)
 				{
-					const auto result = boost::numeric::converter<std::uint32_t, int>::convert(::sqlite3_column_int(stmt, index));
-					return make_object<version>(result);
+					auto const n = sqlite3_column_int(stmt, index);
+					try {
+						return make_object<version>(boost::numeric::converter<std::uint32_t, int>::convert(n));
+					}
+					catch (boost::bad_numeric_cast const ex) {
+						std::cerr
+							<< "get_value<version>("
+							<< n
+							<< ", index "
+							<< index
+							<< ") "
+							<< ex.what()
+							<< std::endl
+							;
+					}
+					return make_object<version>(0u);
+
 				}
 				
 				template <>
@@ -677,18 +798,15 @@ namespace cyng
 							break;
 					}
 				}
-				catch (boost::numeric::negative_overflow const& ex)
+				catch (std::exception const& ex)
 				{
 					std::cerr 
-					<< ex.what()
-					<< std::endl
-					;
-				}
-				catch (boost::numeric::positive_overflow const& ex)
-				{
-					std::cerr 
-					<< ex.what()
-					<< std::endl
+						<< __FILE__
+						<< ':'
+						<< __LINE__
+						<< ' '
+						<< ex.what()
+						<< std::endl
 					;
 				}
 				return make_object();

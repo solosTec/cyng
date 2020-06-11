@@ -582,15 +582,23 @@ namespace cyng
 				catch (boost::numeric::negative_overflow const& ex)
 				{
 					std::cerr 
-					<< ex.what()
-					<< std::endl
+						<< __FILE__
+						<< ':'
+						<< __LINE__
+						<< ' '
+						<< ex.what()
+						<< std::endl
 					;
 				}
 				catch (boost::numeric::positive_overflow const& ex)
 				{
 					std::cerr 
-					<< ex.what()
-					<< std::endl
+						<< __FILE__
+						<< ':'
+						<< __LINE__
+						<< ' '
+						<< ex.what()
+						<< std::endl
 					;
 				}
 				return make_object();

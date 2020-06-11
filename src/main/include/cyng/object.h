@@ -120,9 +120,17 @@ namespace cyng
 		core::class_interface const& get_class() const;
 		
 		/**
-		 * Reset internal value.
+		 * Reset internal shared pointer to NULL.
+		 * Be carefull. After this the object has no valid data type!
+		 * Use reset() instead to mark object as TC_NULL.
 		 */
 		void clear();
+
+		/**
+		 * Overwrite wrapped value with NULL data type
+		 */
+		void reset();
+
 		
 		/**
 		 * Reiteration of std::hash

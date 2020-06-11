@@ -112,7 +112,7 @@ namespace cyng
 			catch (std::exception const& ex) {
 				//numeric::bad_numeric_cast
 #ifdef _DEBUG
-				std::cerr << ex.what() << std::endl;
+				std::cerr << "get_used_virtual_memory_in_percent - " << ex.what() << std::endl;
 #else
 				boost::ignore_unused(ex);
 #endif
@@ -200,7 +200,7 @@ namespace cyng
 			}
 			catch (std::exception const& ex) {
 #ifdef _DEBUG
-				std::cerr << ex.what() << std::endl;
+				std::cerr << "get_used_physical_memory_in_percent - " << ex.what() << std::endl;
 #else
 				boost::ignore_unused(ex);
 #endif

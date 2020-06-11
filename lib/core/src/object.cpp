@@ -8,12 +8,14 @@
 #include <cyng/core/class_interface.h>
 #include <cyng/core/object_interface.h>
 #include <cyng/intrinsics/traits/tag.hpp>
+//#include <cyng/intrinsics/null.h>
+#include <cyng/factory/factory.hpp>
 #include <CYNG_project_info.h>
 
 namespace cyng 
 {
 	object::object()
-	: value_()
+	: value_(make_object().value_)
 	{}
 	
 	object::object(core::shared_object so)
@@ -67,6 +69,11 @@ namespace cyng
 	void object::clear()
 	{
 		value_.reset();
+	}
+
+	void object::reset()
+	{
+		swap(*this, make_object());
 	}
 	
 	std::size_t object::hash() const noexcept

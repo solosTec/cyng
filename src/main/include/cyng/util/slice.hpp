@@ -133,6 +133,33 @@ namespace cyng
 	}
 
 	/**
+	 * if range is to big function returns an empty vector.
+	 */
+	template<typename T>
+	std::vector< T > slice(std::vector<T> const& vec, std::size_t offset, std::size_t size)
+	{
+		//
+		//	check ranges
+		//
+		if (offset + size < vec.size()) {
+
+			auto pos = vec.cbegin();
+			std::advance(pos, offset);
+
+			auto end = pos;
+			std::advance(end, size);
+
+			//
+			//	build sub-vector
+			//
+			return std::vector<T>(pos, end);
+		}
+
+		return std::vector<T>{};
+	}
+
+
+	/**
 	 * Convert an interal type into an array of smaller integral types
 	 */
 	template <typename U, typename T>
@@ -165,7 +192,7 @@ namespace cyng
 	}
 
 	/**
-	 * Convert an interal type into a vector of smaller integral types
+	 * Convert an integral type into a vector of smaller integral types
 	 */
 	template <typename U, typename T>
 	auto to_vector(T n) -> std::vector< U >
