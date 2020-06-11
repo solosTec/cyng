@@ -63,15 +63,9 @@ namespace cyng
 			BOOST_CHECK_EQUAL(s1, s2);
 		}
 
-#if defined(__CPP_SUPPORT_P0218R1)
-		std::error_code ec;
+		error_code ec;
 		filesystem::remove(tmp, ec);
 		BOOST_CHECK_MESSAGE(!ec, "cannot delete file"); 
-#else
-		boost::system::error_code ec;
-		filesystem::remove(tmp, ec);
-		BOOST_CHECK_MESSAGE(!ec, "cannot delete file");
-#endif
 
 		return true;
 	}

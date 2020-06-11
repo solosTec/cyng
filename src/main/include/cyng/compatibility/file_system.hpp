@@ -18,6 +18,15 @@
 
 namespace cyng 
 {
+	/**
+	 * define the error code type
+	 */
+#if defined(__CPP_SUPPORT_P0218R1)
+	using error_code = std::error_code;
+#else
+	using error_code = boost::system::error_code;
+#endif
+
 	namespace filesystem
 	{
 		
@@ -84,7 +93,7 @@ namespace cyng
 		//
 		inline std::chrono::system_clock::time_point get_write_time(path const& p)
 		{
-			const auto tt = filesystem::last_write_time(p;
+			const auto tt = filesystem::last_write_time(p);
 			return std::chrono::system_clock::from_time_t(tt);
 		}
 
