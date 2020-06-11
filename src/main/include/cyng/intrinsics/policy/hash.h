@@ -149,9 +149,9 @@ namespace std
 	};
 
 	template<> 
-	struct hash<filesystem::path>
+	struct hash<cyng::filesystem::path>
 	{
-		size_t operator()(filesystem::path const&) const noexcept;
+		size_t operator()(cyng::filesystem::path const&) const noexcept;
 	};
 
 	template<>
