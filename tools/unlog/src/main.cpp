@@ -6,7 +6,7 @@
  */ 
 
 #include <boost/program_options.hpp>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <boost/config.hpp>
 #include <boost/predef.h>
 #include <boost/algorithm/string.hpp>
@@ -38,8 +38,8 @@ int main(int argc, char* argv[]) {
 
 	try
 	{
-		const boost::filesystem::path cwd = boost::filesystem::current_path();
-		const boost::filesystem::path temp = boost::filesystem::temp_directory_path();
+		auto const cwd = cyng::filesystem::current_path();
+		auto const temp = cyng::filesystem::temp_directory_path();
 
 		std::string config_file;
 #ifdef _DEBUG
@@ -235,7 +235,7 @@ int main(int argc, char* argv[]) {
 				//	Derive an output name from the input name
 				//	if no name was explicitely defined.
 				//
-				boost::filesystem::path tmp = inp_file;
+				cyng::filesystem::path tmp = inp_file;
 				out_file = tmp.replace_extension(".ipp").string();
 
 				if (verbose > 1)
@@ -255,7 +255,7 @@ int main(int argc, char* argv[]) {
 				//	Derive an output name from the input name
 				//	if no name was explicitely defined.
 				//temp
-				boost::filesystem::path tmp = inp_file;
+				cyng::filesystem::path tmp = inp_file;
 				out_file = tmp.parent_path().string();
 
 				if (verbose > 1)
@@ -288,7 +288,7 @@ int main(int argc, char* argv[]) {
 				//	Derive an output name from the input name
 				//	if no name was explicitely defined.
 				//
-				boost::filesystem::path tmp = inp_file;
+				cyng::filesystem::path tmp = inp_file;
 				out_file = tmp.replace_extension(".log").string();
 
 				if (verbose > 1)

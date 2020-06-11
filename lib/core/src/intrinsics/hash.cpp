@@ -145,9 +145,9 @@ namespace std
 		return boost::hash<boost::uuids::uuid>()(v);
 	}
 	
-	size_t hash<boost::filesystem::path>::operator()(boost::filesystem::path const& v) const noexcept
+	size_t hash<filesystem::path>::operator()(filesystem::path const& v) const noexcept
 	{
-		return boost::hash<boost::filesystem::path>()(v);
+		return boost::hash<filesystem::path>()(v);
 	}
 
 	size_t hash<boost::system::error_code>::operator()(boost::system::error_code const& v) const noexcept

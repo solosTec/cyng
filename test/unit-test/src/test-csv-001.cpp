@@ -7,13 +7,14 @@
  */ 
 #include "test-csv-001.h"
 #include <iostream>
+#include <fstream>
 #include <boost/test/unit_test.hpp>
 #include <cyng/csv.h>
 #include <cyng/object.h>
 #include <cyng/factory.h>
 #include <cyng/io/serializer.h>
 #include <boost/uuid/random_generator.hpp>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 
 namespace cyng 
 {
@@ -39,7 +40,7 @@ namespace cyng
 		//
 		//	serialize to CSV
 		//
-		auto const tmp = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path("unit-test-%%%%-%%%%-%%%%-%%%%.csv");
+		auto const tmp = filesystem::temp_directory_path() / filesystem::unique_path("unit-test-%%%%-%%%%-%%%%-%%%%.csv");
 		const std::string file_name(tmp.string());
 		{
 			//std::cout << file_name << std::endl;
@@ -62,9 +63,15 @@ namespace cyng
 			BOOST_CHECK_EQUAL(s1, s2);
 		}
 
+#if defined(__CPP_SUPPORT_P0218R1)
+		std::error_code ec;
+		filesystem::remove(tmp, ec);
+		BOOST_CHECK_MESSAGE(!ec, "cannot delete file"); 
+#else
 		boost::system::error_code ec;
-		boost::filesystem::remove(tmp, ec);
+		filesystem::remove(tmp, ec);
 		BOOST_CHECK_MESSAGE(!ec, "cannot delete file");
+#endif
 
 		return true;
 	}

@@ -130,9 +130,9 @@ namespace cyng
 		};
 		
 		template <>
-		struct reader_policy<boost::filesystem::path>
+		struct reader_policy<filesystem::path>
 		{
-			static boost::filesystem::path extract(std::istream& is);
+			static filesystem::path extract(std::istream& is);
 		};
 
 		template <>

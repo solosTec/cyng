@@ -227,13 +227,18 @@ namespace cyng
 			return os;
 		}
 		
-		std::ostream& serializer <boost::filesystem::path, SERIALIZE_BINARY>::write(std::ostream& os, boost::filesystem::path const& v)
+		std::ostream& serializer <filesystem::path, SERIALIZE_BINARY>::write(std::ostream& os, filesystem::path const& v)
 		{
 			//
 			//	type - length - value
 			//
-			serialize_type_tag<boost::filesystem::path>(os);
+			serialize_type_tag<filesystem::path>(os);
+#if defined(__CPP_SUPPORT_P0218R1)
+			serialize_length(os, v.string().size());
+#else
 			serialize_length(os, v.size());
+#endif
+
 			return os << v.string();
 		}
 		

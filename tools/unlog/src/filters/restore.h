@@ -9,7 +9,7 @@
 #define CYNG_UNLOG_RESTORE_H
 
 #include <cstdint>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 
 namespace cyng
 {
@@ -19,11 +19,11 @@ namespace cyng
 	class restore 
 	{
 	public:
-		restore(boost::filesystem::path const&, boost::filesystem::path const&, int verbose);
+		restore(filesystem::path const&, filesystem::path const&, int verbose);
 		int run(std::size_t min, std::size_t max);
 
 	private:
-		const boost::filesystem::path inp_, out_;
+		const filesystem::path inp_, out_;
 		const int verbose_;
 	};
 }

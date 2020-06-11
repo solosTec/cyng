@@ -23,12 +23,18 @@ namespace cyng
 			, index_dist_(0, stock_.size() - 1u)
 		{}
 
+		char rnd::next()
+		{
+			return stock_.at(index_dist_(rng_));
+		}
+
 		std::string rnd::next(std::size_t size)
 		{
 			std::string r;
 			r.reserve(size);
 			while (size-- > 0) {
-				r += stock_.at(index_dist_(rng_));
+				//r += stock_.at(index_dist_(rng_));
+				r += next();
 			}
 			return r;
 		}

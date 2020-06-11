@@ -28,7 +28,7 @@ namespace cyng
 		using log_ptr = std::shared_ptr<logger_interface>;
 		
 		inline log_ptr make_file_logger(boost::asio::io_service& ios
-			, boost::filesystem::path const& p
+			, filesystem::path const& p
 			, severity threshold = severity::LEVEL_TRACE
 			, std::size_t rotation_size = 32UL * 1024UL * 1024UL)
 		{

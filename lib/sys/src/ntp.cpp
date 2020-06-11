@@ -31,7 +31,7 @@ namespace cyng
 			std::vector<std::string>	result;
 #if defined(CYNG_CROSS_COMPILE)
 // 			
-			boost::filesystem::path const p{"/usr/local/etc/ntphost"};
+			filesystem::path const p{"/usr/local/etc/ntphost"};
 			
 			//	open file
 			std::ifstream infile(p.string(), std::ios::in);

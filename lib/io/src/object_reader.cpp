@@ -41,10 +41,10 @@ namespace cyng
 			return tag;
 		}
 		
-		boost::filesystem::path reader_policy<boost::filesystem::path>::extract(std::istream& is)
+		filesystem::path reader_policy<filesystem::path>::extract(std::istream& is)
 		{
 			std::istreambuf_iterator<char> eos;
-			return boost::filesystem::path(std::istreambuf_iterator<char>(is), eos);
+			return filesystem::path(std::istreambuf_iterator<char>(is), eos);
 		}
 
 		chrono::dbl_time_point reader_policy<chrono::dbl_time_point>::extract(std::istream& is)

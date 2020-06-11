@@ -13,16 +13,15 @@
 #include <cyng/factory.h>
 #include <cyng/io/serializer.h>
 #include <boost/uuid/random_generator.hpp>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 
 namespace cyng 
 {
-
 	bool test_xml_001()
 	{
 #ifdef	CYNG_PUGIXML_INSTALLED
-		const boost::filesystem::path tmp = boost::filesystem::temp_directory_path();
-		const boost::filesystem::path pwd = boost::filesystem::current_path();
+		auto const tmp = filesystem::temp_directory_path();
+		auto const pwd = filesystem::current_path();
 		boost::uuids::random_generator rgen;
 
 		//
@@ -101,7 +100,7 @@ namespace cyng
 		//
 		xml::write(root, make_object(conf));
 
-		const auto p = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path("unit-test-%%%%-%%%%-%%%%-%%%%.xml");
+		const auto p = filesystem::temp_directory_path() / filesystem::unique_path("unit-test-%%%%-%%%%-%%%%-%%%%.xml");
 		if (doc.save_file(p.c_str(), PUGIXML_TEXT("  ")))
 		{
 			std::cout << p << std::endl;

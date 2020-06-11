@@ -245,7 +245,7 @@ namespace cyng
 				return make_object(boost::uuids::string_generator()(value));
 			}
 			else if (boost::algorithm::equals(type, "fs:path")) {
-				return make_object<boost::filesystem::path>(value);
+				return make_object<filesystem::path>(value);
 			}
 //			
 //			"ip:tcp:endpoint",	//	boost::asio::ip::tcp::endpoint

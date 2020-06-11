@@ -459,7 +459,7 @@ namespace cyng
 				}
 				
 			//	template <>
-			//	object get_value<boost::filesystem::path>(SQLHSTMT stmt, int index, std::size_t size)
+			//	object get_value<filesystem::path>(SQLHSTMT stmt, int index, std::size_t size)
 			//	{
 			//		const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
 			//		if (ptr != NULL)

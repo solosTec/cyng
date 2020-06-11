@@ -6,7 +6,7 @@
  */ 
 
 #include <boost/program_options.hpp>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <boost/config.hpp>
 #include <boost/predef.h>
 #include <boost/algorithm/string.hpp>
@@ -32,8 +32,8 @@ int main(int argc, char* argv[]) {
 
 	try
 	{
-		const boost::filesystem::path cwd = boost::filesystem::current_path();
-		const boost::filesystem::path temp = boost::filesystem::temp_directory_path();
+		auto const cwd = cyng::filesystem::current_path();
+		auto const temp = cyng::filesystem::temp_directory_path();
 
 		std::string config_file;
 #ifdef _DEBUG

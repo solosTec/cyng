@@ -14,6 +14,7 @@
 #else
 #include <boost/filesystem.hpp>
 #endif
+#include <cyng/rnd.h>
 
 namespace cyng 
 {
@@ -25,30 +26,36 @@ namespace cyng
 		/**
 		 * File system library
 		 */
+		using namespace std::filesystem;
 		using path = std::filesystem::path;
 		using space_info = std::filesystem::space_info;
 
-		//
-		//	this works fine
-		//
-		using FN_CREATE_DIR = bool (*) (std::filesystem::path const&);
-		const FN_CREATE_DIR create_directory = std::filesystem::create_directory;
+		inline typename path::string_type unique_path(const path& model)
+		{
+			typename path::string_type s(model.native());
 
-		using FN_SPACE = space_info (*) (std::filesystem::path const&);
-		const FN_SPACE space = std::filesystem::space;
+			char const percent = '%';
+			auto rnd = crypto::make_rnd_alnum();
 
-		//
-		//	this not so
-		//
-		//const auto create_directory = std::filesystem::create_directory;
+			for (path::string_type::size_type i = 0; i < s.size(); ++i)
+			{
+				if (s[i] == percent) {
+					s[i] = rnd.next();	// substitute
+				}
+			}
+
+			return s;
+		}
+
 
 #else
+		/**
+		 * File system library
+		 */
+		using namespace boost::filesystem;
+
 		using path = boost::filesystem::path;
 		using space_info = boost::filesystem::space_info;
-		//const auto absolute = boost::filesystem::absolute;
-		//const auto begin = boost::filesystem::begin;
-		//const auto create_directory = boost::filesystem::create_directory;
-
 
 #endif
 		

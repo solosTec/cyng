@@ -18,7 +18,7 @@
 
 namespace cyng
 {
-	cu::cu(boost::filesystem::path const& inp, boost::filesystem::path const& out, int verbose)
+	cu::cu(filesystem::path const& inp, filesystem::path const& out, int verbose)
 		: inp_(inp)
 		, out_(out)
 		, verbose_(verbose)
@@ -127,7 +127,7 @@ namespace cyng
 			//
 			//	open output file
 			//
-			boost::filesystem::path p = out_ / ("cu_" + boost::uuids::to_string(tag_) + ".bin");
+			filesystem::path p = out_ / ("cu_" + boost::uuids::to_string(tag_) + ".bin");
 			std::fstream fout(p.string(), std::ios::out | std::ios::binary | std::ios::app);
 			if (fout.is_open()) {
 				const auto values = split(line.substr(8, 48), " ");

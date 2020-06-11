@@ -20,7 +20,7 @@
 
 #include <cyng/parser/mac_parser.h>
 #include <fstream> 
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #else
 #warning unknow OS
 #endif
@@ -35,8 +35,8 @@ namespace cyng
 			// sol@paramount:~> cat /sys/class/net/eno16777736/address
 			// 00:0c:29:cc:e3:d4
 
-			boost::filesystem::path const root("/sys/class/net/");
-			boost::filesystem::path const p = root / name / "address";
+			filesystem::path const root("/sys/class/net/");
+			filesystem::path const p = root / name / "address";
             std::vector<mac48>	result;
 
 			//	open file
@@ -97,17 +97,17 @@ namespace cyng
 #elif BOOST_OS_LINUX
 
 			//		ls /sys/class/net/
-			const boost::filesystem::path p("/sys/class/net/");
-			BOOST_ASSERT_MSG(boost::filesystem::is_directory(p), "not a directory");
+			const filesystem::path p("/sys/class/net/");
+			BOOST_ASSERT_MSG(filesystem::is_directory(p), "not a directory");
 
-			std::for_each(boost::filesystem::directory_iterator(p)
-				, boost::filesystem::directory_iterator()
-				, [&result](boost::filesystem::path const& adapter)
+			std::for_each(filesystem::directory_iterator(p)
+				, filesystem::directory_iterator()
+				, [&result](filesystem::path const& adapter)
 			{
-				BOOST_ASSERT_MSG(boost::filesystem::is_directory(adapter), "not a directory");
-				if (boost::filesystem::is_directory(adapter))
+				BOOST_ASSERT_MSG(filesystem::is_directory(adapter), "not a directory");
+				if (filesystem::is_directory(adapter))
 				{
-					const boost::filesystem::path name = adapter.stem();
+					const filesystem::path name = adapter.stem();
                     const std::vector<mac48> al = retrieve_mac48(name.string());
                     result.insert(result.end(), al.begin(), al.end());
 				}

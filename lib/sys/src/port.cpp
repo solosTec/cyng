@@ -8,7 +8,7 @@
 #include <cyng/sys/port.h>
 #include <boost/predef.h>
 #include <boost/assert.hpp>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <iostream>
 
 #if BOOST_OS_WINDOWS
@@ -36,14 +36,14 @@ namespace cyng
 			//	get all serial interfaces by reading /etc/fstab
 			//
 // 			std::ifstream ifs("/sys/class/tty");
-			boost::filesystem::path const d("/sys/class/tty");
-			if (boost::filesystem::is_directory(d)) {
-				for (boost::filesystem::directory_entry& entry : boost::filesystem::directory_iterator(d)) {
+			filesystem::path const d("/sys/class/tty");
+			if (filesystem::is_directory(d)) {
+				for (filesystem::directory_entry& entry : filesystem::directory_iterator(d)) {
 					//
 					//	test if /sys/class/tty/"entry"/device exists
 					//
 					auto const dev = entry.path() / "device";
-					if (boost::filesystem::exists(dev)) {
+					if (filesystem::exists(dev)) {
 						result.push_back(entry.path().filename().string());
 					}
 				}

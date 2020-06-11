@@ -246,11 +246,11 @@ namespace cyng
 			static std::ostream& write(std::ostream& os, boost::uuids::uuid const&);
 		};
 		
-// 		[with T = boost::filesystem::path; S = cyng::io::SERIALIZE_BINARY; std::ostream = std::basic_ostream<char>]’
+// 		[with T = filesystem::path; S = cyng::io::SERIALIZE_BINARY; std::ostream = std::basic_ostream<char>]’
 		template <>
-		struct serializer <boost::filesystem::path, SERIALIZE_BINARY>
+		struct serializer <filesystem::path, SERIALIZE_BINARY>
 		{
-			static std::ostream& write(std::ostream& os, boost::filesystem::path const&);
+			static std::ostream& write(std::ostream& os, filesystem::path const&);
 		};
 		
 // 		[with T = cyng::eod; S = cyng::io::SERIALIZE_BINARY; std::ostream = std::basic_ostream<char>]’

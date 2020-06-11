@@ -9,7 +9,7 @@
 #define CYNG_UNLOG_CU_H
 
 #include <cstdint>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/string_generator.hpp>
 
@@ -32,14 +32,14 @@ namespace cyng
 	class cu 
 	{
 	public:
-		cu(boost::filesystem::path const&, boost::filesystem::path const&, int verbose);
+		cu(filesystem::path const&, filesystem::path const&, int verbose);
 		int run(std::size_t min, std::size_t max);
 
 	private:
 		void read_line(std::string const&, std::size_t);
 
 	private:
-		const boost::filesystem::path inp_, out_;
+		const filesystem::path inp_, out_;
 		const int verbose_;
 		boost::uuids::uuid tag_;
 		boost::uuids::string_generator sgen_;

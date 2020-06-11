@@ -399,7 +399,7 @@ namespace cyng
 				}
 
 				template <>
-				bool bind_value< boost::filesystem::path >(sqlite3_stmt* stmt, int index, boost::filesystem::path const* ptr)
+				bool bind_value< filesystem::path >(sqlite3_stmt* stmt, int index, filesystem::path const* ptr)
 				{
 					if (ptr != nullptr)
 					{

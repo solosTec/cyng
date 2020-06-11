@@ -616,7 +616,7 @@ namespace cyng
 				}
 				
 				template <>
-				object get_value<boost::filesystem::path>(sqlite3_stmt* stmt, int index)
+				object get_value<filesystem::path>(sqlite3_stmt* stmt, int index)
 				{
 					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
 					if (ptr != NULL)
@@ -626,7 +626,7 @@ namespace cyng
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 						BOOST_ASSERT(str.size() < 1024);
 						
-						return make_object<boost::filesystem::path>(str);
+						return make_object<filesystem::path>(str);
 					}
 					return make_object();
 				}

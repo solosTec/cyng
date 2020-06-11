@@ -9,7 +9,7 @@
 #define CYNG_UNLOG_HEXDUMP_CPP_H
 
 #include <cstdint>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 
 namespace cyng
 {
@@ -19,7 +19,7 @@ namespace cyng
 	class hexdump_cpp
 	{
 	public:
-		hexdump_cpp(boost::filesystem::path const&, boost::filesystem::path const&, int verbose);
+		hexdump_cpp(filesystem::path const&, filesystem::path const&, int verbose);
 		int run(std::size_t min, std::size_t max);
 
 	private:
@@ -27,7 +27,7 @@ namespace cyng
 		void write_post(std::fstream& fout, std::string const&, std::size_t element_counter);
 
 	private:
-		const boost::filesystem::path inp_, out_;
+		const filesystem::path inp_, out_;
 		const int verbose_;
 	};
 }

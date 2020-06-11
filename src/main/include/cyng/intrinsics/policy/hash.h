@@ -149,9 +149,9 @@ namespace std
 	};
 
 	template<> 
-	struct hash<boost::filesystem::path>
+	struct hash<filesystem::path>
 	{
-		size_t operator()(boost::filesystem::path const&) const noexcept;
+		size_t operator()(filesystem::path const&) const noexcept;
 	};
 
 	template<>

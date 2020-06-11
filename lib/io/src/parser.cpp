@@ -68,7 +68,7 @@ namespace cyng
 					case TC_ATTR_MAP:	next(attr_map_factory()()); break;
 					case TC_PARAM_MAP:	next(param_map_factory()()); break;
 
-					case TC_FS_PATH:	next(make_object(boost::filesystem::path()));	break;
+					case TC_FS_PATH:	next(make_object(filesystem::path()));	break;
 					case TC_IP_TCP_ENDPOINT:	next(make_object(boost::asio::ip::tcp::endpoint()));	break;
 					case TC_IP_UDP_ENDPOINT:	next(make_object(boost::asio::ip::udp::endpoint()));	break;
 					case TC_IP_ICMP_ENDPOINT:	next(make_object(boost::asio::ip::icmp::endpoint()));	break;

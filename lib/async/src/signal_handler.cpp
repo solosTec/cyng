@@ -13,7 +13,7 @@
 #include <Windows.h>
 #endif
 #include <boost/stacktrace.hpp>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <iostream>
  
 namespace cyng
@@ -71,7 +71,7 @@ namespace cyng
 		
 		void check_stacktrace()
         {
-            if (boost::filesystem::exists(CYNG::backtrace_file)) {
+            if (cyng::filesystem::exists(CYNG::backtrace_file)) {
                 // there is a backtrace
                 std::ifstream ifs(CYNG::backtrace_file);
 
@@ -80,7 +80,7 @@ namespace cyng
 
                 // cleaning up
                 ifs.close();
-                boost::filesystem::remove(CYNG::backtrace_file);
+				cyng::filesystem::remove(CYNG::backtrace_file);
             }            
         }
 	};

@@ -11,7 +11,7 @@
 #include <cyng/vm/generator.h>
 #include <cyng/factory.h>
 #include <cyng/compatibility/file_system.hpp>
-
+#include <chrono>
 #include <boost/core/ignore_unused.hpp>
 
 namespace cyng 
@@ -26,11 +26,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			const filesystem::path p = value_cast(frame.at(0), filesystem::path());
+
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			filesystem::create_directories(p, ec);
+#else
 			boost::system::error_code ec;
-			boost::filesystem::create_directories(p, ec);
-			//filesystem::create_directory(p);
+			filesystem::create_directories(p, ec);
 			ctx.set_register(ec);
+#endif
 
 		});
 
@@ -41,10 +46,16 @@ namespace cyng
 		//
 		vm.register_function("fs.current.path", 0, [](context& ctx) {
 
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			const filesystem::path p = filesystem::current_path(ec);
+			ctx.push(make_object(p));
+#else
 			boost::system::error_code ec;
-			const boost::filesystem::path p = boost::filesystem::current_path(ec);
+			const filesystem::path p = filesystem::current_path(ec);
  			ctx.push(make_object(p));
 			ctx.set_register(ec);
+#endif
 		});
 		
 		//
@@ -55,11 +66,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			auto const p = value_cast(frame.at(0), filesystem::path());
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			const bool b = filesystem::exists(p, ec);
+#else
 			boost::system::error_code ec;
-			const bool b = boost::filesystem::exists(p, ec);
- 			ctx.push(make_object(b));
+			const bool b = filesystem::exists(p, ec);
  			ctx.set_register(ec);
+#endif
+			ctx.push(make_object(b));
 
 		});
 		
@@ -72,11 +88,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			auto const p = value_cast(frame.at(0), filesystem::path());
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			auto const size = filesystem::file_size(p, ec);
+#else
 			boost::system::error_code ec;
-			const auto size = boost::filesystem::file_size(p, ec);
- 			ctx.push(make_object<std::uint64_t>(size));
- 			ctx.set_register(ec);
+			auto const size = filesystem::file_size(p, ec);
+			ctx.set_register(ec);
+#endif
+			ctx.push(make_object<std::uint64_t>(size));
 
 		});
 		
@@ -89,11 +110,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			auto const p = value_cast(frame.at(0), filesystem::path());
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			const bool b = filesystem::is_directory(p, ec);
+#else
 			boost::system::error_code ec;
-			const bool b = boost::filesystem::is_directory(p, ec);
- 			ctx.push(make_object(b));
+			const bool b = filesystem::is_directory(p, ec);
  			ctx.set_register(ec);
+#endif
+			ctx.push(make_object(b));
 
 		});
 		
@@ -106,11 +132,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			auto const p = value_cast(frame.at(0), filesystem::path());
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			const bool b = filesystem::is_empty(p, ec);
+#else
 			boost::system::error_code ec;
-			const bool b = boost::filesystem::is_empty(p, ec);
- 			ctx.push(make_object(b));
+			const bool b = filesystem::is_empty(p, ec);
  			ctx.set_register(ec);
+#endif
+			ctx.push(make_object(b));
 
 		});
 		
@@ -123,11 +154,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			auto const p = value_cast(frame.at(0), filesystem::path());
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			const bool b = filesystem::is_regular_file(p, ec);
+#else
 			boost::system::error_code ec;
-			const bool b = boost::filesystem::is_regular_file(p, ec);
- 			ctx.push(make_object(b));
+			const bool b = filesystem::is_regular_file(p, ec);
  			ctx.set_register(ec);
+#endif
+			ctx.push(make_object(b));
 
 		});
 		
@@ -136,17 +172,24 @@ namespace cyng
 		//	Push result onto stack.
 		//	Set error register.
 		//
-		vm.register_function("fs.last.write-time", 1, [](context& ctx) {
-
-			auto const frame = ctx.get_frame();
-
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
-			boost::system::error_code ec;
-			const auto tt = boost::filesystem::last_write_time(p, ec);
- 			ctx.push(make_object(std::chrono::system_clock::from_time_t(tt)));
- 			ctx.set_register(ec);
-
-		});
+//		vm.register_function("fs.last.write-time", 1, [](context& ctx) {
+//
+//			auto const frame = ctx.get_frame();
+//
+//			auto const p = value_cast(frame.at(0), filesystem::path());
+//#if defined(__CPP_SUPPORT_P0218R1)
+//			std::error_code ec;
+//			const auto ftime = filesystem::last_write_time(p, ec);
+//			std::time_t tt = decltype(ftime)::clock::to_time_t(ftime);
+//			ctx.push(make_object(std::chrono::system_clock::from_time_t(tt)));
+//#else
+//			boost::system::error_code ec;
+//			const auto tt = filesystem::last_write_time(p, ec);
+// 			ctx.set_register(ec);
+//			ctx.push(make_object(std::chrono::system_clock::from_time_t(tt)));
+//#endif
+//
+//		});
 	
 		//
 		//	remove(const path& p, system::error_code& ec);
@@ -157,12 +200,16 @@ namespace cyng
 
 			auto const frame = ctx.get_frame();
 
-			const boost::filesystem::path p = value_cast(frame.at(0), boost::filesystem::path());
+			auto const p = value_cast(frame.at(0), filesystem::path());
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			const bool b = filesystem::remove(p, ec);
+#else 
 			boost::system::error_code ec;
-			const bool b = boost::filesystem::remove(p, ec);
- 			ctx.push(make_object(b));
+			const bool b = filesystem::remove(p, ec);
  			ctx.set_register(ec);
-
+#endif
+			ctx.push(make_object(b));
 		});
 		
 		//
@@ -172,10 +219,15 @@ namespace cyng
 		//
 		vm.register_function("fs.temp.dir", 0, [](context& ctx) {
 
+#if defined(__CPP_SUPPORT_P0218R1)
+			std::error_code ec;
+			auto const p = filesystem::temp_directory_path(ec);
+#else
 			boost::system::error_code ec;
-			const boost::filesystem::path p = boost::filesystem::temp_directory_path(ec);
- 			ctx.push(make_object(p));
- 			ctx.set_register(ec);
+			auto const p = filesystem::temp_directory_path(ec);
+			ctx.set_register(ec);
+#endif
+			ctx.push(make_object(p));
 
 		});
 	}

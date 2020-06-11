@@ -9,7 +9,7 @@
 #define CYNG_PLAY_H
 
 #include <cstdint>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <boost/asio.hpp>
 #include <vector>
 
@@ -21,11 +21,11 @@ namespace cyng
 	class play 
 	{
 	public:
-		play(boost::filesystem::path const&, int verbose, std::size_t);
+		play(filesystem::path const&, int verbose, std::size_t);
 		int run(boost::asio::ip::tcp::endpoint ep, std::size_t);
 
 	private:
-		const boost::filesystem::path inp_;
+		const filesystem::path inp_;
 		const int verbose_;
 		std::vector<char> buffer_;
 	};

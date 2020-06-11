@@ -28,6 +28,7 @@ namespace cyng
 			rnd(std::string const&);
 			rnd(rnd const&);
 
+			char next();
 			std::string next(std::size_t);
 			std::string operator()(std::size_t);
 

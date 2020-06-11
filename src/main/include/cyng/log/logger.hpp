@@ -9,11 +9,12 @@
 
 #include <cyng/log/severity.h>
 #include <cyng/chrono.h>
-#include <boost/filesystem.hpp>
+#include <cyng/compatibility/file_system.hpp>
 #include <boost/predef.h>	//	requires Boost 1.55
 #include <cyng/compatibility/io_service.h>
 #include <stdexcept>
 #include <iomanip>
+#include <fstream>
 #if BOOST_OS_WINDOWS
 #include <process.h>
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
@@ -89,7 +90,7 @@ namespace cyng
 			
 		public:
 			logger(io_service_t& ioc
-				, boost::filesystem::path const& p
+				, filesystem::path const& p
 				, severity threshold = severity::LEVEL_TRACE
 				, std::size_t rotation_size = 32UL * 1024UL * 1024UL	//	32 MB
 			)
@@ -174,7 +175,7 @@ namespace cyng
 
 			void test_file_size()
 			{
-				const auto fs = boost::filesystem::file_size(path_);
+				const auto fs = filesystem::file_size(path_);
 				if (fs > rotation_size_)	
 				{	//	32 MB
 
@@ -212,16 +213,15 @@ namespace cyng
 						<< chrono::time_of_day(tm)	// in seconds
 						;
 
-				const std::string tag = ss.str();
-				const boost::filesystem::path backup
-					= path_.parent_path() / ((path_.stem().string() + "_backup_" + tag) + path_.extension().string());
+				auto const tag = ss.str();
+				auto const backup = path_.parent_path() / ((path_.stem().string() + "_backup_" + tag) + path_.extension().string());
 
-				boost::filesystem::rename(path_, backup);
+				filesystem::rename(path_, backup);
 			}
 			
 		private:
 			dispatcher_t dispatcher_;
-			const boost::filesystem::path	path_;
+			const filesystem::path	path_;
 			logstream logstream_;
 			severity threshold_;
 			const std::size_t	rotation_size_;

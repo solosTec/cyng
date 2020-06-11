@@ -85,7 +85,7 @@ namespace cyng
 		
 		boost::system::error_code,
 		boost::uuids::uuid,
-		boost::filesystem::path,
+		cyng::filesystem::path,
 		boost::asio::ip::tcp::endpoint,
 		boost::asio::ip::udp::endpoint,
 		boost::asio::ip::icmp::endpoint,
@@ -259,7 +259,7 @@ namespace cyng
 		
 		TC_EC		= type_tag_traits<boost::system::error_code>(),
 		TC_UUID		= type_tag_traits<boost::uuids::uuid>(),
-		TC_FS_PATH	= type_tag_traits<boost::filesystem::path>(),
+		TC_FS_PATH	= type_tag_traits<filesystem::path>(),
 
 		TC_IP_TCP_ENDPOINT	= type_tag_traits<boost::asio::ip::tcp::endpoint>(),
 		TC_IP_UDP_ENDPOINT = type_tag_traits<boost::asio::ip::udp::endpoint>(),

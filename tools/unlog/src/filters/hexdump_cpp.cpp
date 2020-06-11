@@ -22,7 +22,7 @@ namespace cyng
 		std::uint8_t  c_[2];
 	} combo_t;
 
-	hexdump_cpp::hexdump_cpp(boost::filesystem::path const& inp, boost::filesystem::path const& out, int verbose)
+	hexdump_cpp::hexdump_cpp(filesystem::path const& inp, filesystem::path const& out, int verbose)
 		: inp_(inp)
 		, out_(out)
 		, verbose_(verbose)
@@ -121,7 +121,7 @@ namespace cyng
 
 	std::string hexdump_cpp::write_guard(std::fstream& fout)
 	{
-		const std::string var = boost::algorithm::replace_all_copy(boost::filesystem::path(inp_).stem().string(), "-", "_");
+		const std::string var = boost::algorithm::replace_all_copy(filesystem::path(inp_).stem().string(), "-", "_");
 		const std::string uvar = boost::algorithm::to_upper_copy(var);
 
 		fout

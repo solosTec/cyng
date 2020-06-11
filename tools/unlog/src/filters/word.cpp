@@ -16,7 +16,7 @@
 
 namespace cyng
 {
-	word::word(boost::filesystem::path const& inp, boost::filesystem::path const& out, int verbose)
+	word::word(filesystem::path const& inp, filesystem::path const& out, int verbose)
 		: inp_(inp)
 		, out_(out)
 		, verbose_(verbose)

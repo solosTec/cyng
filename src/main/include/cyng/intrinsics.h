@@ -21,10 +21,10 @@
 #include <cyng/intrinsics/lockable.h>
 #include <cyng/intrinsics/digest.h>
 #include <cyng/crypto/aes_keys.h>
+#include <cyng/compatibility/file_system.hpp>
 
 #include <boost/system/error_code.hpp>
 #include <boost/uuid/uuid.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
 
 #if defined(CYNG_ODBC_INSTALLED)

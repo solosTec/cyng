@@ -7,6 +7,8 @@
  */
 #include "test-io-002.h"
 #include <iostream>
+#include <fstream>
+
 #include <boost/test/unit_test.hpp>
 #include <cyng/factory.h>
 #include <cyng/type.h>
@@ -316,7 +318,7 @@ private:
                     break;
 
                 case TC_FS_PATH:
-                    next ( make_object ( boost::filesystem::path() ) );
+                    next ( make_object ( filesystem::path() ) );
                     break;
                 case TC_IP_TCP_ENDPOINT:
                     next ( make_object ( boost::asio::ip::tcp::endpoint() ) );
@@ -522,7 +524,7 @@ void write_test_data(std::ostream& os)
 	//boost::uuids::uuid,
 	io::serialize_binary ( os, make_object ( boost::uuids::string_generator() ( "2f28413a-d69f-4fc6-b39b-14ff401b15d2" ) ) );
 	//boost::filesystem::path,
-	io::serialize_binary ( os, make_object ( boost::filesystem::path ( "demo.txt" ) ) );
+	io::serialize_binary ( os, make_object ( filesystem::path ( "demo.txt" ) ) );
 	//boost::asio::ip::tcp::endpoint,
 	io::serialize_binary ( os, make_object ( boost::asio::ip::tcp::endpoint ( boost::asio::ip::address::from_string ( "127.0.0.1" ), 20015 ) ) );
 	//boost::asio::ip::udp::endpoint,
@@ -814,7 +816,7 @@ void read_test_data ( vector_t&& prg )
 
 bool test_io_002()
 {
-    const auto tmp = boost::filesystem::temp_directory_path() / "test_io_002.bin";
+    const auto tmp = filesystem::temp_directory_path() / "test_io_002.bin";
     const std::string file_name ( tmp.string() );
     {
 //         std::cout << file_name << " is open to write" << std::endl;

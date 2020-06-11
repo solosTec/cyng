@@ -13,7 +13,7 @@
 
 namespace cyng
 {
-	play::play(boost::filesystem::path const& inp, int verbose, std::size_t size)
+	play::play(filesystem::path const& inp, int verbose, std::size_t size)
 		: inp_(inp)
 		, verbose_(verbose)
 		, buffer_()
