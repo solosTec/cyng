@@ -30,6 +30,9 @@ namespace cyng
 		using path = std::filesystem::path;
 		using space_info = std::filesystem::space_info;
 
+		/**
+		 * substitutes similiar function from boost
+		 */
 		inline typename path::string_type unique_path(const path& model)
 		{
 			typename path::string_type s(model.native());
@@ -47,7 +50,26 @@ namespace cyng
 			return s;
 		}
 
+		/**
+		 * renaming function from boost
+		 */
+		inline bool is_regular(std::filesystem::path const& p)
+		{
+			return is_regular_file(p);
+		}
 
+		/**
+		 * To get the last write time is currently a mess with the STL.
+		 * Waiting for C++20
+		 */
+		inline std::chrono::system_clock::time_point get_write_time(path const& p)
+		{
+			auto const ftp = cyng::filesystem::last_write_time(p);
+			auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(ftp - std::filesystem::file_time_type::clock::now()
+				+ std::chrono::system_clock::now());
+			auto const tt = std::chrono::system_clock::to_time_t(sctp);
+			return std::chrono::system_clock::from_time_t(tt);
+		}
 #else
 		/**
 		 * File system library
@@ -56,6 +78,15 @@ namespace cyng
 
 		using path = boost::filesystem::path;
 		using space_info = boost::filesystem::space_info;
+
+		//
+		//	same function for boost and STL
+		//
+		inline std::chrono::system_clock::time_point get_write_time(path const& p)
+		{
+			const auto tt = filesystem::last_write_time(p;
+			return std::chrono::system_clock::from_time_t(tt);
+		}
 
 #endif
 		
