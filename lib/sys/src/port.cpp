@@ -38,7 +38,7 @@ namespace cyng
 // 			std::ifstream ifs("/sys/class/tty");
 			filesystem::path const d("/sys/class/tty");
 			if (filesystem::is_directory(d)) {
-				for (filesystem::directory_entry& entry : filesystem::directory_iterator(d)) {
+				for (filesystem::directory_entry const& entry : filesystem::directory_iterator(d)) {
 					//
 					//	test if /sys/class/tty/"entry"/device exists
 					//

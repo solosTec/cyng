@@ -13,8 +13,10 @@
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/factory.h>
 #include <cyng/dom/tree_walker.h>
+
 #include <ios>
 #include <iterator>
+#include <fstream>
 
 namespace cyng 
 {

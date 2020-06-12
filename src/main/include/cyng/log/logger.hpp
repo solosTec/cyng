@@ -225,7 +225,7 @@ namespace cyng
 			logstream logstream_;
 			severity threshold_;
 			const std::size_t	rotation_size_;
-			volatile std::size_t uncommitted_;
+			std::size_t uncommitted_;
 		};
 
 		/**

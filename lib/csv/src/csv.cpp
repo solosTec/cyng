@@ -12,8 +12,10 @@
 #include <cyng/io/serializer.h>
 #include <cyng/io/serializer/csv.hpp>
 #include <cyng/factory.h>
+
 #include <ios>
 #include <iterator>
+#include <fstream>
 
 namespace cyng 
 {

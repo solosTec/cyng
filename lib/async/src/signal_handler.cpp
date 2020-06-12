@@ -15,6 +15,7 @@
 #include <boost/stacktrace.hpp>
 #include <cyng/compatibility/file_system.hpp>
 #include <iostream>
+#include <fstream>
  
 namespace cyng
 {
