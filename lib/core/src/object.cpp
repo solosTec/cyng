@@ -73,7 +73,8 @@ namespace cyng
 
 	void object::reset()
 	{
-		swap(*this, make_object());
+        auto p = make_object().value_;
+        std::swap(value_, p);
 	}
 	
 	std::size_t object::hash() const noexcept
