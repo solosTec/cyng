@@ -30,7 +30,7 @@ namespace cyng
 		 * Works for paramater maps and searchs in tuples, vectors 
 		 * and sets for an parameter with the specified name.
 		 */
-		virtual object get(std::string const& nam) const = 0;
+		virtual object get(std::string const& name) const = 0;
 		
 		/**
 		 * Simple element access by index
@@ -40,6 +40,13 @@ namespace cyng
 		 * thean access by index.
 		 */
 		virtual object get(std::size_t idx) const = 0;
+
+		/**
+		 * @return true if specified element exsists
+		 */
+		virtual bool exists(std::string const& name) const = 0;
+		//virtual bool exists(std::size_t idx) const = 0;
+
 	};
 	
 	
@@ -83,6 +90,14 @@ namespace cyng
 		virtual object get(std::size_t idx) const override
 		{
 			return find(container_, idx);
+		}
+
+		/**
+		 * @return true if specified entry exists
+		 */
+		virtual bool exists(std::string const& name) const override
+		{
+			return cyng::exists(container_, name);
 		}
 		
 		/**
@@ -128,6 +143,11 @@ namespace cyng
 		 * thean access by index.
 		 */
 		virtual object get(std::size_t idx) const override;
+
+		/**
+		 * @return true if specified entry exists
+		 */
+		virtual bool exists(std::string const& name) const override;
 
 		/**
 		 * Nested array subscript operator

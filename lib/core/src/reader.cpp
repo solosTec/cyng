@@ -53,12 +53,15 @@ namespace cyng
 		return find(root_, idx);
 	}
 	
-	
+	bool reader<object>::exists(std::string const& name) const
+	{
+		return cyng::exists(root_, name);
+	}
+
 	reader<object> reader<object>::operator[](std::string const& name) const
 	{
 		return reader(get(name));
 	}
-
 	
 	reader<object> reader<object>::operator[](std::size_t idx) const
 	{

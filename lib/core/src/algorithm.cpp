@@ -12,6 +12,8 @@
 #include <cyng/factory.h>
 #include <cyng/intrinsics/traits/tag.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 namespace cyng 
 {
 	namespace 
@@ -223,5 +225,58 @@ namespace cyng
 		}
 		return obj;
 	}
+
+	bool exists(attr_map_t const&, std::string const& name)
+	{
+		return false;
+	}
+
+	bool exists(param_map_t const& pm, std::string const& name)
+	{
+		return pm.find(name) != pm.end();
+	}
+
+	bool exists(param_t const& param, std::string const& name)
+	{
+		return boost::algorithm::equals(param.first, name);
+	}
+
+	bool exists(set_t const& set, std::string const& name)
+	{
+		return lookup(set, name) != set.end();
+	}
+
+	bool exists(vector_t const& vec, std::string const& name)
+	{
+		return lookup(vec, name) != vec.end();
+	}
+
+	bool exists(tuple_t const& tpl, std::string const& name)
+	{
+		return lookup(tpl, name) != tpl.end();
+	}
+
+	bool exists(object const& obj, std::string const& name)
+	{
+		switch (obj.get_class().tag())
+		{
+		case TC_TUPLE:
+			return exists(*object_cast<tuple_t>(obj), name);
+		case TC_VECTOR:
+			return exists(*object_cast<vector_t>(obj), name);
+		case TC_SET:
+			return exists(*object_cast<set_t>(obj), name);
+		case TC_PARAM_MAP:
+			return exists(*object_cast<param_map_t>(obj), name);
+		case TC_PARAM:
+			return exists(*object_cast<param_t>(obj), name);
+		case TC_ATTR_MAP:
+		case TC_ATTR:
+		default:
+			break;
+		}
+		return false;
+	}
+
 	
 }

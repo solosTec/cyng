@@ -132,6 +132,20 @@ namespace cyng
 	{
 		return value_cast<T>(find(c, key), def);
 	}
+
+	/**
+	 * @return true if specified entry exists
+	 */
+	bool exists(object const&, std::string const& name);
+	bool exists(tuple_t const&, std::string const&);
+	bool exists(vector_t const&, std::string const&);
+	bool exists(set_t const&, std::string const&);
+	bool exists(param_map_t const&, std::string const&);
+	bool exists(param_t const&, std::string const&);
+	bool exists(attr_map_t const&, std::string const&);
+
+	//bool exists(object const&, std::size_t idx);
+
 }
 
 #endif 	// CYNG_DOM_ALGORITHM_H
