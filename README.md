@@ -66,6 +66,7 @@ To build CYNG, run:
 #!shell
 
 git clone https://github.com/solosTec/cyng.git
+git checkout v0.8
 git submodule update --init --recursive
 mkdir build
 cd build
@@ -90,8 +91,7 @@ To build with Visual Studion on Windows:
 #!shell
 mkdir projects
 cd projects
-cmake -Wno-dev -G "Visual Studio 15 2017 Win64" ..
-#cmake -Wno-dev -G "Visual Studio 16 2019 Win64" ..
+cmake -Wno-dev -G "Visual Studio 16 2019 Win64" ..
 ```
 
 
@@ -107,18 +107,18 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2)
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2
-tar xjvf boost_1_72_0.tar.bz2
-cd boost_1_72_0
+wget https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.tar.bz2
+tar xjvf boost_1_73_0.tar.bz2
+cd boost_1_73_0
 ```
 
 (2) bootstrap
 
 ```
-./bootstrap.sh --with-libraries=filesystem,program_options,system,thread,timer,random,test,regex
+./bootstrap.sh --with-libraries=filesystem,program_options,system,thread,timer,random,test,regex,date_time
 ```
 
 Specify a none-standard installation path with --prefix=...
@@ -168,8 +168,10 @@ export PATH=$PATH:/opt/OSELAS.Toolchain-2018.12.0/arm-v5te-linux-gnueabi/gcc-8.2
 ./b2 install toolset=gcc-arm --prefix=${HOME}/projects/install
 ```
 
-Note: In the latest version of the Boost library (1.70.0) is currently a bug when using b2 to crosscompile. Use Boost 1.69.0 instead.
+Note: In Boost library 1.70.0 is a bug when using b2 to crosscompile. Use Boost 1.69.0 instead.
 See [issues/258](https://github.com/boostorg/boost/issues/258#issuecomment-470158084).
+
+In Boost library 1.73.0 is a bug when compiling Boost.Beast with C++20 compiler options. Checkout the latest version of Boost.Beast from github to solve this problem.
 
 ### OpenSLL ###
 
