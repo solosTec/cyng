@@ -6,6 +6,7 @@
 # see https://devblogs.microsoft.com/cppblog/announcing-msvc-conforms-to-the-c-standard/
 # see https://docs.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance?view=vs-2019
 # see https://gcc.gnu.org/projects/cxx-status.html
+# see https://software.intel.com/content/www/us/en/develop/articles/c17-features-supported-by-intel-c-compiler.html
 #
 # MSVC++ 14.0  (Visual Studio 2015 version 14.0)  _MSC_VER == 1900 
 # MSVC++ 14.1  (Visual Studio 2017 version 15.0)  _MSC_VER == 1910 
@@ -91,7 +92,7 @@ define_compiler_support("P0941R2" "Integrating feature-test macros" "5.0" "3.4" 
 define_compiler_support("P1008R1" "Prohibit aggregates with user-declared constructors" "9.0" "8.0" "10.0" "999")
 define_compiler_support("P1064R0" "constexpr virtual function" "9.0" "999" "999" "999")
 define_compiler_support("P0482R6" "char8_t: A type for UTF-8 characters and strings" "9.0" "7.0" "19.22" "999")
-define_compiler_support("P0595R2" "std::is_constant_evaluated()" "9.0" "9.0" "999" "999")
+define_compiler_support("P0595R2" "std::is_constant_evaluated()" "9.0" "9.0" "999" "19.1")
 define_compiler_support("P1002R1" "constexpr try-catch blocks" "9.0" "8.0" "999" "999")
 # see P1937R2
 define_compiler_support("P1073R3" "Immediate function" "10.0" "999" "999" "999")
