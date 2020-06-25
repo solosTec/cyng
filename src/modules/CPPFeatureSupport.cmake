@@ -194,6 +194,7 @@ define_compiler_support("N4391" "Library Fundamentals 2 TS - make_array" "7.1" "
 define_compiler_support("N4508" "std::shared_mutex (untimed)" "6.1" "3.4" "19.0" "999")
 define_compiler_support("P0024R2" "Standardization of Parallelism TS" "999" "999" "19.14" "18.0")
 define_compiler_support("P0154R1" "Hardware interference size" "999" "999" "19.11" "999")
+# gcc 8 should support this but I've git massive problems when cross compiling
 define_compiler_support("P0218R1" "File system library" "8.0" "7.0" "19.14" "999")
 define_compiler_support("P0220R1" "std::any / std::optional" "7.1" "4.0" "19.10" "999")
 define_compiler_support("P0226R1" "Mathematical special functions" "7.0" "999" "19.14" "999")

@@ -29,7 +29,7 @@ cmake_minimum_required (VERSION 3.10)
 string(TIMESTAMP THIS_YEAR "%Y")
 # Patch level as year + day of the year
 string(TIMESTAMP PATCH_LEVEL "%j")	# day of the year
-math(EXPR PATCH_LEVEL "(${THIS_YEAR} * 1000) + ${PATCH_LEVEL}")
+math(EXPR PATCH_LEVEL "((${THIS_YEAR} - 2018) * 1000) + ${PATCH_LEVEL}")
 
 #
 # set project name/properties
@@ -79,6 +79,7 @@ message(STATUS "** Platform        : ${CMAKE_SYSTEM}")
 message(STATUS "** System          : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "** Compiler        : ${CMAKE_CXX_COMPILER_ID} v${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "** Timestamp       : ${${PROJECT_NAME}_NOW_UTC}")
+message(STATUS "** Crosscompiling  : ${CMAKE_CROSSCOMPILING}")
 message(STATUS "** CPU Cores       : ${${PROJECT_NAME}_CPU_COUNT}")
 
 if(UNIX)
@@ -725,6 +726,7 @@ target_include_directories(unlog
 target_link_libraries(unlog 
 	cyng_core 
 	cyng_io
+	$<$<AND:$<CXX_COMPILER_VERSION:8.2.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>
 	"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
 	)
 install(TARGETS unlog
@@ -745,6 +747,7 @@ target_include_directories(play
 target_link_libraries(play 
 	cyng_core 
 	cyng_io
+	$<$<AND:$<CXX_COMPILER_VERSION:8.2.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>
 	"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
 )
 
