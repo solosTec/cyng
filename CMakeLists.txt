@@ -435,6 +435,11 @@ target_include_directories(cyng_core
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
 		${BOOST_INCLUDE_DIR}
 )
+target_compile_options(cyng_core 
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/Wall>   # Wall
+        $<$<CXX_COMPILER_ID:GNU>:-Wall>
+)
 
 #
 #	cyng log library
@@ -456,6 +461,11 @@ target_include_directories(cyng_io
 	PRIVATE
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
 		${BOOST_INCLUDE_DIR}
+)
+target_compile_options(cyng_io 
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/Wall> 
+        $<$<CXX_COMPILER_ID:GNU>:-Wall>
 )
 
 #
