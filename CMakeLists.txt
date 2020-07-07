@@ -437,7 +437,7 @@ target_include_directories(cyng_core
 )
 target_compile_options(cyng_core 
     PRIVATE
-        $<$<CXX_COMPILER_ID:MSVC>:/Wall>   # Wall
+#        $<$<CXX_COMPILER_ID:MSVC>:/Wall>  
         $<$<CXX_COMPILER_ID:GNU>:-Wall>
 )
 
@@ -464,7 +464,7 @@ target_include_directories(cyng_io
 )
 target_compile_options(cyng_io 
     PRIVATE
-        $<$<CXX_COMPILER_ID:MSVC>:/Wall> 
+#        $<$<CXX_COMPILER_ID:MSVC>:/Wall> 
         $<$<CXX_COMPILER_ID:GNU>:-Wall>
 )
 
