@@ -13,6 +13,10 @@
 #include <cyng/sys/port.h>
 #include <cyng/io/serializer.h>
 
+#if BOOST_OS_LINUX
+#include <cyng/sys/rtc.h>
+#endif
+
 namespace cyng 
 {
 	bool test_sys_001()
@@ -45,6 +49,15 @@ namespace cyng
 		for (auto const& port : ports) {
 			std::cout << port << std::endl;
 		}
+#endif
+
+#if BOOST_OS_LINUX
+        // CAP_SYS_TIME privilege required.
+        auto const ts = sys::read_hw_clock(0);
+        BOOST_CHECK(ts.second);
+#ifdef _DEBUG
+		std::cout << to_str(ts.first) << std::endl;
+#endif
 #endif
 
 		return true;

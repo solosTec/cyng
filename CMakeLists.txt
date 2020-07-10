@@ -66,7 +66,7 @@ message(STATUS "**   ")
 #
 # Collect and dump some basic information
 #
-string(TIMESTAMP NOW_UTC "%Y-%m-%dT%H:%M:%SZ")
+string(TIMESTAMP NOW_UTC "%Y-%m-%dT%H:%M:%SZ" UTC)
 set (${PROJECT_NAME}_NOW_UTC ${NOW_UTC})
 
 include(ProcessorCount)
@@ -695,7 +695,7 @@ endif()
 # BOOST_TEST_DYN_LINK is required to build a main() function
 # cmake -DCYNG_BUILD_TEST:bool=ON ..
 #
-if(${PROJECT_NAME}_BUILD_TEST AND ${PROJECT_NAME}_SSL_SUPPORT)
+if(${PROJECT_NAME}_BUILD_TEST)
 
     include (test/unit-test/unit-test.cmake)
     add_executable(unit_test ${unit_test})
