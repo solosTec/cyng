@@ -103,6 +103,17 @@ namespace cyng
 		ctx.set_register(ec);
 	}
 
+	void ip_tcp_socket_bind(boost::asio::ip::tcp::socket& s, context& ctx)
+	{
+		//
+		//	Bind the socket to the specified address
+		//
+		auto const frame = ctx.get_frame();
+		boost::system::error_code ec;
+		s.bind(value_cast(frame.at(0), boost::asio::ip::tcp::endpoint()), ec);
+		ctx.set_register(ec);
+	}
+	
 	void ip_tcp_socket_resolve(boost::asio::ip::tcp::socket& s, context& ctx)
 	{
 		//
@@ -175,6 +186,7 @@ namespace cyng
 		vm.register_function("ip.tcp.socket.ep.local.port", 0, std::bind(&ip_tcp_socket_ep_local_port, std::ref(s), std::placeholders::_1));
 		vm.register_function("ip.tcp.socket.ep.remote", 0, std::bind(&ip_tcp_socket_ep_remote, std::ref(s), std::placeholders::_1));
 		vm.register_function("ip.tcp.socket.ep.remote.port", 0, std::bind(&ip_tcp_socket_ep_local_port, std::ref(s), std::placeholders::_1));
+		vm.register_function("ip.tcp.socket.bind", 1, std::bind(&ip_tcp_socket_bind, std::ref(s), std::placeholders::_1));
 		vm.register_function("ip.tcp.socket.connect", 1, std::bind(&ip_tcp_socket_connect, std::ref(s), std::placeholders::_1));
 		vm.register_function("ip.tcp.socket.resolve", 2, std::bind(&ip_tcp_socket_resolve, std::ref(s), std::placeholders::_1));
 		vm.register_function("ip.tcp.socket.available", 0, std::bind(&ip_tcp_socket_available, std::ref(s), std::placeholders::_1));

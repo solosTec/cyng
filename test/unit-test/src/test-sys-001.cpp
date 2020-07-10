@@ -12,6 +12,7 @@
 #include <cyng/sys/ntp.h>
 #include <cyng/sys/port.h>
 #include <cyng/io/serializer.h>
+#include <cyng/sys/ip.h>
 
 #if BOOST_OS_LINUX
 #include <cyng/sys/rtc.h>
@@ -49,6 +50,13 @@ namespace cyng
 		for (auto const& port : ports) {
 			std::cout << port << std::endl;
 		}
+#endif
+
+#if BOOST_OS_LINUX
+		auto a = sys::get_ip_address_of_if("eth0");
+#ifdef _DEBUG
+		std::cout << a << std::endl;
+#endif
 #endif
 
 #if BOOST_OS_LINUX

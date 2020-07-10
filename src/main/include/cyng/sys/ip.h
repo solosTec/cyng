@@ -9,7 +9,19 @@
 
 #include <string>
 #include <boost/asio.hpp>
+#include <boost/predef.h>
 
+#if BOOST_OS_LINUX
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <ifaddrs.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <unistd.h>
+// #include <string.h>
+#endif
+	
 namespace cyng 
 {
 	namespace sys 
@@ -29,6 +41,10 @@ namespace cyng
 		 * @return a list of IP addresses from all adapters.
 		 */
 		std::vector<boost::asio::ip::address> get_adapters();
+		
+#if BOOST_OS_LINUX		
+		boost::asio::ip::address get_ip_address_of_if(std::string ifname);
+#endif
 
 	}
 }

@@ -6,9 +6,12 @@
  */ 
 
 #include <cyng/sys/ip.h>
+
+#include <iostream>
+
 #include <boost/assert.hpp>
 #include <boost/core/ignore_unused.hpp>
-#include <iostream>
+#include <boost/algorithm/string.hpp>
 
 namespace cyng 
 {
@@ -59,6 +62,56 @@ namespace cyng
 
 			return addrs;
 		}
+		
+#if BOOST_OS_LINUX		
+		boost::asio::ip::address get_ip_address_of_if(std::string ifname)
+		{
+			struct ifaddrs *ifaddr, *ifa;
+			char host[NI_MAXHOST];
+			
+			//
+			//	init ifaddr
+			//
+			if (getifaddrs(&ifaddr) == -1) return boost::asio::ip::address();
+			
+			//
+			//	loop over all interfaces
+			//
+			for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) 
+			{
+				//
+				//	next entry
+				//
+				if (ifa->ifa_addr == NULL) continue;  
+				
+				int s = getnameinfo(ifa->ifa_addr
+					, sizeof(struct sockaddr_in)
+					, host
+					, NI_MAXHOST
+					, NULL
+					, 0
+					, NI_NUMERICHOST);
+				
+				if (boost::algorithm::equals(ifa->ifa_name, ifname) && (ifa->ifa_addr->sa_family==AF_INET))
+				{
+					if (s == 0) {
+#ifdef _DEBUG
+						std::cout 
+							<< ifa->ifa_name 
+							<< " => "
+							<< host
+							<< std::endl;
+#endif
+						break;
+					}
+				}
+			}
+			
+			freeifaddrs(ifaddr);
+			return boost::asio::ip::make_address(host);
+		}
+#endif
+		
 	}
 }
 
