@@ -129,6 +129,19 @@ namespace cyng
 				return factory<std::string>::create_object(std::string(p));
 			}
 		};
+		
+		template <typename T>
+		struct factory_policy<std::vector<T>>
+		{
+			static object boxing(std::vector<T> const& vec)
+			{
+				cyng::vector_t v;
+				std::transform(vec.begin(), vec.end(), std::back_inserter(v), [](T val){
+					return factory<T>::create_object(val);
+				});
+				return factory<cyng::vector_t>::create_object(v);
+			}
+		};
 	}
 	
 	/**
