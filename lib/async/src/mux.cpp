@@ -321,6 +321,7 @@ namespace cyng
 			//
 			dispatcher_.dispatch([this, stp]()->void {
 				auto const r = tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
+				boost::ignore_unused(r);
 			});
 			return true;
 		}
@@ -358,7 +359,7 @@ namespace cyng
 			//
 			parameter param(std::move(msg));
 
-			dispatcher_.dispatch([this, name, slot, param]() {
+			dispatcher_.post([this, name, slot, param]() {
 				for (auto pos = tasks_.begin(); pos != tasks_.end(); ++pos)
 				{
 					if (boost::algorithm::equals(name, (*pos).second->get_class_name()))
@@ -378,7 +379,7 @@ namespace cyng
 			//
 			parameter param(std::move(msg));
 
-			dispatcher_.dispatch([this, id, slot, param]() {
+			dispatcher_.post([this, id, slot, param]() {
 				auto pos = tasks_.find(id);
 				if (pos != tasks_.end())
 				{
@@ -399,7 +400,7 @@ namespace cyng
 			//
 			parameter param(std::move(msg));
 
-			dispatcher_.dispatch([this, slot, param]() {
+			dispatcher_.post([this, slot, param]() {
 				for (auto tsk : tasks_) {
 					//
 					//	async dispatching

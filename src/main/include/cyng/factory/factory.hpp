@@ -41,15 +41,6 @@ namespace cyng
 		{
 			return object(create_so(std::forward<Args>(args)...));
 		}
-				
-		/**
-		 * Generic object factory, that allows to specify a user defined deleter.
-		 */
-// 		template < typename D /*= deleter_t*/, typename... Args>
-// 		static object create_array(/*D d, */Args&&... args)
-// 		{
-// 			return object(std::static_pointer_cast< core::object_interface >(std::shared_ptr< wrapper_t > ( new wrapper_t(std::forward<Args>(args)...), D())));
-// 		}
 	};
 	
 	namespace detail 
@@ -96,12 +87,10 @@ namespace cyng
 		{
 			static object boxing(object&& obj)
 			{
-// 	 			std::cout << "--- prevent nested objects&& ---\n";
 				return obj;
 			}
 			static object boxing(object const& obj)
 			{
-				//std::cout << "--- prevent nested objects const& ---\n";
 				return obj;
 			}
 		};
@@ -157,7 +146,10 @@ namespace cyng
 			{
 				return factory<vector_t>::create_object(vec);
 			}
-
+			static object boxing(vector_t&& vec)
+			{
+				return factory<vector_t>::create_object(std::move(vec));
+			}
 		};
 
 		/**
@@ -174,7 +166,6 @@ namespace cyng
 			{
 				return factory<buffer_t>::create_object(std::move(val));
 			}
-
 		};
 	}
 	
@@ -186,7 +177,6 @@ namespace cyng
 	template <typename T, typename... Args>
 	object make_object(Args&&... args)
 	{
-//  		std::cout << "variadic factory\n";
 		using value_type = typename std::decay< T >::type;
 		return factory<value_type>::create_object(std::forward<Args>(args)...);
 	}
