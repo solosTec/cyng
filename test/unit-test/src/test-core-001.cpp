@@ -81,8 +81,14 @@ namespace cyng
 		auto green = make_object<color_8>(0, 255, 0);
 
 		auto o9 = make_object({ 1,2,3 });
+		BOOST_CHECK_EQUAL(o9.get_class().tag(), TC_VECTOR);
 
-		
+		auto o10 = make_object(std::vector<std::string>{ "one", "two", "three" });
+		BOOST_CHECK_EQUAL(o10.get_class().tag(), TC_VECTOR);
+
+		auto o11 = make_object(make_buffer({1,2,3}));
+		BOOST_CHECK_EQUAL(o11.get_class().tag(), TC_BUFFER);
+
 		return true;
 	}	
 }

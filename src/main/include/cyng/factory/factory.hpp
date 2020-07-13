@@ -130,17 +130,51 @@ namespace cyng
 			}
 		};
 		
+		/**
+		 * Convert each element of the the vector into an object
+		 * and create a vector_t.
+		 */
 		template <typename T>
 		struct factory_policy<std::vector<T>>
 		{
 			static object boxing(std::vector<T> const& vec)
 			{
-				cyng::vector_t v;
+				vector_t v;
 				std::transform(vec.begin(), vec.end(), std::back_inserter(v), [](T val){
 					return factory<T>::create_object(val);
 				});
-				return factory<cyng::vector_t>::create_object(v);
+				return factory<vector_t>::create_object(v);
 			}
+		};
+
+		/**
+		 * The vector_t remains untouched - like object.
+		 */
+		template <>
+		struct factory_policy < vector_t >
+		{
+			static object boxing(vector_t const& vec)
+			{
+				return factory<vector_t>::create_object(vec);
+			}
+
+		};
+
+		/**
+		 * The same is true for buffer_t, which is a data type by itself
+		 */
+		template <>
+		struct factory_policy < buffer_t >
+		{
+			static object boxing(buffer_t const& val)
+			{
+				return factory<buffer_t>::create_object(val);
+			}
+			static object boxing(buffer_t&& val)
+			{
+				return factory<buffer_t>::create_object(std::move(val));
+			}
+
 		};
 	}
 	

@@ -110,6 +110,8 @@ namespace cyng
 			freeifaddrs(ifaddr);
 			return boost::asio::ip::make_address(host);
 		}
+#else
+		//	https://tangentsoft.com/wskfaq/examples/getifaces.html
 #endif
 		
 	}
