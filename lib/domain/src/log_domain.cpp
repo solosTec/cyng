@@ -23,8 +23,7 @@ namespace cyng
 			CYNG_LOG_TRACE(logger, "session."
 				<< ctx.tag()
 				<< " - "
-				<< io::cat(frame));
-
+				<< io::cat_plain(frame));
 		});
 
 		vm.register_function("log.msg.debug", 1, [logger](context& ctx) {
@@ -32,35 +31,35 @@ namespace cyng
 			CYNG_LOG_DEBUG(logger, "session."
 				<< ctx.tag()
 				<< " - "
-				<< io::cat(frame));
+				<< io::cat_plain(frame));
 		});
 		vm.register_function("log.msg.info", 1, [logger](context& ctx) {
 			auto const frame = ctx.get_frame();
 			CYNG_LOG_INFO(logger, "session."
 				<< ctx.tag()
 				<< " - "
-				<< io::cat(frame));
+				<< io::cat_plain(frame));
 		});
 		vm.register_function("log.msg.warning", 1, [logger](context& ctx) {
 			auto const frame = ctx.get_frame();
 			CYNG_LOG_WARNING(logger, "session."
 				<< ctx.tag()
 				<< " - "
-				<< io::cat(frame));
+				<< io::cat_plain(frame));
 		});
 		vm.register_function("log.msg.error", 1, [logger](context& ctx) {
 			auto const frame = ctx.get_frame();
 			CYNG_LOG_ERROR(logger, "session."
 				<< ctx.tag()
 				<< " - "
-				<< io::cat(frame));
+				<< io::cat_plain(frame));
 		});
 		vm.register_function("log.msg.fatal", 1, [logger](context& ctx) {
 			auto const frame = ctx.get_frame();
 			CYNG_LOG_FATAL(logger, "session."
 				<< ctx.tag()
 				<< " - "
-				<< io::cat(frame));
+				<< io::cat_plain(frame));
 		});
 		vm.register_function("log.fmt.byte", 1, [logger](context& ctx) {
 			auto const frame = ctx.get_frame();

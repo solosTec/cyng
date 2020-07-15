@@ -40,6 +40,36 @@ namespace cyng
 			serializer_helper<SERIALIZE_CSV>::write(os, obj);
 		}
 		
+		std::string to_type(object const& obj)
+		{
+			std::stringstream ss;
+			serialize_typed(ss, obj);
+			return ss.str();
+		}
+
+		std::string to_type(vector_t const& vec)
+		{
+			std::stringstream ss;
+			serializer <vector_t, SERIALIZE_TYPED>::write(ss, vec);
+			return ss.str();
+		}
+
+		std::string cat_typed(vector_t const& vec)
+		{
+			std::stringstream ss;
+			for (auto const& obj : vec) {
+				serialize_typed(ss, obj);
+			}
+			return ss.str();
+		}
+
+		std::string to_type(tuple_t const& tpl)
+		{
+			std::stringstream ss;
+			serializer <tuple_t, SERIALIZE_TYPED>::write(ss, tpl);
+			return ss.str();
+		}
+
 		std::string to_str(object const& obj)
 		{
 			std::stringstream ss;
@@ -54,7 +84,7 @@ namespace cyng
 			return ss.str();
 		}
 
-		std::string cat(vector_t const& vec)
+		std::string cat_plain(vector_t const& vec)
 		{
 			std::stringstream ss;
 			for (auto const& obj : vec) {

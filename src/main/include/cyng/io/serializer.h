@@ -59,6 +59,22 @@ namespace cyng
 		void serialize_typed(std::ostream&, object const&);
 
 		/**
+		 * serialize an object with tag SERIALIZE_TYPED
+		 */
+		std::string to_type(object const&);
+
+		/**
+		 * serialize a vector with tag SERIALIZE_TYPED
+		 */
+		std::string to_type(vector_t const&);
+		std::string cat_typed(vector_t const&);
+
+		/**
+		 * serialize a tuple with tag SERIALIZE_TYPED
+		 */
+		std::string to_type(tuple_t const&);
+
+		/**
 		 * serialization tag: SERIALIZE_BINARY
 		 */
 		void serialize_binary(std::ostream& os, object const& obj);
@@ -82,7 +98,7 @@ namespace cyng
 		 * serialize a vector with tag SERIALIZE_PLAIN
 		 */
 		std::string to_str(vector_t const&);
-		std::string cat(vector_t const&);
+		std::string cat_plain(vector_t const&);
 
 		/**
 		 * serialize a tuple with tag SERIALIZE_PLAIN

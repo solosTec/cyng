@@ -73,6 +73,28 @@ namespace cyng
 	attr_map_t to_attr_map(object obj);
 
 	/**
+	 * Convinient value_cast<param_t>()
+	 */
+	param_t to_param(object obj);
+
+	template <typename T >
+	std::pair<std::string, T> to_pair(param_t param)
+	{
+		return std::make_pair(param.first, cyng::value_cast<T>(param.second));
+	}
+
+	/**
+	 * Convinient value_cast<attr_t>()
+	 */
+	attr_t to_attr(object obj);
+
+	template <typename T >
+	std::pair<std::size_t, T> to_pair(attr_t param)
+	{
+		return std::make_pair(param.first, cyng::value_cast<T>(param.second));
+	}
+
+	/**
 	 * @brief selects an entry from a parameter map and casts the
 	 * the object to the specified value type.
 	 *
