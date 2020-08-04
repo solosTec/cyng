@@ -736,7 +736,8 @@ target_include_directories(unlog
 target_link_libraries(unlog 
 	cyng_core 
 	cyng_io
-	$<$<AND:$<CXX_COMPILER_VERSION:8.2.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>
+	$<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>
+	$<$<AND:$<VERSION_LESS:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:Clang>>:stdc++fs>
 	"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
 	)
 install(TARGETS unlog
@@ -757,7 +758,8 @@ target_include_directories(play
 target_link_libraries(play 
 	cyng_core 
 	cyng_io
-	$<$<AND:$<CXX_COMPILER_VERSION:8.2.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>
+	$<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>
+	$<$<AND:$<VERSION_LESS:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:Clang>>:stdc++fs>
 	"$<$<PLATFORM_ID:Linux>:${Boost_LIBRARIES};pthread>"
 )
 

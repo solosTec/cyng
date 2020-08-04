@@ -7,6 +7,7 @@
 
 #include <cyng/io/io_chrono.hpp>
 #include <sstream>
+#include <boost/core/ignore_unused.hpp>
 
 namespace cyng 
 {	
@@ -141,6 +142,7 @@ namespace cyng
 	std::string date_to_str(std::chrono::system_clock::time_point tp)
 	{
 		const std::tm tm = chrono::convert_utc(std::chrono::system_clock::to_time_t(tp));
+        boost::ignore_unused(tm);
 
 		//	store and reset stream state
 		std::stringstream ss;
