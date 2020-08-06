@@ -25,6 +25,7 @@ set (io_h
     src/main/include/cyng/cyng.h
     src/main/include/cyng/io.h
     src/main/include/cyng/io/hex_dump.hpp
+    src/main/include/cyng/io/cpp_dump.hpp
     src/main/include/cyng/io/io_chrono.hpp
     src/main/include/cyng/io/io_buffer.h
     src/main/include/cyng/io/io_bytes.hpp
