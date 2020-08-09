@@ -58,6 +58,14 @@ namespace cyng
 						gap = false;
 
 						//	dump prefix
+						stream
+							<< "/*"
+							<< std::setw(4)
+							<< std::setfill('0')
+							<< std::hex
+							<< count_
+							<< "*/ "
+							;
 					}
 
 					if (((count_ % width_) != 0) && ((count_ % (width_ / 2)) == 0))
