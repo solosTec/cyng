@@ -840,7 +840,7 @@ install(EXPORT CyngTargets
 install(
   FILES
     cmake/CyngConfig.cmake
-    "${CMAKE_CURRENT_BINARY_DIR}/cyng/CyngConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cyng/ConfigVersion.cmake"
   DESTINATION
     ${ConfigPackageLocation}
   COMPONENT
