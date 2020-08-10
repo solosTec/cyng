@@ -7,6 +7,7 @@
 
 #include <cyng/vm/procedure.h>
 #include <boost/assert.hpp>
+#include <boost/core/ignore_unused.hpp>
 #include <iostream>
 
 namespace cyng 
@@ -18,7 +19,7 @@ namespace cyng
 		BOOST_ASSERT_MSG(fun_, "no function");
 	}
 	
-	procedure::procedure(procedure&& proc)
+	procedure::procedure(procedure&& proc) noexcept
 	: fun_(std::move(proc.fun_))
 	, arity_(proc.arity_)
 	{
@@ -42,14 +43,7 @@ namespace cyng
 			}
 			catch (std::exception const& ex)
 			{
-				//std::cerr 
-				//	<< "\n*** error in function "
-				//	<< ctx.get_name()
-				//	<< ": "
-				//	<< ex.what()
-				//	<< '\n'
-				//	<< std::endl;
-				//ctx.set_register(boost::system::errc::invalid_argument);
+				boost::ignore_unused(ex);
 				throw;	//	rethrow exception to librarian::invoke()
 			}
 		}

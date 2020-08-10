@@ -71,8 +71,7 @@ namespace cyng
 						for (auto const& v : values) {
 
 							combo_t combo;
-							combo.w_ = std::stoul(v, 0, 16);
-							//auto n = std::stoul(v, 0, 16);
+							combo.w_ = static_cast<std::uint16_t>(std::stoul(v, 0, 16));
 							fout
 								<< "0x"
 								<< std::setw(2)

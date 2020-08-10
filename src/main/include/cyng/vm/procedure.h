@@ -17,7 +17,7 @@ namespace cyng
 		procedure() = delete;
 		procedure(procedure const&) = delete;
 		procedure(vm_call, std::size_t);
-		procedure(procedure&&);
+		procedure(procedure&&) noexcept;
 		
 		/**
 		 * @return specified arity

@@ -33,3 +33,5 @@
 /.vs
 /build
 /cmake/CyngConfig.cmake
+/out/build
+/CMakeSettings.json

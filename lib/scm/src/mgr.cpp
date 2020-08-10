@@ -71,12 +71,12 @@ namespace scm
 			return result;
 		}
 
-		for (int i = 0; i < num; ++i)
+		for (DWORD idx = 0; idx < num; ++idx)
 		{
 			service srv;
-			srv.name_ = pData[i].lpServiceName;
-			srv.display_name = pData[i].lpDisplayName;
-			srv.pid = pData[i].ServiceStatusProcess.dwProcessId;
+			srv.name_ = pData[idx].lpServiceName;
+			srv.display_name = pData[idx].lpDisplayName;
+			srv.pid = pData[idx].ServiceStatusProcess.dwProcessId;
 			result.push_back(srv);
 		}
 
