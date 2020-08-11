@@ -63,7 +63,7 @@ namespace cyng
 			//	thread safe access to task list
 			//
 			dispatcher_.dispatch([this, name, f]() {
-				f(std::count_if(tasks_.begin(), tasks_.end(), [name](task_map::value_type const& v) {
+				f(std::count_if(tasks_.begin(), tasks_.end(), [name](task_map_t::value_type const& v) {
 					return boost::algorithm::equals(name, v.second->get_class_name());
 				}));
 			});

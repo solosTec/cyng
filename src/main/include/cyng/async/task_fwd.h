@@ -11,6 +11,7 @@
 #include <cyng/compatibility/legacy_mode.hpp>
 #include <map>
 #include <list>
+#include <vector>
 #include <memory>
 #include <limits>
 
@@ -30,9 +31,8 @@ namespace cyng
 		
 		using shared_task = std::shared_ptr< base_task >;
 		using weak_task = std::weak_ptr< base_task >;
-		using task_map = std::map< std::size_t, shared_task >;
-		using task_lst = std::list< weak_task >;
-		
+		using task_map_t = std::map< std::size_t, shared_task >;
+		using task_list_t = std::vector< std::size_t >;
 
 	}	// async
 }

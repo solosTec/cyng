@@ -300,7 +300,7 @@ namespace cyng
 			 * The task list is a container that maps
 			 * a task tag to a shared task pointer
 			 */ 
-			task_map	tasks_;
+			task_map_t	tasks_;
 			
 			/**
 			 * The shutdown flag is required to detect a situation
