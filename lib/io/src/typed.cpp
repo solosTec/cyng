@@ -75,25 +75,6 @@ namespace cyng
 			return os;
 		}
 
-		std::ostream& serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_TYPED>::write(std::ostream& os, boost::asio::ip::tcp::endpoint const& v)
-		{
-			auto const address = v.address().to_string();
-			auto const port = v.port();
-
-			//
-			//	"address:port"protocolType
-			//
-			return os
-				<< '"'
-				<< address
-				<< ':'
-				<< port
-				<< '"'
-				<< (v.address().is_v4() ? "IPv4" : "IPv6")
-				;
-
-		}
-
 		std::ostream& serializer<tuple_t, SERIALIZE_TYPED>::write(std::ostream& os, tuple_t const& v)
 		{
 			os << '{';
@@ -280,6 +261,74 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_TYPED>::write(std::ostream& os, boost::asio::ip::tcp::endpoint const& v)
+		{
+			auto const address = v.address().to_string();
+			auto const port = v.port();
+
+			//
+			//	address:port
+			//
+			return os
+				<< '"'
+				<< address
+				<< ':'
+				<< port
+				<< "\"ep.ip."
+				<< (v.address().is_v4() ? "IPv4" : "IPv6")
+				;
+		}
+
+		std::ostream& serializer <boost::asio::ip::udp::endpoint, SERIALIZE_TYPED>::write(std::ostream& os, boost::asio::ip::udp::endpoint const& v)
+		{
+			auto const address = v.address().to_string();
+			auto const port = v.port();
+
+			//
+			//	address:port
+			//
+			return os
+				<< '"'
+				<< address
+				<< ':'
+				<< port
+				<< "\"ep.udp"
+				<< (v.address().is_v4() ? "IPv4" : "IPv6")
+				;
+		}
+
+		std::ostream& serializer <boost::asio::ip::icmp::endpoint, SERIALIZE_TYPED>::write(std::ostream& os, boost::asio::ip::icmp::endpoint const& v)
+		{
+			auto const address = v.address().to_string();
+			auto const port = v.port();
+
+			//
+			//	address:port
+			//
+			return os
+				<< '"'
+				<< address
+				<< ':'
+				<< port
+				<< "\"ep.icmp"
+				<< (v.address().is_v4() ? "IPv4" : "IPv6")
+				;
+		}
+
+		std::ostream& serializer <boost::asio::ip::address, SERIALIZE_TYPED>::write(std::ostream& os, boost::asio::ip::address const& v)
+		{
+			const std::string s = v.to_string();
+
+			//
+			//	address
+			//
+			return os
+				<< '"'
+				<< s
+				<< "\"ip."
+				<< (v.is_v4() ? "v4" : "v6")
+				;
+		}
 	}
 }
 

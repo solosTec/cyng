@@ -81,12 +81,6 @@ namespace cyng
 	// 	};
 		
 		template <>
-		struct serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_TYPED>
-		{
-			static std::ostream& write(std::ostream& os, boost::asio::ip::tcp::endpoint const&);
-		};
-
-		template <>
 		struct serializer <color_8, SERIALIZE_TYPED>
 		{
 			static std::ostream& write(std::ostream& os, color_8 const& v);
@@ -152,6 +146,29 @@ namespace cyng
 			static std::ostream& write(std::ostream& os, buffer_t const& v);
 		};
 
+		template <>
+		struct serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_TYPED>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::tcp::endpoint const&);
+		};
+
+		template <>
+		struct serializer <boost::asio::ip::udp::endpoint, SERIALIZE_TYPED>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::udp::endpoint const&);
+		};
+
+		template <>
+		struct serializer <boost::asio::ip::icmp::endpoint, SERIALIZE_TYPED>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::icmp::endpoint const&);
+		};
+
+		template <>
+		struct serializer <boost::asio::ip::address, SERIALIZE_TYPED>
+		{
+			static std::ostream& write(std::ostream& os, boost::asio::ip::address const&);
+		};
 
 	}
 }
