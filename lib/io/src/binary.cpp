@@ -50,7 +50,6 @@ namespace cyng
 
 			//
 			//	serialize instruction to build a vector
-			//	ToDo: define VM op codes
 			//
 			serialize_binary(os, make_object(code::ASSEMBLE_VECTOR));
 			return os;

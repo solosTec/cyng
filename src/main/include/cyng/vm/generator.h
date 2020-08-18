@@ -12,6 +12,8 @@
 #include <cyng/intrinsics/sets.h>
 #include <cyng/meta/meta.hpp>
 
+#include <initializer_list>
+
 namespace cyng 
 {
 	/**
@@ -209,6 +211,53 @@ namespace cyng
 	unwind<vector_t> generate_invoke_reflect_unwinded(std::string const& name, Args&&... args)
 	{
 		return unwind<vector_t>(generate_invoke_reflect(name, std::forward<Args>(args)...));
+	}
+
+	/**
+	 * Generate a code sequence to build a tuple (heterogeneous data types)
+	 */
+	template < typename ...Args >
+	vector_t tuple_generator(std::tuple<Args... >&& arg)
+	{
+		vector_t vec;
+		workbench::code_builder(vec, std::forward<Args>(args)...);
+		vec
+			<< static_cast<std::uint64_t>(std::tuple_size<Args>::value)
+			<< code::ASSEMBLE_TUPLE
+			;
+		return vec;
+	}
+
+	template < typename ...Args >
+	unwind<vector_t> tuple_generator_unwinded(Args&&... args)
+	{
+		return unwind<vector_t>(tuple_generator(std::forward<Args>(args)...));
+	}
+
+	/**
+	 * Generate a code sequence to build a vector (uniform data types)
+	 */
+	template < typename T >
+	vector_t vector_generator(std::initializer_list<T> ini)
+	{
+		vector_t vec;
+
+		for (auto const& val : ini) {
+			vec << val;
+		}
+
+		vec
+			<< static_cast<std::uint64_t>(ini.size())
+			<< code::ASSEMBLE_VECTOR
+			;
+
+		return vec;
+	}
+
+	template < typename T >
+	unwind<vector_t> vector_generator_unwinded(std::initializer_list<T> ini)
+	{
+		return unwind<vector_t>(vector_generator(ini));
 	}
 
 }
