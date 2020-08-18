@@ -178,8 +178,8 @@ In Boost library 1.73.0 is a bug when compiling Boost.Beast with C++20 compiler 
 (1) download and extract latest [OpenSSL library](http://www.openssl.org/source/openssl-1.1.1.tar.gz)
 
 ```
-wget http://www.openssl.org/source/openssl-1.1.1d.tar.gz
-tar -xvzf openssl-1.1.1d.tar.gz
+wget http://www.openssl.org/source/openssl-1.1.1g.tar.gz
+tar -xvzf openssl-1.1.1g.tar.gz
 cd openssl-1.1.1d
 ```
 
