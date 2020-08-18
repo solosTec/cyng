@@ -7,12 +7,6 @@
 #ifndef CYNG_COMPATIBILITY_H
 #define CYNG_COMPATIBILITY_H
 
-//#include <system_error>
-//		
-//namespace cyng {
-//	using error_code = std::error_code;
-//	using error_code = boost::system::error_code;
-//}
 
 #include <CYNG_project_info.h>
 #include <cyng/compatibility/general.h>

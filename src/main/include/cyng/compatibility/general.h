@@ -4,8 +4,8 @@
  * Copyright (c) 2017 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_COMPATIBILITY_H
-#define CYNG_COMPATIBILITY_H
+#ifndef CYNG_GENERAL_COMPATIBILITY_H
+#define CYNG_GENERAL_COMPATIBILITY_H
 
 //	string_view
 #if defined(__CPP_SUPPORT_N3921)	
@@ -21,8 +21,18 @@ using namespace std::string_literals; // enables s-suffix for std::string litera
 #include <boost/utility/string_view.hpp>
 #endif
 
+#if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
+#include <system_error>
+#endif
+
 namespace cyng 
 {
+#if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
+    using system_error = std::system_error;
+#else
+    using system_error = boost::system::system_error;
+#endif
+
 #if defined(__CPP_SUPPORT_N3921)
     
 	using string_view = std::string_view;
@@ -41,7 +51,7 @@ namespace cyng
     
 }
 
-#endif 	//	CYNG_COMPATIBILITY_H
+#endif 	//	CYNG_GENERAL_H
 
 
 
