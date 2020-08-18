@@ -244,7 +244,7 @@ namespace cyng
 				break;
 
 			case code::PID:	//	push current process id on stack
-				stack_.push(make_object(boost::this_process::get_id()));
+				stack_.push(make_object<std::int64_t>(boost::this_process::get_id()));
 				break;
 
 				//
