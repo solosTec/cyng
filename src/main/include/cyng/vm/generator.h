@@ -222,7 +222,7 @@ namespace cyng
 		vector_t vec;
 		workbench::code_builder(vec, std::forward<Args>(args)...);
 		vec
-			<< static_cast<std::uint64_t>(std::tuple_size<Args>::value)
+			<< static_cast<std::uint64_t>(std::tuple_size<Args...>::value)
 			<< code::ASSEMBLE_TUPLE
 			;
 		return vec;
