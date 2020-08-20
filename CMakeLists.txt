@@ -801,7 +801,8 @@ configure_file (
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/main/include/cyng" # source directory
         DESTINATION "include" # target directory
         FILES_MATCHING # install only matched files
-        PATTERN "*.h;*hpp" # select header files
+        PATTERN "*.h"
+        PATTERN "*hpp"
 )
 
 install(TARGETS ${CYNG_TARGET_LIST} 
