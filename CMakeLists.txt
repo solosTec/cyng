@@ -420,7 +420,7 @@ add_library(cyng_meta ${GLOBAL_LIBRARY_TYPE} ${meta_lib})
 install(FILES 
         ${meta_lib}
     DESTINATION 
-        include
+        "include/cyng"
     COMPONENT
         Devel
     )
@@ -798,6 +798,11 @@ configure_file (
         "${PROJECT_SOURCE_DIR}/cmake/CyngConfig.cmake"
 )
 
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/main/include/cyng" # source directory
+        DESTINATION "include" # target directory
+        FILES_MATCHING # install only matched files
+        PATTERN "*.h;*hpp" # select header files
+)
 
 install(TARGETS ${CYNG_TARGET_LIST} 
     EXPORT CyngTargets
