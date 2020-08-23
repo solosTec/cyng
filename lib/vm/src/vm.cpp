@@ -11,6 +11,7 @@
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/core/class_interface.h>
 #include <cyng/value_cast.hpp>
+#include <cyng/set_cast.h>
 #include <cyng/factory.h>
 #ifdef _DEBUG
 #include <cyng/io/serializer.h>
@@ -26,24 +27,28 @@
 namespace cyng 
 {
 
-	vm::vm(std::ostream& out, std::ostream& err)
+	vm::vm(std::ostream& out, std::ostream& err, boost::uuids::uuid parent)
 	: tag_(boost::uuids::random_generator()())
 	, out_(out)
 	, err_(err)
+	, parent_(parent)
 	, stack_()
 	, lib_()
 	, error_register_()
 	, cmp_register_(false)
+	, children_()
 	{}
 
-	vm::vm(boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
+	vm::vm(boost::uuids::uuid tag, std::ostream& out, std::ostream& err, boost::uuids::uuid parent)
 	: tag_(tag)
 	, out_(out)
 	, err_(err)
+	, parent_(parent)
 	, stack_()
 	, lib_()
 	, error_register_()
 	, cmp_register_(false)
+	, children_()
 	{}
 
 	boost::uuids::uuid vm::tag() const noexcept
@@ -81,43 +86,7 @@ namespace cyng
 #endif
 
 		memory mem(std::move(vec));
-		while (mem)
-		{
-
-#ifdef __DEBUG
-			//stack_.dump(err_);
-
-			//std::stringstream ss;
-			//stack_.dump(ss);
-			//lib_.try_debug_log(*this, ss.str());
-#endif
-
-			//
-			//	next data or instruction
-			//
-			object obj = mem++;
-			if (obj.get_class().tag() == TC_CODE)
-			{
-				//
-				//	execute a single instruction
-				//
-				execute(value_cast(obj, code::NOOP), mem);
-			}
-			else 
-			{
-				//
-				//	push value onto the stack
-				//
-				stack_.push(obj);
-			}
-
-#ifdef __DEBUG
-			if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
-			{
-				std::cerr << "======> " << tag_ << ':' << std::setprecision(4) << mem.level() << "%" << std::endl;
-			}
-#endif
-		}
+		loop(mem);
 
 #ifdef __DEBUG
 		if (risk_flag)
@@ -157,6 +126,48 @@ namespace cyng
 
 		}
 #endif
+	}
+
+	void vm::loop(memory& mem)
+	{
+		while (mem)
+		{
+
+#ifdef __DEBUG
+			//stack_.dump(err_);
+
+			//std::stringstream ss;
+			//stack_.dump(ss);
+			//lib_.try_debug_log(*this, ss.str());
+#endif
+
+			//
+			//	next data or instruction
+			//
+			object obj = mem++;
+			if (obj.get_class().tag() == TC_CODE)
+			{
+				//
+				//	execute a single instruction
+				//
+				execute(value_cast(obj, code::NOOP), mem);
+			}
+			else
+			{
+				//
+				//	push value onto the stack
+				//
+				stack_.push(obj);
+			}
+
+#ifdef __DEBUG
+			if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
+			{
+				std::cerr << "======> " << tag_ << ':' << std::setprecision(4) << mem.level() << "%" << std::endl;
+			}
+#endif
+		}
+
 	}
 	
 	void vm::sync_run(vector_t&& prg)
@@ -284,6 +295,10 @@ namespace cyng
 				error_register_.clear();
 				break;
 
+			case code::FORWARD:
+				forward(mem);
+				break;
+
 			case code::HALT: //	trigger halt
 				//	set halt flag
 				lib_.try_halt(*this);
@@ -357,17 +372,17 @@ namespace cyng
 	void vm::ret(memory& mem)
 	{
 		// return, pc = mem[sp++]
-		const auto addr = value_cast<std::size_t>(stack_.top(), 0u);
+		auto const addr = value_cast<std::size_t>(stack_.top(), 0u);
 		mem.jump(addr);
 		stack_.pop();
 	}
 	
 	void vm::invoke(memory& mem)
 	{
-		BOOST_ASSERT_MSG(stack_.size() > 0, "missing parameter invoke()");
-		const object obj = stack_.top();
-		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_STRING, "invoke requires a string with an function name");
-		const std::string fname = value_cast< std::string >(obj, "---no function name---");
+		BOOST_ASSERT_MSG(stack_.size() > 0, "missing parameter - invoke()");
+		auto const obj = stack_.top();
+		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_STRING, "invoke() requires a string with an function name");
+		auto const fname = value_cast< std::string >(obj, "---no function name---");
 		stack_.pop();
 	
 		//
@@ -395,13 +410,57 @@ namespace cyng
 					;
 			}
 
-			//	set error register
-// 			ctx.set_register(boost::system::errc::operation_canceled);
-// 			return false;
-		}
-		
+		}		
 	}
-	
+
+	void vm::forward(memory& mem)
+	{
+		BOOST_ASSERT_MSG(stack_.size() > 1, "missing parameter - forward()");
+
+		//
+		//	get tag of child VM
+		//
+		auto obj = stack_.top();
+		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_UUID, "forward() requires an UUID as first parameter");
+		auto const tag = value_cast(obj, tag_);
+		stack_.pop();
+
+		//
+		//	search for specified VM
+		//
+		auto pos = children_.find(tag);
+		if (pos != children_.end()) {
+
+			//
+			//	get instructions
+			//	and execute them
+			//
+			obj = stack_.top();
+			BOOST_ASSERT_MSG(obj.get_class().tag() == TC_VECTOR, "forward() requires an vector as second parameter");
+			memory child_mem(to_vector(obj));
+			pos->second.loop(child_mem);
+
+		}
+		else {
+			//
+			//	VM not found
+			//
+			lib_.try_debug_log(*this, "VM not found");
+		}
+
+	}
+
+	bool vm::remove(boost::uuids::uuid tag)
+	{
+		return children_.erase(tag) != 0u;
+	}
+
+	bool vm::emplace(boost::uuids::uuid tag, vm& child)
+	{
+		auto r = children_.emplace(tag, child);
+		return r.second;
+	}
+
 }
 
 

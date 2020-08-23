@@ -288,6 +288,8 @@ namespace cyng
                 case code::TSTERR:	os << "TSTERR";		break;
                 case code::RESERR:	os << "RESERR";		break;
 
+				case code::FORWARD:	os << "FORWARD";	break;
+
 				case code::HALT:	os << "HALT";	break;
 				case code::NOOP:	os << "NOOP";	break;
 

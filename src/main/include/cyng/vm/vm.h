@@ -14,7 +14,8 @@
 #include <cyng/intrinsics/op.h>
 #include <cyng/vm/stack.h>
 #include <cyng/vm/librarian.h>
-#include <boost/uuid/uuid.hpp>
+//#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/nil_generator.hpp>
 #include <boost/system/error_code.hpp>
 
 namespace cyng 
@@ -39,8 +40,8 @@ namespace cyng
 		friend class controller;
 		
 	public:
-		vm(std::ostream& = std::cout, std::ostream& = std::cerr);
-		vm(boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr);
+		vm(std::ostream& = std::cout, std::ostream& = std::cerr, boost::uuids::uuid = boost::uuids::nil_uuid());
+		vm(boost::uuids::uuid, std::ostream& = std::cout, std::ostream& = std::cerr, boost::uuids::uuid = boost::uuids::nil_uuid());
 		
 		/**
 		 * @return VM tag
@@ -52,8 +53,19 @@ namespace cyng
 		 * memory 
 		 */
 		void run(vector_t&&);
+
+		/**
+		 * create and embed a VM 
+		 * could throw
+		 */
+		vm& emplace(boost::uuids::uuid, std::ostream & = std::cout, std::ostream & = std::cerr);
 		
 	private:
+
+		/**
+		 * main execution loop
+		 */
+		void loop(memory&);
 
 		/**
 		 * @brief out of band execution (sync)
@@ -104,13 +116,30 @@ namespace cyng
 		 */
 		void jump_no_error(memory& mem);
 
+		/**
+		 * execute following instructions on embedded VM
+		 */
+		void forward(memory& mem);
+
+		/**
+		 * remove an embedded VM
+		 */
+		bool remove(boost::uuids::uuid);
+
+		/**
+		 * emplace new VM
+		 */
+		bool emplace(boost::uuids::uuid, vm&);
+
 	private:
-		boost::uuids::uuid	tag_;
+		boost::uuids::uuid	const tag_;
 		std::ostream	&out_, &err_;
+		boost::uuids::uuid	const parent_;
 		stack stack_;
 		librarian lib_;
 		boost::system::error_code	error_register_;
 		bool cmp_register_;
+		std::map<boost::uuids::uuid, vm&> children_;
 	};
 }
 

@@ -98,6 +98,11 @@ namespace cyng
 		context& queue(vector_t&& prg);
 
 		/**
+		 * forward instructions to child VM
+		 */
+		context& forward(boost::uuids::uuid, vector_t const& prg);
+
+		/**
 		 * return function name
 		 */
 		std::string const& get_name() const;

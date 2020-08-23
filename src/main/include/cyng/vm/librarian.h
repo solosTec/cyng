@@ -23,7 +23,7 @@ namespace cyng
 		librarian(librarian&&) = delete;
 		
 		/**
-		 * Serach the specified procedure (by name), check
+		 * Search the specified procedure (by name), check
 		 * arity and call procedure.
 		 *
 		 * @param out_of_band don't use an activtion counter.

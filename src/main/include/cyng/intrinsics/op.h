@@ -75,6 +75,9 @@ namespace cyng
 		TSTERR,			//!< 	test error register and set cmp/jump register (true if no error occured)
 		RESERR,			//!< 	reset error register
 
+		FORWARD,		//!<	forward instructions to an embedded VM
+		REMOVE,			//!<	remove an embedded VM
+
 		HALT = 0xFFFD, //!< 	trigger halt
 		NOOP = 0xFFFE, //!< 	no operation
 		
