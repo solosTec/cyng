@@ -23,6 +23,8 @@ using namespace std::string_literals; // enables s-suffix for std::string litera
 
 #if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
 #include <system_error>
+#else
+#include <boost/system/system_error.hpp>
 #endif
 
 namespace cyng 
