@@ -40,10 +40,13 @@ namespace cyng
 		
 		bool db::create_table(cyng::table::meta_table_ptr ptr)
 		{
-			//	start with generation 1 and default state 0
-			unique_lock_t ul(this->m_);
-			return tables_.insert(cyng::table::key_generator(ptr->get_name())
-				, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1, boost::uuids::nil_uuid());
+			if (ptr) {
+				//	start with generation 1 and default state 0
+				unique_lock_t ul(this->m_);
+				return tables_.insert(cyng::table::key_generator(ptr->get_name())
+					, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1, boost::uuids::nil_uuid());
+			}
+			return false;
 		}
 		
 		std::size_t db::size() const
