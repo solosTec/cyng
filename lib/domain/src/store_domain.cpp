@@ -161,7 +161,14 @@ namespace cyng
 
 		if (!db.modify(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), ctx.tag()))
 		{
-			ctx.queue(generate_invoke("log.msg.warning", "db.req.modify.by.attr - failed", std::get<0>(tpl), std::get<1>(tpl)));
+			ctx.queue(generate_invoke("log.msg.warning", "db.req.modify.by.attr - failed: "
+				, std::get<0>(tpl)
+				, ", key: "
+				, std::get<1>(tpl)
+				, " - "
+				, std::get<2>(tpl).first
+				, " = "
+				, std::get<2>(tpl).second));
 		}
 	}
 
@@ -188,7 +195,11 @@ namespace cyng
 				, "db.req.modify.by.param - failed: "
 				, std::get<0>(tpl)
 				, ", key: "
-				, std::get<1>(tpl)));
+				, std::get<1>(tpl)
+				, " - "
+				, std::get<2>(tpl).first
+				, " = "
+				, std::get<2>(tpl).second));
 		}
 	}
 
