@@ -70,6 +70,13 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_type(param_map_t const& pm)
+		{
+			std::stringstream ss;
+			serializer <param_map_t, SERIALIZE_TYPED>::write(ss, pm);
+			return ss.str();
+		}
+
 		std::string to_str(object const& obj)
 		{
 			std::stringstream ss;

@@ -73,6 +73,7 @@ namespace cyng
 		 * serialize a tuple with tag SERIALIZE_TYPED
 		 */
 		std::string to_type(tuple_t const&);
+		std::string to_type(param_map_t const&);
 
 		/**
 		 * serialization tag: SERIALIZE_BINARY
