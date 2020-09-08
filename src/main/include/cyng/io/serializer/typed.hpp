@@ -15,6 +15,12 @@ namespace cyng
 	namespace io
 	{	
 		template <>
+		struct serializer <bool, SERIALIZE_TYPED>
+		{
+			static std::ostream& write(std::ostream& os, bool v);
+		};
+
+		template <>
 		struct serializer <version, SERIALIZE_TYPED>
 		{
 			static std::ostream& write(std::ostream& os, version const& v);

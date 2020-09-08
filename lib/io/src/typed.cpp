@@ -14,7 +14,11 @@ namespace cyng
 {	
 	namespace io
 	{
-		
+		std::ostream& serializer <bool, SERIALIZE_TYPED>::write(std::ostream& os, bool v)
+		{
+			return os << (v ? "true" : "false");
+		}
+
 		std::ostream& serializer <version, SERIALIZE_TYPED>::write(std::ostream& os, version const& v)
 		{
 			os << cyng::traits::get_tag_name<version>();
