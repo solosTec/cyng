@@ -14,6 +14,7 @@
 #include <cyng/compatibility/io_service.h>
 #include <cyng/compatibility/legacy_mode.hpp>
 #include <cyng/compatibility/file_system.hpp>
+#include <cyng/compatibility/optional.hpp>
 
 #endif 	//	CYNG_COMPATIBILITY_H
 

@@ -63,12 +63,18 @@ namespace cyng
 	vector_t to_vector(object obj);
 
 	/**
-	 * Convinient value_cast<param_map_t>()
+	 * Convinient value_cast<param_map_t>().
+	 * 
+	 * Detects also tuples with parameters and convert
+	 * this list into a parameter map.
 	 */
 	param_map_t to_param_map(object obj);
 
 	/**
 	 * Convinient value_cast<attr_map_t>()
+	 *
+	 * Detects also tuples with attributes and convert
+	 * this list into a attribute map.
 	 */
 	attr_map_t to_attr_map(object obj);
 

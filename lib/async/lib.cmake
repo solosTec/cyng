@@ -18,6 +18,7 @@ set (async_h
     src/main/include/cyng/compatibility/async.h
     src/main/include/cyng/compatibility/io_service.h
 	src/main/include/cyng/compatibility/file_system.hpp
+	src/main/include/cyng/compatibility/optional.hpp
     src/main/include/cyng/async/policy.h
     src/main/include/cyng/async/pool.h
     src/main/include/cyng/async/scheduler.h
