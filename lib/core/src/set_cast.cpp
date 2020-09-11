@@ -83,6 +83,15 @@ namespace cyng
 			}
 			return pmap;
 		}
+		else if (TC_VECTOR == obj.get_class().tag()) {
+			auto const vec = to_vector(obj);
+			for (auto const& o : vec) {
+				if (TC_PARAM == o.get_class().tag()) {
+					pmap.insert(to_param(o));
+				}
+			}
+			return pmap;
+		}
 		return value_cast<>(obj, pmap);
 	}
 
@@ -93,6 +102,15 @@ namespace cyng
 			auto const tpl = to_tuple(obj);
 			for (auto const& o : tpl) {
 				if (TC_ATTR == o.get_class().tag()) {
+					amap.insert(to_attr(o));
+				}
+			}
+			return amap;
+		}
+		else if (TC_VECTOR == obj.get_class().tag()) {
+			auto const vec = to_vector(obj);
+			for (auto const& o : vec) {
+				if (TC_PARAM == o.get_class().tag()) {
 					amap.insert(to_attr(o));
 				}
 			}

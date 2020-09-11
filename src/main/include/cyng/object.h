@@ -81,7 +81,7 @@ namespace cyng
 		 * Move-constructs an object from obj. After the construction, *this contains 
 		 * a copy of the previous state of obj and obj is empty. 
 		 */
-		object(object&& obj);
+		object(object&& obj) noexcept;
 		
 		/**
 		 * Shares ownership of the object managed by obj. 
@@ -92,7 +92,7 @@ namespace cyng
 		 * Move-assigns a value from obj. After the assignment, *this contains 
 		 * a copy of the previous state of obj, obj is empty.
 		 */
-		object& operator=(object&& obj);
+		object& operator=(object&& obj) noexcept;
 
 		/**
 		 * destructor

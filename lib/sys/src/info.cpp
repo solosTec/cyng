@@ -14,6 +14,7 @@
 
 #include <windows.h>
 #include <VersionHelpers.h>
+//#include <Ntddk.h> RtlGetVersion() requires WDK 
 #include <sstream>
 
 #elif BOOST_OS_LINUX
@@ -125,16 +126,38 @@ namespace cyng
 		
 		std::string	get_os_release()
 		{
+			//	--- approach (1)
+
 			OSVERSIONINFO info;
 			::ZeroMemory(&info, sizeof(OSVERSIONINFO));
 			info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 			
 			::GetVersionEx(&info);
-			
+
 			std::stringstream ss;
 			ss << info.dwMajorVersion << '.' << info.dwMinorVersion;
-			
+
 			return ss.str();
+
+			//	--- approach (2)
+
+			//OSVERSIONINFOEXW info;
+			//::RtlGetVersion(&info);
+			//
+			//std::stringstream ss;
+			//ss << info.dwMajorVersion << '.' << info.dwMinorVersion << '.' << info.dwBuildNumber;
+
+			//return ss.str();
+
+			//	--- approach (3)
+
+			//::GetProductInfo(
+			//	DWORD  dwOSMajorVersion,
+			//	DWORD  dwOSMinorVersion,
+			//	DWORD  dwSpMajorVersion,
+			//	DWORD  dwSpMinorVersion,
+			//	PDWORD pdwReturnedProductType
+			//);
 		}
 #endif
 
