@@ -69,6 +69,54 @@ namespace cyng
 			return vec;
 		}
 		
+		std::vector<param_map_t> read_file_to_param_map(std::string const& p)
+		{
+
+			std::vector<param_map_t> vec;
+			std::ifstream fs(p);
+			if (fs.is_open())
+			{
+				fs.unsetf(std::ios::skipws);
+
+				std::string line;
+
+				//
+				//	read header
+				//
+				if (std::getline(fs, line, '\n')) {
+
+					auto r = parse_csv(line);
+					if (r.second) {
+
+						std::vector<std::string> header;
+						std::transform(r.first.begin(), r.first.end(), std::back_inserter(header), [](object obj) {
+							return cyng::io::to_str(obj);
+							});
+
+						//
+						//	read CSV file line by line
+						//
+						while (std::getline(fs, line, '\n')) {
+							if (!line.empty()) {
+								r = parse_csv(line);
+								if (r.second && r.first.size() <= header.size()) {
+									param_map_t pmap;
+									std::size_t idx{ 0 };
+									for (auto const& obj : r.first) {
+										pmap.emplace(header.at(idx), obj);
+										++idx;
+									}
+									vec.push_back(pmap);
+								}
+							}
+						}
+					}
+				}
+
+			}
+			return vec;
+		}
+
 		bool write_file(std::string const& p, vector_t const& vec)
 		{
 			std::ofstream fs(p);
