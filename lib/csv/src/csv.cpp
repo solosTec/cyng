@@ -69,10 +69,10 @@ namespace cyng
 			return vec;
 		}
 		
-		std::vector<param_map_t> read_file_to_param_map(std::string const& p)
+		std::size_t read_file(std::string const& p, std::function<void(param_map_t const&)> cb)
 		{
 
-			std::vector<param_map_t> vec;
+			std::size_t counter{ 0 };
 			std::ifstream fs(p);
 			if (fs.is_open())
 			{
@@ -106,7 +106,8 @@ namespace cyng
 										pmap.emplace(header.at(idx), obj);
 										++idx;
 									}
-									vec.push_back(pmap);
+									cb(pmap);
+									++counter;
 								}
 							}
 						}
@@ -114,7 +115,7 @@ namespace cyng
 				}
 
 			}
-			return vec;
+			return counter;
 		}
 
 		bool write_file(std::string const& p, vector_t const& vec)

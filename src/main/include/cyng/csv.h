@@ -12,7 +12,9 @@
 #include <cyng/core/object_interface_fwd.h>
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/sets.h>
+
 #include <string>
+#include <functional>
 
 namespace cyng 
 {
@@ -35,7 +37,7 @@ namespace cyng
 		 * of parameter maps.
 		 * First line of CSV is interpreted as header.
 		 */
-		std::vector<param_map_t> read_file_to_param_map(std::string const& file_name);
+		std::size_t read_file(std::string const& file_name, std::function<void(param_map_t const&)>);
 
 		/**
 		 * CSV has many restrictions to serialize data. 
