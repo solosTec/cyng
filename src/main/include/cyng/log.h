@@ -11,6 +11,8 @@
 #include <cyng/log/entry.hpp>
 #include <cyng/log/logger.hpp>
 
+#include <boost/core/ignore_unused.hpp>
+
 namespace cyng 
 {
 	namespace logging 
@@ -69,8 +71,13 @@ namespace cyng
 #define CYNG_LOG_TRACE(l,m)	\
 	CYNG_LOG(l,cyng::logging::severity::LEVEL_TRACE,m)
 
+#ifdef _DEBUG
 #define CYNG_LOG_DEBUG(l,m)	\
 	CYNG_LOG(l,cyng::logging::severity::LEVEL_DEBUG,m)
+#else
+#define CYNG_LOG_DEBUG(l,m)	\
+	boost::ignore_unused(l);
+#endif
 
 #define CYNG_LOG_INFO(l,m)	\
 	CYNG_LOG(l,cyng::logging::severity::LEVEL_INFO,m)

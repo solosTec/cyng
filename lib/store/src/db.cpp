@@ -63,6 +63,16 @@ namespace cyng
 			}, write_access(name));
 		}
 
+#if defined(__CPP_SUPPORT_N3915)
+		cyng::table::record db::lookup(std::string table, cyng::table::key_type const& key)
+		{
+			return this->access([&](cyng::store::table const* tbl) -> cyng::table::record {
+				return tbl->lookup(key);
+			}, read_access(table));
+		}
+#endif
+
+
 		bool db::insert(std::string const& name
 			, cyng::table::key_type const& key
 			, cyng::table::data_type const& data
