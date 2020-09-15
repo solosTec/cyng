@@ -417,7 +417,7 @@ namespace cyng
 					if (ptr != nullptr)
 					{
 						//	store IP address as string
-						const std::string str = ptr->to_string();
+						std::string const str = ptr->to_string();
 						//	SQLITE_TRANSIENT: make a copy of the string 
 						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
 					}
@@ -432,7 +432,7 @@ namespace cyng
 						//	store boost::asio::ip::tcp::endpoint as string
 						std::stringstream ss;
 						ss << *ptr;
-						const std::string str = ss.str();
+						std::string const str = ss.str();
 						//	SQLITE_TRANSIENT: make a copy of the string 
 						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
 					}
