@@ -16,6 +16,7 @@
 #include <utility>
 #include <boost/numeric/conversion/converter.hpp>
 #include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/nil_generator.hpp>
 
 
 namespace cyng	
@@ -606,8 +607,10 @@ namespace cyng
 						int size = ::sqlite3_column_bytes(stmt, index);
 						const std::string str((const char*)ptr, size);
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
-						BOOST_ASSERT(str.size() == 36);
-						
+						//BOOST_ASSERT(str.size() == 36);
+						if (str.size() != 36) {
+							return make_object(boost::uuids::nil_uuid());
+						}
 						boost::uuids::string_generator gen;
 						const boost::uuids::uuid result = gen(str);
 						return make_object(result);
