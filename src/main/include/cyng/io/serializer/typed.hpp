@@ -38,17 +38,29 @@ namespace cyng
 			static std::ostream& write(std::ostream& os, std::chrono::system_clock::time_point tp);
 		};
  		
- 		template <>
+		template <typename R, typename P>
+		struct serializer <std::chrono::duration<R, P>, SERIALIZE_TYPED>
+		{
+			using type = typename std::chrono::duration<R, P>;
+			static std::ostream& write(std::ostream& os, std::chrono::duration<R, P> const& v)
+			{
+				serializer<type, SERIALIZE_PLAIN>::write(os, v);
+				os << ':' << cyng::traits::get_tag_name<type>();
+				return os;
+			}
+		};
+
+		template <>
  		struct serializer <std::string, SERIALIZE_TYPED>
  		{
  			static std::ostream& write(std::ostream& os, std::string const& v);
  		};
  		
-// 		template <>
-// 		struct serializer <boost::uuids::uuid, SERIALIZE_TYPED>
-// 		{
-// 			static std::ostream& write(std::ostream& os, boost::uuids::uuid const& v);
-// 		};
+ 		template <>
+ 		struct serializer <boost::uuids::uuid, SERIALIZE_TYPED>
+ 		{
+ 			static std::ostream& write(std::ostream& os, boost::uuids::uuid const& v);
+ 		};
 
  		template <>
  		struct serializer <tuple_t, SERIALIZE_TYPED>

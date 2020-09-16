@@ -79,6 +79,13 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& serializer <boost::uuids::uuid, SERIALIZE_TYPED>::write(std::ostream& os, boost::uuids::uuid const& v)
+		{
+			serializer<boost::uuids::uuid, SERIALIZE_PLAIN>::write(os, v);
+			os << ':' << cyng::traits::get_tag_name<boost::uuids::uuid>();
+			return os;
+		}
+
 		std::ostream& serializer<tuple_t, SERIALIZE_TYPED>::write(std::ostream& os, tuple_t const& v)
 		{
 			os << '{';
