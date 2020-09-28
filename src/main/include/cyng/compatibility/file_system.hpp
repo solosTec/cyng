@@ -16,6 +16,8 @@
 #include <chrono>
 #endif
 #include <cyng/rnd.h>
+#include <cyng/util/split.h>
+#include <boost/predef.h>
 
 namespace cyng 
 {
@@ -80,6 +82,24 @@ namespace cyng
 			auto const tt = std::chrono::system_clock::to_time_t(sctp);
 			return std::chrono::system_clock::from_time_t(tt);
 		}
+
+		/**
+		 * Generic filenames not really works - so here is a substitute to convert UNIX path to windows path
+		 */
+		inline std::filesystem::path make_path(std::string const& str) {
+#if BOOST_OS_WINDOWS
+			std::filesystem::path p;
+			auto const vec = split(str, "/");
+			for (auto const s : vec) {
+				p /= s;
+			}
+			return p;
+#else
+			return std::filesystem::path(s);
+#endif
+
+		}
+
 #else
 		/**
 		 * File system library
@@ -96,6 +116,10 @@ namespace cyng
 		{
 			const auto tt = filesystem::last_write_time(p);
 			return std::chrono::system_clock::from_time_t(tt);
+		}
+
+		inline std::filesystem::path make_path(std::string const& str) {
+			return std::filesystem::path(s);
 		}
 
 #endif
