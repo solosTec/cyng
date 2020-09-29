@@ -9,6 +9,7 @@
 
 #include <cstddef>
 #include <utility>
+#include <cyng/compatibility/general.h>
 #if defined(__CPP_SUPPORT_P0218R1)
 #include <filesystem>
 #else
@@ -21,14 +22,6 @@
 
 namespace cyng 
 {
-	/**
-	 * define the error code type
-	 */
-#if defined(__CPP_SUPPORT_P0218R1)
-	using error_code = std::error_code;
-#else
-	using error_code = boost::system::error_code;
-#endif
 
 	namespace filesystem
 	{

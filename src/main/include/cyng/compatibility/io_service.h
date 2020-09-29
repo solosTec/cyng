@@ -26,7 +26,8 @@ namespace cyng
 	inline boost::asio::ip::address make_address(std::string const& str)
 	{
 		//	dotted address notation
-		return boost::asio::ip::address_v4::from_string(str);
+		boost::system::error_code ec;
+		return boost::asio::ip::address_v4::from_string(str, ec);
 	}
 #else
 	using io_service_t = boost::asio::io_context;
@@ -35,7 +36,8 @@ namespace cyng
 	inline boost::asio::ip::address make_address(std::string const& str)
 	{
 		//	dotted address notation
-		return boost::asio::ip::make_address(str);
+		boost::system::error_code ec;
+		return boost::asio::ip::make_address(str, ec);
 	}
 #endif
 

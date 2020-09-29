@@ -1,4 +1,4 @@
-/*
+ /*
  * The MIT License (MIT)
  * 
  * Copyright (c) 2017 Sylko Olzscher 
@@ -29,6 +29,15 @@ using namespace std::string_literals; // enables s-suffix for std::string litera
 
 namespace cyng 
 {
+	/**
+	 * define the error code type
+	 */
+#if defined(__CPP_SUPPORT_P0218R1)
+	using error_code = std::error_code;
+#else
+	using error_code = boost::system::error_code;
+#endif
+
 #if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
     using system_error = std::system_error;
 #else
