@@ -88,7 +88,7 @@ namespace cyng
 			}
 			return p;
 #else
-			return std::filesystem::path(s);
+			return std::filesystem::path(str);
 #endif
 
 		}
@@ -112,7 +112,7 @@ namespace cyng
 		}
 
 		inline std::filesystem::path make_path(std::string const& str) {
-			return std::filesystem::path(s);
+			return std::filesystem::path(str);
 		}
 
 #endif
