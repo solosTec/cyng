@@ -16,7 +16,7 @@
 namespace cyng
 {
 	/**
-	 * Read a file binary and send conetnt to a specified ip address.
+	 * Read a file binary and send content to a specified ip address.
 	 */
 	class play 
 	{
