@@ -85,13 +85,18 @@ namespace cyng
 
 		//parser.read(std::begin(s1), std::end(s1));
 
+        //  
+        //  the UTF-8 sequence from key4 results in
+        //  z\u00df\u6c34\u1f34c or
+        //  0x7a 0xc3, 0x9f 0xe6 0xb0, 0xb4 0xf0 0x9f 0x8d 0x8c
+        //  
         auto const s2 = std::string(R"(
         {
             "key-0": [12,22.0,3e-10,[4, 5],[],6],
             "key-1": "value\t1",
             "key-2": "value\u2514",
             "key-3": [
-                { "key4": "value4" },
+                { "key4": "zß水🍌" },
                 null,
                 true,
                 { "key5a": "value5a", "key5b": "value5b"}

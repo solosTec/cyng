@@ -34,9 +34,11 @@ namespace cyng
 		private:
 			emit_token_f cb_;
 			std::array<std::uint8_t, 4 >  char_;
-			std::size_t pos_;
+			std::size_t pos_, extra_;
 		};
 
+		std::uint32_t utf8_byte_count(std::uint8_t c);
+		std::uint32_t utf8_trailing_byte_count(std::uint8_t c);
 
 	}
 }
