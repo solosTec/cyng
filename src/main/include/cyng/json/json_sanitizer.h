@@ -14,6 +14,7 @@
 
 
 #include <cyng/json/json_token.h>
+#include <array>
 
 namespace cyng	
 {
@@ -32,6 +33,8 @@ namespace cyng
 
 		private:
 			emit_token_f cb_;
+			std::array<std::uint8_t, 4 >  char_;
+			std::size_t pos_;
 		};
 
 

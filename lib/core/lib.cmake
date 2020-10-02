@@ -46,11 +46,6 @@ set (core_util
   	lib/core/src/split.cpp
 )
 
-if (${PROJECT_NAME}_LEGACY_MODE EQUAL ${PROJECT_NAME}_LEGACY_MODE_ON)
-set (core_compatibility
-    src/main/include/cyng/compatibility/legacy_mode.hpp	
-)
-endif()	
 
 set (core_casts
     src/main/include/cyng/core/object_cast_fwd.h
@@ -126,7 +121,6 @@ source_group("util" FILES ${core_util})
 set (core_lib
   ${core_cpp}
   ${core_h}
-  ${core_compatibility}
   ${core_factory}
   ${core_intrinsics}
   ${core_casts}

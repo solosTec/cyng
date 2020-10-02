@@ -277,7 +277,8 @@ namespace cyng
 						//	escape other non-printable characters
 						os
 							<< "\\u"
-							<< std::setw(4)
+							<< std::setw(2)
+							<< std::setfill('0')
 							<< c
 							;
 					}

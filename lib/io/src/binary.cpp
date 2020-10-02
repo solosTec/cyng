@@ -200,14 +200,14 @@ namespace cyng
 			return os;
 		}
 		
-		std::ostream& serializer <boost::system::error_code, SERIALIZE_BINARY>::write(std::ostream& os, boost::system::error_code const& v)
+		std::ostream& serializer <error_code, SERIALIZE_BINARY>::write(std::ostream& os, error_code const& v)
 		{
 			const auto code = v.value();
 
 			//
 			//	type - length - value
 			//
-			serialize_type_tag<boost::system::error_code>(os);
+			serialize_type_tag<error_code>(os);
 			serialize_length(os, sizeof(code));
 			write_binary(os, code);
 			return os;

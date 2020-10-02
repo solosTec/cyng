@@ -13,7 +13,9 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <cyng/json/json_sanitizer.h>
+#include <cyng/json/json_tokenizer.h>
 #include <cyng/intrinsics/sets.h>
+#include <cyng/object.h>
 
 #include <functional>
 #include <stack>
@@ -29,15 +31,14 @@ namespace cyng
 
 		private:
 			enum class state {
-				RECOVER,
-				COMPLETE,
-				START,
 				ARRAY,
 				OBJECT,
-				KEY,
 				VALUE
 			};
 
+			/**
+			 * parser state stack
+			 */
 			std::stack<state>	state_;
 
 		public:
@@ -77,11 +78,25 @@ namespace cyng
 			 * Implements the state machine
 			 */
 			void put(char);
-			void next(token&&);
+			void next_token(token&&);
+			void next_symbol(symbol&&);
 
-			state state_start(token);
-			state state_array(token);
-			state state_object(token);
+			void process_symbol(symbol&&);
+			void process_string(symbol&&);
+			void process_number(symbol&&);
+			void process_float(symbol&&);
+			void process_bool(symbol&&);
+			void process_null(symbol&&);
+
+			void build_object();
+			void build_member();
+			void build_array();
+
+			void swap(vector_t&);
+			void swap(param_map_t&);
+
+			void swap(state);
+			vector_t cleanup();
 
 		private:
 			/**
@@ -98,6 +113,16 @@ namespace cyng
 			 * generate UTF-8
 			 */
 			sanitizer sanitizer_;
+
+			/**
+			 * generate JSON tokens
+			 */
+			tokenizer tokenizer_;
+
+			/**
+			 * parser value stack
+			 */
+			std::stack<object>	stack_;
 
 		};
 	}

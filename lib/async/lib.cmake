@@ -26,21 +26,9 @@ set (async_h
     src/main/include/cyng/async/task/task_meta.hpp
 )
 
-set (compatibility
-    src/main/include/cyng/compatibility.h
-	src/main/include/cyng/compatibility/general.h
-	src/main/include/cyng/compatibility/legacy_mode.hpp
-    src/main/include/cyng/compatibility/async.h
-    src/main/include/cyng/compatibility/io_service.h
-	src/main/include/cyng/compatibility/file_system.hpp
-	src/main/include/cyng/compatibility/optional.hpp
-)
-
-source_group("compatibility" FILES ${compatibility})
 
 # define the async lib
 set (async_lib
   ${async_cpp}
   ${async_h}
-  ${compatibility}
 )

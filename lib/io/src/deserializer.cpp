@@ -122,7 +122,7 @@ namespace cyng
 
 				case TC_EOD:		
 					BOOST_ASSERT(size == 0);
-					return make_object(eod());
+					return make_eod();
 				
 				default:
 #ifdef DEBUG_CYNG_IO

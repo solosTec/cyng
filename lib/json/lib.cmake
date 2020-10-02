@@ -18,9 +18,11 @@ set (json_h
 
 set (json_imp
     src/main/include/cyng/json/json_token.h
+    src/main/include/cyng/json/json_symbol.h
     src/main/include/cyng/json/json_tokenizer.h
     src/main/include/cyng/json/json_sanitizer.h
   	lib/json/src/json_token.cpp
+  	lib/json/src/json_symbol.cpp
   	lib/json/src/json_tokenizer.cpp
   	lib/json/src/json_sanitizer.cpp
 )

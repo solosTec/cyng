@@ -149,7 +149,7 @@ namespace cyng
 		
 		r_obj
 		%= boost::spirit::qi::lit("null")[boost::spirit::_val = make_object()]
-		| boost::spirit::qi::lit("eod")[boost::spirit::_val = make_object(eod())]
+		| boost::spirit::qi::lit("eod")[boost::spirit::_val = make_eod()]
 		| r_chrono
 		| r_numeric	//	after r_chrono to avoid ambiguity over int_ default
 		| r_quote	//	utf-8 string

@@ -66,10 +66,11 @@ namespace cyng
 					}
 					else	{
 						os
-							<< "\\u"
+							<< "\\x"
 							<< std::hex
 							<< std::setw(2)
-							<< +c
+							<< std::setfill('0')
+							<< (+c & 0xFF)
 							;
 					}
 					break;

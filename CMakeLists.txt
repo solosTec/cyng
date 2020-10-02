@@ -424,6 +424,29 @@ install(FILES
     COMPONENT
         Devel
     )
+target_include_directories(cyng_meta
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${BOOST_INCLUDE_DIR}
+)
+
+#
+#	cyng compatibility library - header only
+#
+include (lib/compatibility/lib.cmake)
+add_library(cyng_compatibility ${GLOBAL_LIBRARY_TYPE} ${compatibility_lib})
+install(FILES 
+        ${compatibility_lib}
+    DESTINATION 
+        "include/cyng"
+    COMPONENT
+        Devel
+    )
+target_include_directories(cyng_compatibility
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng core/object library
@@ -675,7 +698,7 @@ target_include_directories(demo
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
 )
 	
-set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_sqlite3")	
+set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_compatibility;cyng_sql;cyng_table;cyng_sqlite3")	
 
 if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 	#

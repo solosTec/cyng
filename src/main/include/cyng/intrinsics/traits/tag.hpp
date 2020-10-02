@@ -83,7 +83,7 @@ namespace cyng
 		
 		lockable,
 		
-		boost::system::error_code,
+		cyng::error_code,
 		boost::uuids::uuid,
 		cyng::filesystem::path,
 		boost::asio::ip::tcp::endpoint,
@@ -257,7 +257,7 @@ namespace cyng
 		TC_PARAM_MAP	= type_tag_traits<param_map_t>(),	//	std::map<std::string, object>;
 		TC_PARAM	= type_tag_traits<param_t>(),		//	std::pair<std::string, object>;
 		
-		TC_EC		= type_tag_traits<boost::system::error_code>(),
+		TC_EC		= type_tag_traits<cyng::error_code>(),
 		TC_UUID		= type_tag_traits<boost::uuids::uuid>(),
 		TC_FS_PATH	= type_tag_traits<filesystem::path>(),
 
