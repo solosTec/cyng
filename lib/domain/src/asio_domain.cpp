@@ -142,8 +142,14 @@ namespace cyng
 		//
 		//	There is a problem that Boost.Asio in Boost 1.69.0 und 1.70.0 labelled with the same version
 		//
-		boost::asio::ip::tcp::resolver resolver(s.get_executor());
-		boost::asio::connect(s, resolver.resolve(address, service), ec);
+		try {
+			boost::asio::ip::tcp::resolver resolver(s.get_executor());
+			boost::asio::connect(s, resolver.resolve(address, service), ec);
+		}
+		catch (std::exception const& ex) {
+			ctx.queue(cyng::generate_invoke("log.msg.error", ex.what()));
+			
+		}
 
 #endif
 		BOOST_ASSERT(s.is_open());
