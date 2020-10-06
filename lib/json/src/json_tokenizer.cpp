@@ -162,7 +162,17 @@ namespace cyng
 			if (boost::algorithm::equals(buffer_, "null"))			cb_(symbol(symbol_type::NOTHING, buffer_));
 			else if (boost::algorithm::equals(buffer_, "true"))		cb_(symbol(symbol_type::BOOLEAN, buffer_));
 			else if (boost::algorithm::equals(buffer_, "false"))	cb_(symbol(symbol_type::BOOLEAN, buffer_));
-			else cb_(symbol(symbol_type::STRING, buffer_));
+			else {
+				try {
+					//
+					//	string conversion could throw
+					//
+					cb_(symbol(symbol_type::STRING, buffer_));
+				}
+				catch (std::exception const& ex) {
+					cb_(symbol(symbol_type::STRING, std::string(ex.what())));
+				}
+			}
 			buffer_.clear();
 		}
 
