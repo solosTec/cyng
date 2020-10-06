@@ -28,7 +28,6 @@ namespace cyng
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1))
 			, stack_()
 		{
-			//stack_.push(state::START);
 		}
 
 		parser::~parser()
@@ -41,7 +40,7 @@ namespace cyng
 
 		void parser::next_token(token&& tok)
 		{
-#ifdef _DEBUG
+#ifdef __DEBUG
 			std::cerr << tok << std::endl;
 #endif
 			std::size_t limit{ 32u };
@@ -52,7 +51,7 @@ namespace cyng
 
 		void parser::next_symbol(symbol&& sym)
 		{
-#ifdef _DEBUG
+#ifdef __DEBUG
 			std::cout << sym << std::endl;
 #endif
 			switch (sym.type_) {
@@ -104,14 +103,14 @@ namespace cyng
 				break;
 			case ']':
 				//	end array
-#ifdef _DEBUG
+#ifdef __DEBUG
 				std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 #endif
 				build_array();
 				break;
 			case '}':
 				//	end  parameter map
-#ifdef _DEBUG
+#ifdef __DEBUG
 				std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 #endif
 				build_object();
@@ -120,9 +119,6 @@ namespace cyng
 
 			case ',':
 				//	end object
-#ifdef _DEBUG
-				//std::cout << cyng::io::to_type(stack_.top()) << std::endl;
-#endif
 				build_object();
 				break;
 
@@ -202,7 +198,7 @@ namespace cyng
 			else if (state_.top() == state::ARRAY) {
 				if (!stack_.empty()) {
 
-					std::cout << cyng::io::to_type(stack_.top()) << std::endl;
+					//std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 				}
 			}
 		}
@@ -213,7 +209,7 @@ namespace cyng
 			stack_.pop();
 			std::reverse(std::begin(vec), std::end(vec));
 			stack_.push(make_object(vec));
-			std::cout << cyng::io::to_type(stack_.top()) << std::endl;
+			//std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 		}
 
 		void parser::swap(param_map_t& pm)
@@ -221,7 +217,7 @@ namespace cyng
 			BOOST_ASSERT(stack_.top().get_class().tag() == TC_EOD);
 			stack_.pop();
 			stack_.push(make_object(pm));
-			std::cout << cyng::io::to_type(stack_.top()) << std::endl;
+			//std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 		}
 
 		void parser::build_array()
@@ -248,7 +244,6 @@ namespace cyng
 				//
 				//	complete!
 				//
-				//std::cout << "COMPLETE" << std::endl;
 				cb_(cleanup());
 			}
 
@@ -279,7 +274,6 @@ namespace cyng
 				//
 				//	complete!
 				//
-				//std::cout << "COMPLETE" << std::endl;
 				cb_(cleanup());
 			}
 
