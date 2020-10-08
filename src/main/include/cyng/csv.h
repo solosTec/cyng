@@ -31,6 +31,7 @@ namespace cyng
 		 * of tuples
 		 */
 		vector_t read_file(std::string const& file_name);
+		std::size_t read_file(std::string const& file_name, std::function<void(tuple_t&&)>);
 
 		/**
 		 * Read specified CSV file and put the result into a vector
