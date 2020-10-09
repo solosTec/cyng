@@ -43,6 +43,12 @@ namespace cyng
 		{
 			return data_.size();
 		}
+
+		void table::reserve(std::size_t count)
+		{
+			data_.reserve(count);
+		}
+
 		
 		cyng::table::meta_table_interface const& table::meta() const
 		{
