@@ -57,16 +57,12 @@ namespace cyng
 			//	Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DateTime\Servers
 			unsigned idx{ 0 };
 			std::vector<std::string> result;
-			while (true) {
+			for (unsigned idx{ 0 }; idx < 16; ++idx) {
 
 				registry_string<std::string> req("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DateTime\\Servers", idx, HKEY_LOCAL_MACHINE);
 
 				if (req.exists()) {
 					result.push_back(req);
-					++idx;
-				}
-				else {
-					break;
 				}
 			}
 			return result;

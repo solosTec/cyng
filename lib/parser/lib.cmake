@@ -21,6 +21,7 @@ set (parser_cpp
  	lib/parser/src/version_parser.cpp
  	lib/parser/src/version_parser.hpp
  	lib/parser/src/bom_parser.cpp
+ 	lib/parser/src/ep_parser.cpp
 )
     
 set (parser_h
@@ -34,6 +35,7 @@ set (parser_h
     src/main/include/cyng/parser/mac_parser.h
     src/main/include/cyng/parser/version_parser.h
     src/main/include/cyng/parser/bom_parser.h
+    src/main/include/cyng/parser/ep_parser.h
 )
 
 # define the parser lib

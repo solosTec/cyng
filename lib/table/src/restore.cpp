@@ -11,6 +11,7 @@
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/mac_parser.h>
 #include <cyng/parser/version_parser.h>
+#include <cyng/parser/ep_parser.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -114,7 +115,7 @@ namespace cyng
 			//case cyng::TC_BUFFER:
 			case cyng::TC_MAC48:
 			{
-				auto const r = cyng::parse_mac48(val);
+				auto const r = parse_mac48(val);
 				return (r.second)
 					? make_object(r.first)
 					: make_object(val)
@@ -123,7 +124,7 @@ namespace cyng
 			break;
 			case cyng::TC_MAC64:
 			{
-				auto const r = cyng::parse_mac64(val);
+				auto const r = parse_mac64(val);
 				return (r.second)
 					? make_object(r.first)
 					: make_object(val)
@@ -132,7 +133,16 @@ namespace cyng
 			break;
 			//case cyng::TC_COLOR_8:
 			//case cyng::TC_COLOR_16:
-			//case cyng::TC_IP_TCP_ENDPOINT:	//	missing parser for enpoints (address:port)
+			case cyng::TC_IP_TCP_ENDPOINT:
+			{
+				auto const r = parse_tcp_ep(val);
+				return (r.second)
+					? make_object(r.first)
+					: make_object(val)
+					;
+			}
+			break;
+
 			case cyng::TC_IP_ADDRESS:
 				return make_object(boost::asio::ip::make_address(val));
 
