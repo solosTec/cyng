@@ -13,19 +13,29 @@ namespace cyng
 	{
 		rnd::rnd(std::string const& stock)
 			: stock_(stock)
-			, rng_()
-			, index_dist_(0, stock_.size() - 1u)
+#if BOOST_OS_WINDOWS
+			, rnd_()
+			, gen_(rnd_())
+#else
+			, gen_(std::time(0))
+#endif
+		, index_dist_(0, stock_.size() - 1u)
 		{}
 
 		rnd::rnd(rnd const& other)
 			: stock_(other.stock_)
-			, rng_()
+#if BOOST_OS_WINDOWS
+			, rnd_()
+			, gen_(rnd_())
+#else
+			, gen_(std::time(0))
+#endif
 			, index_dist_(0, stock_.size() - 1u)
 		{}
 
 		char rnd::next()
 		{
-			return stock_.at(index_dist_(rng_));
+			return stock_.at(index_dist_(gen_));
 		}
 
 		std::string rnd::next(std::size_t size)
@@ -33,7 +43,6 @@ namespace cyng
 			std::string r;
 			r.reserve(size);
 			while (size-- > 0) {
-				//r += stock_.at(index_dist_(rng_));
 				r += next();
 			}
 			return r;

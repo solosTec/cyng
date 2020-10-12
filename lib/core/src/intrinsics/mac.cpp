@@ -9,7 +9,8 @@
 #include <cyng/util/slice.hpp>
 #include <random>
 #include <algorithm>
-//#include <boost/predef.h>
+
+#include <boost/predef.h>
 #include <boost/assert.hpp>
 
 namespace cyng 
@@ -137,8 +138,12 @@ namespace cyng
 
 	mac48 generate_random_mac48()
 	{
-		std::random_device rd;
-		std::mt19937 gen(rd());
+#if BOOST_OS_WINDOWS
+		std::random_device rnd;
+		std::mt19937 gen(rnd());
+#else
+		std::mt19937 gen;
+#endif
 		std::uniform_int_distribution<int> dis(std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max());
 
 		mac48::address_type	addr;
