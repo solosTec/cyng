@@ -19,7 +19,7 @@ namespace cyng
 #else
 			, gen_(std::time(0))
 #endif
-		, index_dist_(0, stock_.size() - 1u)
+			, index_dist_(0, stock_.size() - 1u)
 		{}
 
 		rnd::rnd(rnd const& other)
