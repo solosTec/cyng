@@ -34,7 +34,7 @@ namespace cyng
 
 		private:
 			std::string const stock_;
-			boost::random::random_device rng_;
+			boost::random::mt19937 rng_;
 			boost::random::uniform_int_distribution<std::size_t> index_dist_;
 		};
 
