@@ -89,6 +89,13 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_string(param_map_t const& pm)
+		{
+			std::stringstream ss;
+			cyng::io::serializer <param_map_t, cyng::io::SERIALIZE_JSON>::write(ss, pm);
+			return ss.str();
+		}
+
 		class json_walker : public tree_walker
 		{
 		public:
