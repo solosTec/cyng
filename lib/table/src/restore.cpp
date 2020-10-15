@@ -33,21 +33,21 @@ namespace cyng
 			case cyng::TC_FLOAT80:
 				return make_object(std::stold(val));
 			case cyng::TC_UINT8:
-				return make_object<std::uint8_t>(std::stoul(val, nullptr, 16));
+				return make_object(static_cast<std::uint8_t>(std::stoul(val, nullptr, 16)));
 			case cyng::TC_UINT16:
-				return make_object<std::uint16_t>(std::stoul(val, nullptr, 16));
+				return make_object(static_cast<std::uint16_t>(std::stoul(val, nullptr, 16)));
 			case cyng::TC_UINT32:
-				return make_object<std::uint32_t>(std::stoul(val, nullptr, 16));
+				return make_object(static_cast<std::uint32_t>(std::stoul(val, nullptr, 16)));
 			case cyng::TC_UINT64:
-				return make_object<std::uint64_t>(std::stoull(val, nullptr, 16));
+				return make_object(static_cast<std::uint64_t>(std::stoull(val, nullptr, 16)));
 			case cyng::TC_INT8:
-				return make_object<std::int8_t>(std::stoi(val));
+				return make_object(static_cast<std::int8_t>(std::stoi(val)));
 			case cyng::TC_INT16:
-				return make_object<std::int16_t>(std::stoi(val));
+				return make_object(static_cast<std::int16_t>(std::stoi(val)));
 			case cyng::TC_INT32:
-				return make_object<std::int32_t>(std::stoi(val));
+				return make_object(static_cast<std::int32_t>(std::stoi(val)));
 			case cyng::TC_INT64:
-				return make_object<std::int64_t>(std::stoi(val));
+				return make_object(static_cast<std::int64_t>(std::stoi(val)));
 				//case cyng::TC_STRING:	//	default
 				//case cyng::TC_TIME_POINT: 
 				//case cyng::TC_NANO_SECOND:

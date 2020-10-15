@@ -77,7 +77,7 @@ namespace cyng
 #else
 			std::mt19937 gen_;
 #endif
-			std::uniform_int_distribution<std::size_t> monitor_dist_;
+			std::uniform_int_distribution<T> monitor_dist_;
 		};
 
 		/**
