@@ -111,8 +111,8 @@ namespace cyng
 			return std::chrono::system_clock::from_time_t(tt);
 		}
 
-		inline std::filesystem::path make_path(std::string const& str) {
-			return std::filesystem::path(str);
+		inline boost::filesystem::path make_path(std::string const& str) {
+			return boost::filesystem::path(str);
 		}
 
 #endif
