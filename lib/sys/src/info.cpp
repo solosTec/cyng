@@ -19,8 +19,10 @@
 
 #elif BOOST_OS_LINUX
 
+#include <cyng/compatibility/file_system.hpp>
 #include <sys/utsname.h>
 #include <sys/sysinfo.h>
+#include <fstream>
 
 #else
 #warning unknow OS
@@ -33,6 +35,21 @@ namespace cyng
 #if BOOST_OS_LINUX
 		std::string	get_os_name()
 		{
+			//
+			// read file /proc/version
+			//
+			filesystem::path const p{"proc/version"};
+			
+			//	open file
+			std::ifstream infile(p.string(), std::ios::in);
+			
+			//	read line by line
+			std::string line;
+			if (std::getline(infile, line)) {
+				return line;
+			}
+
+
 			utsname info;
 			return (::uname(&info) == 0)
 				? info.sysname
