@@ -12,7 +12,8 @@
 
 #if BOOST_OS_WINDOWS
 
-#include <windows.h>
+#include <cyng/scm/win_registry.h>
+//#include <windows.h>
 #include <VersionHelpers.h>
 //#include <Ntddk.h> RtlGetVersion() requires WDK 
 #include <sstream>
@@ -87,7 +88,15 @@ namespace cyng
 												if (::IsWindows8OrGreater()) {
 													if (::IsWindows8Point1OrGreater()) {
 														if (::IsWindows10OrGreater()) {
+
+
 															ss << "10.x";
+
+															registry_string<std::string> req("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild", HKEY_LOCAL_MACHINE);
+															if (req.exists()) {
+																ss << " build " << req.operator std::string();
+															}
+
 														}
 														else {
 															ss << "8.1";
