@@ -144,8 +144,10 @@ namespace cyng
 	bool exists(param_t const&, std::string const&);
 	bool exists(attr_map_t const&, std::string const&);
 
-	//bool exists(object const&, std::size_t idx);
-
+	/**
+	 * nested parameter maps
+	 */
+	void merge(param_map_t& pm, std::initializer_list<std::string>,  object const&);
 }
 
 #endif 	// CYNG_DOM_ALGORITHM_H
