@@ -10,7 +10,9 @@
 
 #include <cyng/intrinsics/buffer.h>
 #include <array>
+
 #include <boost/uuid/uuid.hpp>
+#include <boost/asio/ip/address_v6.hpp>
 
 namespace cyng 
 {
@@ -110,6 +112,11 @@ namespace cyng
 		 */
 		static mac48 get_broadcast_address();
 
+		/**
+		 * generate the link-local address (IPv6)
+		 */
+		boost::asio::ip::address_v6 to_ipv6_link_local() const;
+
 	private:
 		address_type	address_;
 	};
@@ -177,7 +184,7 @@ namespace cyng
 	bool operator<=(mac64 const&, mac64 const&);
 	bool operator>=(mac64 const&, mac64 const&);
 
-
+	int toogle_kth_bit(unsigned int n, int k);
 }
 
 #endif 	// CYNG_INTRINSICS_MAC_H

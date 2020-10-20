@@ -103,7 +103,34 @@ namespace cyng
 		return mac48(0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
 	}
 
-	
+	boost::asio::ip::address_v6 mac48::to_ipv6_link_local() const
+	{
+		//	array< unsigned char, 16 > 
+		//	network byte order
+		boost::asio::ip::address_v6::bytes_type bytes{ 
+			0xFE,		//	0
+			0x80,		//	1
+			0x00,	//	2
+			0x00,	//	3
+			0x00, 	//	4
+			0x00, 	//	5
+			0x00, 	//	6
+			0x00, 	//	7
+			toogle_kth_bit(address_[0], 2), 	//	8
+			address_[1],	//	9
+			address_[2],  	//	10
+			0xFF, 	//	11
+			0xFE, 	//	12
+			address_[3],	//	13
+			address_[4], 	//	14
+			address_[5] 	//	16
+			 };
+
+		//bytes[0] = toogle_kth_bit(bytes[0], 2);
+
+		return boost::asio::ip::address_v6(bytes);
+	}
+
 	//	comparison
 	bool operator==(mac48 const& lhs, mac48 const& rhs)
 	{
@@ -232,6 +259,10 @@ namespace cyng
 	bool operator>=(mac64 const& lhs, mac64 const& rhs)
 	{
 		return !(lhs < rhs);
+	}
+
+	int toogle_kth_bit(unsigned int n, int k) {
+		return (n ^ (1 << (k - 1)));
 	}
 
 }
