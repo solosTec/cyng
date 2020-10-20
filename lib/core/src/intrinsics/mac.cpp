@@ -27,7 +27,7 @@ namespace cyng
 	: address_(other.address_)
 	{}
 
-	mac48::mac48(mac48&& other)
+	mac48::mac48(mac48&& other) noexcept
 	: address_(std::move(other.address_))
 	{}
 
@@ -128,6 +128,11 @@ namespace cyng
 		return boost::asio::ip::address_v6(bytes);
 	}
 
+	boost::asio::ip::address mac48::to_link_local() const
+	{
+		return to_ipv6_link_local();
+	}
+
 	//	comparison
 	bool operator==(mac48 const& lhs, mac48 const& rhs)
 	{
@@ -203,7 +208,7 @@ namespace cyng
 	: address_(other.address_)
 	{}
 
-	mac64::mac64(mac64&& other)
+	mac64::mac64(mac64&& other) noexcept
 	: address_(std::move(other.address_))
 	{}
 

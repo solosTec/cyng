@@ -12,7 +12,7 @@
 #include <array>
 
 #include <boost/uuid/uuid.hpp>
-#include <boost/asio/ip/address_v6.hpp>
+#include <boost/asio/ip/address.hpp>
 
 namespace cyng 
 {
@@ -40,7 +40,7 @@ namespace cyng
 		mac48();
 		mac48(std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t);
 		mac48(mac48 const& other);
-		mac48(mac48&& other);
+		mac48(mac48&& other)  noexcept;
 		mac48(address_type const& other);
 
 		/**
@@ -116,6 +116,7 @@ namespace cyng
 		 * generate the link-local address (IPv6)
 		 */
 		boost::asio::ip::address_v6 to_ipv6_link_local() const;
+		boost::asio::ip::address to_link_local() const;
 
 	private:
 		address_type	address_;
@@ -160,7 +161,7 @@ namespace cyng
 		mac64(std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t, std::uint8_t);
 		mac64(std::uint16_t, std::uint16_t, std::uint16_t, std::uint16_t);
 		mac64(mac64 const& other);
-		mac64(mac64&&);
+		mac64(mac64&&) noexcept;
 		mac64(address_type const& other);
 
 		/**

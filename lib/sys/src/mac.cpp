@@ -71,19 +71,16 @@ namespace cyng
 			DWORD dwBufLen = sizeof(AdapterInfo);
 
 			// Arguments for GetAdapterAddresses:
-			DWORD dwStatus = GetAdaptersAddresses(0, 0, NULL, AdapterInfo, &dwBufLen);
+			DWORD dwStatus = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, AdapterInfo, &dwBufLen);
 			// [out] buffer to receive data
 			// [in] size of receive data buffer
 
-			// Verify return value is valid, no buffer overflow
-			//BOOST_ASSERT(dwStatus == ERROR_SUCCESS);
-			//	Have seen error code 111 (ERROR_BUFFER_OVERFLOW) here
 
-			if (dwStatus == ERROR_SUCCESS) {
+			if (dwStatus == NO_ERROR) {
 				// Contains pointer to current adapter info
 				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
 
-				do {
+				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
 					result.push_back(mac48(pAdapterInfo->PhysicalAddress[0]
 						, pAdapterInfo->PhysicalAddress[1]
 						, pAdapterInfo->PhysicalAddress[2]
@@ -92,7 +89,7 @@ namespace cyng
 						, pAdapterInfo->PhysicalAddress[5]));
 
 					pAdapterInfo = pAdapterInfo->Next;                      // Progress through linked list
-				} while (pAdapterInfo && (dwStatus == NO_ERROR));
+				};
 			}
 #elif BOOST_OS_LINUX
 

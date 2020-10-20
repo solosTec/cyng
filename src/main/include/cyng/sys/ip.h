@@ -30,7 +30,7 @@ namespace cyng
 		 * Doesn't work obviously behind a NAT.
 		 *
 		 * @param host an external address/host that is actually reachable
-		 * from the client (i.e. "8.8.8.8")
+		 * from the client (i.e. "8.8.8.8" or "1.1.1.1")
 		 * @return the WAN address
 		 */
 		boost::asio::ip::address get_WAN_address(std::string host);
