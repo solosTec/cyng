@@ -107,9 +107,9 @@ namespace cyng
 	{
 		//	array< unsigned char, 16 > 
 		//	network byte order
-		boost::asio::ip::address_v6::bytes_type bytes{ 
-			0xFE,		//	0
-			0x80,		//	1
+		boost::asio::ip::address_v6::bytes_type const bytes{
+			0xFE,	//	0
+			0x80,	//	1
 			0x00,	//	2
 			0x00,	//	3
 			0x00, 	//	4
@@ -123,10 +123,7 @@ namespace cyng
 			0xFE, 	//	12
 			address_[3],	//	13
 			address_[4], 	//	14
-			address_[5] 	//	16
-			 };
-
-		//bytes[0] = toogle_kth_bit(bytes[0], 2);
+			address_[5] }; 	//	16
 
 		return boost::asio::ip::address_v6(bytes);
 	}
