@@ -23,6 +23,8 @@ namespace cyng
 	//	Note: Boost.Optional doesn't support the nullopt_t type (nullopt) and uses 
 	//	boost::none_t (none) instead.
 	//
+	//	There are more differences whne using references!
+	//
 
 #if defined(__CPP_SUPPORT_P0220R1)
 

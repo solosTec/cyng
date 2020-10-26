@@ -62,6 +62,22 @@ namespace cyng
     
 }
 
+//
+//	attributes
+//
+
+#ifdef __CPP_SUPPORT_P0189R1
+#define CYNG_ATTR_NODISCARD [[nodiscard]]
+#else
+#define CYNG_ATTR_NODISCARD 
+#endif
+
+#ifdef __CPP_SUPPORT_P0188R1
+#define CYNG_ATTR_FALLTHROUGH [[fallthrough]]
+#else
+#define CYNG_ATTR_FALLTHROUGH
+#endif
+
 #endif 	//	CYNG_GENERAL_H
 
 
