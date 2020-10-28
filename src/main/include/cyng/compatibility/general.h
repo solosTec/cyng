@@ -34,8 +34,16 @@ namespace cyng
 	 */
 #if defined(__CPP_SUPPORT_P0218R1)
 	using error_code = std::error_code;
+	using errc = std::errc;
+	inline error_code make_error_code(errc code) noexcept {
+		return std::make_error_code(code);
+	}
 #else
 	using error_code = boost::system::error_code;
+	using errc = boost::system::errc;
+	inline error_code make_error_code(errc code) noexcept {
+		return boost::system::errc::make_error_code(code);
+	}
 #endif
 
 #if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
