@@ -88,13 +88,12 @@ namespace cyng
 			return memInfo.ullTotalPageFile - memInfo.ullAvailPageFile;
 
 #elif BOOST_OS_LINUX			
-			struct sysinfo memInfo;
-			sysinfo (&memInfo);
-			std::uint64_t virtualMemUsed = memInfo.totalram - memInfo.freeram;
-			//Add other values in next statement to avoid int overflow on right hand side...
-			virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
-			virtualMemUsed *= memInfo.mem_unit;
-			return virtualMemUsed;
+			struct sysinfo mem_info;
+			sysinfo (&mem_info);
+			std::uint64_t total_virtual_mem = mem_info.totalram;
+			total_virtual_mem *= mem_info.mem_unit;
+			total_virtual_mem += mem_info.totalswap;
+			return total_virtual_mem;
 #else
 			return 0;
 #endif
