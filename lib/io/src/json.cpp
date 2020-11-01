@@ -465,6 +465,11 @@ namespace cyng
 		{
 			return os << '"' << v << '"';
 		}
+
+		std::ostream& serializer <filesystem::path, SERIALIZE_JSON>::write(std::ostream& os, filesystem::path const& v)
+		{	//	no additional quotes
+			return os << v;
+		}
 	}
 }
 

@@ -206,6 +206,11 @@ namespace cyng
 		{
 			static std::ostream& write(std::ostream& os, crypto::digest_sha512 v);
 		};
+		template <>
+		struct serializer <filesystem::path, SERIALIZE_JSON>
+		{
+			static std::ostream& write(std::ostream& os, filesystem::path const&);
+		};
 
 	}
 }
