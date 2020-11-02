@@ -110,8 +110,8 @@ namespace cyng
 	std::pair<object, bool > parse_basic_timestamp(std::string const&);
 
 	/**
-		* Parse any timespan or timepoint object for a script environment. 
-		*/
+	 * Parse any timespan or timepoint object for a script environment. 
+	 */
 	template <typename Iterator, typename Skipper = boost::spirit::qi::standard_wide::space_type>
 	struct chrono_parser
 	: boost::spirit::qi::grammar<Iterator, object(), Skipper>

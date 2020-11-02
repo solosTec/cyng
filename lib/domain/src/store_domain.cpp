@@ -53,9 +53,14 @@ namespace cyng
 		if (!db.insert(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl), ctx.tag()))
 		{
 			ctx.queue(generate_invoke("log.msg.warning"
-				, "db.req.insert - failed"
+				, ctx.get_name()
+				, " - "
 				, std::get<0>(tpl)
+				, " failed, key: "
 				, std::get<1>(tpl)
+				, ", body: "
+				, std::get<2>(tpl)
+				, ", gen: "
 				, std::get<3>(tpl)));
 		}
 	}
@@ -94,9 +99,14 @@ namespace cyng
 		if (!db.merge(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), std::get<3>(tpl), ctx.tag()))
 		{
 			ctx.queue(generate_invoke("log.msg.warning"
-				, "db.req.merge - failed"
+				, ctx.get_name()
+				, " - "
 				, std::get<0>(tpl)
+				, " failed, key: "
 				, std::get<1>(tpl)
+				, ", body: "
+				, std::get<2>(tpl)
+				, ", gen: "
 				, std::get<3>(tpl)));
 		}
 	}
@@ -135,9 +145,14 @@ namespace cyng
 		if (!db.update(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), std::get<3>(tpl), ctx.tag()))
 		{
 			ctx.queue(generate_invoke("log.msg.warning"
-				, "db.req.update - failed"
+				, ctx.get_name()
+				, " - "
 				, std::get<0>(tpl)
+				, " failed, key: "
 				, std::get<1>(tpl)
+				, ", body: "
+				, std::get<2>(tpl)
+				, ", gen: "
 				, std::get<3>(tpl)));
 		}
 	}
@@ -161,9 +176,11 @@ namespace cyng
 
 		if (!db.modify(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), ctx.tag()))
 		{
-			ctx.queue(generate_invoke("log.msg.warning", "db.req.modify.by.attr - failed: "
+			ctx.queue(generate_invoke("log.msg.warning"
+				, ctx.get_name()
+				, " - "
 				, std::get<0>(tpl)
-				, ", key: "
+				, " failed: key: "
 				, std::get<1>(tpl)
 				, " - "
 				, std::get<2>(tpl).first
@@ -192,9 +209,10 @@ namespace cyng
 		if (!db.modify(std::get<0>(tpl), std::get<1>(tpl), std::move(std::get<2>(tpl)), ctx.tag()))
 		{
 			ctx.queue(generate_invoke("log.msg.warning"
-				, "db.req.modify.by.param - failed: "
+				, ctx.get_name()
+				, " - "
 				, std::get<0>(tpl)
-				, ", key: "
+				, " failed, key: "
 				, std::get<1>(tpl)
 				, " - "
 				, std::get<2>(tpl).first
@@ -221,7 +239,12 @@ namespace cyng
 
 		if (!db.erase(std::get<0>(tpl), std::get<1>(tpl), ctx.tag()))
 		{
-			ctx.queue(generate_invoke("log.msg.warning", "db.req.remove - failed", std::get<0>(tpl), std::get<1>(tpl)));
+			ctx.queue(generate_invoke("log.msg.warning"
+				, ctx.get_name()
+				, " - "
+				, std::get<0>(tpl)
+				, " failed, key: "
+				, std::get<1>(tpl)));
 		}
 	}
 
