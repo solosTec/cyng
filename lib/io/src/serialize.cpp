@@ -149,6 +149,25 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_str(crypto::aes_128_key const& key)
+		{
+			std::stringstream ss;
+			ss << key;
+			return ss.str();
+		}
+		std::string to_str(crypto::aes_192_key const& key)
+		{
+			std::stringstream ss;
+			ss << key;
+			return ss.str();
+		}
+		std::string to_str(crypto::aes_256_key const& key)
+		{
+			std::stringstream ss;
+			ss << key;
+			return ss.str();
+		}
+
 		std::ostream& operator<<(std::ostream& os, attr_t const& attr)
 		{
 			boost::io::ios_flags_saver  ifs(os);

@@ -103,8 +103,8 @@ namespace cyng
 		 * 
 		 * Checks whether object contains a value or null.
 		 * 
-		 * @return true if object contains a value, false if object 
-		 * does not contain a value (null) or the null object.
+		 * @return true if the object contains a value 
+		 * and this value is NOT the null object.
 		 */
 		explicit operator bool() const noexcept;
 

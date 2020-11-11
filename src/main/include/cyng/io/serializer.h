@@ -121,6 +121,10 @@ namespace cyng
 		std::string to_str(crypto::digest_sha256 const&);
 		std::string to_str(crypto::digest_sha512 const&);
 
+		std::string to_str(crypto::aes_128_key const&);
+		std::string to_str(crypto::aes_192_key const&);
+		std::string to_str(crypto::aes_256_key const&);
+
 	}
 }
 

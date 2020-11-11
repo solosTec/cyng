@@ -55,8 +55,7 @@ namespace cyng
 
 	object::operator bool() const noexcept
 	{
-		//	force bool() operator
-		return !!value_;
+		return !is_null();
 	}
 	
 	core::class_interface const& object::get_class() const

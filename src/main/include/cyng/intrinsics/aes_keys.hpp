@@ -56,22 +56,22 @@ namespace cyng
 			/**
 			 * Default constructor
 			 */
-			aes_key()
+			aes_key() noexcept
 				: key_({ { 0 } })
 			{}
 
-			aes_key(key_type const& key)
+			explicit aes_key(key_type const& key)
 				: key_(key)
 			{}
 
-			aes_key(key_type&& key)
+			aes_key(key_type&& key) noexcept
 				: key_(std::forward<key_type>(key))
 			{}
 
 			/**
 			 * Copy constructor
 			 */
-			aes_key(aes_key const& key)
+			aes_key(aes_key const& key) noexcept
 				: key_(key.key_)
 			{}
 
