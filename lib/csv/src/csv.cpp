@@ -42,33 +42,98 @@ namespace cyng
 		vector_t read_file(std::string const& p)
 		{
 			vector_t vec;
+			read_file(p, [&vec](tuple_t&& tpl)->void {
+				vec.push_back(make_object(tpl));
+			});
+
+			return vec;
+		}
+
+		std::size_t read_file(std::string const& p, std::function<void(tuple_t&&)> cb)
+		{
 			std::ifstream fs(p);
-			if (fs.is_open())	
+			std::size_t counter{ 0 };
+			if (fs.is_open())
 			{
 				fs.unsetf(std::ios::skipws);
-				
+
 				//
 				//	read CSV file line by line
 				//
 				std::string line;
 				while (std::getline(fs, line, '\n')) {
 					if (!line.empty()) {
-						auto r = parse_csv(line);
-						if (r.second)	vec.push_back(make_object(std::move(r.first)));
+						try {
+							auto r = parse_csv(line);
+							if (r.second) {
+								cb(std::move(r.first));
+								++counter;
+							}
+						}
+						catch (std::exception const& ex) {
+							std::cerr
+								<< "error in ["
+								<< line
+								<< "]"
+								<< std::endl
+								;
+						}
+					}
+				}
+			}
+			return counter;
+		}
+
+		
+		std::size_t read_file(std::string const& p, std::function<void(param_map_t const&)> cb)
+		{
+
+			std::size_t counter{ 0 };
+			std::ifstream fs(p);
+			if (fs.is_open())
+			{
+				fs.unsetf(std::ios::skipws);
+
+				std::string line;
+
+				//
+				//	read header
+				//
+				if (std::getline(fs, line, '\n')) {
+
+					auto r = parse_csv(line);
+					if (r.second) {
+
+						std::vector<std::string> header;
+						std::transform(r.first.begin(), r.first.end(), std::back_inserter(header), [](object obj) {
+							return cyng::io::to_str(obj);
+							});
+
+						//
+						//	read CSV file line by line
+						//
+						while (std::getline(fs, line, '\n')) {
+							if (!line.empty()) {
+								r = parse_csv(line);
+								if (r.second && r.first.size() <= header.size()) {
+									param_map_t pmap;
+									std::size_t idx{ 0 };
+									for (auto const& obj : r.first) {
+										pmap.emplace(header.at(idx), obj);
+										++idx;
+									}
+									cb(pmap);
+									++counter;
+								}
+							}
+						}
 					}
 				}
 
-				//
-				//	The double parenthesis are required to stop compiler see the string inp
-				//	as a function.
-				//
-				//const std::string inp((std::istream_iterator<char>(fs)), (std::istream_iterator<char>()));
-				//std::string const inp{ std::istream_iterator<char>(fs), std::istream_iterator<char>() };
-				//return read(inp);
 			}
-			return vec;
+			return counter;
 		}
-		
+
 		bool write_file(std::string const& p, vector_t const& vec)
 		{
 			std::ofstream fs(p);

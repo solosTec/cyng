@@ -12,10 +12,12 @@
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/mac_parser.h>
 #include <cyng/parser/buffer_parser.h>
+#include <cyng/util/split.h>
 
 #include <utility>
 #include <boost/numeric/conversion/converter.hpp>
 #include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/nil_generator.hpp>
 
 
 namespace cyng	
@@ -606,8 +608,10 @@ namespace cyng
 						int size = ::sqlite3_column_bytes(stmt, index);
 						const std::string str((const char*)ptr, size);
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
-						BOOST_ASSERT(str.size() == 36);
-						
+						//BOOST_ASSERT(str.size() == 36);
+						if (str.size() != 36) {
+							return make_object(boost::uuids::nil_uuid());
+						}
 						boost::uuids::string_generator gen;
 						const boost::uuids::uuid result = gen(str);
 						return make_object(result);
@@ -640,10 +644,20 @@ namespace cyng
 						int size = ::sqlite3_column_bytes(stmt, index);
 						const std::string str((const char*)ptr, size);
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
-						BOOST_ASSERT(str.size() < 40);
-						//return cyng::io::parse_ip_address(str).first;
+						BOOST_ASSERT(str.size() > 6);
+
+						//
+						//	convert to IP address
+						//
+						boost::system::error_code ec;
+						auto const address = boost::asio::ip::make_address(str, ec);
+
+						return (!ec)
+							? cyng::make_object(address)
+							: cyng::make_object(boost::asio::ip::make_address("0.0.0.0"))
+							;
 					}
-					return make_object();
+					return make_object(boost::asio::ip::address());
 				}
 				
 				template <>
@@ -655,42 +669,19 @@ namespace cyng
 						int size = ::sqlite3_column_bytes(stmt, index);
 						const std::string str((const char*)ptr, size);
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
-						BOOST_ASSERT(str.size() < 48);
-						//return cyng::io::parse_tcp_endpoint(str).first;
-					}
-					return make_object();
-				}
-				
-				//template <>
-				//object get_value<cyng::m2m::obis>(sqlite3_stmt* stmt, int index)
-				//{
-				//	const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
-				//	if (ptr != NULL)
-				//	{
-				//		int size = ::sqlite3_column_bytes(stmt, index);
-				//		const std::string str((const char*)ptr, size);
-				//		BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
-				//		BOOST_ASSERT(str.size() > 10);
-				//		return cyng::obis_factory(str);
-				//	}
-				//	return make_object();
-				//}
+						BOOST_ASSERT(str.size() > 6);
 
-				//template <>
-				//object get_value<cyng::m2m::ctrl_address>(sqlite3_stmt* stmt, int index)
-				//{
-				//	const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
-				//	if (ptr != NULL)
-				//	{
-				//		int size = ::sqlite3_column_bytes(stmt, index);
-				//		const std::string str((const char*)ptr, size);
-				//		BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
-				//		//BOOST_ASSERT(str.size() == 17);
-				//		return cyng::ctrl_address_factory(str);
-				//	}
-				//	return make_object();
-				//}
-				
+						//
+						//	expected format is: address:port
+						//
+						auto const vec = cyng::split(str, ":");
+						if (vec.size() == 2) {
+							
+							return make_object(boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address(vec.at(0)), std::stoul(vec.at(1))));
+						}						
+					}
+					return make_object(boost::asio::ip::tcp::endpoint());
+				}				
 			}
 			
 			template < type_code C >

@@ -58,7 +58,7 @@ namespace cyng
 					switch (type_.type())
 					{
 					case TC_NULL:	next(make_object());	break;
-					case TC_EOD:	next(make_object(eod()));	break;
+					case TC_EOD:	next(make_eod());	break;
 					case TC_STRING:	next(make_object(std::string()));	break;
 					case TC_BUFFER:	next(make_object(buffer_t()));	break;
 

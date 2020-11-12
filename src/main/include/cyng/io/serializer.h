@@ -73,6 +73,7 @@ namespace cyng
 		 * serialize a tuple with tag SERIALIZE_TYPED
 		 */
 		std::string to_type(tuple_t const&);
+		std::string to_type(param_map_t const&);
 
 		/**
 		 * serialization tag: SERIALIZE_BINARY
@@ -119,6 +120,10 @@ namespace cyng
 		std::string to_str(crypto::digest_sha1 const&);
 		std::string to_str(crypto::digest_sha256 const&);
 		std::string to_str(crypto::digest_sha512 const&);
+
+		std::string to_str(crypto::aes_128_key const&);
+		std::string to_str(crypto::aes_192_key const&);
+		std::string to_str(crypto::aes_256_key const&);
 
 	}
 }

@@ -229,7 +229,7 @@ elseif(MSVC)
 	#
 	#	Target is Windows 10
 	#
-	add_compile_definitions(_WIN32_WINNT=0x0A00 _SCL_SECURE_NO_WARNINGS _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+	add_compile_definitions(_WIN32_WINNT=0x0A00 _SCL_SECURE_NO_WARNINGS _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE BOOST_BIND_NO_PLACEHOLDERS)
 	
 else()
 
@@ -420,10 +420,33 @@ add_library(cyng_meta ${GLOBAL_LIBRARY_TYPE} ${meta_lib})
 install(FILES 
         ${meta_lib}
     DESTINATION 
-        include
+        "include/cyng"
     COMPONENT
         Devel
     )
+target_include_directories(cyng_meta
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${BOOST_INCLUDE_DIR}
+)
+
+#
+#	cyng compatibility library - header only
+#
+include (lib/compatibility/lib.cmake)
+add_library(cyng_compatibility ${GLOBAL_LIBRARY_TYPE} ${compatibility_lib})
+install(FILES 
+        ${compatibility_lib}
+    DESTINATION 
+        "include/cyng"
+    COMPONENT
+        Devel
+    )
+target_include_directories(cyng_compatibility
+	PRIVATE
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
+		${BOOST_INCLUDE_DIR}
+)
 
 #
 #	cyng core/object library
@@ -675,7 +698,7 @@ target_include_directories(demo
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/main/include;${CMAKE_CURRENT_BINARY_DIR}>"
 )
 	
-set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_sql;cyng_table;cyng_sqlite3")	
+set(CYNG_TARGET_LIST "cyng_async;cyng_csv;cyng_domain;cyng_log;cyng_parser;cyng_store;cyng_vm;cyng_core;cyng_db;cyng_io;cyng_rnd;cyng_sys;cyng_xml;cyng_json;cyng_meta;cyng_compatibility;cyng_sql;cyng_table;cyng_sqlite3")	
 
 if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 	#
@@ -798,6 +821,12 @@ configure_file (
         "${PROJECT_SOURCE_DIR}/cmake/CyngConfig.cmake"
 )
 
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/main/include/cyng" # source directory
+        DESTINATION "include" # target directory
+        FILES_MATCHING # install only matched files
+        PATTERN "*.h"
+        PATTERN "*hpp"
+)
 
 install(TARGETS ${CYNG_TARGET_LIST} 
     EXPORT CyngTargets

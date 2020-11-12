@@ -263,7 +263,7 @@ namespace cyng
 //#endif
 //
 			else if (boost::algorithm::equals(type, "eod")) {
-				return make_object(eod());
+				return make_eod();
 			}
 
 			return make_object();

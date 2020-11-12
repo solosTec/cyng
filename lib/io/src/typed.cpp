@@ -14,7 +14,11 @@ namespace cyng
 {	
 	namespace io
 	{
-		
+		std::ostream& serializer <bool, SERIALIZE_TYPED>::write(std::ostream& os, bool v)
+		{
+			return os << (v ? "true" : "false");
+		}
+
 		std::ostream& serializer <version, SERIALIZE_TYPED>::write(std::ostream& os, version const& v)
 		{
 			os << cyng::traits::get_tag_name<version>();
@@ -62,16 +66,24 @@ namespace cyng
 					}
 					else	{
 						os
-							<< "\\u"
+							<< "\\x"
 							<< std::hex
 							<< std::setw(2)
-							<< +c
+							<< std::setfill('0')
+							<< (+c & 0xFF)
 							;
 					}
 					break;
 				}
 			});
 			os << '"';
+			return os;
+		}
+
+		std::ostream& serializer <boost::uuids::uuid, SERIALIZE_TYPED>::write(std::ostream& os, boost::uuids::uuid const& v)
+		{
+			serializer<boost::uuids::uuid, SERIALIZE_PLAIN>::write(os, v);
+			os << ':' << cyng::traits::get_tag_name<boost::uuids::uuid>();
 			return os;
 		}
 

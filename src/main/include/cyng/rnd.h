@@ -11,9 +11,9 @@
 
 #include <string>
 #include <ctime>
-#include <boost/random/random_device.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include <boost/random/mersenne_twister.hpp>
+
+#include <random>
+#include <boost/predef.h>
 
 namespace cyng 
 {
@@ -34,8 +34,14 @@ namespace cyng
 
 		private:
 			std::string const stock_;
-			boost::random::random_device rng_;
-			boost::random::uniform_int_distribution<std::size_t> index_dist_;
+#if BOOST_OS_WINDOWS
+			std::random_device rnd_;
+			std::mt19937 gen_;
+#else
+			std::mt19937 gen_;
+#endif
+			std::uniform_int_distribution<std::size_t> index_dist_;
+
 		};
 
 		template <typename T>
@@ -43,15 +49,20 @@ namespace cyng
 		{
 		public:
 			rnd_num(T min_arg, T max_arg)
-				: rng_()
+#if BOOST_OS_WINDOWS
+				: rnd_()
+				, gen_(rnd_())
+#else
+				: gen_(std::time(0))
+#endif
 				, monitor_dist_(min_arg, max_arg)
 			{
-				rng_.seed(static_cast<std::uint32_t>(std::time(nullptr)));
+				// rng_.seed(static_cast<std::uint32_t>(std::time(nullptr)));
 			}
 
 			T next()
 			{
-				return monitor_dist_(rng_);
+				return monitor_dist_(gen_);
 			}
 
 			T operator()()
@@ -60,8 +71,13 @@ namespace cyng
 			}
 
 		private:
-			boost::random::mt19937 rng_;
-			boost::random::uniform_int_distribution<T> monitor_dist_;
+#if BOOST_OS_WINDOWS
+			std::random_device rnd_;
+			std::mt19937 gen_;
+#else
+			std::mt19937 gen_;
+#endif
+			std::uniform_int_distribution<T> monitor_dist_;
 		};
 
 		/**

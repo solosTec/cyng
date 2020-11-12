@@ -13,11 +13,6 @@ set (async_cpp
 )
     
 set (async_h
-    src/main/include/cyng/compatibility.h
-	src/main/include/cyng/compatibility/legacy_mode.hpp
-    src/main/include/cyng/compatibility/async.h
-    src/main/include/cyng/compatibility/io_service.h
-	src/main/include/cyng/compatibility/file_system.hpp
     src/main/include/cyng/async/policy.h
     src/main/include/cyng/async/pool.h
     src/main/include/cyng/async/scheduler.h
@@ -30,6 +25,7 @@ set (async_h
     src/main/include/cyng/async/task/task_builder.hpp
     src/main/include/cyng/async/task/task_meta.hpp
 )
+
 
 # define the async lib
 set (async_lib

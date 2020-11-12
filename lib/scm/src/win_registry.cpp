@@ -102,7 +102,7 @@ namespace cyng
 				? (ERROR_SUCCESS == ::RegCreateKeyEx(base_
 				, key_name_.c_str()
 				, 0
-				, ""
+				, NULL	//	lpClass can be NULL
 				, REG_OPTION_NON_VOLATILE
 				, KEY_WRITE
 				, 0

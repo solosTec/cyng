@@ -73,6 +73,12 @@ namespace cyng
 			std::size_t size() const;
 
 			/**
+			 * Sets the number of buckets to the number needed to accomodate at least count elements 
+			 * without exceeding maximum load factor and rehashes the container.
+			 */
+			void reserve(std::size_t);
+
+			/**
 			 * @return meta data
 			 */
 			cyng::table::meta_table_interface const& meta() const;

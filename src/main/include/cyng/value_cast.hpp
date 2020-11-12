@@ -40,6 +40,14 @@ namespace cyng
 	}	
 
 	/**
+	 * handling C strings as std::string
+	 */
+	inline std::string value_cast(object const& obj, char const* p) noexcept
+	{
+		return value_cast<std::string>(obj, std::string(p));
+	}
+
+	/**
 	 * Get the hidden value of type U to call constructor of type T.
 	 *
 	 * @tparam T result type

@@ -9,6 +9,7 @@
 
 #include <cstddef>
 #include <utility>
+#include <cyng/compatibility/general.h>
 #if defined(__CPP_SUPPORT_P0218R1)
 #include <filesystem>
 #else
@@ -16,17 +17,11 @@
 #include <chrono>
 #endif
 #include <cyng/rnd.h>
+#include <cyng/util/split.h>
+#include <boost/predef.h>
 
 namespace cyng 
 {
-	/**
-	 * define the error code type
-	 */
-#if defined(__CPP_SUPPORT_P0218R1)
-	using error_code = std::error_code;
-#else
-	using error_code = boost::system::error_code;
-#endif
 
 	namespace filesystem
 	{
@@ -80,6 +75,24 @@ namespace cyng
 			auto const tt = std::chrono::system_clock::to_time_t(sctp);
 			return std::chrono::system_clock::from_time_t(tt);
 		}
+
+		/**
+		 * Generic filenames not really works - so here is a substitute to convert UNIX path to windows path
+		 */
+		inline std::filesystem::path make_path(std::string const& str) {
+#if BOOST_OS_WINDOWS
+			std::filesystem::path p;
+			auto const vec = split(str, "/");
+			for (auto const s : vec) {
+				p /= s;
+			}
+			return p;
+#else
+			return std::filesystem::path(str);
+#endif
+
+		}
+
 #else
 		/**
 		 * File system library
@@ -96,6 +109,10 @@ namespace cyng
 		{
 			const auto tt = filesystem::last_write_time(p);
 			return std::chrono::system_clock::from_time_t(tt);
+		}
+
+		inline boost::filesystem::path make_path(std::string const& str) {
+			return boost::filesystem::path(str);
 		}
 
 #endif

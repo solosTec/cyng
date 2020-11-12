@@ -217,12 +217,12 @@ namespace cyng
 	 * Generate a code sequence to build a tuple (heterogeneous data types)
 	 */
 	template < typename ...Args >
-	vector_t tuple_generator(std::tuple<Args... >&& arg)
+	vector_t tuple_generator(std::tuple<Args... >&& args)
 	{
 		vector_t vec;
 		workbench::code_builder(vec, std::forward<Args>(args)...);
 		vec
-			<< static_cast<std::uint64_t>(std::tuple_size<Args>::value)
+			<< static_cast<std::uint64_t>(std::tuple_size<Args...>::value)
 			<< code::ASSEMBLE_TUPLE
 			;
 		return vec;

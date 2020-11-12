@@ -11,6 +11,7 @@
 #include <cyng/parser/chrono_parser.h>
 #include <cyng/parser/mac_parser.h>
 #include <cyng/parser/version_parser.h>
+#include <cyng/parser/ep_parser.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -32,21 +33,21 @@ namespace cyng
 			case cyng::TC_FLOAT80:
 				return make_object(std::stold(val));
 			case cyng::TC_UINT8:
-				return make_object<std::uint8_t>(std::stoul(val, nullptr, 16));
+				return make_object(static_cast<std::uint8_t>(std::stoul(val, nullptr, 16)));
 			case cyng::TC_UINT16:
-				return make_object<std::uint16_t>(std::stoul(val, nullptr, 16));
+				return make_object(static_cast<std::uint16_t>(std::stoul(val, nullptr, 16)));
 			case cyng::TC_UINT32:
-				return make_object<std::uint32_t>(std::stoul(val, nullptr, 16));
+				return make_object(static_cast<std::uint32_t>(std::stoul(val, nullptr, 16)));
 			case cyng::TC_UINT64:
-				return make_object<std::uint64_t>(std::stoull(val, nullptr, 16));
+				return make_object(static_cast<std::uint64_t>(std::stoull(val, nullptr, 16)));
 			case cyng::TC_INT8:
-				return make_object<std::int8_t>(std::stoi(val));
+				return make_object(static_cast<std::int8_t>(std::stoi(val)));
 			case cyng::TC_INT16:
-				return make_object<std::int16_t>(std::stoi(val));
+				return make_object(static_cast<std::int16_t>(std::stoi(val)));
 			case cyng::TC_INT32:
-				return make_object<std::int32_t>(std::stoi(val));
+				return make_object(static_cast<std::int32_t>(std::stoi(val)));
 			case cyng::TC_INT64:
-				return make_object<std::int64_t>(std::stoi(val));
+				return make_object(static_cast<std::int64_t>(std::stoi(val)));
 				//case cyng::TC_STRING:	//	default
 				//case cyng::TC_TIME_POINT: 
 				//case cyng::TC_NANO_SECOND:
@@ -114,7 +115,7 @@ namespace cyng
 			//case cyng::TC_BUFFER:
 			case cyng::TC_MAC48:
 			{
-				auto const r = cyng::parse_mac48(val);
+				auto const r = parse_mac48(val);
 				return (r.second)
 					? make_object(r.first)
 					: make_object(val)
@@ -123,7 +124,7 @@ namespace cyng
 			break;
 			case cyng::TC_MAC64:
 			{
-				auto const r = cyng::parse_mac64(val);
+				auto const r = parse_mac64(val);
 				return (r.second)
 					? make_object(r.first)
 					: make_object(val)
@@ -132,7 +133,16 @@ namespace cyng
 			break;
 			//case cyng::TC_COLOR_8:
 			//case cyng::TC_COLOR_16:
-			//case cyng::TC_IP_TCP_ENDPOINT:	//	missing parser for enpoints (address:port)
+			case cyng::TC_IP_TCP_ENDPOINT:
+			{
+				auto const r = parse_tcp_ep(val);
+				return (r.second)
+					? make_object(r.first)
+					: make_object(val)
+					;
+			}
+			break;
+
 			case cyng::TC_IP_ADDRESS:
 				return make_object(boost::asio::ip::make_address(val));
 

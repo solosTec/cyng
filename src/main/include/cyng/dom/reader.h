@@ -108,7 +108,12 @@ namespace cyng
 			return container_.size();
 		}
 		
-	protected:
+		T const& container() const
+		{
+			return container_;
+		}
+
+	private:
 		T const& container_;
 	};
 	

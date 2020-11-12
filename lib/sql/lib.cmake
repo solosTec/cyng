@@ -18,6 +18,8 @@ set (sql_dsl
     src/main/include/cyng/sql/dsl/binary_expr.hpp
     src/main/include/cyng/sql/dsl/list_expr.hpp
     src/main/include/cyng/sql/dsl/operators.hpp
+    src/main/include/cyng/sql/dsl/operator_expr.hpp
+ 	lib/sql/src/operators.cpp
     src/main/include/cyng/sql/dsl/variable.hpp
  	lib/sql/src/variable.cpp
     src/main/include/cyng/sql/dsl/constant.hpp

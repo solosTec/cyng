@@ -9,7 +9,8 @@
 #include <cyng/util/slice.hpp>
 #include <random>
 #include <algorithm>
-//#include <boost/predef.h>
+
+#include <boost/predef.h>
 #include <boost/assert.hpp>
 
 namespace cyng 
@@ -26,7 +27,7 @@ namespace cyng
 	: address_(other.address_)
 	{}
 
-	mac48::mac48(mac48&& other)
+	mac48::mac48(mac48&& other) noexcept
 	: address_(std::move(other.address_))
 	{}
 
@@ -102,7 +103,36 @@ namespace cyng
 		return mac48(0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
 	}
 
-	
+	boost::asio::ip::address_v6 mac48::to_ipv6_link_local() const
+	{
+		//	array< unsigned char, 16 > 
+		//	network byte order
+		boost::asio::ip::address_v6::bytes_type const bytes{
+			0xFE,	//	0
+			0x80,	//	1
+			0x00,	//	2
+			0x00,	//	3
+			0x00, 	//	4
+			0x00, 	//	5
+			0x00, 	//	6
+			0x00, 	//	7
+			toogle_kth_bit(address_[0], 2), 	//	8
+			address_[1],	//	9
+			address_[2],  	//	10
+			0xFF, 	//	11
+			0xFE, 	//	12
+			address_[3],	//	13
+			address_[4], 	//	14
+			address_[5] }; 	//	16
+
+		return boost::asio::ip::address_v6(bytes);
+	}
+
+	boost::asio::ip::address mac48::to_link_local() const
+	{
+		return to_ipv6_link_local();
+	}
+
 	//	comparison
 	bool operator==(mac48 const& lhs, mac48 const& rhs)
 	{
@@ -137,8 +167,12 @@ namespace cyng
 
 	mac48 generate_random_mac48()
 	{
-		std::random_device rd;
-		std::mt19937 gen(rd());
+#if BOOST_OS_WINDOWS
+		std::random_device rnd;
+		std::mt19937 gen(rnd());
+#else
+		std::mt19937 gen;
+#endif
 		std::uniform_int_distribution<int> dis(std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max());
 
 		mac48::address_type	addr;
@@ -174,7 +208,7 @@ namespace cyng
 	: address_(other.address_)
 	{}
 
-	mac64::mac64(mac64&& other)
+	mac64::mac64(mac64&& other) noexcept
 	: address_(std::move(other.address_))
 	{}
 
@@ -227,6 +261,10 @@ namespace cyng
 	bool operator>=(mac64 const& lhs, mac64 const& rhs)
 	{
 		return !(lhs < rhs);
+	}
+
+	int toogle_kth_bit(unsigned int n, int k) {
+		return (n ^ (1 << (k - 1)));
 	}
 
 }

@@ -81,7 +81,7 @@ namespace cyng
 		 * Move-constructs an object from obj. After the construction, *this contains 
 		 * a copy of the previous state of obj and obj is empty. 
 		 */
-		object(object&& obj);
+		object(object&& obj) noexcept;
 		
 		/**
 		 * Shares ownership of the object managed by obj. 
@@ -92,7 +92,7 @@ namespace cyng
 		 * Move-assigns a value from obj. After the assignment, *this contains 
 		 * a copy of the previous state of obj, obj is empty.
 		 */
-		object& operator=(object&& obj);
+		object& operator=(object&& obj) noexcept;
 
 		/**
 		 * destructor
@@ -103,8 +103,8 @@ namespace cyng
 		 * 
 		 * Checks whether object contains a value or null.
 		 * 
-		 * @return true if object contains a value, false if object 
-		 * does not contain a value (null) or the null object.
+		 * @return true if the object contains a value 
+		 * and this value is NOT the null object.
 		 */
 		explicit operator bool() const noexcept;
 

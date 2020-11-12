@@ -22,7 +22,7 @@ namespace cyng
 		/**
 		 * 0 is an invalid task id
 		 */
-		constexpr std::size_t NO_TASK = 0;
+		constexpr std::size_t NO_TASK = std::numeric_limits<std::size_t>::min();
 		constexpr std::size_t NO_SLOT = std::numeric_limits<std::size_t>::max();
 
 		//	some forward definitions

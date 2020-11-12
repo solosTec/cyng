@@ -8,7 +8,6 @@
 #include <cyng/core/class_interface.h>
 #include <cyng/core/object_interface.h>
 #include <cyng/intrinsics/traits/tag.hpp>
-//#include <cyng/intrinsics/null.h>
 #include <cyng/factory/factory.hpp>
 #include <CYNG_project_info.h>
 
@@ -26,7 +25,7 @@ namespace cyng
 	: value_(obj.value_)
 	{}
 	
-	object::object(object&& obj)
+	object::object(object&& obj) noexcept
  	: value_(std::move(obj.value_))
 	{}
 	
@@ -39,7 +38,7 @@ namespace cyng
 		return *this;
 	}
 	
-	object& object::operator=(object&& obj)
+	object& object::operator=(object&& obj) noexcept
 	{
 		value_.operator=(std::move(obj.value_));
 		return *this;		
@@ -56,8 +55,7 @@ namespace cyng
 
 	object::operator bool() const noexcept
 	{
-		//	force bool() operator
-		return !!value_;
+		return !is_null();
 	}
 	
 	core::class_interface const& object::get_class() const

@@ -12,14 +12,18 @@
 
 #if BOOST_OS_WINDOWS
 
-#include <windows.h>
+#include <cyng/scm/win_registry.h>
+//#include <windows.h>
 #include <VersionHelpers.h>
+//#include <Ntddk.h> RtlGetVersion() requires WDK 
 #include <sstream>
 
 #elif BOOST_OS_LINUX
 
+#include <cyng/compatibility/file_system.hpp>
 #include <sys/utsname.h>
 #include <sys/sysinfo.h>
+#include <fstream>
 
 #else
 #warning unknow OS
@@ -32,6 +36,21 @@ namespace cyng
 #if BOOST_OS_LINUX
 		std::string	get_os_name()
 		{
+			//
+			// read file /proc/version
+			//
+			filesystem::path const p{"proc/version"};
+			
+			//	open file
+			std::ifstream infile(p.string(), std::ios::in);
+			
+			//	read line by line
+			std::string line;
+			if (std::getline(infile, line)) {
+				return line;
+			}
+
+
 			utsname info;
 			return (::uname(&info) == 0)
 				? info.sysname
@@ -69,7 +88,15 @@ namespace cyng
 												if (::IsWindows8OrGreater()) {
 													if (::IsWindows8Point1OrGreater()) {
 														if (::IsWindows10OrGreater()) {
+
+
 															ss << "10.x";
+
+															registry_string<std::string> req("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild", HKEY_LOCAL_MACHINE);
+															if (req.exists()) {
+																ss << " build " << req.operator std::string();
+															}
+
 														}
 														else {
 															ss << "8.1";
@@ -125,16 +152,38 @@ namespace cyng
 		
 		std::string	get_os_release()
 		{
+			//	--- approach (1)
+
 			OSVERSIONINFO info;
 			::ZeroMemory(&info, sizeof(OSVERSIONINFO));
 			info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 			
 			::GetVersionEx(&info);
-			
+
 			std::stringstream ss;
 			ss << info.dwMajorVersion << '.' << info.dwMinorVersion;
-			
+
 			return ss.str();
+
+			//	--- approach (2)
+
+			//OSVERSIONINFOEXW info;
+			//::RtlGetVersion(&info);
+			//
+			//std::stringstream ss;
+			//ss << info.dwMajorVersion << '.' << info.dwMinorVersion << '.' << info.dwBuildNumber;
+
+			//return ss.str();
+
+			//	--- approach (3)
+
+			//::GetProductInfo(
+			//	DWORD  dwOSMajorVersion,
+			//	DWORD  dwOSMinorVersion,
+			//	DWORD  dwSpMajorVersion,
+			//	DWORD  dwSpMinorVersion,
+			//	PDWORD pdwReturnedProductType
+			//);
 		}
 #endif
 

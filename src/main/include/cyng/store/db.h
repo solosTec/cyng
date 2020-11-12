@@ -121,6 +121,16 @@ namespace cyng
 				//	implicit unlock of all affected tables
 				//
 			}
+
+			/**
+			 * Complexity O(log n) - red black tree.
+			 *
+			 * @brief simple record lookup
+			 */
+#if defined(__CPP_SUPPORT_N3915)
+			cyng::table::record lookup(std::string table, cyng::table::key_type const& key);
+#endif
+
 			
 			/**
 			 * Select a specific value from a table. The requested will be temporarily

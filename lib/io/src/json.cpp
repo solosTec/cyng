@@ -278,6 +278,7 @@ namespace cyng
 						os
 							<< "\\u"
 							<< std::setw(4)
+							<< std::setfill('0')
 							<< c
 							;
 					}
@@ -463,6 +464,11 @@ namespace cyng
 		std::ostream& serializer <crypto::digest_sha512, SERIALIZE_JSON>::write(std::ostream& os, crypto::digest_sha512 v)
 		{
 			return os << '"' << v << '"';
+		}
+
+		std::ostream& serializer <filesystem::path, SERIALIZE_JSON>::write(std::ostream& os, filesystem::path const& v)
+		{	//	no additional quotes
+			return os << v;
 		}
 	}
 }

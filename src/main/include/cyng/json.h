@@ -25,9 +25,16 @@ namespace cyng
 		void write(std::ostream&, object const&);
 		void write(std::ostream&, tuple_t const&);
 
+		/**
+		 * Serialize an object to an JSON string. 
+		 * @note not all data structures can be properly transformed
+		 * to JSON. Each data element needs a key/value envelop. Exceptions
+		 * are null and boolean values or elements are wrapped in an array.
+		 */
 		std::string to_string(object const&);
 		std::string to_string(tuple_t const&);
 		std::string to_string(vector_t const&);
+		std::string to_string(param_map_t const&);
 
 		/**
 		 * Works for other content than JSON (partially) too.

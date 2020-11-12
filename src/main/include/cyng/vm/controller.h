@@ -61,14 +61,6 @@ namespace cyng
 		controller const& async_run(vector_t&& prg) const;
 
 		/**
-		 * example:
-		 @code
-		 async_run(generate_invoke("log.msg.trace", 42) << generate_invoke_unwinded("log.msg.trace", 43));
-		 @endcode
-		 */
-		controller const& async_run(vector_t& prg) const;
-
-		/**
 		 * Use an initializer list leads to copies of all parameters.
 		 *
 		 * example:
@@ -134,6 +126,16 @@ namespace cyng
 			return is_halted();
 		}
 
+		/**
+		 * create and embed a VM (could throw)
+		 */
+		controller& emplace(boost::uuids::uuid, std::ostream & = std::cout, std::ostream & = std::cerr);
+
+		/**
+		 * forward instructions to child VM
+		 */
+		void forward(boost::uuids::uuid, vector_t const& prg);
+
 	private:
 		/**
 		 * Strand to dispatch and synchronize work load
@@ -149,6 +151,11 @@ namespace cyng
 		 * If true machine is halted.
 		 */
 		std::atomic<bool>	halt_;
+
+		/**
+		 * emmbedded VMs
+		 */
+		std::map<boost::uuids::uuid, controller> children_;
 		
 	};
 }

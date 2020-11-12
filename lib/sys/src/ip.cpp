@@ -22,10 +22,16 @@ namespace cyng
 			try {
 				boost::asio::io_service io_service;
 				boost::asio::ip::udp::resolver   resolver(io_service);
+				boost::asio::ip::udp::socket socket(io_service);
+#if (BOOST_ASIO_VERSION < 101400)
+
 				auto res = resolver.resolve(host, "");
 				auto ep = res.operator*();
-				boost::asio::ip::udp::socket socket(io_service);
 				socket.connect(ep);
+#else
+				boost::system::error_code ec;
+				boost::asio::connect(socket, resolver.resolve(host, ""), ec);
+#endif
 				return socket.local_endpoint().address();
 			}
 			catch (std::exception const& ex) {

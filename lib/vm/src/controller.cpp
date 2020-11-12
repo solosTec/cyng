@@ -9,6 +9,7 @@
 #include <cyng/factory.h>
 #include <cyng/value_cast.hpp>
 #include <cyng/io/serializer.h>
+#include <cyng/vm/manip.h>
 
 #include <memory>
 #include <boost/assert.hpp>
@@ -29,6 +30,7 @@ namespace cyng
 	: dispatcher_(ios)
 		, vm_(tag, out, err)
 		, halt_(false)
+		, children_()
 	{
 		vm_.lib_.insert("vm.halt", 0, [&](context& ctx) {
 
@@ -40,6 +42,26 @@ namespace cyng
 				err << vm_.tag() << " already halted" << std::endl;
 			}
 		});
+
+		vm_.lib_.insert("vm.remove", 1, [&](context& ctx) {
+
+			//
+			//	remove specified VM from child list
+			//
+			vector_t frame = ctx.get_frame();
+			auto const tag = value_cast(frame.at(0), boost::uuids::nil_uuid());
+			auto const b = vm_.remove(tag);
+			auto pos = children_.find(tag);
+			if (pos != children_.end()) {
+
+				//
+				//	remove embedded VM
+				//
+				auto const r = children_.erase(pos);
+			}
+
+		});
+
 	}
 	
 	bool controller::is_halted() const
@@ -95,12 +117,6 @@ namespace cyng
 		return *this;
 	}
 
-	controller const& controller::async_run(vector_t& prg) const
-	{
-		return async_run(std::move(prg));
-	}
-
-
 	controller const& controller::async_run(std::initializer_list<vector_t> prgs) const
 	{
 		//
@@ -152,6 +168,45 @@ namespace cyng
 			this->vm_.run(cyng::vector_t{ cyng::make_object(cyng::code::HALT) });
 		});
 		
+	}
+
+	controller& controller::emplace(boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
+	{
+		auto* res = this;
+		
+		auto r = children_.emplace(std::piecewise_construct
+			, std::forward_as_tuple(tag)
+			, std::forward_as_tuple(dispatcher_.context(), tag, out, err));
+
+		if (r.second) {
+
+			//
+			//	thread safe update of VM internal child list
+			//
+			access([&](vm& v) {
+
+				auto pos = children_.find(tag);
+				if (pos != children_.end()) {
+					v.emplace(tag, pos->second.vm_);
+				}
+			});
+			return r.first->second;
+		}
+		return *res;
+	}
+
+	void controller::forward(boost::uuids::uuid tag, vector_t const& vec)
+	{
+		vector_t prg;
+
+		prg
+			<< vec	//	copy
+			<< tag
+			<< code::FORWARD
+			;
+
+
+		async_run(std::move(prg));
 	}
 
 	controller::parameter::parameter()

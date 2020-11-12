@@ -223,6 +223,15 @@ namespace cyng
 	{
 		return make_object(null());
 	}
+
+	/**
+	 * produce the EOD object
+	 */
+	inline object make_eod()
+	{
+		return make_object(eod());
+	}
+
 }
 
 #endif 	//	CYNG_FACTORY_HPP

@@ -70,6 +70,13 @@ namespace cyng
 			return ss.str();
 		}
 
+		std::string to_type(param_map_t const& pm)
+		{
+			std::stringstream ss;
+			serializer <param_map_t, SERIALIZE_TYPED>::write(ss, pm);
+			return ss.str();
+		}
+
 		std::string to_str(object const& obj)
 		{
 			std::stringstream ss;
@@ -139,6 +146,25 @@ namespace cyng
 		{
 			std::stringstream ss;
 			ss << digest;
+			return ss.str();
+		}
+
+		std::string to_str(crypto::aes_128_key const& key)
+		{
+			std::stringstream ss;
+			ss << key;
+			return ss.str();
+		}
+		std::string to_str(crypto::aes_192_key const& key)
+		{
+			std::stringstream ss;
+			ss << key;
+			return ss.str();
+		}
+		std::string to_str(crypto::aes_256_key const& key)
+		{
+			std::stringstream ss;
+			ss << key;
 			return ss.str();
 		}
 
@@ -287,6 +313,8 @@ namespace cyng
                 case code::LERR:	os << "LERR";	break;
                 case code::TSTERR:	os << "TSTERR";		break;
                 case code::RESERR:	os << "RESERR";		break;
+
+				case code::FORWARD:	os << "FORWARD";	break;
 
 				case code::HALT:	os << "HALT";	break;
 				case code::NOOP:	os << "NOOP";	break;

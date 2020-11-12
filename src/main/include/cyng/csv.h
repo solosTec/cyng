@@ -12,7 +12,9 @@
 #include <cyng/core/object_interface_fwd.h>
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/intrinsics/sets.h>
+
 #include <string>
+#include <functional>
 
 namespace cyng 
 {
@@ -29,6 +31,14 @@ namespace cyng
 		 * of tuples
 		 */
 		vector_t read_file(std::string const& file_name);
+		std::size_t read_file(std::string const& file_name, std::function<void(tuple_t&&)>);
+
+		/**
+		 * Read specified CSV file and put the result into a vector
+		 * of parameter maps.
+		 * First line of CSV is interpreted as header.
+		 */
+		std::size_t read_file(std::string const& file_name, std::function<void(param_map_t const&)>);
 
 		/**
 		 * CSV has many restrictions to serialize data. 

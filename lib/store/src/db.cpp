@@ -40,10 +40,13 @@ namespace cyng
 		
 		bool db::create_table(cyng::table::meta_table_ptr ptr)
 		{
-			//	start with generation 1 and default state 0
-			unique_lock_t ul(this->m_);
-			return tables_.insert(cyng::table::key_generator(ptr->get_name())
-				, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1, boost::uuids::nil_uuid());
+			if (ptr) {
+				//	start with generation 1 and default state 0
+				unique_lock_t ul(this->m_);
+				return tables_.insert(cyng::table::key_generator(ptr->get_name())
+					, cyng::table::data_generator(table(ptr), std::chrono::system_clock::now(), static_cast<std::uint32_t>(0)), 1, boost::uuids::nil_uuid());
+			}
+			return false;
 		}
 		
 		std::size_t db::size() const
@@ -59,6 +62,16 @@ namespace cyng
 				tbl->clear(source);
 			}, write_access(name));
 		}
+
+#if defined(__CPP_SUPPORT_N3915)
+		cyng::table::record db::lookup(std::string table, cyng::table::key_type const& key)
+		{
+			return this->access([&](cyng::store::table const* tbl) -> cyng::table::record {
+				return tbl->lookup(key);
+			}, read_access(table));
+		}
+#endif
+
 
 		bool db::insert(std::string const& name
 			, cyng::table::key_type const& key

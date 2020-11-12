@@ -105,219 +105,56 @@ namespace cyng
 			
 		}	//	ops
 		
-		inline std::ostream& operator<<(std::ostream& os, ops::gt)
-		{
-			os << '>';
-			return os;
-		}
-		inline std::ostream& operator<<(std::ostream& os, ops::lt)
-		{
-			os << '<';
-			return os;
-		}
-		inline std::ostream& operator<<(std::ostream& os, ops::eq)
-		{
-			os << '=';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::gt);
+		std::ostream& operator<<(std::ostream& os, ops::lt);
+		std::ostream& operator<<(std::ostream& os, ops::eq);
 		
 		/**
 		 * not equal to (<>)
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::ne)
-		{
-			os << '<' << '>';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::ne);
 		
 		/**
 		 * Less than or equal to (<=)
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::le)
-		{
-			os << '<' << '=';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::le);
 		
 		/**
 		 * Greater than or equal to (>=)
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::ge)
-		{
-			os << '>' << '=';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::ge);
 
 		/**
 		 * Multiplication 
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::mul)
-		{
-			os << '*';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::mul);
 			
 		/**
 		 * Division 
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::div)
-		{
-			os << '/';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::div);
 			
 		/**
 		 * Addition  
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::add)
-		{
-			os << '+';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::add);
 			
 		/**
 		 * Subtraction   
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::sub)
-		{
-			os << '-';
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::sub);
 		
 		/**
 		 * logical and (&& - AND)
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::land)
-		{
-			os << "AND";
-			return os;
-		}
+		std::ostream& operator<<(std::ostream& os, ops::land);
 
 		/**
 		 * logical or (|| - OR)
 		 */
-		inline std::ostream& operator<<(std::ostream& os, ops::lor)
-		{
-			os << "OR";
-			return os;
-		}
-
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::gt, LHE, RHE > 
-		operator>(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::gt, LHE, RHE >(lhexp, rhexp); 
-		}
-		
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::lt, LHE, RHE > 
-		operator<(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::lt, LHE, RHE >(lhexp, rhexp); 
-		}
-		
-		/**
-		 * equal to (==)
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::eq, LHE, RHE > 
-		operator==(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::eq, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * not equal to (!=)
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::ne, LHE, RHE > 
-		operator!=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::ne, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * Less than or equal to (<=)
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::le, LHE, RHE > 
-		operator<=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::le, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * Greater than or equal to (>=)
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::ge, LHE, RHE > 
-		operator>=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::ge, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * Multiplication 
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::mul, LHE, RHE > 
-		operator>=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::mul, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * Division 
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::div, LHE, RHE > 
-		operator>=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::div, LHE, RHE >(lhexp, rhexp); 
-		}
+		std::ostream& operator<<(std::ostream& os, ops::lor);
 
 
-		/**
-		 * Addition  
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::add, LHE, RHE > 
-		operator>=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::add, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * Subtraction   
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::sub, LHE, RHE > 
-		operator>=(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::sub, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * logical and (&&)
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::land, LHE, RHE > 
-		operator&&(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::land, LHE, RHE >(lhexp, rhexp); 
-		}
-			
-		/**
-		 * logical or (||)
-		 */
-		template < typename LHE, typename RHE > 
-		binary_expression < ops::lor, LHE, RHE > 
-		operator||(LHE lhexp, RHE rhexp)  
-		{ 
-			return binary_expression < ops::lor, LHE, RHE >(lhexp, rhexp); 
-		}
-		
-		
 	}	
 }
 

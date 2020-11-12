@@ -8,6 +8,7 @@
 #include <cyng/vm/context.h>
 #include <cyng/vm/vm.h>
 #include <cyng/vm/memory.h>
+#include <cyng/vm/manip.h>
 
 namespace cyng 
 {
@@ -99,6 +100,20 @@ namespace cyng
 		mem_ += std::move(prg);
 		return *this;
 	}
+
+	context& context::forward(boost::uuids::uuid tag, vector_t const& vec)
+	{
+		vector_t prg;
+
+		prg
+			<< vec	//	copy
+			<< tag
+			<< code::FORWARD
+			;
+		mem_ += std::move(prg);
+		return *this;
+	}
+
 
 	std::string const& context::get_name() const
 	{

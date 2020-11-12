@@ -1,4 +1,4 @@
-/*
+ /*
  * The MIT License (MIT)
  * 
  * Copyright (c) 2017 Sylko Olzscher 
@@ -23,10 +23,29 @@ using namespace std::string_literals; // enables s-suffix for std::string litera
 
 #if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
 #include <system_error>
+#else
+#include <boost/system/system_error.hpp>
 #endif
 
 namespace cyng 
 {
+	/**
+	 * define the error code type
+	 */
+#if defined(__CPP_SUPPORT_P0218R1)
+	using error_code = std::error_code;
+	using errc = std::errc;
+	inline error_code make_error_code(errc code) noexcept {
+		return std::make_error_code(code);
+	}
+#else
+	using error_code = boost::system::error_code;
+	using errc = boost::system::errc;
+	inline error_code make_error_code(errc code) noexcept {
+		return boost::system::errc::make_error_code(code);
+	}
+#endif
+
 #if defined(__CPP_SUPPORT_P0218R1) && defined(__CPP_SUPPORT_P0156R0)
     using system_error = std::system_error;
 #else
@@ -50,6 +69,22 @@ namespace cyng
 #endif
     
 }
+
+//
+//	attributes
+//
+
+#ifdef __CPP_SUPPORT_P0189R1
+#define CYNG_ATTR_NODISCARD [[nodiscard]]
+#else
+#define CYNG_ATTR_NODISCARD 
+#endif
+
+#ifdef __CPP_SUPPORT_P0188R1
+#define CYNG_ATTR_FALLTHROUGH [[fallthrough]]
+#else
+#define CYNG_ATTR_FALLTHROUGH
+#endif
 
 #endif 	//	CYNG_GENERAL_H
 

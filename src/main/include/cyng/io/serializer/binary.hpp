@@ -234,9 +234,9 @@ namespace cyng
 		};
 				
 		template <>
-		struct serializer <boost::system::error_code, SERIALIZE_BINARY>
+		struct serializer <error_code, SERIALIZE_BINARY>
 		{
-			static std::ostream& write(std::ostream& os, boost::system::error_code const&);
+			static std::ostream& write(std::ostream& os, error_code const&);
 		};
 
 // 		[with T = boost::uuids::uuid; S = cyng::io::SERIALIZE_BINARY; std::ostream = std::basic_ostream<char>]’

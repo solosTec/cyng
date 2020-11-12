@@ -22,7 +22,7 @@ namespace cyng
 		template < typename T, typename ...Args >
 		auto make_task(mux& m, Args &&... args) -> std::shared_ptr<task < T >>
 		{
-			typedef task < T > task_type;
+			using task_type = task < T >;
 			return std::make_shared< task_type >(m, std::forward<Args>(args)...);
 		}
 
@@ -41,14 +41,16 @@ namespace cyng
 		std::pair<std::size_t, bool> start_task_sync(mux& m, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
-			return std::make_pair(tp->get_id(), m.insert(tp, sync()));
+			return (tp)
+				? std::make_pair(tp->get_id(), m.insert(tp, sync{}))
+				: std::make_pair(NO_TASK, false);
 		}
 		
 		template < typename T, typename ...Args >
 		std::size_t start_task_detached(mux& m, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
-			return (m.insert(tp, detach()))
+			return (tp && m.insert(tp, detach{}))
 				? tp->get_id()
 				: NO_TASK
 				;
@@ -58,17 +60,21 @@ namespace cyng
 		std::pair<std::size_t, bool> start_task_delayed(mux& m, std::chrono::duration<R, P> d, Args &&... args)
 		{
 			auto tp = make_task<T>(m, std::forward<Args>(args)...);
-			if (m.insert(tp, none()))
+			if (tp) 
 			{
-				tp->suspend(d);
-				return std::make_pair(tp->get_id(), true);
+				if (m.insert(tp, none{}))
+				{
+					tp->suspend(d);
+					return std::make_pair(tp->get_id(), true);
+				}
+				return std::make_pair(tp->get_id(), false);
 			}
-			return std::make_pair(tp->get_id(), false);
+			return std::make_pair(NO_TASK, false);
 		}
 
 		inline std::pair<std::size_t, bool> start_task_sync(mux& m, shared_task tp)
 		{
-			return std::make_pair(tp->get_id(), m.insert(tp, sync()));
+			return std::make_pair(tp->get_id(), m.insert(tp, sync{}));
 		}
 
 	}	// async

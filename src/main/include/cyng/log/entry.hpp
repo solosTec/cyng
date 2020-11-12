@@ -8,7 +8,8 @@
 #define CYNG_LOG_ENTRY_HPP
 
 #include <cyng/log/severity.h>
-#include <cyng/io/io_chrono.hpp>
+#include <cyng/io/serializer.h>
+
 #include <chrono>
 #include <sstream>
 #include <thread>
@@ -88,6 +89,8 @@ namespace cyng
 			template < typename T >
 			friend entry& operator<< (entry& ls, T const& v)	
 			{
+				using cyng::io::operator<<;
+
 				ls.stream_ << v;
 				return ls;
 			}
