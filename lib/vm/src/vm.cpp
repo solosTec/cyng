@@ -13,9 +13,7 @@
 #include <cyng/value_cast.hpp>
 #include <cyng/set_cast.h>
 #include <cyng/factory.h>
-#ifdef _DEBUG
 #include <cyng/io/serializer.h>
-#endif
 
 #include <chrono>
 #include <iomanip>
@@ -391,12 +389,15 @@ namespace cyng
 		context ctx(*this, mem, fname);
 		if (!lib_.invoke(fname, ctx))
 		{
+			auto const frame = ctx.get_frame();
 			std::stringstream ss;
 			ss
 				<< "***Warning: function ["
 				<< fname
 				<< "] is not registered in VM "
 				<< tag_
+				<< " - "
+				<< cyng::io::to_type(frame)
 				;
 
 			const std::string msg = ss.str();
