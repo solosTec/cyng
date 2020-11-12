@@ -130,7 +130,7 @@ public:
 		//	create service shell on stack
 		//
 
-		if (register_control_handler(std::bind(& typename SRV_T::control_handler, &service_, std::placeholders::_1)))
+		if (register_control_handler(std::bind(& SRV_T::control_handler, &service_, std::placeholders::_1)))
 		{
 			::OutputDebugString("update status: SERVICE-START-PENDING\n");
 			update_status(SERVICE_START_PENDING);

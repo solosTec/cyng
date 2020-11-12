@@ -159,12 +159,11 @@ namespace cyng
 
 			operator T()
 			{
-				TY_STR_STREAM ss;
 				T returnval = T();
 
 				if (open(false) == true)
 				{
-					TY_MODE type(VALUE_TYPE_NONE), size(0);
+					DWORD type(VALUE_TYPE_NONE), size(0);
 					if (query_value(&type, &size, 0))
 					{
 						assert(type == VALUE_TYPE_SZ);
@@ -172,6 +171,7 @@ namespace cyng
 
 						if (query_value(0, &size, data))
 						{
+							std::stringstream ss;
 							ss.str(data);
 							ss >> returnval;
 						}
@@ -195,7 +195,7 @@ namespace cyng
 						<< value;
 					std::string data = ss.str();
 
-					set_value(VALUE_TYPE_SZ, TY_SIZE(data.length() + 1), data.c_str());
+					set_value(VALUE_TYPE_SZ, data.length() + 1, data.c_str());
 					close();
 				}
 

@@ -10,6 +10,7 @@
 #include <string>
 #include <ostream>
 #include <cyng/sql/dsl/constant.hpp>
+#include <cyng/sql/dsl/operators.hpp>
 
 namespace cyng 
 {
@@ -97,6 +98,8 @@ namespace cyng
 		
 	}	
 }
+
+#include <cyng/sql/dsl/operator_expr.hpp>
 
 #endif	//	CYNG_SQL_DSL_BINARY_EXPR_HPP
 

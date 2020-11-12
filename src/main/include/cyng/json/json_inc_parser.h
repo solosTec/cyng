@@ -19,6 +19,7 @@
 
 #include <functional>
 #include <stack>
+#include <algorithm>	//	for_each
 
 namespace cyng	
 {
@@ -67,7 +68,6 @@ namespace cyng
 						this->put(c);
 					});
 
-				//post_processing();
 				return std::distance(start, end);
 			}
 
