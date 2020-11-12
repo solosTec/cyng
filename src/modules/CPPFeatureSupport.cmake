@@ -26,6 +26,7 @@
 # 19.24.28316 => Visual Studio 2019 version 16.4.5
 # 19.25.x => Visual Studio 2019 Version 16.5)
 # 19.26.28806 => Visual Studio 2019 version 16.6.3
+# 19.28.29333 => Visual Studio 2019 version 16.8
 #
 
 function(emit_compiler_support PAPER DESCR MIN_VER)
@@ -71,7 +72,7 @@ define_compiler_support("P0702R1" "Initializer list constructors in class templa
 define_compiler_support("P0704R1" "const&-qualified pointers to members" "8.0" "6.0" "999" "999")
 # 	see P0857R0, P1084R2, P1141R2, P0848R3, P1616R1, P1452R2, P1972R0, P1980R0
 define_compiler_support("P0734R0" "Concepts" "10.0" "10.0" "19.23" "999")
-define_compiler_support("P0315R4" "Lambdas in unevaluated contexts" "9.0" "999" "999" "999")
+define_compiler_support("P0315R4" "Lambdas in unevaluated contexts" "9.0" "999" "19.28" "999")
 # see P1120R0, P1185R2, P1186R3, P1630R1, P1946R0, P1959R0
 define_compiler_support("P0515R3" "Three-way comparison operator" "10.0" "10.0" "19.20" "999")
 define_compiler_support("P0588R1" "Simplifying implicit lambda capture" "8.0" "999" "999" "999")
@@ -105,9 +106,10 @@ define_compiler_support("P1330R0" "Changing the active member of a union inside 
 # see P1381R1 (clang partial)
 define_compiler_support("P1091R3" "Structured binding extensions (to be more like variable declarations)" "8.0" "10.0" "19.24" "999")
 define_compiler_support("P1041R4" "Stronger Unicode requirements" "999" "1.0" "999" "999")
-define_compiler_support("P0960R3" "Parenthesized initialization of aggregates" "999" "999" "999" "999")
-define_compiler_support("P1103R3" "Modules" "999" "8.0" "999" "999")
-define_compiler_support("P0912R5" "Coroutines" "999" "8.0" "999" "999")
+define_compiler_support("P0960R3" "Parenthesized initialization of aggregates" "999" "999" "19.28" "999")
+define_compiler_support("P1103R3" "Modules" "999" "8.0" "19.28" "999")
+define_compiler_support("P1766R1" "Mitigating minor modules maladies" "999" "999" "19.28" "999")
+define_compiler_support("P0912R5" "Coroutines" "999" "8.0" "19.28" "999")
 define_compiler_support("P0463R1" "std::endian" "8.0" "7.0" "999" "999")
 define_compiler_support("P0550R2" "std::remove_cvref" "9.0" "6.0" "19.20" "999")
 define_compiler_support("P0674R1" "Extending std::make_shared to support arrays" "999" "999" "999" "999")
@@ -131,6 +133,7 @@ define_compiler_support("P0722R3" "std::destroying_delete" "9.0" "999" "999" "99
 define_compiler_support("P0898R3" "Concepts library" "999" "999" "999" "999")
 define_compiler_support("P1209R0" "Consistent container erasure" "9.0" "8.0" "999" "999")
 define_compiler_support("P1143R2" "constinit" "10.0" "10.0" "999" "999")
+define_compiler_support("P0896R4" "<ranges>" "999" "999" "19.28" "999")
 
 #
 #   C++17 features
