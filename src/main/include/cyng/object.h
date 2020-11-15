@@ -101,10 +101,9 @@ namespace cyng
 		
 		/** @brief implementing the concept of a NULL or "no value at all".
 		 * 
-		 * Checks whether object contains a value or null.
+		 * Checks whether object internal value is valid.
 		 * 
-		 * @return true if the object contains a value 
-		 * and this value is NOT the null object.
+		 * @return false if the object doesn't contain a value at all (not even a null object)
 		 */
 		explicit operator bool() const noexcept;
 
