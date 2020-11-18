@@ -60,6 +60,27 @@ namespace cyng
 					return key;
 				}
 			};
+
+			/**
+			 * Identity: use an key as it is
+			 */
+			template <>
+			struct key_maker< key_type >
+			{
+				key_type operator()(key_type&& key) const
+				{
+					return key;
+				}
+			};
+			template <>
+			struct key_maker< const key_type& >
+			{
+				key_type operator()(key_type const& key) const
+				{
+					return key;
+				}
+			};
+
 		}
 
 		/**
@@ -73,6 +94,7 @@ namespace cyng
 		template < typename ...Args >
 		key_type key_generator(Args&&... args)
 		{
+			//std::tuple<std::decay_t<Args>...> Args_t;	//	remove const and ref
 			return key_maker<Args...>()(std::forward<Args>(args)...);
 		}
 		

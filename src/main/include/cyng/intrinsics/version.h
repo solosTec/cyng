@@ -34,25 +34,25 @@ namespace cyng
 			
 			static_assert(sizeof(T) * 2 == sizeof(U), "wrong datatype size");
 			
-			ver(T maj, T min)
+			constexpr ver(T maj, T min)
 			: base_type(maj, min)
 			{}
 						
-			ver(U val)
+			constexpr ver(U val)
 			: base_type(static_cast<T>(val >> size::value), static_cast<T>(std::numeric_limits<T>::max() & val))
 			{}
 
-			T major() const
+			constexpr T major() const
 			{
 				return base_type::first;
 			}
 
-			T minor() const
+			constexpr T minor() const
 			{
 				return base_type::second;
 			}
 			
-			U full() const
+			constexpr U full() const
 			{
 				return (static_cast<U>(major()) << size::value) + minor();
 			}
@@ -60,7 +60,7 @@ namespace cyng
 			/**
 			 * major element has a higher precedience.
 			 */
-			bool is_less(this_type const& other) const
+			constexpr bool is_less(this_type const& other) const
 			{
 				return (this->major() == other.major())
 					? (this->minor() < other.minor())
@@ -94,11 +94,25 @@ namespace cyng
 	class version : public details::ver<std::uint16_t, std::uint32_t>
 	{
 	public:
-		version(std::uint16_t, std::uint16_t);
-		explicit version(std::uint32_t);
-		explicit version(double);
-		version(version const&);
-		version();
+		constexpr version(std::uint16_t maj, std::uint16_t min)
+			: this_type(maj, min)
+		{}
+
+		constexpr version(std::uint32_t v)
+			: this_type(v)
+		{}
+
+		constexpr version(double d)
+			: this_type(static_cast<std::uint16_t>(d), static_cast<std::uint16_t>(std::round(std::fabs(d - std::trunc(d)) * 1e4)))
+		{}
+
+		constexpr version(version const& v)
+			: this_type(v.first, v.second)
+		{}
+
+		constexpr version()
+			: this_type(0, 0)
+		{}
 	};
 	
 	class revision : public details::ver<std::uint32_t, std::uint64_t>

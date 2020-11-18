@@ -11,25 +11,6 @@
 
 namespace cyng 
 {
-	version::version(std::uint16_t maj, std::uint16_t min)
-	: this_type(maj, min)
-	{}
-	
-	version::version(std::uint32_t v)
-	: this_type(v)
-	{}
-	
-	version::version(double d)
-		: this_type(static_cast<std::uint16_t>(d), static_cast<std::uint16_t>(std::round(std::fabs(d - std::trunc(d)) * 1e4)))
-	{}
-
-	version::version(version const& v)
-	: this_type(v.first, v.second)
-	{}
-	
-	version::version()
-	: this_type(0, 0)
-	{}
 
 	revision::revision(std::uint16_t a, std::uint16_t b, std::uint16_t c, std::uint16_t d)
 	: this_type(version(a, b).full(), version(c, d).full())
