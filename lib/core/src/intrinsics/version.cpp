@@ -11,6 +11,9 @@
 
 namespace cyng 
 {
+	version::version(double d)
+		: this_type(static_cast<std::uint16_t>(d), static_cast<std::uint16_t>(std::round(std::fabs(d - std::trunc(d)) * 1e4)))
+	{}
 
 	revision::revision(std::uint16_t a, std::uint16_t b, std::uint16_t c, std::uint16_t d)
 	: this_type(version(a, b).full(), version(c, d).full())

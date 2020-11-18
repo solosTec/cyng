@@ -102,9 +102,7 @@ namespace cyng
 			: this_type(v)
 		{}
 
-		constexpr version(double d)
-			: this_type(static_cast<std::uint16_t>(d), static_cast<std::uint16_t>(std::round(std::fabs(d - std::trunc(d)) * 1e4)))
-		{}
+		version(double d);
 
 		constexpr version(version const& v)
 			: this_type(v.first, v.second)
