@@ -42,32 +42,6 @@ namespace cyng
 	//
 	//	comparison
 	//
-	bool operator==(version const& lhs, version const& rhs)
-	{
-		return lhs.full() == rhs.full();
-	}
-	bool operator<(version const& lhs, version const& rhs)
-	{
-		return lhs.is_less(rhs);
-	}
-	bool operator!=(version const& lhs, version const& rhs)
-	{
-		return !(lhs == rhs);
-	}
-	bool operator>(version const& lhs, version const& rhs)
-	{
-		//	note the reversed notation
-		return rhs < lhs;
-	}
-	bool operator<=(version const& lhs, version const& rhs)
-	{
-		return !(lhs > rhs);
-	}
-	bool operator>=(version const& lhs, version const& rhs)
-	{
-		return !(lhs < rhs);
-	}
-
 	bool operator==(revision const& lhs, revision const& rhs)
 	{
 		return lhs.full() == rhs.full();

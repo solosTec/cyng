@@ -125,12 +125,32 @@ namespace cyng
 	};
 		
 	//	comparison
-	bool operator==(version const&, version const&);
-	bool operator<(version const&, version const&);
-	bool operator!=(version const&, version const&);
-	bool operator>(version const&, version const&);
-	bool operator<=(version const&, version const&);
-	bool operator>=(version const&, version const&);
+	constexpr bool operator==(version const& lhs, version const& rhs)
+	{
+		return lhs.full() == rhs.full();
+	}
+	constexpr bool operator<(version const& lhs, version const& rhs)
+	{
+		return lhs.is_less(rhs);
+	}
+	constexpr bool operator!=(version const& lhs, version const& rhs)
+	{
+		return !(lhs == rhs);
+	}
+	constexpr bool operator>(version const& lhs, version const& rhs)
+	{
+		//	note the reversed notation
+		return rhs < lhs;
+	}
+	constexpr bool operator<=(version const& lhs, version const& rhs)
+	{
+		return !(lhs > rhs);
+	}
+	constexpr bool operator>=(version const& lhs, version const& rhs)
+	{
+		return !(lhs < rhs);
+	}
+
 
 	bool operator==(revision const&, revision const&);
 	bool operator<(revision const&, revision const&);
