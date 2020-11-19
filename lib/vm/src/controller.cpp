@@ -172,7 +172,7 @@ namespace cyng
 
 	controller& controller::emplace(boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
 	{
-		auto* res = this;
+		//auto* res = this;
 		
 		auto r = children_.emplace(std::piecewise_construct
 			, std::forward_as_tuple(tag)
@@ -183,7 +183,7 @@ namespace cyng
 			//
 			//	thread safe update of VM internal child list
 			//
-			access([&](vm& v) {
+			access([this, tag](vm& v) {
 
 				auto pos = children_.find(tag);
 				if (pos != children_.end()) {
@@ -192,7 +192,7 @@ namespace cyng
 			});
 			return r.first->second;
 		}
-		return *res;
+		return *this;
 	}
 
 	void controller::forward(boost::uuids::uuid tag, vector_t const& vec)
@@ -221,7 +221,7 @@ namespace cyng
 		: prg_(std::move(other.prg_))
 	{}
 
-	controller::parameter::parameter(parameter&& other)
+	controller::parameter::parameter(parameter&& other) noexcept
 		: prg_(std::move(other.prg_))
 	{}
 

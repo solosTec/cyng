@@ -443,10 +443,17 @@ namespace cyng
 
 		}
 		else {
+
 			//
 			//	VM not found
 			//
-			lib_.try_debug_log(*this, "VM not found");
+			std::stringstream ss;
+			ss
+				<< "VM ["
+				<< tag
+				<< "] not found"
+				;
+			lib_.try_debug_log(*this, ss.str());
 		}
 
 	}

@@ -36,7 +36,7 @@ namespace cyng
 			parameter();
 			parameter(vector_t&&);
 			parameter(parameter const&);
-			parameter(parameter&&);
+			parameter(parameter&&) noexcept;
 		};
 
 	public:
