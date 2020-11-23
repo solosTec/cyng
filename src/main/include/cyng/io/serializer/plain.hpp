@@ -111,6 +111,12 @@ namespace cyng
 		};
 
 		template <>
+		struct serializer <double, SERIALIZE_PLAIN>
+		{
+			static std::ostream& write(std::ostream& os, double v);
+		};
+
+		template <>
 		struct serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_PLAIN>
 		{
 			static std::ostream& write(std::ostream& os, boost::asio::ip::tcp::endpoint const&);

@@ -254,6 +254,18 @@ namespace cyng
 			return os;
 		}
 
+		std::ostream& serializer <double, SERIALIZE_PLAIN>::write(std::ostream& os, double v)
+		{
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+			os
+				<< std::setprecision(2)
+				<< std::fixed
+				<< v
+				;
+			return os;
+		}
+
 		std::ostream& serializer <boost::asio::ip::tcp::endpoint, SERIALIZE_PLAIN>::write(std::ostream& os, boost::asio::ip::tcp::endpoint const& v)
 		{
 			auto const address = v.address().to_string();
