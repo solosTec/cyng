@@ -287,12 +287,6 @@ namespace cyng
 			using type = typename std::tuple_element<N, traits::tag_t>::type;
 		};
 	}
-
-	template <type_code TC>
-	bool is_of_type(object const& obj) {
-		return obj.get_class().tag() == TC;
-	}
-
 }
 
 #endif	//	CYNG_TRAITS_TAG_HPP

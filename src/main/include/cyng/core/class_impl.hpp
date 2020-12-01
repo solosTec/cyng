@@ -138,6 +138,15 @@ namespace cyng
 			}
 		};
 	}
+
+	/**
+	 * convinience type test
+	 */
+	template <type_code TC>
+	bool is_of_type(object const& obj) {
+		return obj.get_class().tag() == TC;
+	}
+
 }
 
 #endif 	//	CYNG_CLASS_IMPL_HPP
