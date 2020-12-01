@@ -186,7 +186,7 @@ namespace cyng
 		res.reserve((e.n_ == 0) ? (vec.size() * 2) : e.n_);	//	empirical value
 		for (auto& v : vec)
 		{
-			if (v.get_class().tag() == TC_VECTOR)
+			if (is_of_type<TC_VECTOR>(v))
 			{
 				auto tmp = value_cast(v, res);
 				tmp << unwind_vec(tmp.size());	//	recursion

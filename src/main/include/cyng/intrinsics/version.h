@@ -116,15 +116,35 @@ namespace cyng
 	class revision : public details::ver<std::uint32_t, std::uint64_t>
 	{
 	public:
-		revision(std::uint16_t a, std::uint16_t b, std::uint16_t c, std::uint16_t d);
-		revision(std::uint32_t, std::uint32_t);
-		revision(version, version);
-		revision(std::uint64_t);
-		revision(revision const&);
-		revision();
+		constexpr revision(std::uint16_t a, std::uint16_t b, std::uint16_t c, std::uint16_t d)
+			: this_type(version(a, b).full(), version(c, d).full())
+		{}
+
+		constexpr revision(std::uint32_t maj, std::uint32_t min)
+			: this_type(maj, min)
+		{}
+
+		constexpr revision(version maj, version min)
+			: this_type(maj.full(), min.full())
+		{}
+
+		constexpr revision(std::uint64_t v)
+			: this_type(v)
+		{}
+
+		constexpr revision(revision const& v)
+			: this_type(v.first, v.second)
+		{}
+
+		constexpr revision()
+			: this_type(0, 0)
+		{}
+
 	};
 		
-	//	comparison
+	//
+	//	comparison version
+	//
 	constexpr bool operator==(version const& lhs, version const& rhs)
 	{
 		return lhs.full() == rhs.full();
@@ -152,13 +172,34 @@ namespace cyng
 	}
 
 
-	bool operator==(revision const&, revision const&);
-	bool operator<(revision const&, revision const&);
-	bool operator!=(revision const&, revision const&);
-	bool operator>(revision const&, revision const&);
-	bool operator<=(revision const&, revision const&);
-	bool operator>=(revision const&, revision const&);
-
+	//
+	//	comparison revision
+	//
+	constexpr bool operator==(revision const& lhs, revision const& rhs)
+	{
+		return lhs.full() == rhs.full();
+	}
+	constexpr bool operator<(revision const& lhs, revision const& rhs)
+	{
+		return lhs.is_less(rhs);
+	}
+	constexpr bool operator!=(revision const& lhs, revision const& rhs)
+	{
+		return !(lhs == rhs);
+	}
+	constexpr bool operator>(revision const& lhs, revision const& rhs)
+	{
+		//	note the reversed notation
+		return rhs < lhs;
+	}
+	constexpr bool operator<=(revision const& lhs, revision const& rhs)
+	{
+		return !(lhs > rhs);
+	}
+	constexpr bool operator>=(revision const& lhs, revision const& rhs)
+	{
+		return !(lhs < rhs);
+	}
 }
 
 #endif	//	CYNG_INTRINSICS_VERSION_H

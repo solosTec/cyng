@@ -8,6 +8,7 @@
 #include <cyng/vm/vm.h>
 #include <cyng/vm/memory.h>
 #include <cyng/vm/context.h>
+#include <cyng/vm/controller.h>
 #include <cyng/intrinsics/traits/tag.hpp>
 #include <cyng/core/class_interface.h>
 #include <cyng/value_cast.hpp>
@@ -21,6 +22,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/random_generator.hpp>
 #include <boost/process/environment.hpp>
+#include <boost/system/error_code.hpp>
 
 namespace cyng 
 {
@@ -48,11 +50,6 @@ namespace cyng
 	, cmp_register_(false)
 	, children_()
 	{}
-
-	boost::uuids::uuid vm::tag() const noexcept
-	{
-		return tag_;
-	}
 	
 	void vm::run(vector_t&& vec)
 	{
@@ -81,9 +78,18 @@ namespace cyng
 				;
 			lib_.try_debug_log(*this, ss.str());
 		}
+#else
+		const bool risk_flag = false;
 #endif
 
 		memory mem(std::move(vec));
+
+#ifdef __DEBUG
+		std::stringstream ss;
+		ss << mem;
+		lib_.try_debug_log(*this, ss.str());
+#endif
+
 		loop(mem);
 
 #ifdef __DEBUG
@@ -111,7 +117,7 @@ namespace cyng
 				;
 
 			const std::string msg = ss.str();
-			context ctx(*this, mem, "log.msg.error");
+			context ctx(*this, mem, "log.msg.error", 1);
 			if (!lib_.try_error_log(ctx, msg))
 			{
 				std::cerr
@@ -124,6 +130,15 @@ namespace cyng
 
 		}
 #endif
+#ifdef __DEBUG
+		if (!stack_.empty()) {
+			std::stringstream ss;
+			ss << mem;
+			lib_.try_debug_log(*this, ss.str());
+		}
+#endif
+
+		BOOST_ASSERT(stack_.empty());
 	}
 
 	void vm::loop(memory& mem)
@@ -131,20 +146,25 @@ namespace cyng
 		while (mem)
 		{
 
-#ifdef __DEBUG
-			//stack_.dump(err_);
-
-			//std::stringstream ss;
-			//stack_.dump(ss);
-			//lib_.try_debug_log(*this, ss.str());
-#endif
-
 			//
 			//	next data or instruction
 			//
 			object obj = mem++;
 			if (obj.get_class().tag() == TC_CODE)
 			{
+#ifdef __DEBUG
+				std::stringstream ss;
+				ss
+					<< std::endl
+					<< ' '
+					<< '<'
+					<< io::to_type(obj)
+					<< '>'
+					;
+
+				stack_.dump(ss);
+				lib_.try_debug_log(*this, ss.str());
+#endif
 				//
 				//	execute a single instruction
 				//
@@ -157,15 +177,7 @@ namespace cyng
 				//
 				stack_.push(obj);
 			}
-
-#ifdef __DEBUG
-			if (std::chrono::system_clock::now() - now > std::chrono::seconds(2))
-			{
-				std::cerr << "======> " << tag_ << ':' << std::setprecision(4) << mem.level() << "%" << std::endl;
-			}
-#endif
 		}
-
 	}
 	
 	void vm::sync_run(vector_t&& prg)
@@ -297,12 +309,19 @@ namespace cyng
 				forward(mem);
 				break;
 
+			case code::REMOVE:
+				remove(mem);
+				break;
+
 			case code::HALT: //	trigger halt
 				//	set halt flag
-				lib_.try_halt(*this);
+				lib_.invoke("vm.halt", *this, mem);
 
 				//	stop engine
 				lib_.clear();
+
+				//	ToDo: halt and remove sub VMs
+				BOOST_ASSERT(children_.empty());
 				break;
 				
 			case code::NOOP: //	no operation
@@ -317,7 +336,8 @@ namespace cyng
 	void vm::pr()
 	{
 		BOOST_ASSERT_MSG(!stack_.empty(), "stack is empty (PR)");
-		BOOST_ASSERT_MSG(stack_.top().get_class().tag() == TC_UINT64, "wrong parameter type (PR)");
+		BOOST_ASSERT_MSG(is_of_type<TC_UINT64>(stack_.top()), "wrong parameter type (PR)");
+		
 		const auto idx = value_cast<std::size_t>(stack_.top(), 0u);
 		stack_.pop();
 		stack_.setr(stack_.top(), idx);
@@ -339,6 +359,9 @@ namespace cyng
 		//	jump always, pc = x
 		const auto addr = value_cast<std::size_t>(stack_.top(), 0u);
 		mem.jump(addr);
+
+		//	drop jump address
+		stack_.pop();
 	}
 
 	void vm::jump_error(memory& mem)
@@ -347,7 +370,7 @@ namespace cyng
 		{
 			jump_a(mem);
 		}
-		else
+		else 
 		{
 			//	drop jump address
 			stack_.pop();
@@ -378,40 +401,23 @@ namespace cyng
 	void vm::invoke(memory& mem)
 	{
 		BOOST_ASSERT_MSG(stack_.size() > 0, "missing parameter - invoke()");
-		auto const obj = stack_.top();
-		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_STRING, "invoke() requires a string with an function name");
+		auto const& obj = stack_.top();
+		
+		BOOST_ASSERT_MSG(is_of_type<TC_STRING>(obj), "invoke() requires a string with an function name");
+
 		auto const fname = value_cast< std::string >(obj, "---no function name---");
 		stack_.pop();
 	
 		//
 		//	call procedure
 		//
-		context ctx(*this, mem, fname);
-		if (!lib_.invoke(fname, ctx))
+		if (!lib_.invoke(fname, *this, mem))
 		{
-			auto const frame = ctx.get_frame();
-			std::stringstream ss;
-			ss
-				<< "***Warning: function ["
-				<< fname
-				<< "] is not registered in VM "
-				<< tag_
-				<< " - "
-				<< cyng::io::to_type(frame)
-				;
-
-			const std::string msg = ss.str();
-			if (!lib_.try_error_log(ctx, msg))
-			{
-				std::cerr
-					<< "\n\n"
-					<< msg
-					<< "\n\n"
-					<< std::endl
-					;
-			}
-
-		}		
+			//
+			//	set error code
+			//
+			error_register_ = boost::system::errc::make_error_code(boost::system::errc::function_not_supported);
+ 		}		
 	}
 
 	void vm::forward(memory& mem)
@@ -420,10 +426,9 @@ namespace cyng
 
 		//
 		//	get tag of child VM
-		//
-		auto obj = stack_.top();
-		BOOST_ASSERT_MSG(obj.get_class().tag() == TC_UUID, "forward() requires an UUID as first parameter");
-		auto const tag = value_cast(obj, tag_);
+		//		
+		BOOST_ASSERT_MSG(is_of_type<TC_UUID>(stack_.top()), "forward() requires an UUID as first parameter");
+		auto const tag = value_cast(stack_.top(), tag_);
 		stack_.pop();
 
 		//
@@ -436,10 +441,11 @@ namespace cyng
 			//	get instructions
 			//	and execute them
 			//
-			obj = stack_.top();
-			BOOST_ASSERT_MSG(obj.get_class().tag() == TC_VECTOR, "forward() requires an vector as second parameter");
-			memory child_mem(to_vector(obj));
-			pos->second.loop(child_mem);
+			auto const& obj = stack_.top();
+			
+			BOOST_ASSERT_MSG(is_of_type<TC_VECTOR>(obj), "forward() requires an vector as second parameter");
+			pos->second.async_run(to_vector(obj));
+			stack_.pop();	//	remove instruction vector
 
 		}
 		else {
@@ -458,15 +464,32 @@ namespace cyng
 
 	}
 
-	bool vm::remove(boost::uuids::uuid tag)
+	bool vm::remove(memory& mem)
 	{
-		return children_.erase(tag) != 0u;
-	}
+		BOOST_ASSERT_MSG(stack_.size() > 1, "missing parameter - forward()");
 
-	bool vm::emplace(boost::uuids::uuid tag, vm& child)
-	{
-		auto r = children_.emplace(tag, child);
-		return r.second;
+		//
+		//	get tag of child VM
+		//		
+		BOOST_ASSERT_MSG(is_of_type<TC_UUID>(stack_.top()), "forward() requires an UUID as first parameter");
+		auto const tag = value_cast(stack_.top(), tag_);
+		stack_.pop();
+
+		auto pos = children_.find(tag);
+		if (pos != children_.end()) {
+
+			//
+			//	VM should already be halted
+			//
+			BOOST_ASSERT(pos->second.is_halted());
+
+			//
+			//	remove from child map
+			//
+			children_.erase(pos);
+			return true;
+		}
+		return false;
 	}
 
 }

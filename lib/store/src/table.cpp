@@ -161,7 +161,9 @@ namespace cyng
 				//
 				auto r = find(key);
 				if (r.second) {
-					BOOST_ASSERT((*r.first).second.obj_.get_class().tag() == TC_VECTOR);
+					
+					BOOST_ASSERT(is_of_type<TC_VECTOR>((*r.first).second.obj_));
+
 					cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 					BOOST_ASSERT(ptr != nullptr);
 					if (ptr == nullptr)	return false;

@@ -115,7 +115,7 @@ namespace cyng
 					//
 					//	If the parent element was a also a container insert a NL.
 					//	
-					if (parent.get_class().tag() == cyng::TC_TUPLE || parent.get_class().tag() == cyng::TC_VECTOR) {
+					if (is_of_type<TC_TUPLE>(parent) || is_of_type<TC_VECTOR>(parent)) {
 						os_
 							<< std::endl
 							<< indentation(depth)

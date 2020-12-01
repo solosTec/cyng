@@ -273,7 +273,8 @@ namespace cyng
 			 * Works asynchronously.
 			 * Requirements: Task is already stopped.
 			 */
-			void remove(std::size_t);
+			//void remove(std::size_t);
+			void remove(shared_task);
 
 			/**
 			 * Set shutdown flag and stop all tasks.

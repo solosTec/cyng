@@ -36,7 +36,7 @@ namespace cyng
 	 * 	v.push_back(cyng::set_factory(8, "eight"));
 	 * 	
 	 * 	cyng::object obj = cyng::find(v, 42);
-	 *  BOOST_CHECK(cyng::primary_type_code_test<cyng::types::CYNG_STRING)>(obj));
+	 *  BOOST_CHECK(cyng::is_of_type<cyng::types::CYNG_STRING)>(obj));
 	 * 	auto ptr = cyng::object_cast<std::string>(obj);
 	 * 	BOOST_CHECK(ptr != nullptr);
 	 * 	BOOST_CHECK_EQUAL(*ptr, "forty-two");

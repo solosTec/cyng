@@ -181,8 +181,8 @@ namespace cyng
 
 					auto obj = stack_.top();
 					stack_.pop();
-
-					BOOST_ASSERT(stack_.top().get_class().tag() == TC_STRING);
+		
+					BOOST_ASSERT(is_of_type<TC_STRING>(stack_.top()));
 					
 					auto name = value_cast<std::string>(stack_.top(), "");
 					stack_.pop();
@@ -205,19 +205,19 @@ namespace cyng
 
 		void parser::swap(vector_t& vec)
 		{
-			BOOST_ASSERT(stack_.top().get_class().tag() == TC_EOD);
+			BOOST_ASSERT(is_of_type<TC_EOD>(stack_.top()));
+			
 			stack_.pop();
 			std::reverse(std::begin(vec), std::end(vec));
 			stack_.push(make_object(vec));
-			//std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 		}
 
 		void parser::swap(param_map_t& pm)
 		{
-			BOOST_ASSERT(stack_.top().get_class().tag() == TC_EOD);
+			BOOST_ASSERT(is_of_type<TC_EOD>(stack_.top()));
+
 			stack_.pop();
 			stack_.push(make_object(pm));
-			//std::cout << cyng::io::to_type(stack_.top()) << std::endl;
 		}
 
 		void parser::build_array()
@@ -226,8 +226,8 @@ namespace cyng
 
 			vector_t vec;
 			while (!stack_.empty()) {
-				auto const obj = stack_.top();
-				if (obj.get_class().tag() == TC_EOD) {
+				auto const obj = stack_.top();	
+				if (is_of_type<TC_EOD>(obj)) {
 					break;	//	array complete
 				}
 				vec.push_back(obj);
@@ -256,7 +256,7 @@ namespace cyng
 			param_map_t pm;
 			while (!stack_.empty()) {
 				auto const obj = stack_.top();
-				if (obj.get_class().tag() == TC_EOD) {
+				if (is_of_type<TC_EOD>(obj)) {
 					break;	//	array complete
 				}
 				

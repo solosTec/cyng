@@ -84,7 +84,10 @@ namespace cyng
 		/**
 		 * @return VM internal tag
 		 */
-		boost::uuids::uuid tag() const noexcept;
+		constexpr boost::uuids::uuid tag() const noexcept
+		{
+			return vm_.tag();
+		}
 
 		/**
 		 * @return true if the current thread is executing a handler that was submitted 
@@ -127,14 +130,26 @@ namespace cyng
 		}
 
 		/**
-		 * create and embed a VM (could throw)
+		 * Embed a child VM
 		 */
-		controller& emplace(boost::uuids::uuid, std::ostream & = std::cout, std::ostream & = std::cerr);
+		void embed(controller&) const;
 
 		/**
-		 * forward instructions to child VM
+		 * Remove a child VM by direct manipulation of the child VM list.
+		 * Consider the REMOVE op to remove the child VM.
+		 * 
 		 */
-		void forward(boost::uuids::uuid, vector_t const& prg);
+		void remove(boost::uuids::uuid) const;
+
+		/**
+		 * Forward instructions to child VM
+		 * Consider the FORWARD op to run the child VM.
+		 */
+		void forward(boost::uuids::uuid, vector_t&& prg);
+
+		io_service_t& get_io_service() {
+			return dispatcher_.context();
+		}
 
 	private:
 		/**
@@ -155,7 +170,7 @@ namespace cyng
 		/**
 		 * emmbedded VMs
 		 */
-		std::map<boost::uuids::uuid, controller> children_;
+		//std::map<boost::uuids::uuid, controller> children_;
 		
 	};
 }

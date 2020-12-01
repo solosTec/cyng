@@ -19,6 +19,7 @@
 #include <system_error>
 #include <boost/functional/hash.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 namespace cyng 
 {
@@ -30,7 +31,6 @@ namespace cyng
 	: dispatcher_(ios)
 		, vm_(tag, out, err)
 		, halt_(false)
-		, children_()
 	{
 		vm_.lib_.insert("vm.halt", 0, [&](context& ctx) {
 
@@ -42,26 +42,6 @@ namespace cyng
 				err << vm_.tag() << " already halted" << std::endl;
 			}
 		});
-
-		vm_.lib_.insert("vm.remove", 1, [&](context& ctx) {
-
-			//
-			//	remove specified VM from child list
-			//
-			vector_t frame = ctx.get_frame();
-			auto const tag = value_cast(frame.at(0), boost::uuids::nil_uuid());
-			auto const b = vm_.remove(tag);
-			auto pos = children_.find(tag);
-			if (pos != children_.end()) {
-
-				//
-				//	remove embedded VM
-				//
-				auto const r = children_.erase(pos);
-			}
-
-		});
-
 	}
 	
 	bool controller::is_halted() const
@@ -135,11 +115,6 @@ namespace cyng
 		return uuid_hasher(tag());
 	}
 
-	boost::uuids::uuid controller::tag() const noexcept
-	{
-		return vm_.tag();
-	}
-
 	bool controller::same_thread() const
 	{
 		return dispatcher_.running_in_this_thread();
@@ -164,49 +139,44 @@ namespace cyng
 		if (halt_)	return;
 
 		access([this](cyng::vm& vm) {
-			this->vm_.lib_.try_debug_log(vm_, "HALT");
+			this->vm_.lib_.try_debug_log(vm_, "---HALT---");
 			this->vm_.run(cyng::vector_t{ cyng::make_object(cyng::code::HALT) });
 		});
 		
 	}
 
-	controller& controller::emplace(boost::uuids::uuid tag, std::ostream& out, std::ostream& err)
+	void controller::embed(controller& ctrl) const
 	{
-		//auto* res = this;
-		
-		auto r = children_.emplace(std::piecewise_construct
-			, std::forward_as_tuple(tag)
-			, std::forward_as_tuple(dispatcher_.context(), tag, out, err));
-
-		if (r.second) {
-
-			//
-			//	thread safe update of VM internal child list
-			//
-			access([this, tag](vm& v) {
-
-				auto pos = children_.find(tag);
-				if (pos != children_.end()) {
-					v.emplace(tag, pos->second.vm_);
-				}
-			});
-			return r.first->second;
-		}
-		return *this;
+		//
+		//	thread safe update of VM internal child list
+		//
+		access([this, &ctrl](vm& v) {
+			v.children_.emplace(ctrl.tag(), ctrl);
+		});
 	}
 
-	void controller::forward(boost::uuids::uuid tag, vector_t const& vec)
+	void controller::remove(boost::uuids::uuid tag) const
 	{
-		vector_t prg;
+		//
+		//	thread safe update of VM internal child list
+		//
+		access([this, tag](vm& v) {
+			v.children_.erase(tag);
+		});
+	}
 
-		prg
-			<< vec	//	copy
-			<< tag
-			<< code::FORWARD
-			;
-
-
-		async_run(std::move(prg));
+	void controller::forward(boost::uuids::uuid tag, vector_t&& prg)
+	{
+		//
+		//	thread safe update of VM internal child list
+		//
+		parameter param(std::move(prg));
+		access([this, tag, param](vm& v) {
+			auto pos = v.children_.find(tag);
+			if (pos != v.children_.end()) {
+				pos->second.async_run(std::move(std::move(param.prg_)));
+			}
+		});
 	}
 
 	controller::parameter::parameter()

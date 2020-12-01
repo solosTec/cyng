@@ -31,7 +31,7 @@ namespace cyng
 		context() = delete;
 		context(context const&) = delete;
 		context(context&&) = delete;
-		context(vm&, memory&, std::string);
+		context(vm&, memory&, std::string name, std::size_t arity);
 		context(context&, memory&);
 
 		/**
@@ -86,12 +86,6 @@ namespace cyng
 		boost::uuids::uuid tag() const noexcept;
 		
 		/**
-		 * Execute instructions immediately on a new
-		 * frame on the stack.
-		 */
-		void run(vector_t&& prg);
-
-		/**
 		 * Append instructions to the running program
 		 * and executes it.
 		 */
@@ -106,11 +100,13 @@ namespace cyng
 		 * return function name
 		 */
 		std::string const& get_name() const;
+		std::size_t get_arity() const;
 
 	private:
 		vm& vm_;
 		memory& mem_;
-		const std::string name_;
+		std::string const name_;
+		std::size_t const arity_;
 	};
 
 	/**

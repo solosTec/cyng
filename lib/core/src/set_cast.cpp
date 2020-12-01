@@ -19,7 +19,7 @@ namespace cyng
 	{
 		param_map_t pmap;
 		std::for_each(tpl.begin(), tpl.end(), [&pmap](tuple_t::value_type const& obj) {
-			if (obj.get_class().tag() == TC_PARAM) { 
+			if (is_of_type<TC_PARAM>(obj)) {
 				pmap.insert(to_param(obj));
 			}
 		});
@@ -42,7 +42,7 @@ namespace cyng
 	{
 		attr_map_t amap;
 		std::for_each(tpl.begin(), tpl.end(), [&amap](tuple_t::value_type const& obj) {
-			if (obj.get_class().tag() == TC_ATTR) amap.insert(to_attr(obj));
+			if (is_of_type<TC_ATTR>(obj)) amap.insert(to_attr(obj));
 		});
 		return amap;
 	}

@@ -292,7 +292,7 @@ namespace cyng
 			}
 
 			auto obj = find(pm, *cp);
-			if (obj.get_class().tag() == TC_PARAM_MAP) {
+			if (is_of_type<TC_PARAM_MAP>(obj)) {
 				ptr = const_cast<param_map_t*>(object_cast<param_map_t>(obj));
 				BOOST_ASSERT(ptr != nullptr);
 			}

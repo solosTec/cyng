@@ -11,12 +11,15 @@
 #include <cyng/vm/memory.h>
 #include <cyng/vm/manip.h>
 #include <cyng/vm/vm.h>
+#include <cyng/vm/generator.h>
+#include <cyng/factory.h>
 
 #ifdef _DEBUG
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #endif
-#include <cyng/factory.h>
+#include <boost/uuid/uuid_io.hpp>
+
 
 namespace cyng 
 {
@@ -41,13 +44,14 @@ namespace cyng
 		return db_.size();
 	}
 
-	bool librarian::invoke(std::string const& name, context& ctx) const
+	bool librarian::invoke(std::string const& name, vm& v, memory& mem) const
 	{
 		auto pos = db_.find(name);
 		if (pos != db_.end())
 		{
 			//	test stack size 
-			const std::size_t arity = (*pos).second.arity();
+			auto const arity = (*pos).second.arity();
+			context ctx(v, mem, name, arity);
 			if (ctx.frame_size() >= arity)
 			{
 				try
@@ -112,7 +116,7 @@ namespace cyng
 					<< " ["
 					<< name
 					<< "] "
-					<< cyng::io::to_str(ctx.get_frame())
+					<< io::to_type(ctx.get_frame())
 					;
 				const std::string msg = ss.str();
 				if (!try_error_log(ctx, msg))
@@ -133,8 +137,32 @@ namespace cyng
 		}
 
 		//
-		//	function not registered
+		//	error: function not registered
 		//
+		context ctx(v, mem, name, 0);
+
+		auto const frame = ctx.get_frame();
+		std::stringstream ss;
+		ss
+			<< "***Warning: function ["
+			<< name
+			<< "] is not registered in VM "
+			<< v.tag()
+			<< " - "
+			<< cyng::io::to_type(frame)
+			;
+
+		const std::string msg = ss.str();
+		if (!try_error_log(ctx, msg))
+		{
+			std::cerr
+				<< "\n\n"
+				<< msg
+				<< "\n\n"
+				<< std::endl
+				;
+		}
+
 		return false;
 	}
 	
@@ -145,8 +173,8 @@ namespace cyng
 		//
         insert("lib.insert", 3, [this](context& ctx){
 			
-            const vector_t frame = ctx.get_frame();
-			
+			auto const frame = ctx.get_frame();
+
             const vm_call fun = value_cast(frame[0], vm_call());
             const std::size_t arity = value_cast<std::size_t>(frame[1], 0u);
             const std::string name = value_cast<std::string>(frame[2], "");
@@ -163,7 +191,7 @@ namespace cyng
 		//
 		insert("lib.erase", 1, [this](context& ctx){
 			
-			const vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 			const std::string name = value_cast<std::string>(frame[0], "");
 			this->erase(name);
 
@@ -175,12 +203,13 @@ namespace cyng
 		//
 		insert("lib.invoke", 1, [this](context& ctx){
 			
-			const vector_t frame = ctx.get_frame();
-			const std::string name = value_cast<std::string>(frame[0], "");
+			auto const frame = ctx.get_frame();
+			auto const name = value_cast(frame[0], "");
  
 			//	standard function call (no out of band)
-			this->invoke(name, ctx);
-			
+			memory mem(vector_t{});
+			this->invoke(name, ctx.vm_, mem);
+
 		});
 		
 		//
@@ -188,7 +217,7 @@ namespace cyng
 		//
 		insert("lib.test", 1, [this](context& ctx){
 			
-			vector_t frame = ctx.get_frame();
+			auto const frame = ctx.get_frame();
 			std::cerr 
 			<< "lib.test("
 			<< frame.size()
@@ -206,6 +235,50 @@ namespace cyng
 		insert("lib.size", 0, [this](context& ctx) {
 
 			ctx.push(make_object(db_.size()));
+
+		});
+
+		//
+		//	Take all parameters from stack and build a vector.
+		//	Also empty vectors allowed.
+		//	Memory has to be reserved (ASP) on the stack 
+		//	to hold the return value.
+		//
+		insert("lib.make.vec", 0, [this](context& ctx) {
+
+			ctx.push(make_object(ctx.get_frame()));
+			ctx.set_return_value();
+
+		});
+
+		//
+		//	Take all parameters from stack and build a vector.
+		//	Also empty vectors allowed.
+		//
+		insert("lib.forward", 2, [this](context& ctx) {
+
+			auto frame = ctx.get_frame();
+
+			auto pos = frame.begin();
+			BOOST_ASSERT(is_of_type<TC_UUID>(*pos));
+			auto const tag = value_cast(*pos, boost::uuids::uuid());
+			frame.erase(pos);
+
+			pos = frame.begin();
+			BOOST_ASSERT(is_of_type<TC_STRING>(*pos));
+			auto const fn = value_cast(*pos, "");
+			frame.erase(pos);
+
+			vector_t vec;
+			vec 
+				<< code::ESBA
+				<< unwind<vector_t>(frame)	//	non-recursive
+				<< cyng::invoke(fn)	//	constructor
+				<< code::REBA
+				;
+
+			ctx.forward(tag, vec);
+			//ctx.forward(tag, generate_invoke(fn, unwind<vector_t>(frame)));
 
 		});
 
@@ -239,8 +312,7 @@ namespace cyng
 			//
 			//	fake memory
 			//
-			vector_t prg;
-			memory mem(std::move(prg));
+			memory mem(vector_t{});
 
 			//
 			//	save and restore call stack 
@@ -264,43 +336,19 @@ namespace cyng
 			//
 			//	fake memory
 			//
-			vector_t prg;
-			memory mem(std::move(prg));
+			memory mem(vector_t{});
 
 			//
 			//	save and restore call stack 
 			//
 			activation a(v.stack_);
 			v.stack_.push(make_object(msg));
-			context ctx_log(v, mem, "log.msg.debug");
+			context ctx_log(v, mem, "log.msg.debug", 1);
 			(*pos).second(ctx_log);
 			return true;
 		}
 		return false;
 	}
-
-	bool librarian::try_halt(vm& v) const
-	{
-		auto pos = db_.find("vm.halt");
-		if (pos != db_.end())
-		{
-			//
-			//	fake memory
-			//
-			vector_t prg;
-			memory mem(std::move(prg));
-
-			//
-			//	save and restore call stack 
-			//
-			activation a(v.stack_);
-			context ctx_halt(v, mem, "vm.halt");
-			(*pos).second(ctx_halt);
-			return true;
-		}
-		return false;
-	}
-
 }
 
 

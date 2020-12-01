@@ -14,7 +14,6 @@
 #include <cyng/intrinsics/op.h>
 #include <cyng/vm/stack.h>
 #include <cyng/vm/librarian.h>
-//#include <boost/uuid/uuid.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/system/error_code.hpp>
 
@@ -46,19 +45,16 @@ namespace cyng
 		/**
 		 * @return VM tag
 		 */
-		boost::uuids::uuid tag() const noexcept;
-		
+		constexpr boost::uuids::uuid tag() const noexcept
+		{
+			return tag_;
+		}
+
 		/**
 		 * Execute instructions stored in the
 		 * memory 
 		 */
 		void run(vector_t&&);
-
-		/**
-		 * create and embed a VM 
-		 * could throw
-		 */
-		vm& emplace(boost::uuids::uuid, std::ostream & = std::cout, std::ostream & = std::cerr);
 		
 	private:
 
@@ -124,12 +120,7 @@ namespace cyng
 		/**
 		 * remove an embedded VM
 		 */
-		bool remove(boost::uuids::uuid);
-
-		/**
-		 * emplace new VM
-		 */
-		bool emplace(boost::uuids::uuid, vm&);
+		bool remove(memory& mem);
 
 	private:
 		boost::uuids::uuid	const tag_;
@@ -139,7 +130,11 @@ namespace cyng
 		librarian lib_;
 		boost::system::error_code	error_register_;
 		bool cmp_register_;
-		std::map<boost::uuids::uuid, vm&> children_;
+
+		/**
+		 * This map of child VMs is managed by the controller
+		 */
+		std::map<boost::uuids::uuid, controller&> children_;
 	};
 }
 

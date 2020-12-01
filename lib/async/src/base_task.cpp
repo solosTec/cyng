@@ -33,7 +33,8 @@ namespace cyng
 
 		void base_task::remove_this()
 		{
-			mux_.remove(id_);
+			auto ptr = get_shared();
+			mux_.remove(ptr);
 		}
 
 		void base_task::suspend_until(std::chrono::system_clock::time_point tp)

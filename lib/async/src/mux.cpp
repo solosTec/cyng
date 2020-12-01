@@ -319,8 +319,14 @@ namespace cyng
 			//
 			//	thread safe access to task list
 			//
-			dispatcher_.dispatch([this, stp]()->void {
-				auto const r = tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
+			dispatcher_.post([this, stp]()->void {
+				bool r = false;
+				BOOST_ASSERT(stp);
+				BOOST_ASSERT(stp->get_id() != 0);
+				BOOST_ASSERT_MSG(tasks_.find(stp->get_id()) == tasks_.end(), "task already inserted");
+				r = tasks_.emplace(stp->get_id(), stp).second;
+				//auto const r = tasks_.emplace_hint(tasks_.end(), stp->get_id(), stp) != tasks_.end();
+				BOOST_ASSERT_MSG(r, "insert task failed");
 				boost::ignore_unused(r);
 			});
 			return true;
@@ -410,16 +416,21 @@ namespace cyng
 			});
 		}
 
-		void mux::remove(std::size_t id)
+		void mux::remove(shared_task sp)
 		{
 			if (!shutdown_)
 			{
 				BOOST_ASSERT_MSG(scheduler_.is_running(), "scheduler not running");
-				dispatcher_.dispatch([this, id]() {
-					tasks_.erase(id);
+				dispatcher_.post([this, sp]() {
+					if (!shutdown_) {
+						auto const id = sp->get_id();
+						BOOST_ASSERT_MSG(tasks_.find(id) != tasks_.end(), "task not found");
+						tasks_.erase(id);
+					}
 				});
 			}
 		}
+
 
 		mux::parameter::parameter(tuple_t&& msg)
 			: msg_(std::move(msg))

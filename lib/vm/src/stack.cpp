@@ -38,7 +38,7 @@ namespace cyng
 	void stack::rbp()
 	{
 		//	save base pointer
-		const std::size_t bp = bp_;
+		auto const bp = bp_;
 
 		BOOST_ASSERT_MSG(!vt::stack_t::empty(), "stack is empty" );
 		BOOST_ASSERT_MSG(bp != 0, "invalid bp (rbp)");
@@ -65,7 +65,7 @@ namespace cyng
 	
 	vector_t stack::get_frame() const
 	{
-		const std::size_t fsize = frame_size();
+		auto const fsize = frame_size();
 		BOOST_ASSERT_MSG(fsize <= vt::stack_t::size(), "frame size to big");
 		return vector_t(c.end() - fsize, c.end());
 	}
@@ -81,6 +81,7 @@ namespace cyng
 	
 	void stack::dump(std::ostream& os) const
 	{
+		os << std::endl;
 		for (std::size_t idx = c.size(); idx != 0; idx--)
 		{
 			if ((idx - 1) == bp_)
@@ -108,8 +109,9 @@ namespace cyng
 	bool stack::is_bp(std::size_t pos) const
 	{
 		if (!empty() && bp_ < size())
-// 		if (!empty() && bp_ < size() && type_code_test<types::CYNG_INDEX>(c[bp_]))
 		{
+			if (0 == bp_)	return false;
+
 			//	start with last saved base pointer
 			std::size_t bp = stack::saved_bp();
 			for (;;)
@@ -118,7 +120,7 @@ namespace cyng
 				if (bp == 0)	break;
 
 				BOOST_ASSERT_MSG(bp < size(), "invalid base pointer");
-// 				BOOST_ASSERT_MSG(type_code_test< types::CYNG_INDEX >(c[bp]), "not a base pointer (data type index expected)");
+// 				BOOST_ASSERT_MSG(is_of_type< types::CYNG_INDEX >(c[bp]), "not a base pointer (data type index expected)");
 
 				//
 				//	get next bp
@@ -131,9 +133,9 @@ namespace cyng
 	
 	void stack::setr(object const& obj, std::size_t idx)
 	{
-		BOOST_ASSERT_MSG(bp_ > 0, "bp out of range (setr)");
+		BOOST_ASSERT_MSG(bp_ > 1, "bp out of range (setr)");
 		BOOST_ASSERT_MSG(idx < bp_, "idx out of range (setr)");
-		c[bp_ - (1 + idx)] = obj;
+		c[bp_ - (2 + idx)] = obj;
 	}
 	
 	void stack::setr()
@@ -157,7 +159,7 @@ namespace cyng
 	void stack::assemble_param()
 	{
 		BOOST_ASSERT_MSG(c.size() > 1, "not enough parameters (param)");
-		BOOST_ASSERT_MSG(top().get_class().tag() == TC_STRING, "string expected (param)");
+		BOOST_ASSERT_MSG(is_of_type<TC_STRING>(top()), "string expected (param)");
 		const std::string key = value_cast<std::string>(top(), "");
 #ifdef _DEBUG
 		if (key.empty()) {
@@ -229,7 +231,8 @@ namespace cyng
 					<< std::endl
 					;
 			}
-			BOOST_ASSERT_MSG(top().get_class().tag() == TC_PARAM, "param expected (param_map)");
+			
+			BOOST_ASSERT_MSG(is_of_type<TC_PARAM>(top()), "param expected (param_map)");
 #endif
 			auto pp = object_cast< param_t >(top());
 			BOOST_ASSERT_MSG(pp != nullptr, "wrong data type (param_map)");
@@ -281,6 +284,7 @@ namespace cyng
 		}
 
 		vector_t vec;
+		vec.reserve(size);
 		while (size != 0)
 		{
 			vec.push_back(top());

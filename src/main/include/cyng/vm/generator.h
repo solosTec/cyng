@@ -260,6 +260,51 @@ namespace cyng
 		return unwind<vector_t>(vector_generator(ini));
 	}
 
+	/**
+	 * generate a forwarded program sequence on the remote side
+	 */
+	//template < typename ...Args >
+	//vector_t generate_forward_remote(boost::uuids::uuid tag, std::string const& name, Args&&... args)
+	//{
+	//	vector_t vec;
+	//	vec
+	//		<< defer(code::ASP)	//	return value of "lib.make.vec"
+	//		<< defer(code::ESBA)
+	//		<< reflect(code::ESBA)
+	//		;
+
+	//	workbench::code_builder(vec, std::forward<Args>(args)...);
+
+	//	vec
+	//		<< invoke_reflect(name)
+	//		<< reflect(code::REBA)
+	//		<< invoke_remote("lib.make.vec")
+	//		<< defer(code::REBA)
+	//		<< tag
+	//		<< defer(code::FORWARD)	//	FORWARD expects an UUID and a program vector
+	//		;
+	//	return vec;
+
+	//}
+
+	template < typename ...Args >
+	vector_t generate_forward_remote(boost::uuids::uuid tag, std::string const& name, Args&&... args)
+	{
+		vector_t vec;
+		vec
+			<< defer(code::ESBA)
+			<< tag
+			<< name
+			;
+
+		workbench::code_builder(vec, std::forward<Args>(args)...);
+
+		vec
+			<< invoke_remote("lib.forward")
+			<< defer(code::REBA)
+			;
+		return vec;
+	}
 }
 
 #endif	//	CYNG_VM_CONTCYNG_VM_GENERATOR_HEXT_H

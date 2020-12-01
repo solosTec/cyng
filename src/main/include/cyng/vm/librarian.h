@@ -13,6 +13,7 @@
 namespace cyng 
 {
 	class controller;
+	class vm;
 	class librarian
 	{
  		friend class controller;
@@ -31,8 +32,8 @@ namespace cyng
 		 * @param ctx execution context
 		 * @return true if function was found and arity check was passed
 		 */
-		bool invoke(std::string const& name, context& ctx) const;
-		
+		bool invoke(std::string const& name, vm&, memory& mem) const;
+
 		/**
 		 * Remove all stored procedures
 		 */
@@ -50,7 +51,6 @@ namespace cyng
 		 */
 		bool try_error_log(context& ctx, std::string) const;
 		bool try_debug_log(vm& v, std::string) const;
-		bool try_halt(vm& v) const;
 
 		/**
 		 * @return number of registered functions.

@@ -12,16 +12,18 @@
 
 namespace cyng 
 {
-	context::context(vm& v, memory& mem, std::string name)
+	context::context(vm& v, memory& mem, std::string name, std::size_t arity)
 	: vm_(v)
 		, mem_(mem)
 		, name_(name)
+		, arity_(arity)
 	{}
 	
 	context::context(context& ctx, memory& mem)
 	: vm_(ctx.vm_)
 		, mem_(mem)
 		, name_(ctx.name_)
+		, arity_(ctx.arity_)
 	{}
 
 	vector_t context::get_frame() const
@@ -90,11 +92,6 @@ namespace cyng
 		set_register(boost::system::error_code());
 	}
 	
-	void context::run(vector_t&& prg)
-	{
-		vm_.sync_run(std::move(prg));
-	}
-
 	context& context::queue(vector_t&& prg)
 	{
 		mem_ += std::move(prg);
@@ -119,6 +116,12 @@ namespace cyng
 	{
 		return name_;
 	}
+
+	std::size_t context::get_arity() const
+	{
+		return arity_;
+	}
+
 
 	namespace traits
 	{

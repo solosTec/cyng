@@ -19,7 +19,7 @@ namespace cyng
 	public:
 		memory();
 		memory(vector_t&&);
-		memory(memory&&);
+		memory(memory&&) noexcept;
 		
 		/**
 		 * Function call operator return current value.
@@ -75,6 +75,10 @@ namespace cyng
 		 */
 		friend std::ostream& operator<< (std::ostream& os, const memory& mem);
 
+		/**
+		 * remove processed instructions, by removing all elements until pc_;
+		 */
+		void tidy();
 		
 	private:
 		vector_t	mem_;	//!< program
