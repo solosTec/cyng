@@ -9,6 +9,7 @@
 #include <cyng/intrinsics/op.h>
 #include <cyng/factory.h>
 #include <cyng/io/serializer.h>
+#include <cyng/value_cast.hpp>
 
 namespace cyng 
 {
