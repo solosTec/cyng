@@ -10,6 +10,7 @@
 #include <vector>
 #include <array>
 #include <cstdint>
+#include <string>
 
 namespace cyng 
 {
@@ -22,6 +23,11 @@ namespace cyng
 	 * helper function to build a buffer from hex values
 	 */
 	buffer_t make_buffer(std::initializer_list<std::uint8_t> ilist);
+
+	/**
+	 * helper function to build a buffer from string
+	 */
+	buffer_t make_buffer(std::string const&);
 
 	/**
 	 * helper function to build a buffer from an array

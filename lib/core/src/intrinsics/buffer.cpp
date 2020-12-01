@@ -20,6 +20,12 @@ namespace cyng
 		return tmp;
 	}
 
+	buffer_t make_buffer(std::string const& s)
+	{
+		return buffer_t(s.begin(), s.end());
+	}
+
+
 	bool is_ascii(buffer_t const& v)
 	{
 		return std::all_of(v.cbegin(), v.cend(), [](char c) { 
