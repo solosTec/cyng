@@ -7,6 +7,7 @@
 
 #include <cyng/store/table.h>
 #include <cyng/store/transform.hpp>
+
 #include <iostream>
 
 namespace cyng 
@@ -18,26 +19,27 @@ namespace cyng
 			, meta_(other.meta_)
 			, data_()
 			, index_()
+			, pass_through_(other.pass_through_)
 		{}
 
-		table::table(cyng::table::meta_table_ptr mtp)
+		table::table(cyng::table::meta_table_ptr mtp, bool pass_through)
 		: publisher()
 			, meta_(mtp)
  			, data_()
 			, index_()
+			, pass_through_(pass_through)
 		{}
 		
-		table::table(table&& tbl)
+		table::table(table&& tbl) noexcept
 		: publisher(std::move(tbl))
 			, meta_(std::move(tbl.meta_))
  			, data_(std::move(tbl.data_))
 			, index_(std::move(tbl.index_))
+			, pass_through_(tbl.pass_through_)
 		{}
 		
 		table::~table()
-		{
- 			//disconnect();
-		}
+		{}
 		
 		std::size_t table::size() const
 		{
@@ -48,7 +50,6 @@ namespace cyng
 		{
 			data_.reserve(count);
 		}
-
 		
 		cyng::table::meta_table_interface const& table::meta() const
 		{
@@ -73,19 +74,12 @@ namespace cyng
 			, std::uint64_t generation
 			, boost::uuids::uuid source)
 		{
-			//	prevent structural integrity
+			//	the table layout should not be changed
 			if (meta_->check_record(key, data))
 			{
-				//	second is true if the pair was actually inserted.
- 				if (data_.emplace(std::piecewise_construct
- 				, std::forward_as_tuple(key)
- 				, std::forward_as_tuple(make_object(data), generation)).second)	
+				//	Insert new data and update the index if defined.
+ 				if (emplace(key, data, generation).second)	
 				{
-					auto const idx = meta_->get_index();
-					if (idx.second) {
-						index_.emplace(data.at(idx.first), key);
-					}
-
 					this->publisher::insert_signal_(this, key, data, generation, source);
 					return true;
 				}
@@ -93,6 +87,32 @@ namespace cyng
 			return false;
 		}
 		
+		std::pair<table::table_type::iterator, bool> table::emplace(cyng::table::key_type const& key
+			, cyng::table::data_type const& data
+			, std::uint64_t generation)
+		{
+			if (pass_through_) {
+
+				//
+				//	In pass through mode, no data is stored but forwarded.
+				//
+				return { data_.end(), true };
+			}
+
+			auto const r = data_.emplace(std::piecewise_construct
+				, std::forward_as_tuple(key)
+				, std::forward_as_tuple(make_object(data), generation));
+
+			if (r.second) 
+			{
+				auto const idx = meta_->get_index();
+				if (idx.second) {
+					index_.emplace(data.at(idx.first), key);
+				}
+			}
+			return r;
+		}
+
 		bool table::merge(cyng::table::key_type const& key
 			, cyng::table::data_type&& data
 			, std::uint64_t generation
@@ -102,9 +122,7 @@ namespace cyng
 			if (meta_->check_record(key, data))
 			{
 				//	second is true if the pair was actually inserted.
-				auto r = data_.emplace(std::piecewise_construct
-					, std::forward_as_tuple(key)
-					, std::forward_as_tuple(make_object(data), generation));
+				auto const r = emplace(key, data, generation);
 
 				if (!r.second) {
 
@@ -114,11 +132,6 @@ namespace cyng
 					update(r.first, key, std::move(data), source);
 				}
 				else {
-
-					auto const idx = meta_->get_index();
-					if (idx.second) {
-						index_.emplace(data.at(idx.first), key);
-					}
 
 					//
 					//	new key inserted
@@ -138,7 +151,7 @@ namespace cyng
 				//
 				//	search for key
 				//
-				auto r = find(key);
+				auto const r = find(key);
 				if (r.second) {
 
 					//
@@ -159,7 +172,7 @@ namespace cyng
 				//
 				//	update index
 				//
-				auto r = find(key);
+				auto const r = find(key);
 				if (r.second) {
 					
 					BOOST_ASSERT(is_of_type<TC_VECTOR>((*r.first).second.obj_));
@@ -167,7 +180,6 @@ namespace cyng
 					cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 					BOOST_ASSERT(ptr != nullptr);
 					if (ptr == nullptr)	return false;
-					//auto pos = index_.find(ptr->at(idx.first));
 
 					//
 					//	remove from index (no check)
@@ -282,8 +294,8 @@ namespace cyng
 
 		object table::lookup(cyng::table::key_type const& key, std::size_t idx) const
 		{
-			std::pair<table::table_type::const_iterator, bool> r = find(key);
-			if (r.second)
+			auto const r = find(key);
+			if (r.second && (idx < meta_->size()))
 			{
 				cyng::table::data_type const* ptr = object_cast<cyng::table::data_type>((*r.first).second.obj_);
 				if (idx < ptr->size())	return ptr->at(idx);
@@ -304,7 +316,7 @@ namespace cyng
 		
 		bool table::modify(cyng::table::key_type const& key, attr_t&& attr, boost::uuids::uuid source)
 		{
-			std::pair<table::table_type::const_iterator, bool> r = find(key);
+			auto const r = find(key);
 			if (r.second)
 			{
 				BOOST_ASSERT((*r.first).second.obj_.get_class().tag() == TC_VECTOR);
@@ -351,7 +363,7 @@ namespace cyng
 		
 		bool table::modify(cyng::table::key_type const& key, param_t const& param, boost::uuids::uuid source)
 		{
-			const std::pair<std::size_t, bool> r = meta_->get_body_index(param.first);
+			auto const r = meta_->get_body_index(param.first);
 			return (r.second)
 			? modify(key, attr_t(r.first, param.second), source)
 			: false

@@ -55,7 +55,7 @@ namespace cyng
 			 * create and insert a new table
 			 * @return true if table was actually inserted.
 			 */
-			bool create_table(cyng::table::meta_table_ptr);
+			bool create_table(cyng::table::meta_table_ptr, bool pass_through);
 			
 			/**
 			 * @return number of tables

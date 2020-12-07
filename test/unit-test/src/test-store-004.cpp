@@ -28,7 +28,7 @@ namespace cyng
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 1>("msg",
 			{ "pk", "evt" },
 			{ cyng::TC_INT32, cyng::TC_STRING },
-			{ 0, 128})));
+			{ 0, 128}), false));
 		
 		for (std::uint32_t idx = 0u; idx < 100; ++idx)
 		{

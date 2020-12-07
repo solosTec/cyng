@@ -138,7 +138,7 @@ namespace cyng
 		}
 #endif
 
-		BOOST_ASSERT(stack_.empty());
+		//BOOST_ASSERT(stack_.empty());
 	}
 
 	void vm::loop(memory& mem)

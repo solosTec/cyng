@@ -66,18 +66,18 @@ namespace cyng
 		//	test concurrent table access
 		//
 		auto dbmtp = table::make_meta_table<1, 2>("db", {"name", "table", "created"});
-		store::table db_tbl(dbmtp);
+		store::table db_tbl(dbmtp, false);
 		
 		auto mtp = table::make_meta_table<2, 5>("table-2", {"key-0", "key-1", "body-0", "body-1", "body-2", "body-3", "body-4"});
-		auto tbl_obj = make_object<store::table>(mtp);
+		auto tbl_obj = make_object<store::table>(mtp, false);
 		
 // 		key_type const& key, data_type const& data
 		const bool b = db_tbl.insert(table::key_generator("name"), table::data_generator(tbl_obj, std::chrono::system_clock::now()), 0, boost::uuids::nil_uuid());
 		BOOST_CHECK(b);
 		
 		store::db db_1;
-		db_1.create_table(table::make_meta_table<2, 5>("table-1", {"key-0", "key-1", "body-0", "body-1", "body-2", "body-3", "body-4"}));
-		db_1.create_table(table::make_meta_table<2, 5>("table-2", {"key-0", "key-1", "body-0", "body-1", "body-2", "body-3", "body-4"}));
+		db_1.create_table(table::make_meta_table<2, 5>("table-1", {"key-0", "key-1", "body-0", "body-1", "body-2", "body-3", "body-4"}), false);
+		db_1.create_table(table::make_meta_table<2, 5>("table-2", {"key-0", "key-1", "body-0", "body-1", "body-2", "body-3", "body-4"}), false);
 		
 		db_1.access([](store::table const* t1, store::table* t2)->void{
 			

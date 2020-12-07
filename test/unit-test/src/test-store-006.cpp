@@ -29,7 +29,7 @@ namespace cyng
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 2>("tbl.06",
 			{ "id", "name", "ts" },
 			{ TC_UINT32, TC_STRING, TC_TIME_POINT },
-			{ 0, 128, 0 })));
+			{ 0, 128, 0 }), false));
 
 		//
 		//	random sources

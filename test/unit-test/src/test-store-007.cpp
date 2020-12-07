@@ -43,7 +43,7 @@ namespace cyng
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 3, 1>("tbl.07",
 			{ "tag", "id", "name", "ts" },
 			{ TC_UUID, TC_UINT32, TC_STRING, TC_TIME_POINT },
-			{ 36, 0, 128, 0 })));
+			{ 36, 0, 128, 0 }), false));
 
 		//
 		//	insert [0..20] records

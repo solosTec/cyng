@@ -31,7 +31,7 @@ namespace cyng
 // 		std::cout << mtp->get_body_index("body-4").first << std::endl;
 		BOOST_CHECK_EQUAL(mt2.get_body_index("body-4").first, 4);
 		
-		store::table tbl_1(mtp);
+		store::table tbl_1(mtp, false);
 		tbl_1.insert(table::key_generator(1, 2), table::data_generator(1, 2, 3, 4, 5), 0, boost::uuids::nil_uuid());
 		//tbl_1.insert(store::key_generator(1, 2), store::data_generator(1, 2, 3, 4, 5));
 

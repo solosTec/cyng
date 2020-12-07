@@ -30,7 +30,7 @@ namespace cyng
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 2>("tbl.05",
 			{ "pk", "device", "key" },
 			{ TC_UINT32, TC_STRING, TC_AES128 },
-			{ 0, 128, 0 })));
+			{ 0, 128, 0 }), false));
 
 		crypto::aes_128_key key;
 		for (std::uint32_t idx = 0u; idx < 100u; ++idx)

@@ -12,6 +12,7 @@
 #include <cyng/table/record.h>
 #include <cyng/intrinsics/traits.hpp>
 #include <cyng/compatibility/async.h>
+
 #include <functional>
 #include <unordered_map>
 #include <map>
@@ -55,12 +56,12 @@ namespace cyng
 			/**
 			 * establish a table from meta data 
 			 */
-			table(cyng::table::meta_table_ptr);
+			table(cyng::table::meta_table_ptr, bool);
 			
 			/**
 			 * Tables are movable
 			 */
-			table(table&&);
+			table(table&&) noexcept;
 
 			/**
 			 * Desctructor disconnects all listeners
@@ -278,10 +279,25 @@ namespace cyng
 				, cyng::table::data_type&& data
 				, boost::uuids::uuid source);
 
+			/**
+			 * Insert new data and update the index if defined.
+			 * If the table key is already in use, no new data is inserted.
+			 * 
+			 * @return true if operation was successful.
+			 */
+			std::pair<table_type::iterator, bool> emplace(cyng::table::key_type const& key
+				, cyng::table::data_type const& data
+				, std::uint64_t generation);
+
 		private:
 			cyng::table::meta_table_ptr meta_;
  			table_type data_;
 			index_type index_;
+
+			/**
+			 * In pass through mode, no data is stored but forwarded.
+			 */
+			bool const pass_through_;
 		};
 		
 	}	//	store	

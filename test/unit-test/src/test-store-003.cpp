@@ -30,12 +30,12 @@ namespace cyng
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 3>("table-1",
 			{ "pk", "field-1", "field-2", "field-2" },
 			{ cyng::TC_INT32, cyng::TC_STRING, cyng::TC_STRING, cyng::TC_STRING },
-			{ 0, 128, 128, 128 })));
+			{ 0, 128, 128, 128 }), false));
 		
 		BOOST_CHECK(database.create_table(cyng::table::make_meta_table<1, 3>("table-2",
 			{ "pk", "field-1", "field-2", "field-2" },
 			{ cyng::TC_INT32, cyng::TC_STRING, cyng::TC_STRING, cyng::TC_STRING },
-			{ 0, 128, 128, 128 })));
+			{ 0, 128, 128, 128 }), false));
 
 		BOOST_CHECK(database.insert("table-1"
 			, table::key_generator(1)
