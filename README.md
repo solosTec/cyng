@@ -107,12 +107,12 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.bz2)
+(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.bz2
-tar xjvf boost_1_74_0.tar.bz2
-cd boost_1_74_0
+wget https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_75_0.tar.bz2
+tar xjvf boost_1_75_0.tar.bz2
+cd boost_1_75_0
 ```
 
 (2) bootstrap
@@ -178,9 +178,9 @@ In Boost library 1.73.0 is a bug when compiling Boost.Beast with C++20 compiler 
 (1) download and extract latest [OpenSSL library](http://www.openssl.org/source/openssl-1.1.1.tar.gz)
 
 ```
-wget http://www.openssl.org/source/openssl-1.1.1g.tar.gz
-tar -xvzf openssl-1.1.1g.tar.gz
-cd openssl-1.1.1d
+wget http://www.openssl.org/source/openssl-1.1.1h.tar.gz
+tar -xvzf openssl-1.1.1h.tar.gz
+cd openssl-1.1.1h
 ```
 
 
@@ -231,7 +231,7 @@ set(CMAKE_FIND_ROOT_PATH ${CROSS_ROOT})
 # cross compiler location
 # Example for OSELAS toolchain
 #
-set(CROSS_TOOLS /opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized)
+set(CROSS_TOOLS /opt/OSELAS.Toolchain-2018.12.0/arm-v5te-linux-gnueabi/gcc-8.2.1-glibc-2.28-binutils-2.31.1-kernel-3.16.80-sanitized)
 set(CMAKE_C_COMPILER ${CROSS_TOOLS}/bin/arm-v5te-linux-gnueabi-gcc)
 set(CMAKE_CXX_COMPILER ${CROSS_TOOLS}/bin/arm-v5te-linux-gnueabi-c++)
 
@@ -240,7 +240,7 @@ set(CMAKE_CXX_COMPILER ${CROSS_TOOLS}/bin/arm-v5te-linux-gnueabi-c++)
 #
 include_directories(SYSTEM
 	${CROSS_ROOT}/usr/include
-	${CROSS_TOOLS}/arm-v5te-linux-gnueabi/include/c++/5.4.0
+	${CROSS_TOOLS}/arm-v5te-linux-gnueabi/include/c++/8.2.1
 )
 
 #
