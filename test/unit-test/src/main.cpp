@@ -16,6 +16,7 @@
 #include "test-core-005.h"
 #include "test-core-006.h"
 #include "test-core-007.h"
+#include "test-core-008.h"
 
 //	Start with:
 //	./unit_test --report_level=detailed
@@ -56,6 +57,11 @@ BOOST_AUTO_TEST_CASE(core_007)
 {
 	using namespace cyng;
 	BOOST_CHECK(test_core_007());
+}
+BOOST_AUTO_TEST_CASE(core_008)
+{
+	using namespace cyng;
+	BOOST_CHECK(test_core_008());
 }
 BOOST_AUTO_TEST_SUITE_END()	//	CORE
 

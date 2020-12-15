@@ -35,6 +35,7 @@ set (unit_test_core
 	test/unit-test/src/test-core-005.cpp
 	test/unit-test/src/test-core-006.cpp
 	test/unit-test/src/test-core-007.cpp
+	test/unit-test/src/test-core-008.cpp
 	test/unit-test/src/test-core-001.h
 	test/unit-test/src/test-core-002.h
 	test/unit-test/src/test-core-003.h
@@ -42,6 +43,7 @@ set (unit_test_core
 	test/unit-test/src/test-core-005.h
 	test/unit-test/src/test-core-006.h
 	test/unit-test/src/test-core-007.h
+	test/unit-test/src/test-core-008.h
 )
 
 set (unit_test_async
