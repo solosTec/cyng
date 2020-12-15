@@ -11,6 +11,7 @@
 #include <cyng/object.h>
 
 #include <algorithm>
+#include <iterator>
 
 #include <boost/assert.hpp>
 
