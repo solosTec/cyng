@@ -1,5 +1,5 @@
 #
-# BOOST_VER is "1_67", "1_68", "1_69", "1_70", "1_71", "1_72" "1_73" or "1_74"
+# BOOST_VER is "1_67", "1_68", "1_69", "1_70", "1_71", "1_72" "1_73" "1_74" or "1_75"
 #
 function(windows_boost_fix BOOST_VER)
 #
@@ -50,7 +50,11 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
 		#
 		# search for installation in path ~/projects/boost_X_YY_Z/install
 		#
-        if(EXISTS "$ENV{HOME}/projects/boost_1_74_0/install")
+        if(EXISTS "$ENV{HOME}/projects/boost_1_75_0/install")
+            set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_75_0/install" CACHE PATH "BOOST_ROOT")
+            set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_75_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
+            message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
+        elseif(EXISTS "$ENV{HOME}/projects/boost_1_74_0/install")
             set(BOOST_ROOT "$ENV{HOME}/projects/boost_1_74_0/install" CACHE PATH "BOOST_ROOT")
             set(BOOST_LIBRARYDIR "$ENV{HOME}/projects/boost_1_74_0/install/lib" CACHE PATH "BOOST_LIBRARYDIR")
             message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
@@ -88,7 +92,9 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
             message(STATUS "** Search Boost    : overwrite BOOST_ROOT with ${BOOST_ROOT}")
         endif()
     elseif(WIN32)
-        if(EXISTS "C:/local/boost_1_74_0")
+        if(EXISTS "C:/local/boost_1_75_0")
+            windows_boost_fix("1_75")
+        elseif(EXISTS "C:/local/boost_1_74_0")
             windows_boost_fix("1_74")
         elseif(EXISTS "C:/local/boost_1_73_0")
             windows_boost_fix("1_73")
@@ -108,7 +114,7 @@ if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
     endif(UNIX)
 endif()
 
-set(Boost_ADDITIONAL_VERSIONS "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0" "1.72.0" "1.73.0" "1.74.0")
+set(Boost_ADDITIONAL_VERSIONS "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0" "1.72.0" "1.73.0" "1.74.0" "1.75.0")
 message(STATUS "** Search Boost    : ${Boost_ADDITIONAL_VERSIONS}")
 find_package(Boost 1.67 REQUIRED COMPONENTS thread system filesystem program_options random unit_test_framework regex)
 
