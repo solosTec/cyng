@@ -9,7 +9,10 @@
 
 #include <cyng/intrinsics/buffer.h>
 #include <cyng/object.h>
+
 #include <algorithm>
+
+#include <boost/assert.hpp>
 
 namespace cyng 
 {
