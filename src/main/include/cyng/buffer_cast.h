@@ -36,6 +36,25 @@ namespace cyng
 		std::copy_n(buffer.begin(), size, std::begin(u_.source_));
 		return u_.l_;
 	}
+
+	/** @brief Copy an arithmetic type into an buffer
+	 * 
+	 * byte ordering ignored
+	 */
+	template <typename T>
+	buffer_t to_buffer(T n) {
+
+		static_assert(std::is_arithmetic_v<T>, "arithmetic type expected");
+
+		buffer_t vec;
+		vec.reserve(sizeof(T));
+
+		auto const p = static_cast<const buffer_t::value_type*>(static_cast<const void*>(&n));
+		BOOST_ASSERT(p != nullptr);
+
+		std::copy(p, p + sizeof(T), std::back_inserter(vec));
+		return vec;
+	}
 }
 
 #endif 
