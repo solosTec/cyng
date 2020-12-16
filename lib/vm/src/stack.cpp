@@ -84,7 +84,7 @@ namespace cyng
 		os << std::endl;
 		for (std::size_t idx = c.size(); idx != 0; idx--)
 		{
-			if ((idx - 1) == bp_)
+			if (idx == bp_)
 			{
 				os << "=> ";
 			}
@@ -135,7 +135,7 @@ namespace cyng
 	{
 		BOOST_ASSERT_MSG(bp_ > 1, "bp out of range (setr)");
 		BOOST_ASSERT_MSG(idx < bp_, "idx out of range (setr)");
-		c[bp_ - (2 + idx)] = obj;
+		c[bp_ - (1 + idx)] = obj;
 	}
 	
 	void stack::setr()

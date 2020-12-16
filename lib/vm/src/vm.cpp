@@ -163,7 +163,9 @@ namespace cyng
 					;
 
 				stack_.dump(ss);
-				lib_.try_debug_log(*this, ss.str());
+				if (!lib_.try_debug_log(*this, ss.str())) {
+					std::cerr << ss.str() << std::endl;
+				}
 #endif
 				//
 				//	execute a single instruction

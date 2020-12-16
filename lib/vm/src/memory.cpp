@@ -77,7 +77,7 @@ namespace cyng
 
 	memory& operator+=(memory& mem, vector_t const& prg)
 	{
-		mem.tidy();	//	possible functions get lost
+		//mem.tidy();	//	possible functions get lost
 
 		//	small optimization
 		mem.mem_.reserve(mem.mem_.size() + prg.size());
@@ -87,7 +87,7 @@ namespace cyng
 
 	memory& operator+=(memory& mem, vector_t&& prg)
 	{
-		mem.tidy();	//	possible functions get lost
+		//mem.tidy();	//	possible functions get lost
 
 		//	small optimization
 		mem.mem_.reserve(mem.mem_.size() + prg.size());
