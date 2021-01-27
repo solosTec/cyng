@@ -21,7 +21,7 @@ namespace cyng
 // 		logging::console_logger_t clog(ios.get_io_service(), "test");
 		auto clog = logging::make_console_logger(ios.get_io_service(), "test");
 		
-		CYNG_LOG_INFO(clog, "hello, world!");
+		CYNG_LOG_INFO(clog, "hello," << " world!");
 		
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		CYNG_LOG_WARNING(clog, "low fuel");
@@ -30,7 +30,7 @@ namespace cyng
 		CYNG_LOG_ERROR(clog, "you are attacked");
 
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		CYNG_LOG_TRACE(clog, "heading north");
+		CYNG_LOG_TRACE(clog, "heading" << " " << "north");
 
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		

@@ -13,7 +13,7 @@
 namespace cyng 
 {
 	template < typename T >
-	std::vector< T > vector_cast(cyng::vector_t const& vec, T const& def) noexcept
+	std::vector< T > vector_cast(vector_t const& vec, T const& def) noexcept
 	{
 		std::vector< T > result;
 		for (auto const& v : vec) {
