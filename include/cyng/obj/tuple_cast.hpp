@@ -14,7 +14,7 @@
 
 #ifdef _DEBUG_OBJECT
 #include <cyng/io/ostream.h>
-#include <cyng/io/ostream.h>
+#include <iostream>
 #endif
 
 #include <boost/assert.hpp>

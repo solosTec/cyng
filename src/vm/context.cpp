@@ -10,7 +10,7 @@
 #ifdef _DEBUG_VM
 #include <cyng/obj/vector_cast.hpp>
 #include <cyng/io/ostream.h>
-#include <cyng/io/ostream.h>
+#include <iostream>
 #endif
 
 namespace docscript {

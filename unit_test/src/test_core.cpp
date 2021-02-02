@@ -226,7 +226,7 @@ BOOST_AUTO_TEST_CASE(cast)
     auto obj = docscript::make_object(docscript::make_tuple(1, 2, 3.4));
     BOOST_REQUIRE(obj);
     auto tpl2 = docscript::container_cast<docscript::tuple_t>(obj);
-    BOOST_REQUIRE(!obj);
+    BOOST_REQUIRE(obj);
     BOOST_REQUIRE_EQUAL(tpl2.size(), 3);
 
     auto const o7 = docscript::make_object(docscript::make_tuple(1, 2, 3.4));

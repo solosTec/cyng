@@ -25,15 +25,15 @@ namespace docscript {
      * auto tpl = docscript::container_cast<docscript::tuple_t>(obj);
 	 * @endcode
 	 */
-	template <typename C >
-	[[nodiscard]]
-	C container_cast(object& obj) {
-		auto r = object_release<C>(obj);
-		return (r.first != nullptr)
-			? *(r.first)
-			: C{}
-		;
-	}
+	//template <typename C >
+	//[[nodiscard]]
+	//C container_cast(object& obj) {
+	//	auto r = object_release<C>(obj);
+	//	if (r.first != nullptr) {
+	//		? *(r.first)
+	//	}
+	//	return C{};
+	//}
 
 	/**
 	 * Create a copy.
@@ -50,9 +50,9 @@ namespace docscript {
 	template <typename C >
 	[[nodiscard]]
 	C container_cast(object const& obj) {
-		auto const* p = object_cast<C>(obj);
-		return (p != nullptr)
-			? *p	//	copy
+		auto const* ptr = object_cast<C>(obj);
+		return (ptr != nullptr)
+			? *ptr	//	copy
 			: C{}
 		;
 	}

@@ -12,7 +12,7 @@
 #include <cyng/obj/buffer_cast.hpp>
 
 #include <type_traits>
-#include <ostream>
+#include <iostream>
 #ifdef _DEBUG
 #include <cyng/io/ostream.h>
 #endif

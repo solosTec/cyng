@@ -8,8 +8,8 @@
 
 #define cyng_ADDRESS_MODEL	64
 
-#define cyng_NULL_HASH	0x292345F07AF9A97F
-#define cyng_EOD_HASH	0x8623FC3C1DCFD9AE
+#define cyng_NULL_HASH	0xC4CBA222EDB93665
+#define cyng_EOD_HASH	0xB4B5F60CFCE94CB9
 
 //	cyng_BIG_ENDIAN 
 /* #undef  */
@@ -19,7 +19,7 @@
 //
 //	host system
 //
-#define cyng_SYSTEM_PROCESSOR "x86_64"
-#define cyng_SYSTEM_NAME "Linux"
-#define cyng_SYSTEM_VERSION "5.8.0-41-generic"
+#define cyng_SYSTEM_PROCESSOR "AMD64"
+#define cyng_SYSTEM_NAME "Windows"
+#define cyng_SYSTEM_VERSION "10.0.19041"
 #define cyng_PROJECT_NAME "cyng"
