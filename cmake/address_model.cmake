@@ -1,0 +1,32 @@
+#
+#	detect address model
+#	and generate magic numbers
+#
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+	message(STATUS "** Address Model      : 64 bit")
+	set(${PROJECT_NAME}_ADDRESS_MODEL 64)
+	string(RANDOM LENGTH 16 ALPHABET "1234567890ABCDEF" __RND_VALUE_NULL)
+	string(RANDOM LENGTH 16 ALPHABET "1234567890ABCDEF" __RND_VALUE_EOD)
+
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+
+	message(STATUS "** Address Model      : 32 bit")
+	set(${PROJECT_NAME}_ADDRESS_MODEL 32)
+	string(RANDOM LENGTH 8 ALPHABET "1234567890ABCDEF" __RND_VALUE_NULL)
+	string(RANDOM LENGTH 8 ALPHABET "1234567890ABCDEF" __RND_VALUE_EOD)
+
+else()
+
+	message(WARNING "** Address Model      : not supported")
+	set(${PROJECT_NAME}_ADDRESS_MODEL 16)
+	string(RANDOM LENGTH 4 ALPHABET "1234567890ABCDEF" __RND_VALUE_NULL)
+	string(RANDOM LENGTH 4 ALPHABET "1234567890ABCDEF" __RND_VALUE_EOD)
+
+endif()
+
+#
+#	Generate magic numbers
+#
+set (${PROJECT_NAME}_NULL_HASH "0x${__RND_VALUE_NULL}")
+set (${PROJECT_NAME}_EOD_HASH "0x${__RND_VALUE_EOD}")
