@@ -375,6 +375,35 @@ target_link_libraries(cyng_sys
 )
   
 #
+# add library: cyng_parse
+#
+include (src/parse/lib.cmake)
+add_library(cyng_parse ${GLOBAL_LIBRARY_TYPE} ${parse_lib})
+
+target_include_directories(cyng_parse
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_parse PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug parse library
+#
+target_compile_definitions(cyng_parse 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_PARSE>
+)
+
+target_link_libraries(cyng_parse 
+    PRIVATE 
+        Boost::boost 
+)
+#
 # unit tests
 #
 add_subdirectory(unit_test)

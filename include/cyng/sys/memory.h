@@ -15,7 +15,7 @@ namespace cyng {
 		/**
 		 * @return available memory in system in bytes
 		 */
-		std::uint64_t get_total_physical_memory();
+		std::uint64_t get_total_ram();
 	}
 }
 #endif

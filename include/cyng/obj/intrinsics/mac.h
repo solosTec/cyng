@@ -10,6 +10,7 @@
 
 #include <cyng/obj/intrinsics/buffer.h>
 #include <array>
+#include <algorithm>
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/asio/ip/address.hpp>
@@ -82,31 +83,6 @@ namespace cyng
 			return (std::get<0>(address_) & 0x01) == 0x01;
 		}
 
-		
-		/**
-		 * An address is private if the second-least significant bit 
-		 * of the most significant octet of an address is set.
-		 * 
-		 * Private addresses are:
-		 * <ul>
-		 * <li>x2-xx-xx-xx-xx-xx</li>
-		 * <li>x6-xx-xx-xx-xx-xx</li>
-		 * <li>xA-xx-xx-xx-xx-xx</li>
-		 * <li>xE-xx-xx-xx-xx-xx</li>
-		 * </ul>
-		 *
-		 * @return true if address is locally administered
-		 */
-		constexpr bool is_private() const {
-			//	little endian
-			return (std::get<0>(address_) & 0x02) == 0x02;
-		}
-		
-		/**
-		 * @return true if all elements are zero.
-		 */
-		bool is_nil() const;
-
 		/**
 		 * The globally assigned 48-bit multicast address 01-80-C2-00-00-01 has been reserved
 		 * for use in MAC Control PAUSE frames for inhibiting transmission of data frames
@@ -121,7 +97,9 @@ namespace cyng
 		/**
 		 * @return array with all octets.
 		 */
-		address_type const& get_octets() const;
+		constexpr address_type const& get_octets() const	{
+			return address_;
+		}
 
 		/**
 		 * @return network interface controller (NIC)
@@ -143,13 +121,37 @@ namespace cyng
 		address_type	address_;
 	};
 	
-	//	comparison
-	bool operator==(mac48 const&, mac48 const&) noexcept;
+	//	comparison (constexpr since C++20)
+	bool operator==(mac48 const& lhs, mac48 const& rhs) noexcept;
 	bool operator<(mac48 const&, mac48 const&) noexcept;
 	bool operator!=(mac48 const&, mac48 const&) noexcept;
 	bool operator>(mac48 const&, mac48 const&) noexcept;
 	bool operator<=(mac48 const&, mac48 const&) noexcept;
 	bool operator>=(mac48 const&, mac48 const&) noexcept;
+
+	/**
+	 * An address is private if the second-least significant bit 
+	 * of the most significant octet of an address is set.
+	 * 
+	 * Private addresses are:
+	 * <ul>
+	 * <li>x2-xx-xx-xx-xx-xx</li>
+	 * <li>x6-xx-xx-xx-xx-xx</li>
+	 * <li>xA-xx-xx-xx-xx-xx</li>
+	 * <li>xE-xx-xx-xx-xx-xx</li>
+	 * </ul>
+	 *
+	 * @return true if address is locally administered
+	 */
+	constexpr bool is_private(mac48 const& mac) noexcept {
+		//	little endian
+		return (std::get<0>(mac.get_octets()) & 0x02) == 0x02;
+	}
+	
+	/**
+	 * @return true if all elements are zero.
+	 */
+	bool is_nil(mac48 const& mac) noexcept;
 
 	/**
 	 * make a copy

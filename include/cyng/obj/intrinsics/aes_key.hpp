@@ -76,6 +76,7 @@ namespace cyng {
 		return buffer_t(key.key_.begin(), key.key_.end());
 	}
 
+
 	namespace crypto
 	{
 		using aes_128_key = aes_key<128>;	//	16 bytes

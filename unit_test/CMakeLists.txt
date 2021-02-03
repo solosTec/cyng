@@ -4,11 +4,13 @@ find_package(Boost 1.75 REQUIRED COMPONENTS unit_test_framework)
 add_executable(unit_test 
     main.cpp
     src/test_core.cpp
-    src/test_task.cpp
     src/test_io.cpp
     src/test_vm.cpp
     src/test_store.cpp
     src/test_log.cpp
+    src/test_sys.cpp
+    src/test_parse.cpp
+    src/test_task.cpp
     src/demo_task.cpp
     src/demo_task_ref.cpp)
 
@@ -52,6 +54,8 @@ target_link_libraries(unit_test
         cyng_vm
         cyng_log
         cyng_store
+        cyng_sys
+        cyng_parse
         "$<$<PLATFORM_ID:Linux>:pthread>"
         "$<$<PLATFORM_ID:Windows>:odbc32>"
         Boost::date_time 

@@ -6,8 +6,10 @@
  */
 
 #include <cyng/obj/intrinsics/mac.h>
+#include <cyng/io/ostream.h>
 #include <random>
 #include <algorithm>
+#include <iostream>
 
 #include <boost/predef.h>
 #include <boost/assert.hpp>
@@ -27,28 +29,11 @@ namespace cyng
 		return *this;
 	}
 
-	bool mac48::is_nil() const
-	{
-		for (const auto c : address_)
-		{
-			if (c != 0U)
-			{
-				return false;
-			}
-		}
-		return true;	
-	}
-
 	bool mac48::is_pause() const
 	{
 		return *this == mac48(0x01, 0x80, 0xC2, 0x00, 0x00, 0x01);
 	}
 
-	mac48::address_type const& mac48::get_octets() const
-	{
-		return address_;
-	}
-		
  	mac48::oui_type mac48::get_oui() const
  	{
 		return { std::get<0>(address_)
@@ -100,7 +85,9 @@ namespace cyng
 	//	comparison
 	bool operator==(mac48 const& lhs, mac48 const& rhs) noexcept
 	{
-		return lhs.get_octets() == rhs.get_octets();
+		std::cout << lhs << " == " << rhs << std::endl;		
+		//return lhs.get_octets() == rhs.get_octets();
+		return std::equal(std::begin(lhs.get_octets()), std::end(lhs.get_octets()), std::begin(rhs.get_octets()));
 	}
 	bool operator<(mac48 const& lhs, mac48 const& rhs) noexcept
 	{
@@ -127,6 +114,13 @@ namespace cyng
 	buffer_t to_buffer(mac48 const& mac)
 	{
 		return { mac.get_octets().begin(), mac.get_octets().end() };
+	}
+
+	bool is_nil(mac48 const& mac) noexcept	{
+
+		return std::all_of(std::begin(mac.get_octets()), std::end(mac.get_octets()), [](std::uint8_t c){
+			return c == 0;
+		});
 	}
 
 	bool is_broadcast(mac48 const& a)

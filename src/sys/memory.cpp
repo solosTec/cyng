@@ -3,7 +3,7 @@
 #include <boost/predef.h>
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
-#include <Windows.h>
+#include <cyng/sys/windows.hpp>
 #include <psapi.h>
 
 #include <string> 
@@ -29,7 +29,7 @@
 namespace cyng {
 	namespace sys
 	{
-		std::uint64_t get_total_physical_memory() {
+		std::uint64_t get_total_ram() {
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
 			MEMORYSTATUSEX memInfo;
