@@ -10,8 +10,8 @@
   * Copyright (c) 2021 Sylko Olzscher
   *
   */
-#ifndef DOCC_LOG_APPENDER_CONSOLE_H
-#define DOCC_LOG_APPENDER_CONSOLE_H
+#ifndef CYNG_LOG_APPENDER_CONSOLE_H
+#define CYNG_LOG_APPENDER_CONSOLE_H
 
 #include <cyng/log/appender.h>
 
@@ -25,7 +25,7 @@
 #endif
 #endif
 
-namespace docscript {
+namespace cyng {
 	namespace logging {	
 
 		class console

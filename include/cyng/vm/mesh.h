@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_MESH_H
-#define DOCC_VM_MESH_H
+#ifndef CYNG_VM_MESH_H
+#define CYNG_VM_MESH_H
 
 #include <cyng/task/channel.h>
 #include <cyng/obj/util.hpp>
@@ -16,7 +16,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/nil_generator.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * Proxy class to access a VM instance

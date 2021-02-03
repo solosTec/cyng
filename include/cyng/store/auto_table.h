@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_AUTO_TABLE_H
-#define DOCC_STORE_AUTO_TABLE_H
+#ifndef CYNG_STORE_AUTO_TABLE_H
+#define CYNG_STORE_AUTO_TABLE_H
 
 #include <cyng/store/table.h>
 
-namespace docscript {
+namespace cyng {
 
 	class auto_table : public table {
 

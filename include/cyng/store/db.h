@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_DB_H
-#define DOCC_STORE_DB_H
+#ifndef CYNG_STORE_DB_H
+#define CYNG_STORE_DB_H
 
 //#include <cyng/store/table.h>
 #include <cyng/store/auto_table.h>
@@ -17,7 +17,7 @@
 #include <tuple>
 #include <cyng/io/ostream.h>
 
-namespace docscript {
+namespace cyng {
 
 	namespace access {
 		struct read {

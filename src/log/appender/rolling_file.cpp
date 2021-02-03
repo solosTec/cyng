@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-namespace docscript {
+namespace cyng {
 
 	namespace logging {
 

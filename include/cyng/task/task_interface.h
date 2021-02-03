@@ -4,13 +4,13 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_SCRIPT_TASK_INTERFACE_H
-#define DOCC_SCRIPT_TASK_INTERFACE_H
+#ifndef CYNG_SCRIPT_TASK_INTERFACE_H
+#define CYNG_SCRIPT_TASK_INTERFACE_H
 
 #include <cyng/obj/intrinsics/container.h>
 #include <functional>
 
-namespace docscript {
+namespace cyng {
 
 	class channel;
 	class registry;

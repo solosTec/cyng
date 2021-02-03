@@ -10,7 +10,7 @@
 
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		parser::parser(callback cb)

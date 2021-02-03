@@ -9,7 +9,7 @@
 #include <cyng/io/io.h>
 #include <cyng/obj/object.h>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		void serialize_plain(std::ostream& os, object const& obj)

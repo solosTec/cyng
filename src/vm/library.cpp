@@ -1,6 +1,6 @@
 #include <cyng/vm/library.h>
 
-namespace docscript {
+namespace cyng {
 
 	library::library()
 	{}

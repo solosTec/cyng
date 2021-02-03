@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-namespace docscript {
+namespace cyng {
 
 	stack::stack()
 		: s_()

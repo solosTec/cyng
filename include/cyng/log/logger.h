@@ -4,13 +4,13 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_LOG_LOGGER_H
-#define DOCC_LOG_LOGGER_H
+#ifndef CYNG_LOG_LOGGER_H
+#define CYNG_LOG_LOGGER_H
 
 #include <cyng/task/channel.h>
 #include <cyng/obj/intrinsics/severity.h>
 
-namespace docscript {
+namespace cyng {
 
 	namespace logging {
 		struct record;

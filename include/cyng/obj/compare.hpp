@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_COMPARE_HPP
-#define DOCC_OBJ_COMPARE_HPP
+#ifndef CYNG_OBJ_COMPARE_HPP
+#define CYNG_OBJ_COMPARE_HPP
 
 #include <cyng/obj/value_cast.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * Compare an object with a specified value.
@@ -46,4 +46,4 @@ namespace docscript {
 	};
 }
 
-#endif //	DOCC_OBJ_VECTOR_CAST_H
+#endif //	CYNG_OBJ_VECTOR_CAST_H

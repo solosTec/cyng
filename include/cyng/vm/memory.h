@@ -4,13 +4,13 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_MEMORY_H
-#define DOCC_VM_MEMORY_H
+#ifndef CYNG_VM_MEMORY_H
+#define CYNG_VM_MEMORY_H
 
 #include <cyng/vm/memory_interface.h>
 #include <cyng/obj/intrinsics/container.h>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * The memory_interface isn't really necessary - it's more an attempt

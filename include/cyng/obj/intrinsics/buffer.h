@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_BUFFER_H
-#define DOCC_OBJ_INTRINSCIS_BUFFER_H
+#ifndef CYNG_OBJ_INTRINSCIS_BUFFER_H
+#define CYNG_OBJ_INTRINSCIS_BUFFER_H
 
 #include <vector>
 #include <array>
 #include <cstdint>
 #include <string>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * Declare a buffer with contiguous memory
@@ -63,9 +63,9 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class hash<docscript::buffer_t> {
+	class hash<cyng::buffer_t> {
 	public:
-		size_t operator()(docscript::buffer_t const& v) const;
+		size_t operator()(cyng::buffer_t const& v) const;
 	};
 }
 

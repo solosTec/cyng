@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_BINARY_HPP
-#define DOCC_IO_BINARY_HPP
+#ifndef CYNG_IO_BINARY_HPP
+#define CYNG_IO_BINARY_HPP
 
 #include <cyng/io/io.h>
 #include <cyng/obj/core/type.hpp>
@@ -25,7 +25,7 @@
 #include <boost/asio/ip/icmp.hpp>
 #include <boost/system/error_code.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		/**

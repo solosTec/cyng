@@ -6,7 +6,7 @@
 #include <iterator>
 #include <cyng/io/ostream.h>
 
-namespace docscript
+namespace cyng
 {
 	object::object()
 		: obj_(new wrapper<null>{ null{} }, tracker_)
@@ -127,11 +127,11 @@ namespace docscript
 	}
 
 
-} // namespace docscript
+} // namespace cyng
 
 namespace std {
 
-	size_t hash<docscript::object>::operator()(docscript::object const& obj) const
+	size_t hash<cyng::object>::operator()(cyng::object const& obj) const
 	{
 		return obj.hash();
 	}

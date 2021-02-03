@@ -4,14 +4,14 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_OBJ_TYPE_INTERFACE_H
-#define DOCC_OBJ_TYPE_INTERFACE_H
+#ifndef CYNG_OBJ_TYPE_INTERFACE_H
+#define CYNG_OBJ_TYPE_INTERFACE_H
 
 #include <cstdint>
 #include <cstddef>
 #include <typeinfo>
 
-namespace docscript {
+namespace cyng {
 
 	class type_interface
 	{

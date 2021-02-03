@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_STACK_H
-#define DOCC_VM_STACK_H
+#ifndef CYNG_VM_STACK_H
+#define CYNG_VM_STACK_H
 
 #include <cyng/vm/stack_interface.h>
 #include <cyng/obj/intrinsics/container.h>
@@ -13,7 +13,7 @@
 
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	class stack : public stack_interface
 	{

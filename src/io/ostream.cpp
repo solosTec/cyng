@@ -2,7 +2,7 @@
 #include <cyng/io/serialize.h>
 #include <cyng/obj/object.h>
 
-namespace docscript {
+namespace cyng {
 
 	std::ostream& operator<<(std::ostream& os, null const&)
 	{

@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-namespace docscript {
+namespace cyng {
 	namespace logging {
 
 		console::console()

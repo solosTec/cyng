@@ -7,7 +7,7 @@
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/object_cast.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	buffer_t to_buffer(object const& obj)
 	{

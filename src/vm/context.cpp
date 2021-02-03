@@ -13,7 +13,7 @@
 #include <iostream>
 #endif
 
-namespace docscript {
+namespace cyng {
 
 	context::context()
 	{}

@@ -4,14 +4,14 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_TYPED_HPP
-#define DOCC_IO_TYPED_HPP
+#ifndef CYNG_IO_TYPED_HPP
+#define CYNG_IO_TYPED_HPP
 
 #include <cyng/io/io.h>
 #include <cyng/obj/core/type.hpp>
 #include <cyng/obj/intrinsics/version.h>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		template <typename T>

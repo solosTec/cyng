@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_JSON_HPP
-#define DOCC_IO_JSON_HPP
+#ifndef CYNG_IO_JSON_HPP
+#define CYNG_IO_JSON_HPP
 
 #include <cyng/io/io.h>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		template <>

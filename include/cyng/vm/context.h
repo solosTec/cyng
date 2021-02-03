@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_CONTEXT_H
-#define DOCC_VM_CONTEXT_H
+#ifndef CYNG_VM_CONTEXT_H
+#define CYNG_VM_CONTEXT_H
 
 #include <cyng/vm/memory.h>
 #include <cyng/vm/stack.h>
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/object.h>
 
-namespace docscript {
+namespace cyng {
 
 	template <typename... Fns>	class vm;
 

@@ -10,7 +10,7 @@
 
 #include <boost/io/ios_state.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		std::size_t serializer <bool, CSV>::write(std::ostream& os, bool v)

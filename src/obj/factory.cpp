@@ -7,7 +7,7 @@
 
 #include <cyng/obj/factory.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	template <>
 	object make_object(object&& obj)

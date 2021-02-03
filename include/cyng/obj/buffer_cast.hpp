@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_BUFFER_CAST_HPP
-#define DOCC_OBJ_BUFFER_CAST_HPP
+#ifndef CYNG_OBJ_BUFFER_CAST_HPP
+#define CYNG_OBJ_BUFFER_CAST_HPP
 
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/object.h>
@@ -26,7 +26,7 @@
 
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 
 	/**

@@ -12,7 +12,7 @@
 
 #include <boost/io/ios_state.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		std::size_t serialize_length(std::ostream& os, std::size_t size)

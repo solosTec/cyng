@@ -4,13 +4,13 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_TRACKER_H
-#define DOCC_OBJ_TRACKER_H
+#ifndef CYNG_OBJ_TRACKER_H
+#define CYNG_OBJ_TRACKER_H
 
 #include <cstddef>
 #include <atomic>
 
-namespace docscript {
+namespace cyng {
 
 	class obj_interface;
 	class tracker
@@ -32,4 +32,4 @@ namespace docscript {
 	};
 }
 
-#endif //	DOCC_OBJ_TRACKER_H
+#endif //	CYNG_OBJ_TRACKER_H

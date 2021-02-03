@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_H
-#define DOCC_IO_H
+#ifndef CYNG_IO_H
+#define CYNG_IO_H
 
 #include <ostream>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		//

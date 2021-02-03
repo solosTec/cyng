@@ -6,7 +6,7 @@
  */
 #include <cyng/obj/value_cast.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	std::string value_cast(object const& obj, char const* p) noexcept
 	{

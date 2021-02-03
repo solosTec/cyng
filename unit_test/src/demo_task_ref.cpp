@@ -3,7 +3,7 @@
 #include <cyng/obj/util.hpp>
 #include <iostream>
 
-namespace docscript {
+namespace cyng {
 
 	demo_task_ref::demo_task_ref(std::weak_ptr<channel> wp)
 		: sigs_{ 

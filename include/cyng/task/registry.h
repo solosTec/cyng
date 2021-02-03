@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_SCRIPT_REGISTRY_H
-#define DOCC_SCRIPT_REGISTRY_H
+#ifndef CYNG_SCRIPT_REGISTRY_H
+#define CYNG_SCRIPT_REGISTRY_H
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/task/channel.h>
@@ -13,7 +13,7 @@
 
 #include <atomic>
 
-namespace docscript {
+namespace cyng {
 
 	class registry
 	{

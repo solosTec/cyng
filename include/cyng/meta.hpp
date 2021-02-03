@@ -6,7 +6,7 @@
  */
 #pragma once
 
-namespace docscript {
+namespace cyng {
 	namespace tmp {	//	template meta programming
 
 		/**

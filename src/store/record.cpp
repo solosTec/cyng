@@ -1,7 +1,7 @@
 #include <cyng/store/record.h>
 #include <cyng/obj/util.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	record::record(meta_store const& m)
 		: meta_(m)
@@ -56,7 +56,7 @@ namespace docscript {
 		//
 		data["gen"] = make_object(gen_);
 
-		return docscript::make_tuple(
+		return cyng::make_tuple(
 			make_param("key", key),
 			make_param("data", data)
 		);

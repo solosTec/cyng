@@ -1,7 +1,7 @@
 #include "demo_task.h"
 #include <iostream>
 
-namespace docscript {
+namespace cyng {
 
 	demo_task::demo_task()
 		: sigs_{ 

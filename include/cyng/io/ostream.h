@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_OSTREAM_H
-#define DOCC_IO_OSTREAM_H
+#ifndef CYNG_IO_OSTREAM_H
+#define CYNG_IO_OSTREAM_H
 
 #include <string>
 #include <chrono>
@@ -38,11 +38,11 @@
 #include <iomanip>
 #include <boost/io/ios_state.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	//
 	//	catch the stream operators from namespace cyng
-	//using docscript::operator<<;
+	//using cyng::operator<<;
 
 	std::ostream& operator<<(std::ostream& os, null const&);
 	std::ostream& operator<<(std::ostream& os, eod const&);

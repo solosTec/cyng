@@ -17,11 +17,11 @@ BOOST_AUTO_TEST_SUITE(store_suite)
 
 BOOST_AUTO_TEST_CASE(meta)
 {
-	docscript::meta_store const m("demo"
+	cyng::meta_store const m("demo"
 		, { 
-			docscript::column("id", docscript::TC_INT64), 
-			docscript::column("name", docscript::TC_STRING),
-			docscript::column("age", docscript::TC_TIME_POINT)
+			cyng::column("id", cyng::TC_INT64), 
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
 		}
 		, 1);
 	//std::cerr << m.get_index_by_name("id") << std::endl;
@@ -35,18 +35,18 @@ BOOST_AUTO_TEST_CASE(meta)
 
 BOOST_AUTO_TEST_CASE(table)
 {
-	docscript::meta_store const m("demo"
+	cyng::meta_store const m("demo"
 		, {
-			docscript::column("id", docscript::TC_INT64),
-			docscript::column("name", docscript::TC_STRING),
-			docscript::column("age", docscript::TC_TIME_POINT)
+			cyng::column("id", cyng::TC_INT64),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
 		}
 	, 1 );
 
-	docscript::table tbl(m);
-	auto const key = docscript::key_generator(12u);
+	cyng::table tbl(m);
+	auto const key = cyng::key_generator(12u);
 	tbl.insert(key
-		, docscript::data_generator("A", std::chrono::system_clock::now())
+		, cyng::data_generator("A", std::chrono::system_clock::now())
 		, 1u	//	gen
 		, boost::uuids::nil_uuid());
 
@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE(table)
 	BOOST_REQUIRE_EQUAL(tbl.size(), 1);
 	BOOST_REQUIRE(tbl.exist(key));
 
-	tbl.insert(docscript::key_generator(42u)
-		, docscript::data_generator("O", std::chrono::system_clock::now())
+	tbl.insert(cyng::key_generator(42u)
+		, cyng::data_generator("O", std::chrono::system_clock::now())
 		, 1u	//	gen
 		, boost::uuids::nil_uuid());
 
@@ -72,71 +72,71 @@ BOOST_AUTO_TEST_CASE(table)
 
 BOOST_AUTO_TEST_CASE(auto_table)
 {
-	docscript::meta_store const m("demo"
+	cyng::meta_store const m("demo"
 		, {
-			docscript::column("id", docscript::TC_INT64),
-			docscript::column("name", docscript::TC_STRING),
-			docscript::column("age", docscript::TC_TIME_POINT)
+			cyng::column("id", cyng::TC_INT64),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
 		}
 	, 1);
 
-	auto const key = docscript::key_generator<std::uint64_t>(2u);
+	auto const key = cyng::key_generator<std::uint64_t>(2u);
 
 
-	docscript::auto_table tbl(m, key, [](docscript::key_t const& key) {
+	cyng::auto_table tbl(m, key, [](cyng::key_t const& key) {
 		BOOST_CHECK_EQUAL(key.size(), 1);
-		auto tmp = docscript::value_cast<std::uint64_t>(key.at(0), 0);
+		auto tmp = cyng::value_cast<std::uint64_t>(key.at(0), 0);
 		BOOST_REQUIRE_EQUAL(tmp, 2);
-		return docscript::key_generator(tmp + 1);
+		return cyng::key_generator(tmp + 1);
 		});
 
 	BOOST_REQUIRE(tbl.is_auto());
 
-	tbl.insert(docscript::data_generator("Q", std::chrono::system_clock::now()), boost::uuids::nil_uuid());
+	tbl.insert(cyng::data_generator("Q", std::chrono::system_clock::now()), boost::uuids::nil_uuid());
 
 }
 
 BOOST_AUTO_TEST_CASE(db)
 {
-	docscript::db store;
-	store.create_table(docscript::meta_store("demo-1"
+	cyng::db store;
+	store.create_table(cyng::meta_store("demo-1"
 		, {
-			docscript::column("id", docscript::TC_INT64),
-			docscript::column("name", docscript::TC_STRING),
-			docscript::column("age", docscript::TC_TIME_POINT)
+			cyng::column("id", cyng::TC_INT64),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
 		}
 	, 1));
-	store.create_table(docscript::meta_store("demo-2"
+	store.create_table(cyng::meta_store("demo-2"
 		, {
-			docscript::column("id", docscript::TC_INT64),
-			docscript::column("city", docscript::TC_STRING),
-			docscript::column("street", docscript::TC_STRING),
-			docscript::column("nr", docscript::TC_UINT16)
+			cyng::column("id", cyng::TC_INT64),
+			cyng::column("city", cyng::TC_STRING),
+			cyng::column("street", cyng::TC_STRING),
+			cyng::column("nr", cyng::TC_UINT16)
 		}
 	, 1));
-	store.create_table(docscript::meta_store("demo-3"
+	store.create_table(cyng::meta_store("demo-3"
 		, {
-			docscript::column("id", docscript::TC_INT64),
-			docscript::column("product", docscript::TC_STRING),
-			docscript::column("price", docscript::TC_FLOAT)
+			cyng::column("id", cyng::TC_INT64),
+			cyng::column("product", cyng::TC_STRING),
+			cyng::column("price", cyng::TC_FLOAT)
 		}
 	, 1));
 
-	store.access([](docscript::table const* tbl1, docscript::table* tbl2) {
+	store.access([](cyng::table const* tbl1, cyng::table* tbl2) {
 		// std::cout << "store.lambda: " << tbl1->meta().get_name() << ", " << tbl2->meta().get_name() << std::endl;
-		}, docscript::access::read("demo-1"), docscript::access::write("demo-2"));
+		}, cyng::access::read("demo-1"), cyng::access::write("demo-2"));
 
-	store.access([](docscript::table const* tbl2) {
+	store.access([](cyng::table const* tbl2) {
 		// std::cout << "store.lambda: " << tbl2->meta().get_name() << std::endl;
-		}, docscript::access::read("demo-2"));
+		}, cyng::access::read("demo-2"));
 
-	store.access([](docscript::table const* tbl1, docscript::table* tbl2, docscript::table* tbl3) {
+	store.access([](cyng::table const* tbl1, cyng::table* tbl2, cyng::table* tbl3) {
 		// std::cout << "store.lambda: " 
 		// 	<< tbl1->meta().get_name() << ", " 
 		// 	<< tbl2->meta().get_name() << ", "
 		// 	<< tbl3->meta().get_name()
 		// 	<< std::endl;
-		}, docscript::access::read("demo-1"), docscript::access::write("demo-2"), docscript::access::write("demo-3"));
+		}, cyng::access::read("demo-1"), cyng::access::write("demo-2"), cyng::access::write("demo-3"));
 
 }
 BOOST_AUTO_TEST_SUITE_END()

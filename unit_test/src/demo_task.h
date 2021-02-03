@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_TEST_DEMO_TASK_H
-#define DOCC_TEST_DEMO_TASK_H
+#ifndef CYNG_TEST_DEMO_TASK_H
+#define CYNG_TEST_DEMO_TASK_H
 
 #include <tuple>
 #include <functional>
 #include <string>
 #include <cyng/obj/intrinsics/eod.h>
 
-namespace docscript {
+namespace cyng {
 
 	class demo_task
 	{

@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_MAC_H
-#define DOCC_OBJ_INTRINSCIS_MAC_H
+#ifndef CYNG_OBJ_INTRINSCIS_MAC_H
+#define CYNG_OBJ_INTRINSCIS_MAC_H
 
 
 #include <cyng/obj/intrinsics/buffer.h>
@@ -14,7 +14,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/asio/ip/address.hpp>
 
-namespace docscript
+namespace cyng
 {
 	/** @brief EUI-48
 	 *  Media access control address (6 bytes == 48 bits)
@@ -264,15 +264,15 @@ namespace docscript
 namespace std {
 
 	template <>
-	class hash<docscript::mac48> {
+	class hash<cyng::mac48> {
 	public:
-		size_t operator()(docscript::mac48 const& v) const;
+		size_t operator()(cyng::mac48 const& v) const;
 	};
 
 	template <>
-	class hash<docscript::mac64> {
+	class hash<cyng::mac64> {
 	public:
-		size_t operator()(docscript::mac64 const& v) const;
+		size_t operator()(cyng::mac64 const& v) const;
 	};
 }
 

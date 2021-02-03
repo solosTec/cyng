@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <algorithm>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		std::size_t serializer <bool, PLAIN>::write(std::ostream& os, bool v)

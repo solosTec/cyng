@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_TABLE_H
-#define DOCC_STORE_TABLE_H
+#ifndef CYNG_STORE_TABLE_H
+#define CYNG_STORE_TABLE_H
 
 #include <cyng/store/pub.h>
 #include <cyng/store/meta.h>
@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include <memory>
 
-namespace docscript {
+namespace cyng {
 
 	class db;
 	class table : public pub, public std::enable_shared_from_this<table> {

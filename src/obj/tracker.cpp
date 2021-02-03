@@ -14,7 +14,7 @@
 
 #endif
 
-namespace docscript {
+namespace cyng {
 
 	tracker::tracker()
 	{}

@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(memory)
 	//
 	//	empty memory
 	//
-	docscript::memory mem;
+	cyng::memory mem;
 	BOOST_TEST(!mem);
 }
 
@@ -35,21 +35,21 @@ BOOST_AUTO_TEST_CASE(stack)
 
 BOOST_AUTO_TEST_CASE(vm)
 {
-	docscript::controller ctl;
-	docscript::mesh fabric(ctl);
+	cyng::controller ctl;
+	cyng::mesh fabric(ctl);
 	auto vm = fabric.create_proxy();
 	//	ctx_.load(obj)
-	vm.load(make_object(docscript::op::TIDY));
+	vm.load(make_object(cyng::op::TIDY));
 	vm.run();
 
 	vm.execute(
-		docscript::op::NOW,
-		docscript::op::PID,
-		docscript::op::TID,
-		docscript::make_object<std::size_t>(3),
-		docscript::op::MAKE_TUPLE,
-		docscript::TC_TUPLE,
-		docscript::op::ASSERT_TYPE
+		cyng::op::NOW,
+		cyng::op::PID,
+		cyng::op::TID,
+		cyng::make_object<std::size_t>(3),
+		cyng::op::MAKE_TUPLE,
+		cyng::TC_TUPLE,
+		cyng::op::ASSERT_TYPE
 	);
 
 	std::this_thread::sleep_for(std::chrono::seconds(20));
@@ -72,7 +72,7 @@ using tpl2 = std::tuple < std::function<void(int)>>;
 
 class demo
 {
-	using signatures_t = docscript::tmp::tuple_cat_t<
+	using signatures_t = cyng::tmp::tuple_cat_t<
 		tpl1,
 		tpl2
 	>;
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(library)
 	//using tpl1 = std::tuple<int, float>;
 	//using tpl2 = std::tuple<int>;
 
-	//docscript::tuple_cat_t<
+	//cyng::tuple_cat_t<
 	//	tpl1,
 	//	tpl2
 	//> test1{ 2, 3.0f, 4 };
@@ -103,8 +103,8 @@ BOOST_AUTO_TEST_CASE(library)
 
 	//	--------------------------------------------------------------+
 
-	docscript::controller ctl;
-	docscript::mesh fabric(ctl);
+	cyng::controller ctl;
+	cyng::mesh fabric(ctl);
 
 	session s;
 	//std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(library)
 
 	//auto vm = fabric.create_proxy(f);
 	auto vm = fabric.create_proxy(std::move(f));
-	vm.load(make_object(docscript::op::TIDY));
+	vm.load(make_object(cyng::op::TIDY));
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));
 	vm.stop();
@@ -124,26 +124,26 @@ BOOST_AUTO_TEST_CASE(library)
 
 BOOST_AUTO_TEST_CASE(mesh)
 {
-	docscript::controller ctl;
-	docscript::mesh fabric(ctl);
+	cyng::controller ctl;
+	cyng::mesh fabric(ctl);
 	auto vm = fabric.create_proxy();
 	// std::cerr << vm->get_name() << std::endl;
 
 	//
 	//	vm::demo()
 	//
-	//vm->dispatch(3, docscript::make_tuple(1));
+	//vm->dispatch(3, cyng::make_tuple(1));
 	{
 		//
 		//	ctx_.load(obj);
 		//
-		vm.load(docscript::make_object(2));
+		vm.load(cyng::make_object(2));
 	}
 	{
 		//
 		//	ctx_.load(deq); 
 		//
-		auto deq = docscript::make_deque( 1, 2, 3, 4 );
+		auto deq = cyng::make_deque( 1, 2, 3, 4 );
 #ifdef _DEBUG_OBJECT
 		std::cerr << deq << std::endl;
 #endif

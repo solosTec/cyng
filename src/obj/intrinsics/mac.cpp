@@ -12,7 +12,7 @@
 #include <boost/predef.h>
 #include <boost/assert.hpp>
 
-namespace docscript
+namespace cyng
 {
 	mac48::mac48(boost::uuids::uuid tag)
 	: address_({ tag.data[10], tag.data[11], tag.data[12], tag.data[13], tag.data[14], tag.data[15] })
@@ -244,13 +244,13 @@ namespace docscript
 
 namespace std {
 
-	size_t hash<docscript::mac48>::operator()(docscript::mac48 const& v) const
+	size_t hash<cyng::mac48>::operator()(cyng::mac48 const& v) const
 	{
-		return docscript::hash(v);
+		return cyng::hash(v);
 	}
-	size_t hash<docscript::mac64>::operator()(docscript::mac64 const& v) const
+	size_t hash<cyng::mac64>::operator()(cyng::mac64 const& v) const
 	{
-		return docscript::hash(v);
+		return cyng::hash(v);
 	}
 }
 

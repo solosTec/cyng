@@ -4,13 +4,13 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_MEMORY_INTERFACE_H
-#define DOCC_VM_MEMORY_INTERFACE_H
+#ifndef CYNG_VM_MEMORY_INTERFACE_H
+#define CYNG_VM_MEMORY_INTERFACE_H
 
 #include <cstddef>
 #include <cyng/obj/object.h>
 
-namespace docscript {
+namespace cyng {
 
 	class memory_interface
 	{

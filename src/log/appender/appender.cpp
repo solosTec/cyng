@@ -9,7 +9,7 @@
 
 #include <sstream>
 
-namespace docscript {
+namespace cyng {
 	namespace logging {
 
 		std::string format(std::chrono::system_clock::time_point tp, severity lev, std::uint32_t tip, std::string const msg) {

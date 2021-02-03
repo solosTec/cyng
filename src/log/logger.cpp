@@ -10,14 +10,14 @@
 
 #include <boost/predef.h>
 
-namespace docscript {
+namespace cyng {
 
 	logger::logger(channel_ptr cp)
 		: channel_(cp)
 	{}
 
 	void logger::push(logging::record const& rec) {
-		channel_->dispatch(0, docscript::make_tuple(rec.tp_, rec.level_, rec.tid(), rec.msg()));
+		channel_->dispatch(0, cyng::make_tuple(rec.tp_, rec.level_, rec.tid(), rec.msg()));
 	}
 
 	void logger::stop() {
@@ -25,7 +25,7 @@ namespace docscript {
 	}
 
 	void logger::set_level(severity lev) {
-		channel_->dispatch(2, docscript::make_tuple(lev));
+		channel_->dispatch(2, cyng::make_tuple(lev));
 	}
 
 }

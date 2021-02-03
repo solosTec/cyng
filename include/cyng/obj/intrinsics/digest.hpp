@@ -4,13 +4,13 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_DIGEST_HPP
-#define DOCC_OBJ_INTRINSCIS_DIGEST_HPP	
+#ifndef CYNG_OBJ_INTRINSCIS_DIGEST_HPP
+#define CYNG_OBJ_INTRINSCIS_DIGEST_HPP	
 
 #include <cstddef>
 #include <array>
 
-namespace docscript {
+namespace cyng {
 
 	template <std::size_t N>
 	struct digest
@@ -64,11 +64,11 @@ namespace std {
 	//	partial specialization
 	//
 	template <std::size_t N>
-	class hash<docscript::digest<N>> {
+	class hash<cyng::digest<N>> {
 	public:
-		size_t operator()(docscript::digest<N> const& d) const
+		size_t operator()(cyng::digest<N> const& d) const
 		{
-			using value_type = typename docscript::digest<N>::value_type;
+			using value_type = typename cyng::digest<N>::value_type;
 
 			std::size_t h{ 0 };
 			auto f = std::hash<value_type>{};

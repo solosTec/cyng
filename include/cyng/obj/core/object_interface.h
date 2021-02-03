@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_OBJ_OBJECT_INTERFACE_H
-#define DOCC_OBJ_OBJECT_INTERFACE_H
+#ifndef CYNG_OBJ_OBJECT_INTERFACE_H
+#define CYNG_OBJ_OBJECT_INTERFACE_H
 
 #include <cyng/obj/type_interface.h>
 
-namespace docscript {
+namespace cyng {
 
 	class obj_interface
 	{

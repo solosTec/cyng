@@ -8,8 +8,8 @@
 
 #define cyng_ADDRESS_MODEL	64
 
-#define cyng_NULL_HASH	0xC4CBA222EDB93665
-#define cyng_EOD_HASH	0xB4B5F60CFCE94CB9
+#define cyng_NULL_HASH	0x7EA1EAC1542483D1
+#define cyng_EOD_HASH	0x9B5C3B0C28AAB4BA
 
 //	cyng_BIG_ENDIAN 
 /* #undef  */

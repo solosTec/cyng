@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_LOG_H
-#define DOCC_LOG_H
+#ifndef CYNG_LOG_H
+#define CYNG_LOG_H
 
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/severity.h>
@@ -18,7 +18,7 @@
 #include <string>
 #include <chrono>
 
-namespace docscript {
+namespace cyng {
 
 
 	class log

@@ -7,7 +7,7 @@
 
 #include <cyng/obj/intrinsics/pid.h>
 
-namespace docscript	{
+namespace cyng	{
 
 	//	comparison
 	bool operator==(pid const& lhs, pid const& rhs) noexcept
@@ -40,7 +40,7 @@ namespace docscript	{
 
 
 namespace std {
-	size_t hash<docscript::pid>::operator()(docscript::pid const& v) const noexcept
+	size_t hash<cyng::pid>::operator()(cyng::pid const& v) const noexcept
 	{
 		return static_cast<size_t>(v.operator std::uint64_t());
 	}

@@ -4,10 +4,10 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_LIBRARY_H
-#define DOCC_VM_LIBRARY_H
+#ifndef CYNG_VM_LIBRARY_H
+#define CYNG_VM_LIBRARY_H
 
-namespace docscript {
+namespace cyng {
 
 	class library
 	{

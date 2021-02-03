@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_SCRIPT_TASK_CONTROLLER_H
-#define DOCC_SCRIPT_TASK_CONTROLLER_H
+#ifndef CYNG_SCRIPT_TASK_CONTROLLER_H
+#define CYNG_SCRIPT_TASK_CONTROLLER_H
 
 #include <cyng/task/scheduler.h>
 #include <cyng/task/registry.h>
@@ -14,7 +14,7 @@
 #include <typeinfo>
 #include <boost/core/demangle.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	std::string cleanup_task_name(std::string const&);
 

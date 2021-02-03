@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_SYS_MEMORY_H
-#define DOCC_SYS_MEMORY_H
+#ifndef CYNG_SYS_MEMORY_H
+#define CYNG_SYS_MEMORY_H
 
 #include <cstdint>
 
-namespace docscript {
+namespace cyng {
 	namespace sys
 	{
 		/**

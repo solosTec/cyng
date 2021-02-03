@@ -4,14 +4,14 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_CONTAINER_CAST_H
-#define DOCC_OBJ_CONTAINER_CAST_H
+#ifndef CYNG_OBJ_CONTAINER_CAST_H
+#define CYNG_OBJ_CONTAINER_CAST_H
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/object_cast.hpp>
 #include <iterator>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * Extract C from obj.
@@ -21,8 +21,8 @@ namespace docscript {
 	 * 
 	 * Example:
 	 * @code
-	 * auto obj = docscript::make_object(docscript::make_tuple(1, 2, 3.4));
-     * auto tpl = docscript::container_cast<docscript::tuple_t>(obj);
+	 * auto obj = cyng::make_object(cyng::make_tuple(1, 2, 3.4));
+     * auto tpl = cyng::container_cast<cyng::tuple_t>(obj);
 	 * @endcode
 	 */
 	//template <typename C >
@@ -43,8 +43,8 @@ namespace docscript {
 	 * 
 	 * Example:
 	 * @code
-	 * auto const obj = docscript::make_object(docscript::make_tuple(1, 2, 3.4));
-	 * auto tpl = docscript::container_cast<docscript::tuple_t>(obj);
+	 * auto const obj = cyng::make_object(cyng::make_tuple(1, 2, 3.4));
+	 * auto tpl = cyng::container_cast<cyng::tuple_t>(obj);
 	 * @endcode
 	 */
 	template <typename C >
@@ -86,7 +86,7 @@ namespace docscript {
 	 *
 	 * Example:
 	 * @code
-	 * auto vec = container_transform<docscript::vector_t>(docscript::make_tuple(1, 2, 3.4));
+	 * auto vec = container_transform<cyng::vector_t>(cyng::make_tuple(1, 2, 3.4));
 	 * @endcode
 	 */
 	template <typename C2, typename C1 >
@@ -97,4 +97,4 @@ namespace docscript {
 
 }
 
-#endif //	DOCC_OBJ_CONTAINER_CAST_H
+#endif //	CYNG_OBJ_CONTAINER_CAST_H

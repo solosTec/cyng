@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_SEVERITY_H
-#define DOCC_OBJ_INTRINSCIS_SEVERITY_H	
+#ifndef CYNG_OBJ_INTRINSCIS_SEVERITY_H
+#define CYNG_OBJ_INTRINSCIS_SEVERITY_H	
 
 #include <cstdint>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * Definition of log levels
@@ -31,9 +31,9 @@ namespace docscript {
 namespace std {
 
 	template <> 
-	class hash<docscript::severity> {
+	class hash<cyng::severity> {
 	public:
-		inline size_t operator()(docscript::severity level) const noexcept
+		inline size_t operator()(cyng::severity level) const noexcept
 		{
 			return static_cast<size_t>(level);
 		}

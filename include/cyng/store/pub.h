@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_PUB_H
-#define DOCC_STORE_PUB_H
+#ifndef CYNG_STORE_PUB_H
+#define CYNG_STORE_PUB_H
 
 #include <cyng/store/key.hpp>
 
 #include <functional>
 #include <boost/uuid/uuid.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	class table;
 	class pub

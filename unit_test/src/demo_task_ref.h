@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_TEST_DEMO_TASK_REF_H
-#define DOCC_TEST_DEMO_TASK_REF_H
+#ifndef CYNG_TEST_DEMO_TASK_REF_H
+#define CYNG_TEST_DEMO_TASK_REF_H
 
 #include <tuple>
 #include <functional>
@@ -14,7 +14,7 @@
 #include <cyng/obj/intrinsics/eod.h>
 
 
-namespace docscript {
+namespace cyng {
 
 	class channel;
 	class demo_task_ref

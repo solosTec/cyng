@@ -6,7 +6,7 @@
 #include <boost/uuid/string_generator.hpp>
 
 
-namespace docscript {
+namespace cyng {
 
 	mesh::mesh(controller& ctl) noexcept
 		: ctl_(ctl)
@@ -76,7 +76,7 @@ namespace docscript {
 
 	void vm_proxy::load(deque_t&& deq) {
 		//	slot 1
-		vm_->dispatch(1, docscript::make_tuple(std::move(deq)));
+		vm_->dispatch(1, cyng::make_tuple(std::move(deq)));
 	}
 
 	void vm_proxy::stop() {
@@ -84,7 +84,7 @@ namespace docscript {
 	}
 
 	boost::uuids::uuid vm_proxy::get_tag() const {
-		return docscript::get_tag(vm_);
+		return cyng::get_tag(vm_);
 	}
 
 }

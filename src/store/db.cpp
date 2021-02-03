@@ -1,7 +1,7 @@
 #include <cyng/store/db.h>
 
 
-namespace docscript {
+namespace cyng {
 
 	db::db()
 		: tables_()

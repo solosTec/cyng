@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_OBJ_WRAPPER_HPP
-#define DOCC_OBJ_WRAPPER_HPP
+#ifndef CYNG_OBJ_WRAPPER_HPP
+#define CYNG_OBJ_WRAPPER_HPP
 
 #include <cyng/obj/core/object_interface.h>
 #include <cyng/obj/core/type.hpp>
@@ -16,7 +16,7 @@
 #include <functional>
 #include <type_traits>
 
-namespace docscript {
+namespace cyng {
 
 	class object;
 

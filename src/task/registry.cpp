@@ -10,7 +10,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	registry::registry(boost::asio::io_context& io)
 		: dispatcher_(io)

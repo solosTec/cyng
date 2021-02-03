@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_BUFFER_H
-#define DOCC_IO_BUFFER_H
+#ifndef CYNG_IO_BUFFER_H
+#define CYNG_IO_BUFFER_H
 
 #include <cyng/obj/intrinsics/buffer.h>
 
 #include <ostream>
 #include <type_traits>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		/**

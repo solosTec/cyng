@@ -7,7 +7,7 @@
 
 #include <cyng/io/io_buffer.h>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		std::string to_hex(buffer_t const& buffer, char sp)

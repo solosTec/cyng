@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_VALUE_CAST_H
-#define DOCC_OBJ_VALUE_CAST_H
+#ifndef CYNG_OBJ_VALUE_CAST_H
+#define CYNG_OBJ_VALUE_CAST_H
 
 #include <cyng/obj/object_cast.hpp>
 #ifdef _DEBUG_OBJECT
 #include <cyng/io/ostream.h>
 #endif
 
-namespace docscript {
+namespace cyng {
 
 	namespace {
 

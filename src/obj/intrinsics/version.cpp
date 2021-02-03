@@ -7,17 +7,17 @@
 
 #include <cyng/obj/intrinsics/version.h>
 
-namespace docscript	{
+namespace cyng	{
 
 }
 
 
 namespace std {
-	size_t hash<docscript::version>::operator()(docscript::version const& v) const noexcept
+	size_t hash<cyng::version>::operator()(cyng::version const& v) const noexcept
 	{
 		return std::hash<std::uint32_t>{}(v.full());
 	}
-	size_t hash<docscript::revision>::operator()(docscript::revision const& r) const noexcept
+	size_t hash<cyng::revision>::operator()(cyng::revision const& r) const noexcept
 	{
 		return std::hash<std::uint64_t>{}(r.full());
 	}

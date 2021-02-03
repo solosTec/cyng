@@ -8,13 +8,13 @@
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/object.h>
 
-namespace docscript	{
+namespace cyng	{
 
 }
 
 
 namespace std {
-	size_t hash<docscript::tuple_t>::operator()(docscript::tuple_t const& tpl) const
+	size_t hash<cyng::tuple_t>::operator()(cyng::tuple_t const& tpl) const
 	{
 		std::size_t h{ 0 };
 		for (auto const& c : tpl) {
@@ -27,7 +27,7 @@ namespace std {
 		return h;
 	}
 
-	size_t hash<docscript::vector_t>::operator()(docscript::vector_t const& vec) const
+	size_t hash<cyng::vector_t>::operator()(cyng::vector_t const& vec) const
 	{
 		std::size_t h{ 0 };
 		for (auto const& c : vec) {
@@ -40,7 +40,7 @@ namespace std {
 		return h;
 	}
 	
-	size_t hash<docscript::deque_t>::operator()(docscript::deque_t const& deq) const
+	size_t hash<cyng::deque_t>::operator()(cyng::deque_t const& deq) const
 	{
 		std::size_t h{ 0 };
 		for (auto const& c : deq) {
@@ -53,9 +53,9 @@ namespace std {
 		return h;
 	}
 
-	size_t hash<docscript::attr_map_t>::operator()(docscript::attr_map_t const& attr_map) const
+	size_t hash<cyng::attr_map_t>::operator()(cyng::attr_map_t const& attr_map) const
 	{
-		auto const f = std::hash<docscript::attr_t>{};
+		auto const f = std::hash<cyng::attr_t>{};
 		std::size_t h{ 0 };
 		for (auto const& attr : attr_map) {
 
@@ -66,16 +66,16 @@ namespace std {
 		}
 		return h;
 	}
-	size_t hash<docscript::attr_t>::operator()(docscript::attr_t const& attr) const
+	size_t hash<cyng::attr_t>::operator()(cyng::attr_t const& attr) const
 	{
 		std::size_t h{ 0 };
-		h ^= std::hash<docscript::attr_t::first_type>{}(attr.first) << 1;
+		h ^= std::hash<cyng::attr_t::first_type>{}(attr.first) << 1;
 		h ^= attr.second.hash() << 1;
 		return h;
 	}
-	size_t hash<docscript::param_map_t>::operator()(docscript::param_map_t const& param_map) const
+	size_t hash<cyng::param_map_t>::operator()(cyng::param_map_t const& param_map) const
 	{
-		auto const f = std::hash<docscript::param_t>{};
+		auto const f = std::hash<cyng::param_t>{};
 		std::size_t h{ 0 };
 		for (auto const& param : param_map) {
 
@@ -86,10 +86,10 @@ namespace std {
 		}
 		return h;
 	}
-	size_t hash<docscript::param_t>::operator()(docscript::param_t const& param) const
+	size_t hash<cyng::param_t>::operator()(cyng::param_t const& param) const
 	{
 		std::size_t h{ 0 };
-		h ^= std::hash<docscript::param_t::first_type>{}(param.first) << 1;
+		h ^= std::hash<cyng::param_t::first_type>{}(param.first) << 1;
 		h ^= param.second.hash() << 1;
 		return h;
 	}

@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_HEX_DUMP_HPP
-#define DOCC_IO_HEX_DUMP_HPP
+#ifndef CYNG_IO_HEX_DUMP_HPP
+#define CYNG_IO_HEX_DUMP_HPP
 
 #include <ostream>
 #include <sstream>
@@ -15,7 +15,7 @@
 #include <type_traits>
 #include <boost/range.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		/**	@brief a hex dumper
@@ -26,7 +26,7 @@ namespace docscript {
 		 *	@code
 		 *		const char* data;
 		 *		size_t size;
-		 *		docscript::io::hex_dump hd;
+		 *		cyng::io::hex_dump hd;
 		 *		hd( std::cout, data, data + size );
 		 *	@endcode
 		 *

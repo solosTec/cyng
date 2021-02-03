@@ -10,14 +10,14 @@
   * Copyright (c) 2021 Sylko Olzscher
   *
   */
-#ifndef DOCC_LOG_APPENDER_ROLLING_FILE_H
-#define DOCC_LOG_APPENDER_ROLLING_FILE_H
+#ifndef CYNG_LOG_APPENDER_ROLLING_FILE_H
+#define CYNG_LOG_APPENDER_ROLLING_FILE_H
 
 #include <cyng/log/appender.h>
 #include <filesystem>
 #include <fstream>
 
-namespace docscript {
+namespace cyng {
 	namespace logging {
 
 		class rolling_file

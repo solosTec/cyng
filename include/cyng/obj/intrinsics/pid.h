@@ -4,14 +4,14 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_PID_H
-#define DOCC_OBJ_INTRINSCIS_PID_H	
+#ifndef CYNG_OBJ_INTRINSCIS_PID_H
+#define CYNG_OBJ_INTRINSCIS_PID_H	
 
 #include <cstdint>
 #include <cstddef>
 #include <boost/process/child.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * process ID
@@ -63,9 +63,9 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class hash<docscript::pid> {
+	class hash<cyng::pid> {
 	public:
-		size_t operator()(docscript::pid const&) const noexcept;
+		size_t operator()(cyng::pid const&) const noexcept;
 	};
 }
 

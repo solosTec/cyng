@@ -4,13 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_PARSER_H
-#define DOCC_IO_PARSER_H
+#ifndef CYNG_IO_PARSER_H
+#define CYNG_IO_PARSER_H
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/object.h>
-//#include <cyng/obj/tag.hpp>
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/buffer_cast.hpp>
 
@@ -19,7 +18,7 @@
 //#include <bit>
 //#include <cyng.h>	//	docc_BIG_ENDIAN
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		/**

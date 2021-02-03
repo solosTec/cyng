@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_SERIALIZE_HPP
-#define DOCC_IO_SERIALIZE_HPP
+#ifndef CYNG_IO_SERIALIZE_HPP
+#define CYNG_IO_SERIALIZE_HPP
 
 #include <cyng/io/io.h>
 #include <cyng/io/ostream.h>
@@ -22,7 +22,7 @@
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/io/serializer/csv.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		template <typename S>

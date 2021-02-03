@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_FUNCTION_CAST_H
-#define DOCC_OBJ_FUNCTION_CAST_H
+#ifndef CYNG_OBJ_FUNCTION_CAST_H
+#define CYNG_OBJ_FUNCTION_CAST_H
 
 #include <cyng/obj/tuple_cast.hpp>
 #include <tuple> 
@@ -14,7 +14,7 @@
 
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	//template<typename... Args>
 	//struct identity { };
@@ -113,4 +113,4 @@ namespace docscript {
 
 }
 
-#endif //	DOCC_OBJ_FUNCTION_CAST_H
+#endif //	CYNG_OBJ_FUNCTION_CAST_H

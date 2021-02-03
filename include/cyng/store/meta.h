@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_META_H
-#define DOCC_STORE_META_H
+#ifndef CYNG_STORE_META_H
+#define CYNG_STORE_META_H
 
 #include <cyng/store/key.hpp>
  //#include <cyng/obj/tag.hpp>
@@ -18,7 +18,7 @@
 #include <boost/assert.hpp>
 #include <boost/algorithm/string.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	struct column
 	{

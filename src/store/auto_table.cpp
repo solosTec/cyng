@@ -1,7 +1,7 @@
 #include <cyng/store/auto_table.h>
 
 
-namespace docscript {
+namespace cyng {
 
 	auto_table::auto_table(meta_store const& m, key_t const& key, auto_key_f f)
 		: table(m)

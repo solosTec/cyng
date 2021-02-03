@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_VERSION_H
-#define DOCC_OBJ_INTRINSCIS_VERSION_H	
+#ifndef CYNG_OBJ_INTRINSCIS_VERSION_H
+#define CYNG_OBJ_INTRINSCIS_VERSION_H	
 
 #include <cstdint>
 #include <boost/predef.h>
@@ -16,7 +16,7 @@
 #endif
 // #include <compare>	//	requires gcc 10.x
 
-namespace docscript {
+namespace cyng {
 
 	namespace details	{
 
@@ -127,14 +127,14 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class hash<docscript::version> {
+	class hash<cyng::version> {
 	public:
-		size_t operator()(docscript::version const&) const noexcept;
+		size_t operator()(cyng::version const&) const noexcept;
 	};
 	template <>
-	class hash<docscript::revision> {
+	class hash<cyng::revision> {
 	public:
-		size_t operator()(docscript::revision const&) const noexcept;
+		size_t operator()(cyng::revision const&) const noexcept;
 	};
 
 }

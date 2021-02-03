@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_KEY_HPP
-#define DOCC_STORE_KEY_HPP
+#ifndef CYNG_STORE_KEY_HPP
+#define CYNG_STORE_KEY_HPP
 
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/container.h>
@@ -15,7 +15,7 @@
 #include <shared_mutex>
 
 
-namespace docscript {
+namespace cyng {
 
 	using key_t = vector_t;
 	using key_list_t = std::list<key_t>;	//	not unique
@@ -24,7 +24,7 @@ namespace docscript {
 	template < typename ...Args >
 	key_t key_generator(Args&&... args)
 	{
-		return container_transform<vector_t>(docscript::make_tuple(std::forward<Args>(args)...));
+		return container_transform<vector_t>(cyng::make_tuple(std::forward<Args>(args)...));
 	}
 
 	template < typename ...Args >
@@ -56,9 +56,9 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class equal_to<docscript::key_t> {
+	class equal_to<cyng::key_t> {
 	public:
-		bool operator()(docscript::key_t const& pk1, docscript::key_t const& pk2) const noexcept;
+		bool operator()(cyng::key_t const& pk1, cyng::key_t const& pk2) const noexcept;
 	};
 }
 

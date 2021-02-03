@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_SCRIPT_TASK_SCHEDULER_H
-#define DOCC_SCRIPT_TASK_SCHEDULER_H
+#ifndef CYNG_SCRIPT_TASK_SCHEDULER_H
+#define CYNG_SCRIPT_TASK_SCHEDULER_H
 
 #include <boost/asio.hpp>
 #include <cyng/obj/intrinsics/container.h>
@@ -13,7 +13,7 @@
 
 #include <thread>
 
-namespace docscript {
+namespace cyng {
 
 	class scheduler
 	{

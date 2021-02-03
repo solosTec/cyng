@@ -11,7 +11,7 @@
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/algorithm/string.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	std::string make_string(buffer_t const& buffer) {
 		return std::string(std::begin(buffer), std::end(buffer));

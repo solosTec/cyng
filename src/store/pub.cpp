@@ -1,7 +1,7 @@
 #include <cyng/store/pub.h>
 
 
-namespace docscript {
+namespace cyng {
 
 	pub::pub()
 	{}

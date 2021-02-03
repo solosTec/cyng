@@ -9,7 +9,7 @@
 #include <functional>
 #include <boost/predef.h>
 
-namespace docscript {
+namespace cyng {
 	namespace logging {
 
 		record::record(severity lev, std::string msg)

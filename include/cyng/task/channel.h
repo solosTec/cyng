@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_SCRIPT_TASK_CHANNEL_H
-#define DOCC_SCRIPT_TASK_CHANNEL_H
+#ifndef CYNG_SCRIPT_TASK_CHANNEL_H
+#define CYNG_SCRIPT_TASK_CHANNEL_H
 
 #include <boost/asio.hpp>
 #include <cstdint>
@@ -16,7 +16,7 @@
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/task/task_interface.h>
 
-namespace docscript {
+namespace cyng {
 
 	class channel;
 	using channel_ptr = std::shared_ptr<channel>;

@@ -6,7 +6,7 @@
  */ 
 #include <cyng/obj/tag.hpp>
 
-namespace docscript {
+namespace cyng {
 }
 
 namespace std {

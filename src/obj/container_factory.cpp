@@ -8,7 +8,7 @@
 #include <cyng/obj/container_factory.hpp>
 
 
-namespace docscript {
+namespace cyng {
 
 	attr_map_factory::attr_map_factory()
 		: map_()

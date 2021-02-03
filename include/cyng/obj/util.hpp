@@ -4,21 +4,21 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_UTIL_HPP
-#define DOCC_OBJ_UTIL_HPP
+#ifndef CYNG_OBJ_UTIL_HPP
+#define CYNG_OBJ_UTIL_HPP
 
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/buffer_cast.hpp>
 
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * Create an object from each parameter element and add
 	 * it to a list of objects (tuple_t)
 	 * 
-	 * To not be confused with std::make_tuple() add the namespace docscript.
+	 * To not be confused with std::make_tuple() add the namespace cyng.
 	 */
 	template < typename ...Args >
 	[[nodiscard]]
@@ -171,4 +171,4 @@ namespace docscript {
 
 }
 
-#endif //	DOCC_OBJ_UTIL_HPP
+#endif //	CYNG_OBJ_UTIL_HPP

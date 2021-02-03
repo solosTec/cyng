@@ -4,14 +4,14 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_OBJECT_CAST_H
-#define DOCC_OBJ_OBJECT_CAST_H
+#ifndef CYNG_OBJ_OBJECT_CAST_H
+#define CYNG_OBJ_OBJECT_CAST_H
 
 #include <cyng/obj/core/wrapper.hpp>
 #include <cyng/obj/object.h>
 #include <cyng/obj/tracker.h>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * If the hidden value is not of type T the function returns a nullptr.

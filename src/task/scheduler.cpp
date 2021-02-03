@@ -1,7 +1,7 @@
 #include <cyng/task/scheduler.h>
 #include <algorithm>
 
-namespace docscript {
+namespace cyng {
 
 	scheduler::scheduler()
 		: ctx_(static_cast<std::size_t>(std::thread::hardware_concurrency()) * 2)	//	hint

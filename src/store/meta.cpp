@@ -1,7 +1,7 @@
 #include <cyng/store/meta.h>
 
 
-namespace docscript {
+namespace cyng {
 
 	column::column(std::string const& name, std::uint16_t type)
 		: name_(name)

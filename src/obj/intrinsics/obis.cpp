@@ -11,7 +11,7 @@
 
 #include <numeric>
 
-namespace docscript	{
+namespace cyng	{
 
 	std::uint64_t obis::to_uint64() const
 	{
@@ -86,7 +86,7 @@ namespace docscript	{
 
 
 namespace std {
-	size_t hash<docscript::obis>::operator()(docscript::obis const& v) const noexcept
+	size_t hash<cyng::obis>::operator()(cyng::obis const& v) const noexcept
 	{
 		return v.to_uint64();
 	}

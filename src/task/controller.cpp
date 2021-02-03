@@ -2,7 +2,7 @@
 #include <boost/algorithm/string.hpp>
 
 
-namespace docscript {
+namespace cyng {
 
     controller::controller()
         : scheduler()

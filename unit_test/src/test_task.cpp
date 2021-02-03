@@ -14,15 +14,15 @@ BOOST_AUTO_TEST_SUITE(task_suite)
 
 BOOST_AUTO_TEST_CASE(controller)
 {
-	docscript::controller ctl;
-	auto cp = ctl.create_channel<docscript::demo_task>();
+	cyng::controller ctl;
+	auto cp = ctl.create_channel<cyng::demo_task>();
 	BOOST_REQUIRE(cp); 
 	if (cp) {
 		BOOST_REQUIRE_EQUAL(cp->get_name(), "demo_task");
-		cp->dispatch(0, docscript::make_tuple());
-		cp->dispatch(1, docscript::make_tuple(2));
-		cp->dispatch(2, docscript::make_tuple(2, "dude", 3.f));
-		cp->dispatch(3, docscript::make_tuple(23));
+		cp->dispatch(0, cyng::make_tuple());
+		cp->dispatch(1, cyng::make_tuple(2));
+		cp->dispatch(2, cyng::make_tuple(2, "dude", 3.f));
+		cp->dispatch(3, cyng::make_tuple(23));
 		BOOST_CHECK(cp->stop());
 	}
 	ctl.stop();
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(controller)
 
 BOOST_AUTO_TEST_CASE(scheduler)
 {
-	docscript::scheduler s;
+	cyng::scheduler s;
 	boost::asio::steady_timer timer(s.get_ctx(), boost::asio::chrono::seconds(5));
 	timer.async_wait([](boost::system::error_code const& ec) {
 		//std::cout << ec.value() << " - " << ec.message() << std::endl;
@@ -42,8 +42,8 @@ BOOST_AUTO_TEST_CASE(scheduler)
 
 BOOST_AUTO_TEST_CASE(named)
 {
-	docscript::controller ctl;
-	ctl.create_named_channel<docscript::demo_task>("dude");
+	cyng::controller ctl;
+	ctl.create_named_channel<cyng::demo_task>("dude");
 	auto channels = ctl.get_registry().lookup("dude");
 	BOOST_REQUIRE(!channels.empty());
 	if (!channels.empty()) {
@@ -56,14 +56,14 @@ BOOST_AUTO_TEST_CASE(named)
 
 BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 {
-	docscript::controller ctl;
-	ctl.create_named_channel_with_ref<docscript::demo_task_ref>("dude");
+	cyng::controller ctl;
+	ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
 	auto channels = ctl.get_registry().lookup("dude");
 	BOOST_REQUIRE(!channels.empty());
 	if (!channels.empty()) {
 		BOOST_REQUIRE_EQUAL(channels.size(), 1);
 		BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
-		channels.front()->dispatch(1, docscript::make_tuple(2));
+		channels.front()->dispatch(1, cyng::make_tuple(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));

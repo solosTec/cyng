@@ -1,7 +1,7 @@
 #include <cyng/vm/memory.h>
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	memory::memory()
 		: mem_()

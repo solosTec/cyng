@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_OBJ_OBJECT_H
-#define DOCC_OBJ_OBJECT_H
+#ifndef CYNG_OBJ_OBJECT_H
+#define CYNG_OBJ_OBJECT_H
 
 #include <cyng/obj/type_interface.h>
 #include <cyng/obj/tracker.h>
@@ -14,7 +14,7 @@
 #include <utility>
 // #include <compare>	//	requires gcc 10.x
 
-namespace docscript {
+namespace cyng {
 
 	class obj_interface;
 	class object
@@ -136,9 +136,9 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class hash<docscript::object> {
+	class hash<cyng::object> {
 	public:
-		size_t operator()(docscript::object const& obj) const;
+		size_t operator()(cyng::object const& obj) const;
 	};
 }
 

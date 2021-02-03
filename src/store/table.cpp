@@ -1,7 +1,7 @@
 #include <cyng/store/table.h>
 
 
-namespace docscript {
+namespace cyng {
 
 	table::table(meta_store const& m)
 		: pub()

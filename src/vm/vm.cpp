@@ -8,7 +8,7 @@
 #endif
 
 
-namespace docscript {
+namespace cyng {
 
 	vm_base::vm_base(mesh& fab)
 		: vm_base(fab, boost::uuids::nil_uuid())	//	delegate

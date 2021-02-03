@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_SYS_HOST_H
-#define DOCC_SYS_HOST_H
+#ifndef CYNG_SYS_HOST_H
+#define CYNG_SYS_HOST_H
 
 /** @file host.h
  * Collect some compile time information.
@@ -18,7 +18,7 @@
 #include <boost/asio/version.hpp>
 #include <boost/beast/version.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace sys
 	{
 		constexpr std::uint32_t get_cpp_version() {

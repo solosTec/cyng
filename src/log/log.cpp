@@ -7,7 +7,7 @@
 #include <cyng/log/log.h>
 #include <cyng/io/ostream.h>
 
-namespace docscript {
+namespace cyng {
 
 	log::log()
 		: sigs_{

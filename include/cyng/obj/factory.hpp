@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_FACTORY_HPP
-#define DOCC_OBJ_FACTORY_HPP
+#ifndef CYNG_OBJ_FACTORY_HPP
+#define CYNG_OBJ_FACTORY_HPP
 
 #include <cyng/obj/core/wrapper.hpp>
 #include <cyng/obj/object.h>
@@ -13,7 +13,7 @@
 #include <cyng/io/ostream.h>
 #endif
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * produce the null object
@@ -280,4 +280,4 @@ namespace docscript {
 
 }
 
-#endif //	DOCC_OBJ_FACTORY_HPP
+#endif //	CYNG_OBJ_FACTORY_HPP

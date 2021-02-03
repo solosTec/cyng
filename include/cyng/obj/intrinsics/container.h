@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_CONTAINER_H
-#define DOCC_OBJ_INTRINSCIS_CONTAINER_H	
+#ifndef CYNG_OBJ_INTRINSCIS_CONTAINER_H
+#define CYNG_OBJ_INTRINSCIS_CONTAINER_H	
 
 #include <list>
 #include <vector>
@@ -15,7 +15,7 @@
 #include <string>
 #include <cstddef>	//	std::size_t
 
-namespace docscript {
+namespace cyng {
 
 	class object;
 
@@ -47,39 +47,39 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class hash<docscript::tuple_t> {
+	class hash<cyng::tuple_t> {
 	public:
-		size_t operator()(docscript::tuple_t const&) const;
+		size_t operator()(cyng::tuple_t const&) const;
 	};
 	template <>
-	class hash<docscript::vector_t> {
+	class hash<cyng::vector_t> {
 	public:
-		size_t operator()(docscript::vector_t const&) const;
+		size_t operator()(cyng::vector_t const&) const;
 	};
 	template <>
-	class hash<docscript::deque_t> {
+	class hash<cyng::deque_t> {
 	public:
-		size_t operator()(docscript::deque_t const&) const;
+		size_t operator()(cyng::deque_t const&) const;
 	};
 	template <>
-	class hash<docscript::attr_map_t> {
+	class hash<cyng::attr_map_t> {
 	public:
-		size_t operator()(docscript::attr_map_t const&) const;
+		size_t operator()(cyng::attr_map_t const&) const;
 	};
 	template <>
-	class hash<docscript::attr_t> {
+	class hash<cyng::attr_t> {
 	public:
-		size_t operator()(docscript::attr_t const&) const;
+		size_t operator()(cyng::attr_t const&) const;
 	};
 	template <>
-	class hash<docscript::param_map_t> {
+	class hash<cyng::param_map_t> {
 	public:
-		size_t operator()(docscript::param_map_t const&) const;
+		size_t operator()(cyng::param_map_t const&) const;
 	};
 	template <>
-	class hash<docscript::param_t> {
+	class hash<cyng::param_t> {
 	public:
-		size_t operator()(docscript::param_t const&) const;
+		size_t operator()(cyng::param_t const&) const;
 	};
 
 }

@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_SCRIPT_TASK_HPP
-#define DOCC_SCRIPT_TASK_HPP
+#ifndef CYNG_SCRIPT_TASK_HPP
+#define CYNG_SCRIPT_TASK_HPP
 
 #include <cyng/task/channel.h>
 #include <cyng/task/registry.h>
@@ -16,7 +16,7 @@
 #include <cyng/obj/intrinsics/eod.h>
 #include <cyng/obj/util.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	namespace {
 		template <std::size_t N>
@@ -136,7 +136,7 @@ namespace docscript {
 			//	call the last entry
 			//
 			//dispatch(signature_count_, tuple_t{});
-			dispatch(stop_idx_, docscript::make_tuple(eod{}));
+			dispatch(stop_idx_, cyng::make_tuple(eod{}));
 
 			unregister_this(cb);
 		}

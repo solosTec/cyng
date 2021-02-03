@@ -8,7 +8,7 @@
 #include <cyng/obj/intrinsics/buffer.h>
 #include <algorithm>
 
-namespace docscript	{
+namespace cyng	{
 	buffer_t make_buffer(std::initializer_list<std::uint8_t> ilist)
 	{
 		buffer_t tmp;
@@ -51,9 +51,9 @@ namespace docscript	{
 
 namespace std {
 
-	size_t hash<docscript::buffer_t>::operator()(docscript::buffer_t const& v) const
+	size_t hash<cyng::buffer_t>::operator()(cyng::buffer_t const& v) const
 	{
-			return docscript::hash(v);
+			return cyng::hash(v);
 	}
 }
 

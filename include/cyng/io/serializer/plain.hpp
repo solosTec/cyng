@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_PLAIN_HPP
-#define DOCC_IO_PLAIN_HPP
+#ifndef CYNG_IO_PLAIN_HPP
+#define CYNG_IO_PLAIN_HPP
 
 #include <cyng/io/io.h>
 #include <boost/uuid/uuid.hpp>
@@ -14,7 +14,7 @@
 #include <boost/asio/ip/udp.hpp>
 #include <boost/asio/ip/icmp.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		template <>

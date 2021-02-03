@@ -4,15 +4,15 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_AES_KEY_HPP
-#define DOCC_OBJ_INTRINSCIS_AES_KEY_HPP	
+#ifndef CYNG_OBJ_INTRINSCIS_AES_KEY_HPP
+#define CYNG_OBJ_INTRINSCIS_AES_KEY_HPP	
 
 #include <cstddef>
 #include <array>
 #include <type_traits>
 #include <cyng/obj/intrinsics/buffer.h>
 
-namespace docscript {
+namespace cyng {
 
 	/**
 	 * @tparam N bitsize of AES key (possible values are 128, 196, 256)
@@ -93,11 +93,11 @@ namespace std {
 	//	partial specialization
 	//
 	template <std::size_t N>
-	class hash<docscript::aes_key<N>> {
+	class hash<cyng::aes_key<N>> {
 	public:
-		size_t operator()(docscript::aes_key<N> const& key) const
+		size_t operator()(cyng::aes_key<N> const& key) const
 		{
-			using value_type = typename docscript::aes_key<N>::value_type;
+			using value_type = typename cyng::aes_key<N>::value_type;
 
 			std::size_t h{ 0 };
 			auto f = std::hash<value_type>{};

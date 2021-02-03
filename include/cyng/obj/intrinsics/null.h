@@ -4,10 +4,10 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_NULL_H
-#define DOCC_OBJ_INTRINSCIS_NULL_H	
+#ifndef CYNG_OBJ_INTRINSCIS_NULL_H
+#define CYNG_OBJ_INTRINSCIS_NULL_H	
 
-namespace docscript {
+namespace cyng {
 
 	/** @brief Implementing the concept of an empty value (the NUL value)
 	 * 
@@ -23,9 +23,9 @@ namespace docscript {
 namespace std {
 
 	template <>
-	class hash<docscript::null> {
+	class hash<cyng::null> {
 	public:
-		inline size_t operator()(docscript::null) const noexcept
+		inline size_t operator()(cyng::null) const noexcept
 		{
 			//	see cyng.h
 			return cyng_NULL_HASH;

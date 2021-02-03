@@ -26,7 +26,7 @@
 #endif
 
 
-namespace docscript {
+namespace cyng {
 	namespace sys
 	{
 		std::uint64_t get_total_physical_memory() {

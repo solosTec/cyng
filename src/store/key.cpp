@@ -1,7 +1,7 @@
 #include <cyng/store/key.hpp>
 
 
-namespace docscript {
+namespace cyng {
 
 	body::body()
 		: data_()
@@ -25,9 +25,9 @@ namespace docscript {
 
 namespace std {
 
-	bool equal_to<docscript::key_t>::operator()(docscript::key_t const& pk1, docscript::key_t const& pk2) const noexcept {
+	bool equal_to<cyng::key_t>::operator()(cyng::key_t const& pk1, cyng::key_t const& pk2) const noexcept {
 
-		static const hash<docscript::key_t> h;
+		static const hash<cyng::key_t> h;
 
 		//
 		//	same values generate the same hash

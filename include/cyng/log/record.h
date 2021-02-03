@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_LOG_RECORD_H
-#define DOCC_LOG_RECORD_H
+#ifndef CYNG_LOG_RECORD_H
+#define CYNG_LOG_RECORD_H
 
 #include <cyng/obj/intrinsics/severity.h>
 #include <cyng/io/ostream.h>
@@ -17,7 +17,7 @@
 #include <memory>
 
 
-namespace docscript {
+namespace cyng {
 
 	namespace logging	{	//	don't collide with store records
 		struct record : public std::enable_shared_from_this<record> {
@@ -40,7 +40,7 @@ namespace docscript {
 			template < typename T >
 			friend record& operator<< (record& rec, T const& v)
 			{
-				using docscript::operator<<;
+				using cyng::operator<<;
 
 				rec.stream_ << v;
 				return rec;
@@ -96,33 +96,33 @@ namespace docscript {
 //
 #define CYNG_LOG(l,s,m)	\
 	{	\
-		using docscript::operator<<; \
-		auto __msg = docscript::logging::record::create(s);	\
+		using cyng::operator<<; \
+		auto __msg = cyng::logging::record::create(s);	\
 		__msg << m;	\
 		l.push(*__msg);	\
 	}
 
 #define CYNG_LOG_TRACE(l,m)	\
-	CYNG_LOG(l,docscript::severity::LEVEL_TRACE,m)
+	CYNG_LOG(l,cyng::severity::LEVEL_TRACE,m)
 
 #ifdef _DEBUG
 #define CYNG_LOG_DEBUG(l,m)	\
-	CYNG_LOG(l,docscript::severity::LEVEL_DEBUG,m)
+	CYNG_LOG(l,cyng::severity::LEVEL_DEBUG,m)
 #else
 #define CYNG_LOG_DEBUG(l,m)	\
 	boost::ignore_unused(l);
 #endif
 
 #define CYNG_LOG_INFO(l,m)	\
-	CYNG_LOG(l,docscript::severity::LEVEL_INFO,m)
+	CYNG_LOG(l,cyng::severity::LEVEL_INFO,m)
 
 #define CYNG_LOG_WARNING(l,m)	\
-	CYNG_LOG(l,docscript::severity::LEVEL_WARNING,m)
+	CYNG_LOG(l,cyng::severity::LEVEL_WARNING,m)
 
 #define CYNG_LOG_ERROR(l,m)	\
-	CYNG_LOG(l,docscript::severity::LEVEL_ERROR,m)
+	CYNG_LOG(l,cyng::severity::LEVEL_ERROR,m)
 
 #define CYNG_LOG_FATAL(l,m)	\
-	CYNG_LOG(l,docscript::severity::LEVEL_FATAL,m)
+	CYNG_LOG(l,cyng::severity::LEVEL_FATAL,m)
 
 #endif

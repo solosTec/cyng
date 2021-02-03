@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_STORE_RECORD_H
-#define DOCC_STORE_RECORD_H
+#ifndef CYNG_STORE_RECORD_H
+#define CYNG_STORE_RECORD_H
 
 #include <cyng/store/key.hpp>
 #include <cyng/store/meta.h>
@@ -13,7 +13,7 @@
 #include <functional>
 #include <boost/uuid/uuid.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	class record 
 	{

@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef DOCC_OBJ_TAG_HPP
-#define DOCC_OBJ_TAG_HPP
+#ifndef CYNG_OBJ_TAG_HPP
+#define CYNG_OBJ_TAG_HPP
 
 #include <cstdint>
 #include <cstddef>
@@ -38,7 +38,7 @@
 
 #include <cyng/meta.hpp>
 
-namespace docscript {
+namespace cyng {
 	namespace traits {
 
 		using tag_t = std::tuple<

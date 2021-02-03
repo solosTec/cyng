@@ -3,7 +3,7 @@
 #include <cyng/obj/object.h>
 
 
-namespace docscript {
+namespace cyng {
 
 
     channel::channel(boost::asio::io_context& io, task_interface* tsk, std::string name)

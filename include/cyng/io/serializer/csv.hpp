@@ -4,12 +4,12 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_IO_CSV_HPP
-#define DOCC_IO_CSV_HPP
+#ifndef CYNG_IO_CSV_HPP
+#define CYNG_IO_CSV_HPP
 
 #include <cyng/io/io.h>
 
-namespace docscript {
+namespace cyng {
 	namespace io {
 
 		template <>

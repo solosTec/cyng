@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_OBJ_INTRINSCIS_OBIS_H
-#define DOCC_OBJ_INTRINSCIS_OBIS_H	
+#ifndef CYNG_OBJ_INTRINSCIS_OBIS_H
+#define CYNG_OBJ_INTRINSCIS_OBIS_H	
 
 #include <cyng/obj/intrinsics/buffer.h>
 
@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <boost/assert.hpp>
 
-namespace docscript {
+namespace cyng {
 
 	class obis
 	{
@@ -127,9 +127,9 @@ namespace docscript {
 namespace std {
 
 	template <> 
-	class hash<docscript::obis> {
+	class hash<cyng::obis> {
 	public:
-		size_t operator()(docscript::obis const&) const noexcept;
+		size_t operator()(cyng::obis const&) const noexcept;
 	};
 }
 

@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher
  *
  */
-#ifndef DOCC_VM_VM_H
-#define DOCC_VM_VM_H
+#ifndef CYNG_VM_VM_H
+#define CYNG_VM_VM_H
 
 #include <cyng/vm/context.h>
 #include <cyng/meta.hpp>
@@ -22,7 +22,7 @@
 #endif
 
 
-namespace docscript {
+namespace cyng {
 
 	class mesh;
 

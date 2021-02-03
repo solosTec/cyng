@@ -6,7 +6,7 @@
  */ 
 #include <cyng/log/appender/sys_log.h>
 
-namespace docscript {
+namespace cyng {
 	namespace logging {
 	}
 }
