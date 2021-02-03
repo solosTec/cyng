@@ -6,9 +6,15 @@ cmake_minimum_required(VERSION 3.14...3.19)
 # cmake -DBOOST_ROOT=/home/sol/projects/install/x64/boost -G "Ninja" ..
 #
 
+#
+# get time stamp of this build
+# produce variables _THIS_YEAR and _TWEAK_ID
+#
+include (cmake/time_stamp.cmake)
+
 project(
     cyng
-    VERSION 0.9.0.0
+    VERSION 0.9.0.${_TWEAK_ID}
     LANGUAGES CXX
 )
 

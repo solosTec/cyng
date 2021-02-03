@@ -7,12 +7,14 @@ set (log_cpp
     src/log/log.cpp
     src/log/record.cpp
     src/log/logger.cpp
+    src/log/conv.cpp
 )
     
 set (log_h
     include/cyng/log/log.h
     include/cyng/log/record.h
     include/cyng/log/logger.h
+    include/cyng/log/conv.h
 )
 
 set (log_appender

@@ -1,7 +1,7 @@
 #include <cyng/sys/memory.h>
 
 #include <boost/predef.h>
-#if BOOST_OS_WINDOWS
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
 #include <Windows.h>
 #include <psapi.h>
@@ -11,7 +11,7 @@
 #include <cyng/io/ostream.h>
 #pragma comment(lib, "Psapi.lib")
 
-#elif BOOST_OS_LINUX
+#elif defined(BOOST_OS_LINUX_AVAILABLE)
 
 #include "sys/types.h"
 #include "sys/sysinfo.h"
@@ -30,14 +30,14 @@ namespace cyng {
 	namespace sys
 	{
 		std::uint64_t get_total_physical_memory() {
-#if BOOST_OS_WINDOWS
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
 			MEMORYSTATUSEX memInfo;
 			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
 			GlobalMemoryStatusEx(&memInfo);
 			return static_cast<std::uint64_t>(memInfo.ullTotalPhys);	//	ullAvailPhys
 
-#elif BOOST_OS_LINUX			
+#elif defined(BOOST_OS_LINUX_AVAILABLE)
 			struct sysinfo memInfo;
 			sysinfo(&memInfo);
 			//Multiply in next statement to avoid int overflow on right hand side...

@@ -10,6 +10,7 @@
 #include <string>
 #include <chrono>
 #include <filesystem>
+#include <sstream>
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/system/error_code.hpp>
@@ -182,6 +183,16 @@ namespace cyng {
 	 * object serialization
 	 */
 	std::ostream& operator<<(std::ostream& os, object const&);
+
+	/**
+	 * generic to_string() convert
+	 */
+	template <typename T>
+	std::string to_string(T const& v) {
+		std::stringstream ss;
+		ss << v;
+		return ss.str();
+	}
 
 }
 #endif

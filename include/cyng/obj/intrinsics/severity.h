@@ -16,13 +16,13 @@ namespace cyng {
 	 */
 	enum class severity : std::uint8_t
 	{
-		LEVEL_ALL,	//	meta
 		LEVEL_TRACE,
 		LEVEL_DEBUG,
 		LEVEL_INFO,
 		LEVEL_WARNING,
 		LEVEL_ERROR,
 		LEVEL_FATAL,
+		LEVEL_ALL	//	meta
 	};
 }
 

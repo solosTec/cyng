@@ -13,6 +13,7 @@
 
 #include <string>
 #include <cstddef>
+#include <chrono>
 #include <cyng.h>
 #include <boost/version.hpp>
 #include <boost/asio/version.hpp>
@@ -57,6 +58,35 @@ namespace cyng {
 			return cyng_CROSSCOMPILING;
 		}
 
+		constexpr std::uint32_t get_build_year() {
+			return cyng_YEAR;
+		}
+
+		constexpr const char* get_build_time() {
+			return cyng_BUILD_AT;
+		}
+		
+//#define cyng_HOST_FQDN "leo"
+		constexpr std::uint32_t get_number_of_logical_cores() {
+			return cyng_HOST_NUMBER_OF_PHYSICAL_CORES;
+		}
+		constexpr std::uint32_t get_number_of_physical_cores() {
+			return cyng_HOST_NUMBER_OF_PHYSICAL_CORES;
+		}
+		constexpr std::uint32_t get_total_virtual_memory() {
+			return cyng_TOTAL_VIRTUAL_MEMORY;
+		}
+		constexpr std::uint32_t get_total_physical_memory() {
+			return cyng_TOTAL_PHYSICAL_MEMORY;
+		}
+		constexpr const char* get_processor_description() {
+			return cyng_PROCESSOR_DESCRIPTION;
+		}
+
+		/**
+		 * system uptime 
+		 */
+		std::chrono::milliseconds get_uptime();
 	}
 }
 #endif
