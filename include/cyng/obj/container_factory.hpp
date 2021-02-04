@@ -19,7 +19,7 @@ namespace cyng {
 	template < typename ...Args >
 	[[nodiscard]]
 	object tuple_factory(Args&&... args) {
-		return make_object(make_tuple(std::forward<Args>(args)...));
+		return make_object(cyng::make_tuple(std::forward<Args>(args)...));
 	}
 
 	template < typename T >

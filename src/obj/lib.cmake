@@ -64,9 +64,18 @@ set (object_cast
     include/cyng/obj/container_cast.hpp
 )
 
+set (object_algorithm 
+    include/cyng/obj/algorithm/find.h
+    include/cyng/obj/algorithm/reader.hpp
+    src/obj/find.cpp    
+    src/obj/reader.cpp
+)
+
+
 source_group("intrinscis" FILES ${object_intrinscis})
 source_group("core" FILES ${object_core})
 source_group("cast" FILES ${object_cast})
+source_group("algorithm" FILES ${object_algorithm})
 
 # define the docscript lib
 set (object_lib
@@ -75,5 +84,6 @@ set (object_lib
   ${object_intrinscis}
   ${object_core}
   ${object_cast}
+  ${object_algorithm}
 )
 

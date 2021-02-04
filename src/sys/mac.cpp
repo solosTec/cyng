@@ -40,7 +40,7 @@ namespace cyng {
 				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
 
 				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
-					result.push_back(mac48(pAdapterInfo->PhysicalAddress[0]
+					vec.push_back(mac48(pAdapterInfo->PhysicalAddress[0]
 						, pAdapterInfo->PhysicalAddress[1]
 						, pAdapterInfo->PhysicalAddress[2]
 						, pAdapterInfo->PhysicalAddress[3]
@@ -49,6 +49,7 @@ namespace cyng {
 
 					pAdapterInfo = pAdapterInfo->Next;                      // Progress through linked list
 				};
+			}
 		}
 #else
         std::vector<mac48> get_mac48(std::string const& name)	{

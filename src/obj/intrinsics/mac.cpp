@@ -6,10 +6,10 @@
  */
 
 #include <cyng/obj/intrinsics/mac.h>
-#include <cyng/io/ostream.h>
+//#include <cyng/io/ostream.h>
 #include <random>
 #include <algorithm>
-#include <iostream>
+//#include <iostream>
 
 #include <boost/predef.h>
 #include <boost/assert.hpp>
@@ -85,9 +85,7 @@ namespace cyng
 	//	comparison
 	bool operator==(mac48 const& lhs, mac48 const& rhs) noexcept
 	{
-		std::cout << lhs << " == " << rhs << std::endl;		
-		//return lhs.get_octets() == rhs.get_octets();
-		return std::equal(std::begin(lhs.get_octets()), std::end(lhs.get_octets()), std::begin(rhs.get_octets()));
+		return lhs.get_octets() == rhs.get_octets();
 	}
 	bool operator<(mac48 const& lhs, mac48 const& rhs) noexcept
 	{

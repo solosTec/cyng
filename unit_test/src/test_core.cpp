@@ -11,6 +11,8 @@
 #include <cyng/obj/tuple_cast.hpp>
 #include <cyng/obj/function_cast.hpp>
 #include <cyng/obj/container_cast.hpp>
+#include <cyng/obj/algorithm/find.h>
+#include <cyng/obj/algorithm/reader.hpp>
 #include <cyng.h>
 
 #include <boost/uuid/nil_generator.hpp>
@@ -246,6 +248,49 @@ BOOST_AUTO_TEST_CASE(obis)
     BOOST_REQUIRE_EQUAL(cyng::to_str(o), "010203040506");
     //std::cout << std::hex << o.to_uint64() << std::endl;
     BOOST_REQUIRE_EQUAL(o.to_uint64(), 0x010203040506);
+}
+
+BOOST_AUTO_TEST_CASE(algorithm)
+{
+    auto o1 = cyng::tuple_factory(
+        cyng::make_param("one", 1), 
+        cyng::make_param("two", 2), 
+        cyng::make_param("three", 3),
+        cyng::make_param("four", 4)
+    );
+    auto const o2 = cyng::find(o1, "two");
+    auto n2 = cyng::numeric_cast<std::int32_t>(o2, 0);
+    BOOST_REQUIRE_EQUAL(n2, 2);
+
+    auto const reader = cyng::make_reader(std::move(o1));
+    BOOST_REQUIRE(!o1); //  empty
+    BOOST_REQUIRE(reader.is_owner());
+    auto o3 = reader["three"].get();
+    auto n3 = cyng::numeric_cast<std::int32_t>(o3, 0);
+    BOOST_REQUIRE_EQUAL(n3, 3);
+
+    auto const o4 = cyng::tuple_factory(
+        cyng::make_attr(1, "one"),
+        cyng::make_attr(2, "two"),
+        cyng::make_attr(3, cyng::tuple_factory(
+            cyng::make_param("one", 1),
+            cyng::make_param("two", 2),
+            cyng::make_param("three", 3),
+            cyng::make_param("four", 4)
+        )),
+        cyng::make_attr(4, "four")
+    );
+    auto const r4 = cyng::make_reader(o4);
+    BOOST_REQUIRE(o4); //  not empty
+    BOOST_REQUIRE(!r4.is_owner());
+    auto const o5 = r4[4].get();
+    BOOST_REQUIRE_EQUAL(cyng::value_cast(o5, ""), "four");
+
+    auto const o6 = r4[3]["two"].get();
+    auto n6 = cyng::numeric_cast<std::int32_t>(o6, 0);
+    BOOST_REQUIRE_EQUAL(n6, 2);
+
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
