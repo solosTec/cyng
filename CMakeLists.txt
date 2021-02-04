@@ -137,6 +137,18 @@ if (SQLITE3_FOUND)
 endif()
 # target_link_libraries (${OUT_TARGET} SQLite3::SQLite3)
 
+#   http://pqxx.org/development/libpqxx/
+#
+find_library(PQXX_LIB pqxx)
+find_library(PQ_LIB pq)
+if (PQXX_LIB_FOUND)
+#
+#   add libpqxx to the available database connectors
+#
+    message(STATUS "** PostgreSQL  : <LANG>_VISIBILITY_PRESET available")
+
+endif()
+
 #
 # add libraries
 #
@@ -405,6 +417,67 @@ target_link_libraries(cyng_parse
     PRIVATE 
         Boost::boost 
 )
+
+#
+# add library: cyng_rnd
+#
+include (src/rnd/lib.cmake)
+add_library(cyng_rnd ${GLOBAL_LIBRARY_TYPE} ${rnd_lib})
+
+target_include_directories(cyng_rnd
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_rnd PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug rnd library
+#
+target_compile_definitions(cyng_rnd 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_RND>
+)
+
+target_link_libraries(cyng_rnd 
+    PRIVATE 
+        Boost::boost 
+)
+
+#
+# add library: cyng_sql
+#
+include (src/sql/lib.cmake)
+add_library(cyng_sql ${GLOBAL_LIBRARY_TYPE} ${sql_lib})
+
+target_include_directories(cyng_sql
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_sql PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug sql library
+#
+target_compile_definitions(cyng_sql 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_SQL>
+)
+
+target_link_libraries(cyng_sql 
+    PRIVATE 
+        Boost::boost 
+)
+
 #
 # unit tests
 #
