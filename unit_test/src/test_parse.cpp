@@ -1,4 +1,4 @@
-#ifdef STAND_ALONE
+﻿#ifdef STAND_ALONE
 #   define BOOST_TEST_MODULE unit_test
 #endif
 
@@ -6,6 +6,10 @@
 #include <cyng/parse/hex.h>
 #include <cyng/parse/mac.h>
 #include <cyng/io/ostream.h>
+#include <cyng/parse/json/json_parser.h>
+#include <cyng/obj/tag.hpp>
+#include <cyng/obj/util.hpp>
+#include <cyng/obj/container_cast.hpp>
 
 #include <iostream>
 
@@ -43,6 +47,58 @@ BOOST_AUTO_TEST_CASE(mac)
 	cyng::mac64 const cmp64(0x70, 0xB3, 0xD5, 0x38, 0x70, 0x00, 0x00, 0x2D);
 	auto const mac2 = cyng::to_mac64("70B3:D538:7000:002D");
 	BOOST_REQUIRE_EQUAL(cmp64, mac2);
+
+}
+
+BOOST_AUTO_TEST_CASE(json)
+{
+	//	\u03BB
+	//	\u03AC
+	//	\u03BC
+	//	\u03B4
+	//	\u03B1
+	auto const inp_01 = std::string("{ \"id\":5, \"subscription\" : \"/data:localhost:26862\", \"λάμδα\" : true, \"channel\" : \"/meta/subscribe\", \"tag\": \"aee65c3b-080f-41be-b864-ec5c5702c477\" }");
+
+	cyng::json::parser jp1([](cyng::object&& obj) {
+		std::cout << obj << std::endl;
+		BOOST_CHECK(cyng::is_of_type<cyng::TC_PARAM_MAP>(obj));
+		auto const pm = cyng::container_cast<cyng::param_map_t>(obj);
+		BOOST_REQUIRE_EQUAL(pm.size(), 5);
+		});
+
+	jp1.read(std::begin(inp_01), std::end(inp_01));
+
+
+	//  
+	//  the UTF-8 sequence from key4 results in
+	//  z\u00df\u6c34\u1f34c or
+	//  0x7a 0xc3, 0x9f 0xe6 0xb0, 0xb4 0xf0 0x9f 0x8d 0x8c
+	//  
+	auto const s2 = std::string(R"(
+        {
+            "key-0": [12,22.0,3e-10,[4, 5],[],6],
+            "key-1": "value\t1",
+            "key-2": "value\u2514",
+            "key-3": [
+                { "key4": "zß水🍌" },
+                null,
+                true,
+                { "key5a": "value5a", "key5b": "value5b"}
+            ],
+            "key-6": false,
+            "key-7": [1,2,3,4, 5],
+            "key-8": "eof"
+        }
+		)");
+	cyng::json::parser jp2([](cyng::object&& obj) {
+		std::cout << obj << std::endl;
+		BOOST_CHECK(cyng::is_of_type<cyng::TC_PARAM_MAP>(obj));
+		auto const pm = cyng::container_cast<cyng::param_map_t>(obj);
+		BOOST_REQUIRE_EQUAL(pm.size(), 7);
+
+		});
+	jp2.read(std::begin(s2), std::end(s2));
+
 
 }
 

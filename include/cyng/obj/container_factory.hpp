@@ -35,6 +35,27 @@ namespace cyng {
 	}
 
 	/**
+	 * Create an object of type attribute
+	 */
+	template < typename... Args >
+	[[nodiscard]]
+	object pair_factory(std::size_t idx, Args&&... args)
+	{
+		return make_object(make_attr(idx, std::forward<Args>(args)...));
+	}
+
+	/**
+	 * Create an object of type parameter
+	 */
+	template < typename... Args >
+	[[nodiscard]]
+	object pair_factory(std::string const& name, Args&&... args)
+	{
+		BOOST_ASSERT_MSG(!name.empty(), "parameter without a name");
+		return make_object(make_param(name, std::forward<Args>(args)...));
+	}
+
+	/**
 	 * example
 	 * @code
 	 attr_map_t m = attr_map_factory(1, "1")(2, "2");

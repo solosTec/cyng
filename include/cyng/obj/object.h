@@ -129,6 +129,7 @@ namespace cyng {
 	bool is_same_type(object const& obj) {
 		return obj.rtti().rtti() == typeid(T);
 	}
+
 }
 
 #include <functional>

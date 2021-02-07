@@ -29,32 +29,32 @@ namespace cyng {
 		 *
 		 * @return Storage size in bytes
 		 */
-		virtual std::size_t size() const = 0;
+		virtual std::size_t size() const noexcept = 0;
 
 		/**
 		 * @return Dimension of the array
 		 */
-		virtual std::size_t extend() const = 0;
+		virtual std::size_t extend() const noexcept = 0;
 
 		/**
 		 * Checks whether T is an integral type.
 		 */
-		virtual bool is_integral() const = 0;
+		virtual bool is_integral() const noexcept = 0;
 
 		/**
 		 * Checks whether T is a floating-point type.
 		 */
-		virtual bool is_floating_point() const = 0;
+		virtual bool is_floating_point() const noexcept = 0;
 
 		/**
 		 * Checks whether T is an enumeration type.
 		 */
-		virtual bool is_enum() const = 0;
+		virtual bool is_enum() const noexcept = 0;
 
 		/**
 		 * Checks whether T is const-qualified
 		 */
-		virtual bool is_const() const = 0;
+		virtual bool is_const() const noexcept = 0;
 
 
 		/**

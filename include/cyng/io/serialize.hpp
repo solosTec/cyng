@@ -100,6 +100,10 @@ namespace cyng {
 					case TC_AES192:		return write_impl<traits::reverse_type<TC_AES192>::type>(os, obj);
 					case TC_AES256:		return write_impl<traits::reverse_type<TC_AES256>::type>(os, obj);
 
+					case TC_OBJECT:		
+						BOOST_ASSERT_MSG(false, "nested object");
+						return 0;
+
 					case TC_TUPLE:		return write_impl<traits::reverse_type<TC_TUPLE>::type>(os, obj);
 					case TC_VECTOR:		return write_impl<traits::reverse_type<TC_VECTOR>::type>(os, obj);
 					case TC_DEQUE:		return write_impl<traits::reverse_type<TC_DEQUE>::type>(os, obj);

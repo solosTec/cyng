@@ -169,6 +169,14 @@ namespace cyng {
 	[[nodiscard]]
 	severity make_severity(buffer_t const& buffer);
 
+	/**
+	 * convinience type test
+	 */
+	template < type_code TC>
+	bool is_of_type(object const& obj) {
+		return obj.rtti().tag() == TC;
+	}
+
 }
 
 #endif //	CYNG_OBJ_UTIL_HPP

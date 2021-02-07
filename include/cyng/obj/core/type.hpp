@@ -42,7 +42,7 @@ namespace cyng {
 		 *
 		 * @return Storage size in bytes
 		 */
-		virtual std::size_t size() const override
+		virtual std::size_t size() const noexcept override
 		{
 			return sizeof (T);
 		}
@@ -50,7 +50,7 @@ namespace cyng {
 		/**
 		 * @return Dimension of the array
 		 */
-		virtual std::size_t extend() const override
+		virtual std::size_t extend() const noexcept override
 		{
 			return std::extent<T>::value;
 		}
@@ -58,7 +58,7 @@ namespace cyng {
 		/**
 		 * Checks whether T is an integral type.
 		 */
-		virtual bool is_integral() const override
+		virtual bool is_integral() const noexcept override
 		{
 			return std::is_integral<T>::value;
 		}
@@ -66,7 +66,7 @@ namespace cyng {
 		/**
 		 * Checks whether T is a floating-point type.
 		 */
-		virtual bool is_floating_point() const override
+		virtual bool is_floating_point() const noexcept override
 		{
 			return std::is_floating_point<T>::value;
 		}
@@ -74,7 +74,7 @@ namespace cyng {
 		/**
 		 * Checks whether T is  an enumeration type.
 		 */
-		virtual bool is_enum() const override
+		virtual bool is_enum() const noexcept override
 		{
 			return std::is_enum<T>::value;
 		}
@@ -82,7 +82,7 @@ namespace cyng {
 		/**
 		 * checks if a type is const-qualified.
 		 */
-		virtual bool is_const() const override
+		virtual bool is_const() const noexcept override
 		{
 			return std::is_const<T>::value;
 		}
