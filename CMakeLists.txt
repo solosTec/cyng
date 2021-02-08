@@ -18,12 +18,15 @@ project(
     LANGUAGES CXX
 )
 
-math(EXPR "${PROJECT_NAME}_VERSION_NUMERAL" "${PROJECT_VERSION_MAJOR}*100000+${PROJECT_VERSION_MINOR}*1000+${PROJECT_VERSION_PATCH}" OUTPUT_FORMAT DECIMAL)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
+    math(EXPR "${PROJECT_NAME}_VERSION_NUMERAL" "${PROJECT_VERSION_MAJOR}*100000+${PROJECT_VERSION_MINOR}*1000+${PROJECT_VERSION_PATCH}" OUTPUT_FORMAT DECIMAL)
+    message(STATUS "** Version numeral    : ${${PROJECT_NAME}_VERSION_NUMERAL}")
+
     message(STATUS "** Compiler           : ${CMAKE_CXX_COMPILER_ID} v${CMAKE_CXX_COMPILER_VERSION}")
+
 
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
@@ -381,6 +384,7 @@ target_compile_features(cyng_sys PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 target_compile_definitions(cyng_sys 
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_SYS>
+        $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
 )
 
 target_link_libraries(cyng_sys 

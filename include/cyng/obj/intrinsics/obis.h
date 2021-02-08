@@ -120,6 +120,14 @@ namespace cyng {
 	[[nodiscard]]
 	std::string to_str(obis const&);
 
+	//	comparison (constexpr since C++20)
+	bool operator==(obis const& lhs, obis const& rhs) noexcept;
+	bool operator<(obis const&, obis const&) noexcept;
+	bool operator!=(obis const&, obis const&) noexcept;
+	bool operator>(obis const&, obis const&) noexcept;
+	bool operator<=(obis const&, obis const&) noexcept;
+	bool operator>=(obis const&, obis const&) noexcept;
+
 }
 
 #include <functional>

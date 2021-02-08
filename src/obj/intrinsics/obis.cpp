@@ -29,16 +29,6 @@ namespace cyng	{
 		std::reverse_copy(std::begin(value_), std::end(value_), tmp.begin());
 		std::memcpy(&r, tmp.data(), obis::size());
 #endif
-
-		//if constexpr (std::endian::native == std::endian::little) {
-		//	data_type tmp{ 0 };
-		//	std::reverse_copy(std::begin(value_), std::end(value_), tmp.begin());
-		//	std::memcpy(&r, tmp.data(), obis::size());
-		//}
-		//else {
-		//	std::memcpy(&r, value_.data(), obis::size());
-		//}
-
 		BOOST_ASSERT(r < 0xFFFFFFFFFFFF);
 		return r;
 	}
@@ -82,6 +72,34 @@ namespace cyng	{
 			return r + io::to_hex(c);
 			});
 	}
+
+	//	comparison
+	bool operator==(obis const& lhs, obis const& rhs) noexcept
+	{
+		return lhs.data() == rhs.data();
+	}
+	bool operator<(obis const& lhs, obis const& rhs) noexcept
+	{
+		return lhs.data() < rhs.data();
+	}
+	bool operator!=(obis const& lhs, obis const& rhs) noexcept
+	{
+		return !(lhs == rhs);
+	}
+	bool operator>(obis const& lhs, obis const& rhs) noexcept
+	{
+		//	note the reversed notation
+		return rhs < lhs;
+	}
+	bool operator<=(obis const& lhs, obis const& rhs) noexcept
+	{
+		return !(lhs > rhs);
+	}
+	bool operator>=(obis const& lhs, obis const& rhs) noexcept
+	{
+		return !(lhs < rhs);
+	}
+
 }
 
 
@@ -90,6 +108,15 @@ namespace std {
 	{
 		return v.to_uint64();
 	}
+	//bool equal_to<cyng::obis>::operator()(cyng::obis const& c1, cyng::obis const& c2) const noexcept
+	//{
+	//	return c1.equal(c2);
+	//}
+	//bool less<cyng::obis>::operator()(cyng::obis const& c1, cyng::obis const& c2) const noexcept
+	//{
+	//	return c1.less(c2);
+	//}
+
 }
 
 

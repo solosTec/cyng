@@ -87,6 +87,8 @@ namespace cyng {
 		 * system uptime 
 		 */
 		std::chrono::milliseconds get_uptime();
+
+		std::string get_hostname();
 	}
 }
 #endif

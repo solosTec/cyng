@@ -9,6 +9,8 @@
 #endif
 
 #include <iostream>
+#include <boost/asio/ip/host_name.hpp>
+#include <boost/system/error_code.hpp>
 
 namespace cyng {
 	namespace sys {
@@ -28,6 +30,16 @@ namespace cyng {
 			return std::chrono::duration_cast<std::chrono::milliseconds>(d);
 #endif
 		}
+
+		std::string get_hostname() {
+			boost::system::error_code ec;
+			auto const name = boost::asio::ip::host_name(ec);
+			return (!ec)
+				? name
+				: ec.message()
+				;
+		}
+
 
 	}
 }
