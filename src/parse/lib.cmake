@@ -6,13 +6,11 @@ set (parse_lib)
 set (parse_cpp
     src/parse/mac.cpp
     src/parse/hex.cpp
-    src/parse/utf-8.cpp
 )
     
 set (parse_h
     include/cyng/parse/mac.h
     include/cyng/parse/hex.h
-    include/cyng/parse/utf-8.h
 )
 
 set (parse_json

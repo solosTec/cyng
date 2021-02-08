@@ -34,6 +34,8 @@ set (io_serializer
 set (io_parser
     include/cyng/io/parser/parser.h
     src/io/parser/parser.cpp
+    include/cyng/io/parser/utf-8.h
+    src/io/parser/utf-8.cpp
 )
 
 source_group("serializer" FILES ${io_serializer})

@@ -4,8 +4,8 @@
  * Copyright (c) 2020 Sylko Olzscher
  *
  */
-#ifndef CYNG_PARSE_UTF_8_H
-#define CYNG_PARSE_UTF_8_H
+#ifndef CYNG_IO_UTF_8_H
+#define CYNG_IO_UTF_8_H
 
 #include <cstdint>
 #include <array>
@@ -77,6 +77,9 @@ namespace cyng {
 			emit_u32_f cb_;
 		};
 
+		/**
+		 * @brief UTF-8 iterator
+		 */
 		template <typename BaseIterator>
 		class u8_to_u32_iterator {
 
