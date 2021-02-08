@@ -110,6 +110,17 @@ namespace cyng {
 			static ptr_t create(char const* p);
 		};
 
+		template <>
+		struct boxing<char const* const&>
+		{
+			using value_t = std::string;
+			using wrapper_t = wrapper<value_t>;
+			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
+
+			//	full specialized
+			static ptr_t create(char const* const& p);
+		};
+
 		/**
 		 * Handle C-style strings as std::string.
 		 */
