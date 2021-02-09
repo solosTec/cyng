@@ -56,14 +56,19 @@ namespace cyng {
 			, sk_()
 		{}
 
-		meta(std::string name, std::initializer_list<COLUMN> cols, std::size_t pk)
+		template <typename I>
+		meta(std::string name, I begin, I end, std::size_t pk)
 			: name_(name)
-			, columns_(cols.begin(), cols.end())
+			, columns_(begin, end)
 			, pk_(pk)
 			, sk_()
 		{
 			BOOST_ASSERT_MSG(pk < columns_.size(), "key size exceeded");
 		}
+
+		meta(std::string name, std::initializer_list<COLUMN> cols, std::size_t pk)
+			: meta(name, cols.begin(), cols.end(), pk)	//	forward
+		{}
 
 		std::string const& get_name() const noexcept {
 			return name_;
@@ -192,10 +197,25 @@ namespace cyng {
 	template <typename COLUMN>
 	COLUMN meta<COLUMN>::null_("", std::numeric_limits<std::size_t>::max(), 0);
 		
-
+	/**
+	 * in-memory table
+	 */
 	using meta_store = meta<column>;
+
+	/**
+	 * SQL table with width info
+	 */
 	using meta_sql = meta<column_sql>;
 
+	/**
+	 * convert an in-memory table to a SQL table
+	 */
+	meta_sql to_sql(meta_store const&, std::vector<std::size_t> const&  width);
+
+	/**
+	 * convert an in-memory table to a SQL table
+	 */
+	meta_store to_mem(meta_sql const&);
 }
 #endif
 
