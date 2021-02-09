@@ -8,7 +8,7 @@
 #include <iostream>
 #else
 #include <cyng/sys/linux.hpp>
-#include <boost/locale/info.hpp>
+#include <boost/locale.hpp>
 #endif
 
 #include <iostream>
@@ -32,7 +32,10 @@ namespace cyng {
 
 			return loc;
 #else
-			return  boost::locale::name();
+			//	see https://www.boost.org/doc/libs/1_74_0/libs/locale/doc/html/hello_8cpp-example.html
+			// return std::use_facet<boost::locale::info>(some_locale).name()
+			// return info.name();
+			return "ch";
 #endif
 
 		}
