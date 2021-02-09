@@ -160,6 +160,8 @@ namespace cyng {
 	 */
 	std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const&);
 
+	std::ostream& operator<<(std::ostream& os, boost::uuids::uuid const&);
+
 	//
 	//	container
 	//

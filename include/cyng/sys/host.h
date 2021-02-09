@@ -82,6 +82,12 @@ namespace cyng {
 		constexpr const char* get_processor_description() {
 			return cyng_PROCESSOR_DESCRIPTION;
 		}
+		constexpr const char* get_os_release() {
+			return cyng_OS_RELEASE;
+		}
+		constexpr const char* get_os_version() {
+			return cyng_OS_VERSION;
+		}
 
 		/**
 		 * system uptime 

@@ -31,12 +31,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
 
-    set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-    set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-    include(CPack)
-
-
-    # Docs only available if this is the main app
+        # Docs only available if this is the main app
     find_package(Doxygen)
     if(Doxygen_FOUND)
         add_subdirectory(docs)
@@ -519,3 +514,45 @@ install(EXPORT cyng-export
   DESTINATION
     ${CMAKE_INSTALL_LIBDIR}/cmake/cyng
 )
+
+#
+# CPack configuration
+#
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} - dynamic data types for C++")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION_TWEAK ${PROJECT_VERSION_TWEAK})
+set(CPACK_PACKAGE_CONTACT "info@solostec.ch")
+set(CPACK_PACKAGE_VENDOR "solosTec")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+set(CPACK_RPM_PACKAGE_DESCRIPTION "CYNG library")
+#set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/src/assets/LICENSE.txt)
+
+#if (${LSB_RELEASE_ID_SHORT} STREQUAL "openSUSE")
+
+#	set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+#	set(CPACK_GENERATOR "RPM")
+	
+#elseif(${LSB_RELEASE_ID_SHORT} STREQUAL "Ubuntu")	
+
+#	set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+#	set(CPACK_GENERATOR "DEB")
+	
+if(WIN32)
+
+	set(CPACK_GENERATOR "NSIS64")
+	set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/src/assets/logo.ico)
+	set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/src/assets/logo.ico)
+	#set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait '\\\"$INSTDIR\\\\vcredist_x86.exe\\\" /q:a'")
+	set(CPACK_NSIS_MODIFY_PATH ON)
+	set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.solostec.com")
+
+else()
+	set(CPACK_GENERATOR "DEB")
+endif()
+
+include(CPack)

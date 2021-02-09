@@ -36,6 +36,8 @@ cmake_host_system_information(RESULT _HOST_NUMBER_OF_PHYSICAL_CORES QUERY NUMBER
 cmake_host_system_information(RESULT _TOTAL_VIRTUAL_MEMORY QUERY TOTAL_VIRTUAL_MEMORY)
 cmake_host_system_information(RESULT _TOTAL_PHYSICAL_MEMORY QUERY TOTAL_PHYSICAL_MEMORY)
 cmake_host_system_information(RESULT _PROCESSOR_DESCRIPTION QUERY PROCESSOR_DESCRIPTION)
+cmake_host_system_information(RESULT _OS_RELEASE QUERY OS_RELEASE)
+cmake_host_system_information(RESULT _OS_VERSION QUERY OS_VERSION)
 
 #
 #	Generate magic numbers

@@ -2,6 +2,8 @@
 #include <cyng/io/serialize.h>
 #include <cyng/obj/object.h>
 
+#include <boost/uuid/uuid_io.hpp>
+
 namespace cyng {
 
 	std::ostream& operator<<(std::ostream& os, null const&)
@@ -235,6 +237,10 @@ namespace cyng {
 		std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
 		auto tm = *std::gmtime(&tt);
 		return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+	}
+
+	std::ostream& operator<<(std::ostream& os, boost::uuids::uuid const& tag) {
+		return os << boost::uuids::to_string(tag);
 	}
 
 	std::ostream& operator<<(std::ostream& os, tuple_t const& tpl)
