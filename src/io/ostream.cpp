@@ -187,6 +187,19 @@ namespace cyng {
 		return os << to_str(o);
 	}
 
+	std::ostream& operator<<(std::ostream& os, edis const& e) {
+		boost::io::ios_flags_saver  ifs(os);
+		os
+			<< std::dec
+			<< static_cast<unsigned>(e[edis::value_group::VG_INDICATOR])
+			<< '.'
+			<< static_cast<unsigned>(e[edis::value_group::VG_MODE])
+			<< '.'
+			<< static_cast<unsigned>(e[edis::value_group::VG_QUANTITY])
+			;
+		return os;
+	}
+
 	std::ostream& operator<<(std::ostream& os, buffer_t const& v)
 	{
 		//	store and reset stream state

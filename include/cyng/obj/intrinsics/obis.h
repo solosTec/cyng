@@ -11,8 +11,6 @@
 
 #include <cstddef>
 #include <type_traits>
-//#include <bit>
-//#include <cyng.h>	//	docc_BIG_ENDIAN
 #include <algorithm>
 #include <boost/assert.hpp>
 

@@ -6,6 +6,7 @@
  */
 
 #include <cyng/obj/intrinsics/obis.h>
+#include <cyng/obj/intrinsics/edis.h>
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/io/io_buffer.h>
 
@@ -99,6 +100,7 @@ namespace cyng	{
 	{
 		return !(lhs < rhs);
 	}
+
 
 }
 

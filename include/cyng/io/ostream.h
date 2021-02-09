@@ -30,6 +30,7 @@
 #include <cyng/obj/intrinsics/mac.h>
 #include <cyng/obj/intrinsics/pid.h>
 #include <cyng/obj/intrinsics/obis.h>
+#include <cyng/obj/intrinsics/edis.h>
 #include <cyng/obj/intrinsics/digest.hpp>
 #include <cyng/obj/intrinsics/aes_key.hpp>
 #include <cyng/obj/intrinsics/container.h>
@@ -62,6 +63,7 @@ namespace cyng {
 	std::ostream& operator<<(std::ostream& os, pid const&);
 
 	std::ostream& operator<<(std::ostream& os, obis const&);
+	std::ostream& operator<<(std::ostream& os, edis const&);
 
 	template <std::size_t N>
 	std::ostream& operator<<(std::ostream& os, digest<N> const& d) {

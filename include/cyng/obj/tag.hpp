@@ -34,6 +34,7 @@
 #include <cyng/obj/intrinsics/digest.hpp>
 #include <cyng/obj/intrinsics/aes_key.hpp>
 #include <cyng/obj/intrinsics/obis.h>
+#include <cyng/obj/intrinsics/edis.h>
 #include <cyng/obj/intrinsics/container.h>
 
 #include <cyng/meta.hpp>
@@ -81,6 +82,7 @@ namespace cyng {
 			mac64,
 			pid,
 			obis,
+			edis,
 
 			crypto::digest_md5,
 			crypto::digest_sha1,
@@ -166,6 +168,7 @@ namespace cyng {
 			"mac64",
 			"pid",
 			"obis",
+			"edis",
 
 			"crypto:MD5",
 			"crypto:SHA1",
@@ -312,6 +315,7 @@ namespace cyng {
 		TC_MAC64 = type_tag_traits<mac64>(),
 		TC_PID = type_tag_traits<pid>(),
 		TC_OBIS = type_tag_traits<obis>(),
+		TC_EDIS = type_tag_traits<edis>(),
 
 		TC_DIGEST_MD5 = type_tag_traits<crypto::digest_md5>(),
 		TC_DIGEST_SHA1 = type_tag_traits<crypto::digest_sha1>(),

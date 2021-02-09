@@ -31,6 +31,7 @@ set (object_intrinscis
     src/obj/intrinsics/version.cpp
     src/obj/intrinsics/mac.cpp
     src/obj/intrinsics/obis.cpp
+    src/obj/intrinsics/edis.cpp
     src/obj/intrinsics/pid.cpp
     src/obj/intrinsics/container.cpp
 
@@ -42,6 +43,7 @@ set (object_intrinscis
     include/cyng/obj/intrinsics/mac.h
     include/cyng/obj/intrinsics/pid.h
     include/cyng/obj/intrinsics/obis.h
+    include/cyng/obj/intrinsics/edis.h
     include/cyng/obj/intrinsics/null.h
     include/cyng/obj/intrinsics/op.h
     include/cyng/obj/intrinsics/severity.h
