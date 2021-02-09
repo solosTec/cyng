@@ -198,6 +198,18 @@ namespace cyng {
 		return ss.str();
 	}
 
+	/**
+	 * Convert an arbitrary list ob objects into a path
+	 * separated by a delimiter symbol.
+	 * see https://en.cppreference.com/w/cpp/utility/integer_sequence
+	 */
+	template<typename Head, typename... Args>
+	std::string to_path(char delim, Head&& v, Args&&... args) {
+		std::stringstream ss;
+		ss << v;
+		((ss << delim << args ), ...);
+		return ss.str();
+	}
 }
 #endif
 

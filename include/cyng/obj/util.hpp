@@ -93,6 +93,9 @@ namespace cyng {
 	[[nodiscard]]
 	obis make_obis(buffer_t const&);
 
+	[[nodiscard]]
+	edis make_edis(buffer_t const&);
+
 	template <std::size_t N>
 	[[nodiscard]]
 	auto make_digest(buffer_t const& buffer) -> digest<N> {

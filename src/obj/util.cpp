@@ -75,6 +75,16 @@ namespace cyng {
 		return obis{};
 	}
 
+	edis make_edis(buffer_t const& buffer) {
+		if (buffer.size() >= edis::size()) {
+			return edis(
+				buffer.at(0),
+				buffer.at(1),
+				buffer.at(2));
+		}
+		return edis{};
+	}
+
 	boost::uuids::uuid make_uuid(buffer_t const& buffer) {
 
 		boost::uuids::uuid tag = boost::uuids::nil_uuid();

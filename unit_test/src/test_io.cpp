@@ -9,6 +9,7 @@
 #include <cyng/io/ostream.h>
 #include <cyng/io/parser/parser.h>
 #include <cyng/obj/factory.hpp>
+#include <cyng/sys/process.h>
 
 #include <fstream>
 
@@ -419,6 +420,37 @@ BOOST_AUTO_TEST_CASE(parser)
 	inp = convert(obj);
 	p.read(std::begin(inp), std::end(inp));
 
+	//
+	//	test obis
+	//
+	obj = cyng::make_object(cyng::obis(0x01, 0x00, 0x00, 0x00, 0x09, 0xff));
+	cmp = cyng::io::to_typed(obj);	//	
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
+	//
+	//	test edis
+	//
+	obj = cyng::make_object(cyng::edis(1, 8, 0));
+	cmp = cyng::io::to_typed(obj);	//	
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
+	//
+	//	test PID
+	//
+	obj = cyng::make_object(cyng::sys::get_process_id());
+	cmp = cyng::io::to_typed(obj);	//	
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
 }
 
+BOOST_AUTO_TEST_CASE(path)
+{
+	auto const s = cyng::to_path('/', 1, "hello", cyng::version(3, 11), cyng::obis(1, 2, 3, 4, 5, 0xFF), cyng::edis(0, 9, 2));
+	//std::cout << s << std::endl;
+	BOOST_REQUIRE_EQUAL(s, "1/hello/3.11/0102030405ff/0.9.2");
+
+}
 BOOST_AUTO_TEST_SUITE_END()
