@@ -9,6 +9,7 @@ set (object_cpp
     src/obj/factory.cpp
     src/obj/value_cast.cpp
     src/obj/buffer_cast.cpp
+    src/obj/container_cast.cpp
     src/obj/util.cpp
     src/obj/tag.cpp
     src/obj/container_factory.cpp

@@ -95,6 +95,14 @@ namespace cyng {
 		return { std::make_move_iterator(std::begin(c)), std::make_move_iterator(std::end(c)) };
 	}
 
+	/**
+	 * convert a tuple of "param_t"s to a parameter map.
+	 */
+	param_map_t to_param_map(tuple_t const& tpl);
+
+	//param_map_t to_param_map(vector_t const& vec);
+
+
 }
 
 #endif //	CYNG_OBJ_CONTAINER_CAST_H

@@ -4,6 +4,7 @@ find_package(Boost 1.75 REQUIRED COMPONENTS unit_test_framework)
 add_executable(unit_test 
     main.cpp
     src/test_core.cpp
+    src/test_db.cpp
     src/test_io.cpp
     src/test_vm.cpp
     src/test_store.cpp
@@ -55,6 +56,8 @@ target_link_libraries(unit_test
         cyng_vm
         cyng_log
         cyng_sql
+        cyng_db
+        cyng_sqlite3
         cyng_store
         cyng_sys
         cyng_parse

@@ -9,6 +9,9 @@
 
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/value_cast.hpp>
+
+#include <type_traits>
 
 namespace cyng {
 
@@ -116,6 +119,19 @@ namespace cyng {
 	 * find() method.
 	 */
 	object find(object const&, std::string const&);
+
+	/**
+	 * Convinience function
+	 * Key must be of type std::string or an unsigned integer
+	 */
+	template <typename T, typename C, typename K>
+	T find_value(C const& c, K key, T const& def)
+	{
+		static_assert(std::is_unsigned_v<K>
+			|| std::is_same_v<K, std::string>, "Key must be of type std::string or an unsigned integer");
+
+		return value_cast<T>(find(c, key), def);
+	}
 
 }
 

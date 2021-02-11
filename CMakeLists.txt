@@ -484,7 +484,7 @@ target_include_directories(cyng_db
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        "${CMAKE_SOURCE_DIR}/src/db"
 )
 
 target_compile_features(cyng_db PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)

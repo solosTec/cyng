@@ -18,10 +18,10 @@ namespace cyng
 {
 	namespace db 
 	{
-		class interface_session;
-		class interface_statement;
-		typedef std::shared_ptr< interface_session >	session_ptr;
-		typedef std::shared_ptr< interface_statement >	statement_ptr;
+		class session_interface;
+		class statement_interface;
+		using session_ptr = std::shared_ptr< session_interface >;
+		using statement_ptr = std::shared_ptr< statement_interface >;
 
 		/**	
 		 * @brief Facade object of the abstract session interface.

@@ -195,7 +195,7 @@ namespace cyng {
 	//	initialize static
 	//
 	template <typename COLUMN>
-	COLUMN meta<COLUMN>::null_("", std::numeric_limits<std::size_t>::max(), 0);
+	COLUMN meta<COLUMN>::null_("", TC_EOD, 0);
 		
 	/**
 	 * in-memory table
