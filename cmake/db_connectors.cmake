@@ -65,45 +65,30 @@ else()
 endif()
 
 #
-#	Find UnixODBC library
-#	FindODBC(?)
+#	FindODBC
+#	ODBC is always available on windows
 #
-if (UNIX)
+find_package(ODBC)
+if (ODBC_FOUND)
 
-	#
-	#	Find unixODBC library
-	#
-	find_package(UnixODBC)
-	if(UnixODBC_FOUND)
 
-		include_directories(${UnixODBC_INCLUDE_DIRS})
-		link_directories(${UnixODBC_LIBRARIES})
+#	include_directories(${UnixODBC_INCLUDE_DIRS})
+#	link_directories(${UnixODBC_LIBRARIES})
 	
-		message(STATUS "** UnixODBC Include  : ${UnixODBC_INCLUDE_DIRS}")
-		message(STATUS "** UnixODBC Libraries: ${UnixODBC_LIBRARIES}")
+	message(STATUS "** UnixODBC Include  : ${UnixODBC_INCLUDE_DIRS}")
+	message(STATUS "** UnixODBC Libraries: ${UnixODBC_LIBRARIES}")
 		
-		#
-		#	define this compile flag if ODBC C++ is available
-		#
-		set(${CAPITAL_NAME}_ODBC_CONNECTOR ON CACHE BOOL "ODBC Connector")
-
-	else()
-
-		message(WARNING "** UnixODBC not found")
-		set(${CAPITAL_NAME}_ODBC_CONNECTOR OFF CACHE BOOL "ODBC Connector")
-
-	endif()	
-
-elseif(WIN32)
-
 	#
-	#	ODBC is always available on windows
+	#	define this compile flag if ODBC C++ is available
 	#
 	set(${CAPITAL_NAME}_ODBC_CONNECTOR ON CACHE BOOL "ODBC Connector")
 
 else()
-	message(WARNING "** platform not supported")
-endif()
+
+	message(WARNING "** ODBC not found")
+	set(${CAPITAL_NAME}_ODBC_CONNECTOR OFF CACHE BOOL "ODBC Connector")
+
+endif()	
 
 #
 #	MySQL: https://github.com/mysql/mysql-connector-odbc/blob/master/cmake/FindMySQL.cmake
