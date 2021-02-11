@@ -80,15 +80,16 @@ namespace cyng {
 
 		}
 #else
-		void get_serial_ports(std::vector<string>& vec) {
-			filesystem::path const d("/sys/class/tty");
-			if (filesystem::is_directory(d)) {
-				for (filesystem::directory_entry const& entry : filesystem::directory_iterator(d)) {
+		void get_serial_ports(std::vector<std::string>& vec) {
+
+			std::filesystem::path const d("/sys/class/tty");
+			if (std::filesystem::is_directory(d)) {
+				for (std::filesystem::directory_entry const& entry : std::filesystem::directory_iterator(d)) {
 					//
 					//	test if /sys/class/tty/"entry"/device exists
 					//
 					auto const dev = entry.path() / "device";
-					if (filesystem::exists(dev)) {
+					if (std::filesystem::exists(dev)) {
 						vec.push_back(entry.path().filename().string());
 					}
 				}

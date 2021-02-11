@@ -15,7 +15,7 @@ include (cmake/time_stamp.cmake)
 project(
     cyng
     VERSION 0.9.0.${_TWEAK_ID}
-    LANGUAGES CXX
+    LANGUAGES C CXX
 )
 
 
