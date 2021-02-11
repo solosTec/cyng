@@ -3,7 +3,7 @@
 
 namespace cyng {
 
-	column::column(std::string const& name, std::uint16_t type)
+	column::column(std::string const& name, type_code type)
 		: name_(name)
 		, type_(type)
 	{}
@@ -13,7 +13,7 @@ namespace cyng {
 		, width_(width)
 	{}
 
-	column_sql::column_sql(std::string const& name, std::uint16_t type, std::size_t width)
+	column_sql::column_sql(std::string const& name, type_code type, std::size_t width)
 		: column(name, type)
 		, width_(width)
 	{}
@@ -26,22 +26,31 @@ namespace cyng {
 		std::vector < column_sql >	vec;
 		vec.reserve(m.size() + 1);
 		bool gen = false;
+		std::size_t width_idx{ 0 };
 		m.loop([&](std::size_t idx, column const& col, bool pk)->void {
 			if (!pk && !gen) {
 				//	insert gen
 				gen = true;
 				vec.push_back(column_sql("gen", TC_UINT64, 0u));
-			}
-
-			if (width.size() > vec.size()) {
-				auto const w = width.at(vec.size());
-				vec.push_back(column_sql(col, w));
+				vec.push_back(column_sql(col, width.at(width_idx++)));
 			}
 			else {
-				vec.push_back(column_sql(col, 0));
+				if (width_idx < width.size()) {
+					vec.push_back(column_sql(col, width.at(width_idx++)));
+				}
+				else {
+					vec.push_back(column_sql(col, 0));
+				}
 			}
 		});
-		return meta_sql(m.get_name(), std::begin(vec), std::end(vec), m.key_size());
+
+		//	derive SQL table name
+		std::string table_name = m.get_name();
+		if (!table_name.empty()) {
+			table_name.at(0) = std::toupper(table_name.at(0));
+		}
+
+		return meta_sql("T" + table_name, std::begin(vec), std::end(vec), m.key_size());
 	}
 
 	//	sql => mem

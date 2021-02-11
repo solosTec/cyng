@@ -6,7 +6,6 @@
  */
 
 #include <cyng/sql/dialect.h>
-#include <cyng/obj/tag.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <sstream>
 
@@ -114,7 +113,7 @@ namespace cyng
 			return false;
 		}
 
-		std::string get_field_type(dialect d, std::size_t code, std::size_t width)
+		std::string get_field_type(dialect d, type_code code, std::size_t width)
 		{
 			switch (d)
 			{
@@ -157,6 +156,9 @@ namespace cyng
 					// 				case TC_COLOR_16:	return "rgb16";
 				case TC_MAC48:			return "CHAR(17)";
 				case TC_MAC64:			return "CHAR(19)";
+				case TC_PID:			return "BIGINT";
+				case TC_OBIS:			return "CHAR(12)";
+				case TC_EDIS:			return "CHAR(8)";
 
 				case TC_DIGEST_MD5:		return "CHAR(32)";
 				case TC_DIGEST_SHA1:	return "CHAR(40)";
@@ -230,6 +232,9 @@ namespace cyng
 					// 				case TC_COLOR_16:	return "rgb16";
 				case TC_MAC48:			return "TEXT";
 				case TC_MAC64:			return "TEXT";
+				case TC_PID:			return "INT";
+				case TC_OBIS:			return "TEXT";
+				case TC_EDIS:			return "TEXT";
 
 				case TC_DIGEST_MD5:		return "TEXT";	//	32 bytes
 				case TC_DIGEST_SHA1:	return "TEXT";	//	40 bytes
@@ -299,6 +304,9 @@ namespace cyng
 					// 				case TC_COLOR_16:	return "rgb16";
 				case TC_MAC48:			return "CHAR(17)";
 				case TC_MAC64:			return "CHAR(19)";
+				case TC_PID:			return "BIGINT";
+				case TC_OBIS:			return "CHAR(12)";
+				case TC_EDIS:			return "CHAR(8)";
 
 				case TC_DIGEST_MD5:		return "CHAR(32)";
 				case TC_DIGEST_SHA1:	return "CHAR(40)";
@@ -367,6 +375,9 @@ namespace cyng
 					// 				case TC_COLOR_16:	return "rgb16";
 				case TC_MAC48:			return "CHAR(17)";
 				case TC_MAC64:			return "CHAR(19)";
+				case TC_PID:			return "BIGINT";
+				case TC_OBIS:			return "CHAR(12)";
+				case TC_EDIS:			return "CHAR(8)";
 
 				case TC_DIGEST_MD5:		return "CHAR(32)";
 				case TC_DIGEST_SHA1:	return "CHAR(40)";
@@ -435,10 +446,11 @@ namespace cyng
 					return ostream.str();
 				}
 
-				// 				case TC_COLOR_8:	return "rgb8";
-				// 				case TC_COLOR_16:	return "rgb16";
 				case TC_MAC48:			return "macaddr";	// !
 				case TC_MAC64:			return "macaddr";
+				case TC_PID:			return "bigint";
+				case TC_OBIS:			return "TEXT";
+				case TC_EDIS:			return "TEXT";
 
 				case TC_DIGEST_MD5:		return "char(32)";
 				case TC_DIGEST_SHA1:	return "char(40)";
@@ -512,6 +524,9 @@ namespace cyng
 				// 				case TC_COLOR_16:	return "rgb16";
 			case TC_MAC48:			return "CHARACTER(17)";
 			case TC_MAC64:			return "CHARACTER(19)";
+			case TC_PID:			return "INTEGER";
+			case TC_OBIS:			return "CHARACTER(12)";
+			case TC_EDIS:			return "CHARACTER(8)";
 
 			case TC_DIGEST_MD5:		return "CHARACTER(32)";
 			case TC_DIGEST_SHA1:	return "CHARACTER(40)";
@@ -532,15 +547,7 @@ namespace cyng
 
 			case TC_UUID:			return "CHARACTER(36)";
 			case TC_FS_PATH:		return "VARCHAR(1024)";
-				//				case CYNG_BOOST_ERROR:	return "ec";
-				// 					case CYNG_BOOST_IP_ADDRESS:		
-				// 						BOOST_ASSERT(width == 40 || width == -1);
-				// 						return "CHAR(40)";	//	!<	IPv4 and IPv6 as string
-				// 					case CYNG_BOOST_TCP_ENDPOINT:	
-				// 						BOOST_ASSERT(width == 48 || width == -1);
-				// 						return "CHAR(48)";	//	address and port as string e.g. [ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65000
-				//				case CYNG_BOOST_TRIBOOL:	return "tribool";
-				//				case CYNG_ARRAY:			return "[]";
+
 			default:
 				break;
 			}

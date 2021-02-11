@@ -8,7 +8,7 @@
 #define CYNG_STORE_META_H
 
 #include <cyng/store/key.hpp>
- //#include <cyng/obj/tag.hpp>
+#include <cyng/obj/tag.hpp>
 
 #include <string>
 #include <memory>
@@ -22,17 +22,17 @@ namespace cyng {
 
 	struct column
 	{
-		column(std::string const&, std::uint16_t);
+		column(std::string const&, type_code);
 		column(column const&) = default;
 
 		std::string const name_;
-		std::uint16_t const type_;	//!<	type_code
+		type_code const type_;	//!<	type_code
 	};
 
 	struct column_sql : public column
 	{
 		column_sql(column const&, std::size_t = 0u);
-		column_sql(std::string const&, std::uint16_t, std::size_t = 0u);
+		column_sql(std::string const&, type_code, std::size_t = 0u);
 		column_sql(column_sql const&) = default;
 
 		std::size_t const width_;	//	sql only

@@ -25,7 +25,9 @@ namespace cyng {
 			template <typename Tpl>
 			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl) {
 				using F = typename std::tuple_element<N, Tpl>::type;
-				//std::cout << "call: " << idx << ", " << N << std::endl;
+#ifdef _DEBUG_TEST
+				std::cout << "call: " << idx << ", " << N << std::endl;
+#endif
 				if (idx == N) {
 					function_call<F>(std::get<N>(tpl), msg);
 					return;
@@ -41,7 +43,9 @@ namespace cyng {
 			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl) {
 
 				using F = typename std::tuple_element<0, Tpl>::type;
-				//std::cout << "call: " << idx << ", " << 0 << std::endl;
+#ifdef _DEBUG_TEST
+				std::cout << "call: " << idx << ", " << 0 << std::endl;
+#endif
 				function_call<F>(std::get<0>(tpl), msg);
 			}
 		};

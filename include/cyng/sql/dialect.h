@@ -8,6 +8,7 @@
 #define CYNG_SQL_DIALECT_H
 
 #include <string>
+#include <cyng/obj/tag.hpp>
 
 namespace cyng 
 {
@@ -50,7 +51,7 @@ namespace cyng
 		 * Maps the C++ data type to an SQL data type
 		 * of the specified SQL dialect.
 		 */
-		std::string get_field_type(dialect d, std::size_t code, std::size_t width = 0);
+		std::string get_field_type(dialect d, type_code code, std::size_t width = 0);
 		
 	}	
 }

@@ -13,7 +13,15 @@ namespace cyng {
 		std::bind(&demo_task_ref::demo3, this, std::placeholders::_1),
 		std::bind(&demo_task_ref::stop, this, std::placeholders::_1),
 	},	channel_(wp)
-	{}
+	{
+		auto sp = channel_.lock();
+		if (sp) {
+			sp->set_channel_name("demo0", 0);
+			sp->set_channel_name("demo1", 1);
+			sp->set_channel_name("demo2", 2);
+			sp->set_channel_name("demo3", 3);
+		}
+	}
 
 	demo_task_ref::~demo_task_ref()
 	{
@@ -23,18 +31,24 @@ namespace cyng {
 
 	void demo_task_ref::stop(eod)
 	{
-		// std::cout << "demo_task_ref::stop()" << std::endl;
+#ifdef _DEBUG_TEST
+		std::cout << "demo_task_ref::stop()" << std::endl;
+#endif
 	}
 
 	int demo_task_ref::demo0()
 	{
-		// std::cout << "demo_task_ref::demo0()" << std::endl;
+#ifdef _DEBUG_TEST
+		std::cout << "demo_task_ref::demo0()" << std::endl;
+#endif
 		return 1;
 	}
 
 	void demo_task_ref::demo1(int n)
 	{
-		// std::cout << "demo_task_ref::demo1(" << n << ")" << std::endl;
+#ifdef _DEBUG_TEST
+		std::cout << "demo_task_ref::demo1(" << n << ")" << std::endl;
+#endif
 		auto sp = channel_.lock();
 		if (sp)	sp->suspend(std::chrono::seconds(2), 2, make_tuple(2, "dude", 3.f));
 	}
@@ -45,7 +59,9 @@ namespace cyng {
 	}
 	void demo_task_ref::demo3(int n)
 	{
-		// std::cout << "demo_task_ref::demo3(" << n << ")" << std::endl;
+#ifdef _DEBUG_TEST
+		std::cout << "demo_task_ref::demo3(" << n << ")" << std::endl;
+#endif
 	}
 
 }

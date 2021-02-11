@@ -59,12 +59,25 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     TEST_BIG_ENDIAN(${PROJECT_NAME}_BIG_ENDIAN)
     message(STATUS "** big endian         : ${${PROJECT_NAME}_BIG_ENDIAN}")
 
+    string(TOUPPER ${PROJECT_NAME} CAPITAL_NAME)
+
 endif()
+
+#
+#   extend search path for CMake modules
+#
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+message(STATUS "** CMAKE_<CONFIG>_POSTFIX modules     : {${CMAKE_MODULE_PATH}")
 
 #
 # detect address model
 #
 include (cmake/address_model.cmake)
+
+#
+# detect available database connectors
+#
+include (cmake/db_connectors.cmake)
 
 #
 #   convert to false/true that can be used in C/C++ code
@@ -127,25 +140,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(date_src)
 # Adds date 
 
-# SQLite3 library
-#
-find_package (SQLite3)
-if (SQLITE3_FOUND)
-    message(STATUS "SQLite3 ${SQLite3_INCLUDE_DIRS}")
-endif()
-# target_link_libraries (${OUT_TARGET} SQLite3::SQLite3)
 
-#   http://pqxx.org/development/libpqxx/
-#
-find_library(PQXX_LIB pqxx)
-find_library(PQ_LIB pq)
-if (PQXX_LIB_FOUND)
-#
-#   add libpqxx to the available database connectors
-#
-    message(STATUS "** PostgreSQL  : <LANG>_VISIBILITY_PRESET available")
-
-endif()
 
 #
 # add libraries
@@ -476,6 +471,71 @@ target_link_libraries(cyng_sql
     PRIVATE 
         Boost::boost 
 )
+
+#
+# add library: cyng_db
+#
+include (src/db/lib.cmake)
+add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
+
+target_include_directories(cyng_db
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_db PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug db library
+#
+target_compile_definitions(cyng_db 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_DB>
+)
+
+target_link_libraries(cyng_db 
+    PRIVATE 
+        Boost::boost 
+		"$<$<PLATFORM_ID:Windows>:odbc32>"
+)
+
+#
+#	platform specific libraries
+#
+if (WIN32)
+
+    include (src/scm/lib.cmake)
+    add_library(cyng_scm ${GLOBAL_LIBRARY_TYPE} ${scm_lib})
+
+    target_include_directories(cyng_scm
+        PUBLIC 
+            $<INSTALL_INTERFACE:include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+
+    target_compile_features(cyng_scm PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+    #
+    #   debug SCM library
+    #
+    target_compile_definitions(cyng_scm 
+        PRIVATE 
+            $<$<CONFIG:Debug>:_DEBUG_SCM>
+    )
+
+    target_link_libraries(cyng_scm 
+        PRIVATE 
+            Boost::boost 
+    )
+
+endif()
 
 #
 # unit tests

@@ -7,7 +7,9 @@ namespace cyng {
 
 
     channel::channel(boost::asio::io_context& io, task_interface* tsk, std::string name)
-        : dispatcher_(io)
+        : std::enable_shared_from_this<channel>()
+        , slot_names()
+        , dispatcher_(io)
         , timer_(io)
         , closed_(false)
         , task_(tsk)
@@ -34,6 +36,10 @@ namespace cyng {
                 task_->dispatch(m.slot_, m.msg_);
             });
         }
+    }
+
+    void channel::dispatch(std::string slot, tuple_t&& msg) {
+        dispatch(lookup(slot), std::move(msg));
     }
 
     bool channel::is_open() const
@@ -116,5 +122,24 @@ namespace cyng {
         , slot_(msg.slot_)
         , msg_(std::move(msg.msg_))  //  move
     {}
+
+    slot_names::slot_names()
+        : named_slots_()
+    {}
+
+    /**
+     * Specify the name of a channel
+     */
+    bool slot_names::set_channel_name(std::string name, std::size_t slot) {
+        return named_slots_.emplace(name, slot).second;
+    }
+
+    std::size_t slot_names::lookup(std::string const& name) const {
+        auto const pos = named_slots_.find(name);
+        return (pos != named_slots_.end())
+            ? pos->second
+            : std::numeric_limits<std::size_t>::max()
+            ;
+    }
 
 }

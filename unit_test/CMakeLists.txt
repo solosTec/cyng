@@ -9,6 +9,7 @@ add_executable(unit_test
     src/test_store.cpp
     src/test_log.cpp
     src/test_sys.cpp
+    src/test_sql.cpp
     src/test_parse.cpp
     src/test_task.cpp
     src/demo_task.cpp
@@ -20,7 +21,7 @@ target_compile_definitions(unit_test
     PRIVATE 
         BOOST_TEST_DYN_LINK 
         BOOST_ASIO_HAS_MOVE 
-        $<$<CONFIG:Debug>:_DEBUG_OBJECT>
+        $<$<CONFIG:Debug>:_DEBUG_TEST>
 )
 
 #
@@ -53,6 +54,7 @@ target_link_libraries(unit_test
         cyng_io
         cyng_vm
         cyng_log
+        cyng_sql
         cyng_store
         cyng_sys
         cyng_parse

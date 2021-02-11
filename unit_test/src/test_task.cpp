@@ -63,6 +63,8 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 	if (!channels.empty()) {
 		BOOST_REQUIRE_EQUAL(channels.size(), 1);
 		BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
+		//channels.front()->dispatch(3, cyng::make_tuple(12));
+		channels.front()->dispatch("demo3", cyng::make_tuple(12));
 		channels.front()->dispatch(1, cyng::make_tuple(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));

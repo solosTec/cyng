@@ -33,9 +33,35 @@ namespace cyng {
 		tuple_t msg_;
 	};
 
+	/**
+	 * Base class to manage named slots
+	 */
+	class slot_names {
+	public:
+		slot_names();
+
+		/**
+		 * Specify the name of a channel
+		 */
+		bool set_channel_name(std::string, std::size_t);
+
+	protected:
+		/**
+		 * @return std::numeric_limits<std::size_t>::max() if slot was not found
+		 */
+		std::size_t lookup(std::string const&) const;
+
+	private:
+		/**
+		 * optionally slots can be named
+		 */
+		std::unordered_map<std::string, std::size_t>	named_slots_;
+
+	};
+
 	class task_interface;
 	class registry;
-	class channel : public std::enable_shared_from_this<channel>
+	class channel : public std::enable_shared_from_this<channel>, public slot_names
 	{
 		template <typename T >
 		friend class task;
@@ -57,6 +83,11 @@ namespace cyng {
 		 * @param msg object list that will be casted to the required function signature.
 		 */
 		void dispatch(std::size_t slot, tuple_t&& msg);
+
+		/**
+		 * Takes the slot from the named slot table
+		 */
+		void dispatch(std::string slot, tuple_t&& msg);
 
 		/**
 		 * Close this communication channel
@@ -111,7 +142,12 @@ namespace cyng {
 
 		std::atomic<bool> closed_;
 		task_interface* task_;
+
+		/**
+		 * Each channel has a non-unique name
+		 */
 		std::string const name_;
+
 	};
 
 
