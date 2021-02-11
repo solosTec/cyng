@@ -70,13 +70,10 @@ endif()
 #
 find_package(ODBC)
 if (ODBC_FOUND)
-
-
-#	include_directories(${UnixODBC_INCLUDE_DIRS})
-#	link_directories(${UnixODBC_LIBRARIES})
 	
-	message(STATUS "** UnixODBC Include  : ${UnixODBC_INCLUDE_DIRS}")
-	message(STATUS "** UnixODBC Libraries: ${UnixODBC_LIBRARIES}")
+	message(STATUS "** ODBC Include      : ${ODBC_INCLUDE_DIRS}")
+	message(STATUS "** ODBC Libraries    : ${ODBC_LIBRARIES}")
+	message(STATUS "** ODBC Config       : ${ODBC_CONFIG}")
 		
 	#
 	#	define this compile flag if ODBC C++ is available
