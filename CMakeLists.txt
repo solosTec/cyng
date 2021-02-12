@@ -394,8 +394,12 @@ target_compile_definitions(cyng_sys
         $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
 )
 
+#
+#   There is a dependency to parse library
+#
 target_link_libraries(cyng_sys 
     PRIVATE 
+        "$<$<PLATFORM_ID:Linux>:cyng_parse>"
         Boost::boost 
 )
   
@@ -424,8 +428,12 @@ target_compile_definitions(cyng_parse
         $<$<CONFIG:Debug>:_DEBUG_PARSE>
 )
 
+#
+#   There is a dependency to the io library
+#
 target_link_libraries(cyng_parse 
     PRIVATE 
+        "$<$<PLATFORM_ID:Linux>:cyng_io>"
         Boost::boost 
 )
 

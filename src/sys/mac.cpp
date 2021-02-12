@@ -1,5 +1,4 @@
 #include <cyng/sys/mac.h>
-#include <cyng/parse/mac.h>
 #include <boost/predef.h>
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
@@ -11,6 +10,7 @@
 #else
 
 #include <cyng/sys/linux.hpp>
+#include <cyng/parse/mac.h>
 #include <filesystem>
 
 #endif
