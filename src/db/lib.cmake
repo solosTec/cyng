@@ -35,6 +35,19 @@ set (db_sqlite3
 
 set (db_odbc
     src/db/odbc/odbc_defs.h
+    src/db/odbc/odbc_diag.hpp
+    src/db/odbc/odbc_error.cpp
+    src/db/odbc/odbc_error.hpp
+    src/db/odbc/odbc_handle.hpp
+    src/db/odbc/odbc_exception.hpp
+    src/db/odbc/odbc_connection.h
+    src/db/odbc/odbc_connection.cpp
+    src/db/odbc/odbc_result.h
+    src/db/odbc/odbc_result.cpp
+    src/db/odbc/odbc_session.h
+    src/db/odbc/odbc_session.cpp
+    src/db/odbc/odbc_statement.h
+    src/db/odbc/odbc_statement.cpp
 )
 
 source_group("details" FILES ${db_details})

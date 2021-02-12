@@ -12,9 +12,9 @@
 
 #if defined(CYNG_ODBC_CONNECTOR)
 
-//#if defined(_WIN32) || defined(__CYGWIN__)
-//#include <boost/asio.hpp>	//	windows.h
-//#endif
+#if defined(_WIN32) || defined(__CYGWIN__)
+#include <Windows.h>
+#endif
 
 #include <sql.h> 
 #include <sqlext.h>

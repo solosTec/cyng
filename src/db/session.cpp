@@ -16,7 +16,7 @@
 #endif
 			
 #if defined(CYNG_ODBC_CONNECTOR)
-//#include "odbc/odbc_session.h"
+#include <odbc/odbc_session.h>
 #endif
 
 #if defined(CYNG_PQXX_CONNECTOR)

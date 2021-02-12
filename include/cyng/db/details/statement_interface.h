@@ -85,4 +85,4 @@ namespace cyng
 	}
 }
 
-#endif	//	CYNG_DB_INTERFACE_STATEMENT_H
+#endif	
