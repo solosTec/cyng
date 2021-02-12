@@ -5,12 +5,12 @@
  * 
  */ 
 
-#include <cyng/parse/json/json_symbol.h>
+#include <cyng/parse/csv/csv_symbol.h>
 #include <boost/regex/pending/unicode_iterator.hpp>
 
 namespace cyng
 {
-	namespace json
+	namespace csv
 	{
 		symbol::symbol(symbol_type t, std::string const& s)
 			: type_(t)
@@ -62,6 +62,7 @@ namespace cyng
 			switch (st)
 			{
 			case symbol_type::SYM_EOF:	return "EOF";
+			case symbol_type::SYM_EOL:	return "EOL";
 			case symbol_type::UNKNOWN:	return "?";
 			case symbol_type::STRING:	return "STR";
 			case symbol_type::LITERAL:	return "LIT";
@@ -70,7 +71,8 @@ namespace cyng
 			case symbol_type::BOOLEAN:	return "LOG";	//	logical
 			case symbol_type::NOTHING:	return "NUL";
 
-			case symbol_type::SYMBOL:	return "SYM";
+			case symbol_type::SEPARATOR:return "SEP";
+			//case symbol_type::SYMBOL:	return "SYM";
 			case symbol_type::WS:		return "SPC";
 
 			}

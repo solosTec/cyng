@@ -5,7 +5,7 @@
  * 
  */ 
 
-#include <cyng/parse/json/json_tokenizer.h>
+#include <cyng/parse/csv/csv_tokenizer.h>
 
 #include <array>
 #include <sstream>
@@ -16,11 +16,12 @@
 
 namespace cyng
 {
-	namespace json
+	namespace csv
 	{
-		tokenizer::tokenizer(emit_symbol_f cb)
+		tokenizer::tokenizer(emit_symbol_f cb, char sep)
 			: state_(state::START)
 			, cb_(cb)
+			, sep_(sep)
 			, buffer_()
 		{}
 
@@ -68,18 +69,30 @@ namespace cyng
 			switch (cp) {
 			case ',':
 			case ':': 
-			case '[': 
-			case ']':
-			case '{':
-			case '}':
-				cb_(symbol(symbol_type::SYMBOL, cp));
-				return std::make_pair(state_, true);
+			case ';':
+			case '.':
+			case '~':
+			case '+':
+			case '*':
+			case '&':
+			case '/':
+			case '|':
+			case '!':
+				if (sep_ == cp) {
+					cb_(symbol(symbol_type::SEPARATOR, cp));
+					return std::make_pair(state_, true);
+				}
+				buffer_.append(1, cp);
+				return std::make_pair(state::LITERAL, true);
 
 			case ' ': 
-			case '\n': 
-			case '\r': 
 			case '\t':
 				//	skip ws
+				return std::make_pair(state_, true);
+
+			case '\n':
+			case '\r':
+				cb_(symbol(symbol_type::SYM_EOL, cp));
 				return std::make_pair(state_, true);
 
 			//case '\'':
@@ -135,11 +148,14 @@ namespace cyng
 		{
 			switch (cp) {
 			case ' ':	//	ws is ok
-			case '\n':
-			case '\r':
 			case '\t':
 				build_literal();
 				return std::make_pair(state::START, true);
+
+			case '\n':
+			case '\r':
+				build_literal();
+				return std::make_pair(state::START, false);
 
 			case '"':	case '\'':	//	error
 			case '[':	case ']':	//	reserved
@@ -159,7 +175,7 @@ namespace cyng
 
 		void tokenizer::build_literal()
 		{
-			if (boost::algorithm::equals(buffer_, "null"))			cb_(symbol(symbol_type::NOTHING, buffer_));
+			if (buffer_.empty())			cb_(symbol(symbol_type::NOTHING, buffer_));
 			else if (boost::algorithm::equals(buffer_, "true"))		cb_(symbol(symbol_type::BOOLEAN, buffer_));
 			else if (boost::algorithm::equals(buffer_, "false"))	cb_(symbol(symbol_type::BOOLEAN, buffer_));
 			else {

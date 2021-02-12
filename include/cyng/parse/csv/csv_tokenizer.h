@@ -5,20 +5,19 @@
  * 
  */ 
 
-#ifndef CYNG_JSON_TOKENIZER_H
-#define CYNG_JSON_TOKENIZER_H
+#ifndef CYNG_CSV_TOKENIZER_H
+#define CYNG_CSV_TOKENIZER_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
   #pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 
-//#include <cyng/parse/json/json_token.h>
-#include <cyng/parse/json/json_symbol.h>
+#include <cyng/parse/csv/csv_symbol.h>
 
 namespace cyng	
 {
-	namespace json 
+	namespace csv 
 	{
 		class tokenizer
 		{
@@ -37,7 +36,7 @@ namespace cyng
 			}	state_;
 
 		public:
-			tokenizer(emit_symbol_f);
+			tokenizer(emit_symbol_f, char sep);
 
 			/**
 			 * @return true tokenizer is ready for a new token
@@ -60,6 +59,7 @@ namespace cyng
 
 		private:
 			emit_symbol_f cb_;
+			char const sep_;
 
 			/**
 			 * temporary buffer for next symbol

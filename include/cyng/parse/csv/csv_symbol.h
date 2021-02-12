@@ -5,8 +5,8 @@
  * 
  */ 
 
-#ifndef CYNG_JSON_SYMBOL_H
-#define CYNG_JSON_SYMBOL_H
+#ifndef CYNG_CSV_SYMBOL_H
+#define CYNG_CSV_SYMBOL_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
   #pragma once
@@ -19,11 +19,12 @@
 
 namespace cyng	
 {
-	namespace json 
+	namespace csv 
 	{
 		enum class symbol_type
 		{
 			SYM_EOF,		//!<	no more symbols
+			SYM_EOL,		//!<	end of line
 			UNKNOWN,		//!<	unknown or error state
 			STRING,			//!<	text in quoted
 			LITERAL,		//!<	text without quotes
@@ -32,8 +33,9 @@ namespace cyng
 			BOOLEAN,		//!<	true/false
 			NOTHING,		//!<	null
 
-			SYMBOL,			//!<	',', ':', '[', ']', '{', '}'
-			WS,				//!<	' ', '\n', '\r', '\t'
+			SEPARATOR,		//!<	',', ';'
+			//SYMBOL,			//!<	':', '[', ']', '{', '}'
+			WS,				//!<	' ', '\t'
 		};
 
 		struct symbol

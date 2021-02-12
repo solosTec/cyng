@@ -86,7 +86,7 @@ namespace cyng
 					std::int16_t result{ 0 };
 					const SQLRETURN rc = ::SQLGetData(stmt, index, SQL_C_SSHORT, &result, 0, &length);
 					BOOST_ASSERT_MSG(length = sizeof(std::int16_t), "wrong data length (std::int16_t)");
-					if (is_ok(rc))	make_object(result);
+					if (is_ok(rc))	return make_object(result);
 					statement_diagnostics dia;
 					dia.run(stmt);
 					return make_object();

@@ -7,6 +7,7 @@
 #include <cyng/parse/mac.h>
 #include <cyng/io/ostream.h>
 #include <cyng/parse/json/json_parser.h>
+#include <cyng/parse/csv/csv_parser.h>
 #include <cyng/obj/tag.hpp>
 #include <cyng/obj/util.hpp>
 #include <cyng/obj/container_cast.hpp>
@@ -99,6 +100,20 @@ BOOST_AUTO_TEST_CASE(json)
 		});
 	jp2.read(std::begin(s2), std::end(s2));
 
+}
+
+BOOST_AUTO_TEST_CASE(csv)
+{
+	auto const inp_01 = std::string("\"name-1\", \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
+	cyng::csv::parser csvp1(',', [](cyng::vector_t&& vec) {
+		//std::cout << vec << std::endl;
+		//std::cout << cyng::to_string(vec) << std::endl;
+		//	"[name-1,name-2,name-3,1,2,3,true,false,4200.00]"
+		BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[name-1,name-2,name-3,1,2,3,true,false,4200.00]");
+
+		});
+
+	csvp1.read(std::begin(inp_01), std::end(inp_01));
 
 }
 

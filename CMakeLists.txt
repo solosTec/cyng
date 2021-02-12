@@ -22,6 +22,11 @@ project(
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
+    #
+    # guard against in-source builds and bad build-type strings
+    #
+    include(cmake/safeguards.cmake)
+
     math(EXPR "${PROJECT_NAME}_VERSION_NUMERAL" "${PROJECT_VERSION_MAJOR}*100000+${PROJECT_VERSION_MINOR}*1000+${PROJECT_VERSION_PATCH}" OUTPUT_FORMAT DECIMAL)
     message(STATUS "** Version numeral    : ${${PROJECT_NAME}_VERSION_NUMERAL}")
 
@@ -39,7 +44,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         message(STATUS "Doxygen not found, not building docs")
     endif()
 
-    if (WIN32)
+    if (MSVC)
         message(STATUS "Use static libraries")
         set(GLOBAL_LIBRARY_TYPE STATIC)
         #set(Boost_USE_STATIC_LIBS ON)
@@ -48,7 +53,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         add_compile_options("/bigobj")
         message(STATUS "** compile definitions: ${CMAKE_CXX_FLAGS}")
 
-    else()
+    elseif(CMAKE_COMPILER_IS_GNUCXX)
         set(GLOBAL_LIBRARY_TYPE SHARED)
     endif()
 
@@ -65,11 +70,11 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     string(TOUPPER ${PROJECT_NAME} CAPITAL_NAME)
 
     #
-    # manage unit test: CYNG_BUILD_TEST
+    # manage unit test: CYNG_UNIT_TEST
     # default is OFF
     #
-    if(NOT DEFINED ${PROJECT_NAME}_BUILD_TEST)
-	    set(${PROJECT_NAME}_BUILD_TEST OFF CACHE BOOL "build unit test")
+    if(NOT DEFINED ${CAPITAL_NAME}_UNIT_TEST)
+	    set(${CAPITAL_NAME}_UNIT_TEST OFF CACHE BOOL "build unit test")
     endif()
 
 
@@ -551,9 +556,9 @@ endif()
 
 #
 # unit tests
-# call CMake with -DCYNG_BUILD_TEST:BOOL=TRUE to generate unit tests
+# call CMake with -DCYNG_UNIT_TEST:BOOL=TRUE to generate unit tests 
 #
-if(${PROJECT_NAME}_BUILD_TEST)
+if(${CAPITAL_NAME}_UNIT_TEST)
 
     add_subdirectory(unit_test)
 
