@@ -59,7 +59,19 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     TEST_BIG_ENDIAN(${PROJECT_NAME}_BIG_ENDIAN)
     message(STATUS "** big endian         : ${${PROJECT_NAME}_BIG_ENDIAN}")
 
+    #
+    #   get an uppercase project name
+    #
     string(TOUPPER ${PROJECT_NAME} CAPITAL_NAME)
+
+    #
+    # manage unit test: CYNG_BUILD_TEST
+    # default is OFF
+    #
+    if(NOT DEFINED ${PROJECT_NAME}_BUILD_TEST)
+	    set(${PROJECT_NAME}_BUILD_TEST OFF CACHE BOOL "build unit test")
+    endif()
+
 
 endif()
 
@@ -539,8 +551,13 @@ endif()
 
 #
 # unit tests
+# call CMake with -DCYNG_BUILD_TEST:BOOL=TRUE to generate unit tests
 #
-add_subdirectory(unit_test)
+if(${PROJECT_NAME}_BUILD_TEST)
+
+    add_subdirectory(unit_test)
+
+endif()
 
 #
 # generate config file

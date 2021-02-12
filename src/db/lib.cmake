@@ -51,8 +51,6 @@ set (db_odbc
 )
 
 source_group("details" FILES ${db_details})
-source_group("SQLite3" FILES ${db_sqlite3})
-source_group("ODBC" FILES ${db_odbc})
 
 
 # define the docscript lib
@@ -60,7 +58,14 @@ set (db_lib
   ${db_cpp}
   ${db_h}
   ${db_details}
-  ${db_sqlite3}
-  ${db_odbc}
 )
 
+if (${CAPITAL_NAME}_SQLITE3_CONNECTOR)
+    source_group("SQLite3" FILES ${db_sqlite3})
+    list(APPEND db_lib ${db_sqlite3})
+endif()
+
+if (${CAPITAL_NAME}_ODBC_CONNECTOR)
+    source_group("ODBC" FILES ${db_odbc})
+    list(APPEND db_lib ${db_odbc})
+endif()
