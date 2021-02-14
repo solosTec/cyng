@@ -8,6 +8,15 @@
 
 namespace cyng {
 	namespace logging {
+
+		syslog::syslog()
+		{}
+		syslog::~syslog()
+		{}
+
+		void syslog::write(std::chrono::system_clock::time_point ts, severity lev, std::uint64_t tip, std::string const msg) {
+
+		}
 	}
 }
 

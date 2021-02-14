@@ -25,6 +25,9 @@ BOOST_AUTO_TEST_CASE(logger)
 	cyng::controller ctl;
 	cyng::logger logger(ctl.create_channel<cyng::log>());
 
+	logger.start_console_logger();
+	logger.start_file_logger(std::filesystem::temp_directory_path() / "docc.log", 32UL * 1024UL * 1024UL);
+
 	auto rec = cyng::logging::record::create(cyng::severity::LEVEL_TRACE, "hello");
 	rec << ", world";
 	logger.push(*rec);

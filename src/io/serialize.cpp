@@ -8,6 +8,7 @@
 #include <cyng/io/serialize.hpp>
 #include <cyng/io/io.h>
 #include <cyng/obj/object.h>
+#include <cyng/io/serializer/json_walker.h>
 
 namespace cyng {
 	namespace io {
@@ -51,6 +52,17 @@ namespace cyng {
 		{
 			std::stringstream ss;
 			serialize_json(ss, obj);
+			return ss.str();
+		}
+
+		void serialize_json_pretty(std::ostream& os, object const& obj) {
+			json_walker walker(os);
+			traverse(obj, walker);
+		}
+
+		std::string to_json_pretty(object const& obj) {
+			std::stringstream ss;
+			serialize_json_pretty(ss, obj);
 			return ss.str();
 		}
 

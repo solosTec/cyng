@@ -21,12 +21,14 @@ set (io_serializer
     include/cyng/io/serializer/binary.hpp
     include/cyng/io/serializer/csv.hpp
     include/cyng/io/serializer/json.hpp
+    include/cyng/io/serializer/json_walker.h
     include/cyng/io/serializer/plain.hpp
     include/cyng/io/serializer/typed.hpp
     src/io/serialize.cpp
     src/io/serializer/binary.cpp
     src/io/serializer/csv.cpp
     src/io/serializer/json.cpp
+    src/io/serializer/json_walker.cpp
     src/io/serializer/plain.cpp
     src/io/serializer/typed.cpp
 )

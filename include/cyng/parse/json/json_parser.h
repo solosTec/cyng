@@ -5,8 +5,8 @@
  * 
  */ 
 
-#ifndef CYNG_PARSE_JSON_H
-#define CYNG_PARSE_JSON_H
+#ifndef CYNG_PARSE_JSON_PARSER_H
+#define CYNG_PARSE_JSON_PARSER_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
   #pragma once

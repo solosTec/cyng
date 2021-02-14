@@ -9,6 +9,7 @@
 
 #include <cyng/task/channel.h>
 #include <cyng/obj/intrinsics/severity.h>
+#include <filesystem>
 
 namespace cyng {
 
@@ -25,6 +26,11 @@ namespace cyng {
 		void push(logging::record const&);
 		void stop();
 		void set_level(severity);
+
+		void start_console_logger();
+		void start_file_logger(std::filesystem::path, std::uint64_t);
+		void start_syslog();
+		void start_eventlog();
 
 	private:
 		channel_ptr	channel_;

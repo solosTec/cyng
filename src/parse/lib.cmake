@@ -11,6 +11,8 @@ set (parse_cpp
 set (parse_h
     include/cyng/parse/mac.h
     include/cyng/parse/hex.h
+    include/cyng/parse/json.h
+    include/cyng/parse/csv.h
 )
 
 set (parse_json
@@ -20,6 +22,7 @@ set (parse_json
     src/parse/json/json_parser.cpp
     src/parse/json/json_symbol.cpp
     src/parse/json/json_tokenizer.cpp
+    src/parse/json/json.cpp
 )
 
 set (parse_csv
@@ -29,6 +32,7 @@ set (parse_csv
     src/parse/csv/csv_parser.cpp
     src/parse/csv/csv_symbol.cpp
     src/parse/csv/csv_tokenizer.cpp
+    src/parse/csv/csv.cpp
 )
 
 source_group("JSON" FILES ${parse_json})

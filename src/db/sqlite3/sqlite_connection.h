@@ -13,7 +13,9 @@
 #if defined(CYNG_DB_SQLITE_CONNECTION_H)
 
 #include <sqlite3/sqlite_defs.h>
+
 #include <functional>
+#include <string>
 
 namespace cyng
 {

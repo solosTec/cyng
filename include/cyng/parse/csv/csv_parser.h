@@ -5,8 +5,8 @@
  * 
  */ 
 
-#ifndef CYNG_PARSE_CSV_H
-#define CYNG_PARSE_CSV_H
+#ifndef CYNG_PARSE_CSV_PARSER_H
+#define CYNG_PARSE_CSV_PARSER_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
   #pragma once
@@ -45,18 +45,6 @@ namespace cyng
 		{
 		public:
 			using parser_callback = std::function<void(vector_t&&)>;
-
-		private:
-			//enum class state {
-			//	FIELD,
-			//	COMMA,
-			//	CRLF
-			//};
-
-			/**
-			 * parser state stack
-			 */
-			//std::stack<state>	state_;
 
 		public:
 			/**

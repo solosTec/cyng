@@ -6,19 +6,38 @@
  */ 
 #include <cyng/log/log.h>
 #include <cyng/io/ostream.h>
+#include <cyng/log/appender/console.h>
+#include <cyng/log/appender/rolling_file.h>
+
+#ifdef APPENDER_EVENT_LOG
+#include <cyng/log/appender/event_log.h>
+#endif
+
+#ifdef APPENDER_SYS_LOG
+#include <cyng/log/appender/sys_log.h>
+#endif
 
 namespace cyng {
 
 	log::log()
 		: sigs_{
 		[&](std::chrono::system_clock::time_point ts, severity lev, std::uint32_t tid, std::string msg) {	this->write(ts, lev, tid, msg); },
-		std::bind(&log::flush, this),
+		std::bind(&log::start_console, this),
+		std::bind(&log::start_file, this, std::placeholders::_1, std::placeholders::_2),
+		std::bind(&log::start_sys_log, this),
+		std::bind(&log::start_event_log, this),
 		[&](severity s) {	this->set_level(s); },
 		std::bind(&log::stop, this, std::placeholders::_1)
 	}
 		, level_(severity::LEVEL_TRACE)
 		, con_()
-		, rfile_(std::filesystem::temp_directory_path() / "docc.log", 32UL * 1024UL * 1024UL)	//	32MB
+		, rfile_()
+#ifdef APPENDER_SYS_LOG
+		, sys_()
+#endif
+#ifdef APPENDER_EVENT_LOG
+		, event_()
+#endif
 	{}
 
 	log::~log()
@@ -42,17 +61,50 @@ namespace cyng {
 			//
 			//	write to console
 			//
-			con_.write(ts, lev, tip, msg);
+			if (con_)	con_->write(ts, lev, tip, msg);
 
 			//
 			//	write to rolling file
 			//
-			rfile_.write(ts, lev, tip, msg);
+			if (rfile_)	rfile_->write(ts, lev, tip, msg);
+
+			//
+			//	write to event log
+			//
+#ifdef APPENDER_EVENT_LOG
+			if (event_)	event_->write(ts, lev, tip, msg);
+#endif
+
+			//
+			//	write to sys log
+			//
+#ifdef APPENDER_SYS_LOG
+			if (sys_)	sys_->write(ts, lev, tip, msg);
+#endif
+
 		}
 	}
 
-	void log::flush() {
+	void log::start_console() {
+		con_.reset(new logging::console());
+	}
+	void log::start_file(std::filesystem::path path, std::uint64_t size) {
+		//, rfile_(std::filesystem::temp_directory_path() / "docc.log", 32UL * 1024UL * 1024UL)	//	32MB
+		BOOST_ASSERT(size != 0);
+		BOOST_ASSERT(!path.empty());
+		rfile_.reset(new logging::rolling_file(path, size));
+	}
+	void log::start_sys_log() {
 
+#ifdef APPENDER_SYS_LOG
+		sys_.reset(new logging::syslog());
+#endif
+
+	}
+	void log::start_event_log() {
+#ifdef APPENDER_EVENT_LOG
+		event_.reset(new logging::eventlog());
+#endif
 	}
 
 	void log::set_level(severity lev) {

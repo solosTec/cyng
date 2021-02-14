@@ -14,28 +14,6 @@
 namespace cyng {
 
 	/**
-	 * Extract C from obj.
-	 *
-	 * Precondition: obj is of type C
-	 * Postcondition: obj is empty
-	 * 
-	 * Example:
-	 * @code
-	 * auto obj = cyng::make_object(cyng::make_tuple(1, 2, 3.4));
-     * auto tpl = cyng::container_cast<cyng::tuple_t>(obj);
-	 * @endcode
-	 */
-	//template <typename C >
-	//[[nodiscard]]
-	//C container_cast(object& obj) {
-	//	auto r = object_release<C>(obj);
-	//	if (r.first != nullptr) {
-	//		? *(r.first)
-	//	}
-	//	return C{};
-	//}
-
-	/**
 	 * Create a copy.
 	 *
 	 * Precondition: obj is of type C

@@ -361,6 +361,8 @@ target_compile_features(cyng_log PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 target_compile_definitions(cyng_log 
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_LOG>
+        "$<$<PLATFORM_ID:Linux>:APPENDER_SYS_LOG>"
+		"$<$<PLATFORM_ID:Windows>:APPENDER_EVENT_LOG>"
 )
 
 target_link_libraries(cyng_log 
