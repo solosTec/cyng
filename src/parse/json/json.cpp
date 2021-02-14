@@ -6,6 +6,7 @@
  */ 
 #include <cyng/parse/json.h>
 #include <fstream>
+#include <iterator>
 
 namespace cyng {
 	namespace json {
