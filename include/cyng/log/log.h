@@ -25,7 +25,7 @@ namespace cyng {
 		class rolling_file;
 
 #ifdef APPENDER_SYS_LOG
-		class syslog;
+		class sys_log;
 #endif
 
 #ifdef APPENDER_EVENT_LOG
@@ -42,7 +42,7 @@ namespace cyng {
 			std::function<void(std::chrono::system_clock::time_point, severity, std::uint32_t, std::string)>,	//	log()
 			std::function<void(void)>,		//	start console logger
 			std::function<void(std::filesystem::path, std::uint64_t)>,		//	start file logger
-			std::function<void(void)>,		//	start sys-log (linux only)
+			std::function<void(std::string, bool)>,		//	start sys-log (linux only)
 			std::function<void(void)>,		//	start event-log (windows only)
 			std::function<void(severity)>,	//	set_level()
 			std::function<void(eod)>		//	stop()
@@ -60,7 +60,7 @@ namespace cyng {
 
 		void start_console();
 		void start_file(std::filesystem::path, std::uint64_t);
-		void start_sys_log();
+		void start_sys_log(std::string, bool);
 		void start_event_log();
 
 		void write(std::chrono::system_clock::time_point, severity, std::uint32_t, std::string);
@@ -72,7 +72,7 @@ namespace cyng {
 		std::unique_ptr< logging::console > con_;
 		std::unique_ptr < logging::rolling_file > rfile_;
 #ifdef APPENDER_SYS_LOG
-		std::unique_ptr < logging::syslog > sys_;
+		std::unique_ptr < logging::sys_log > sys_;
 #endif
 #ifdef APPENDER_EVENT_LOG
 		std::unique_ptr < logging::eventlog > event_;

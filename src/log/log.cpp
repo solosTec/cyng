@@ -24,7 +24,7 @@ namespace cyng {
 		[&](std::chrono::system_clock::time_point ts, severity lev, std::uint32_t tid, std::string msg) {	this->write(ts, lev, tid, msg); },
 		std::bind(&log::start_console, this),
 		std::bind(&log::start_file, this, std::placeholders::_1, std::placeholders::_2),
-		std::bind(&log::start_sys_log, this),
+		std::bind(&log::start_sys_log, this, std::placeholders::_1, std::placeholders::_2),
 		std::bind(&log::start_event_log, this),
 		[&](severity s) {	this->set_level(s); },
 		std::bind(&log::stop, this, std::placeholders::_1)
@@ -94,10 +94,10 @@ namespace cyng {
 		BOOST_ASSERT(!path.empty());
 		rfile_.reset(new logging::rolling_file(path, size));
 	}
-	void log::start_sys_log() {
+	void log::start_sys_log(std::string ident, bool console) {
 
 #ifdef APPENDER_SYS_LOG
-		sys_.reset(new logging::syslog());
+		sys_.reset(new logging::sys_log(ident, console));
 #endif
 
 	}

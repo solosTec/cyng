@@ -16,14 +16,15 @@
 #ifdef APPENDER_SYS_LOG
 
 #include <cyng/log/appender.h>
+#include <syslog.h>	//	system lib
 
 namespace cyng {
 	namespace logging {
-		class syslog
+		class sys_log
 		{
 		public:
-			syslog();
-			~syslog();
+			sys_log(std::string ident, bool console);
+			~sys_log();
 
 			void write(std::chrono::system_clock::time_point ts, severity lev, std::uint64_t tip, std::string const msg);
 		};
