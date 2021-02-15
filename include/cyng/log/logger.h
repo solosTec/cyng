@@ -29,7 +29,7 @@ namespace cyng {
 
 		void start_console_logger();
 		void start_file_logger(std::filesystem::path, std::uint64_t);
-		void start_syslog();
+		void start_syslog(std::string ident, bool console);
 		void start_eventlog();
 
 	private:

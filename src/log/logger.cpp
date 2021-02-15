@@ -36,8 +36,8 @@ namespace cyng {
 		channel_->dispatch(2, cyng::make_tuple(p, size));
 	}
 
-	void logger::start_syslog() {
-		channel_->dispatch(3, cyng::make_tuple());
+	void logger::start_syslog(std::string ident, bool console) {
+		channel_->dispatch(3, cyng::make_tuple(ident, console));
 	}
 
 	void logger::start_eventlog() {
