@@ -145,6 +145,14 @@ namespace cyng
 			bool		abort_;
 		};
 
+
+		/**
+		 * opens the specified database and return a session instance
+		 */
+		session create_db_session(object const&);
+		session create_db_session(param_map_t const&);
+
+
 	}	//	db
 }	//	cyng
 

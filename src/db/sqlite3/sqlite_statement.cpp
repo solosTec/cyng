@@ -8,10 +8,9 @@
 
 #include <sqlite3/sqlite_statement.h>
 #include <sqlite3/sqlite_result.h>
+
 #include <cyng/io/ostream.h>
-//#include <cyng/io/serializer.h>
-//#include <cyng/intrinsics/traits/tag.hpp>
-//#include <cyng/object_cast.hpp>
+
 #include <boost/uuid/uuid_io.hpp>
 
 namespace cyng	
@@ -416,13 +415,13 @@ namespace cyng
 				}
 			}
 
-			statement::statement(connection& con)
-			: connection_(con)
-			, stmt_(nullptr)
-			, tail_(nullptr)
-			, state_(INITIAL)
-			, bind_counter_(1)	//	starts with 1
-			, static_data_()
+			statement::statement(connection* con)
+				: connection_(con)
+				, stmt_(nullptr)
+				, tail_(nullptr)
+				, state_(INITIAL)
+				, bind_counter_(1)	//	starts with 1
+				, static_data_()
 			{}
 				
 			bool statement::execute()
@@ -442,7 +441,7 @@ namespace cyng
 				default:
 					break;
 				}
-				connection_.show_diagnostics();
+				connection_->show_diagnostics();
 				return false;
 			}
 			
@@ -462,10 +461,10 @@ namespace cyng
 				}
 				if (state_ == INITIAL || state_ == RUNNING)
 				{
-					const int rc = ::sqlite3_prepare_v2(connection_, sql.c_str(), static_cast<int>(sql.length()), &stmt_, &tail_);
+					const int rc = ::sqlite3_prepare_v2(*connection_, sql.c_str(), static_cast<int>(sql.length()), &stmt_, &tail_);
 					if (!is_ok(rc))	
 					{
-						connection_.show_diagnostics();
+						connection_->show_diagnostics();
 						return std::make_pair(0, false);
 					}
 					
@@ -488,7 +487,7 @@ namespace cyng
 						state_ = INITIAL;
 						return is_ok(rc);
 					}
-					connection_.show_diagnostics();
+					connection_->show_diagnostics();
 				}
 				return false;
 			}
@@ -535,7 +534,7 @@ namespace cyng
 			
 			int statement::changes()
 			{
-				return ::sqlite3_changes(connection_);
+				return ::sqlite3_changes(*connection_);
 			}
 
 			template < type_code C >
@@ -547,7 +546,7 @@ namespace cyng
 
 				if (!detail::bind_value< type >(stmt_, bind_counter_, object_cast<type>(obj)))
 				{
-					connection_.show_diagnostics();
+					connection_->show_diagnostics();
 					return false;
 				}
 				return true;
@@ -676,14 +675,14 @@ namespace cyng
 					const int rc = ::sqlite3_reset(stmt_);
 					if (!is_ok(rc))
 					{
-						connection_.show_diagnostics();
+						connection_->show_diagnostics();
 					}
 					//state_ = INITIAL;
 				}
 				else 
 				{
 					state_ = INITIAL;
-					connection_.show_diagnostics();
+					connection_->show_diagnostics();
 				}
 				bind_counter_ = 1;
 				static_data_.clear();
@@ -699,7 +698,7 @@ namespace cyng
 				return stmt_;
 			}			
 
-			statement_ptr statement_factory(connection& con)
+			statement_ptr statement_factory(connection* con)
 			{
 				auto ptr = std::make_shared<statement>(con);
 				return std::static_pointer_cast<statement_interface>(ptr->shared_from_this());

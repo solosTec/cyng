@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_SUITE(db_suite)
 
 BOOST_AUTO_TEST_CASE(session)
 {
-	cyng::db::session	s(cyng::db::connection_type::CONNECTION_SQLITE);
+	cyng::db::session	s(cyng::db::connection_type::SQLITE);
 	s.connect(cyng::make_tuple(
 		cyng::make_param("type", "SQLite"), 
 		cyng::make_param("file-name", "demo.db"),

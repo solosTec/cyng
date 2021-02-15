@@ -1,9 +1,9 @@
 /*
-* The MIT License (MIT)
-*
-* Copyright (c) 2018 Sylko Olzscher
-*
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2021 Sylko Olzscher
+ *
+ */
 
 #ifndef CYNG_DB_SQLITE_STATEMENT_H
 #define CYNG_DB_SQLITE_STATEMENT_H
@@ -15,12 +15,6 @@
 #include <sqlite3/sqlite_defs.h>
 #include <sqlite3/sqlite_connection.h>
 #include <cyng/db/details/statement_interface.h>
-//#include <cyng/intrinsics/traits/tag.hpp>
-//#include <cyng/db/statement_interface.h>
-//#include <cyng/intrinsics/buffer.h>
-//#include <cyng/intrinsics/version.h>
-//#include <cyng/intrinsics/sets.h>
-//#include <cyng/chrono.h>
 
 namespace cyng	
 {
@@ -39,7 +33,7 @@ namespace cyng
 				typedef std::shared_ptr<statement>	shared_type;
 				
 			public:
-				statement(connection&);
+				statement(connection*);
 								
 				virtual bool execute() override;
 
@@ -59,7 +53,9 @@ namespace cyng
 				 */
 				virtual bool close();
 
+				//
 				//	data binding
+				//
 				virtual statement_interface* push(object, std::size_t /*= SQL_NTS*/) override;
 				virtual statement_interface* push(key_t const&, meta_sql const&) override;
 				virtual bool bind(int, object&, std::size_t column_size) override;
@@ -96,7 +92,7 @@ namespace cyng
 				/**
 				*	Wrapper for sqlite3* pointer
 				*/
-				connection&		connection_;
+				connection*		connection_;
 				sqlite3_stmt*	stmt_;
 				char const*		tail_;
 				enum 
@@ -121,7 +117,7 @@ namespace cyng
 				
 			};
 
-			statement_ptr statement_factory(connection&);
+			statement_ptr statement_factory(connection*);
 
 		}
 	}

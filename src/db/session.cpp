@@ -9,7 +9,12 @@
 #include <cyng.h>
 #include <cyng/db/session.h>
 #include <cyng/obj/container_cast.hpp>
+#include <cyng/obj/util.hpp>
+#include <cyng/obj/algorithm/find.h>
 
+#ifdef _DEBUG_DB
+#include <iostream>
+#endif
 
 #if defined(CYNG_MYSQL_CONNECTOR)
 //#include "mysql/mysql_session.h"
@@ -139,19 +144,19 @@ namespace cyng
 			{
 			
 #if defined(CYNG_MYSQL_CONNECTOR)
-			//case connection_type::CONNECTION_MYSQL:	return std::make_shared<mysql::session>();
+			//case connection_type::MYSQL:	return std::make_shared<mysql::session>();
 #endif
 			
 #if defined(CYNG_SQLITE3_CONNECTOR)
-			case connection_type::CONNECTION_SQLITE:	return std::make_shared<sqlite::session>();
+			case connection_type::SQLITE:	return std::make_shared<sqlite::session>();
 #endif
 			
 #if defined(CYNG_ODBC_CONNECTOR)
-			//case connection_type::CONNECTION_ODBC:	return std::make_shared<odbc::session>();
+			//case connection_type::ODBC:	return std::make_shared<odbc::session>();
 #endif
 
 #if defined(CYNG_PQXX_CONNECTOR)
-			//case connection_type::CONNECTION_PQXX:	return std::make_shared<pqxx::session>();
+			//case connection_type::PQXX:	return std::make_shared<pqxx::session>();
 #endif
 				default:
 					break;
@@ -190,6 +195,37 @@ namespace cyng
 		{
 			abort_ = true;
 		}
+
+		session create_db_session(param_map_t const& pmap) {
+			auto const ct = to_connection_type(find_value(pmap, std::string("connection-type"), std::string("none")));
+			session s(ct);
+			auto r = s.connect(pmap);
+			if (!r.second) {
+#ifdef _DEBUG_DB
+				std::cerr
+					<< "**error: cannot open connection "
+					<< r.first
+					<< std::endl
+					;
+#endif
+			}
+			return s;
+		}
+
+		session create_db_session(cyng::object const& cfg) {
+
+			if (is_of_type<TC_TUPLE>(cfg)) {
+				auto const tpl = container_cast<tuple_t>(cfg);
+				auto const pmap = to_param_map(tpl);
+				return create_db_session(pmap);
+			}
+			else if (is_of_type<TC_PARAM_MAP>(cfg)) {
+				auto const pmap = container_cast<param_map_t>(cfg);
+				return create_db_session(pmap);
+			}
+			return session(connection_type::NONE);
+		}
+
 	}
 }
 

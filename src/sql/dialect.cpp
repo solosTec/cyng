@@ -19,7 +19,8 @@ namespace cyng
 			{
 				return dialect::MYSQL;
 			}
-			else if (boost::algorithm::iequals(name, "SQLITE"))
+			else if (boost::algorithm::iequals(name, "SQLITE")
+				|| boost::algorithm::iequals(name, "SQLITE3"))
 			{
 				return dialect::SQLITE;
 			}
@@ -27,15 +28,20 @@ namespace cyng
 			{
 				return dialect::ORACLE;
 			}
-			else if (boost::algorithm::iequals(name, "ACCESS") || boost::algorithm::iequals(name, "MSACCESS"))
+			else if (boost::algorithm::iequals(name, "ACCESS") 
+				|| boost::algorithm::iequals(name, "MSACCESS"))
 			{
 				return dialect::ACCESS;
 			}
-			else if (boost::algorithm::iequals(name, "SQLSERVER") || boost::algorithm::iequals(name, "MSSQLServer") || boost::algorithm::iequals(name, "MSSQL"))
+			else if (boost::algorithm::iequals(name, "SQLSERVER") 
+				|| boost::algorithm::iequals(name, "MSSQLServer") 
+				|| boost::algorithm::iequals(name, "MSSQL"))
 			{
 				return dialect::SQLSERVER;
 			}
-			else if (boost::algorithm::iequals(name, "POSTGRESQL") || boost::algorithm::iequals(name, "PGSQL"))
+			else if (boost::algorithm::iequals(name, "POSTGRESQL") 
+				|| boost::algorithm::iequals(name, "POSTGRES")
+				|| boost::algorithm::iequals(name, "PGSQL"))
 			{
 				return dialect::POSTGRESQL;
 			}

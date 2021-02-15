@@ -6,11 +6,13 @@ set (db_lib)
 set (db_cpp
     src/db/session.cpp
     src/db/connection_types.cpp
+    src/db/session_pool.cpp
 )
     
 set (db_h
     include/cyng/db/session.h
     include/cyng/db/connection_types.h
+    include/cyng/db/session_pool.h
 )
 
 set (db_details

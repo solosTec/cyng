@@ -8,12 +8,8 @@
 
 #include <sqlite3/sqlite_session.h>
 #include <sqlite3/sqlite_connection.h>
+#include <sqlite3/sqlite_statement.h>
 #include <sqlite3/sqlite_error.hpp>
-
-//#include "sqlite_error.hpp"
-//#include "sqlite_statement.h"
-//#include <cyng/db/statement_interface.h>
-//#include <cyng/dom/algorithm.h>
 
 #include <cyng/obj/algorithm/find.h>
 #include <cyng/sql/dialect.h>
@@ -37,7 +33,6 @@ namespace cyng
 			{
 				close();
 			}
-
 
 			std::pair<std::string, bool> session::connect(param_map_t const& config)	
 			{
@@ -93,8 +88,12 @@ namespace cyng
 
 			statement_ptr session::create_statement()
 			{
-				return statement_ptr();
-				//return statement_factory(connection_);
+				//
+				//	FixMe: implement
+				//
+				BOOST_ASSERT_MSG(false, "ToDo: implement");
+				//return statement_ptr();
+				return statement_factory(connection_.get());
 			}
 				
 			bool session::execute(std::string const& sql)

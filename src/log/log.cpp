@@ -89,9 +89,9 @@ namespace cyng {
 		con_.reset(new logging::console());
 	}
 	void log::start_file(std::filesystem::path path, std::uint64_t size) {
-		//, rfile_(std::filesystem::temp_directory_path() / "docc.log", 32UL * 1024UL * 1024UL)	//	32MB
 		BOOST_ASSERT(size != 0);
 		BOOST_ASSERT(!path.empty());
+		if (con_) con_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "start file logger");
 		rfile_.reset(new logging::rolling_file(path, size));
 	}
 	void log::start_sys_log() {

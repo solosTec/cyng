@@ -35,6 +35,23 @@ namespace cyng {
 	private:
 		channel_ptr	channel_;
 	};
+
+	constexpr bool has_sys_log() {
+#ifdef APPENDER_SYS_LOG
+		return true;
+#else
+		return false;
+#endif
+	}
+
+	constexpr bool has_event_log() {
+#ifdef APPENDER_EVENT_LOG
+		return true;
+#else
+		return false;
+#endif
+	}
+
 }
 
 #endif
