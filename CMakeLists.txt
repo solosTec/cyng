@@ -525,10 +525,14 @@ target_compile_definitions(cyng_db
         $<$<CONFIG:Debug>:_DEBUG_DB>
 )
 
+#
+# CYNG_ODBC_CONNECTOR
+#
 target_link_libraries(cyng_db 
     PRIVATE 
         Boost::boost 
 		"$<$<PLATFORM_ID:Windows>:odbc32>"
+        $<$<AND:$<BOOL:${CYNG_ODBC_CONNECTOR}>,$<PLATFORM_ID:Linux>>:odbc>
 )
 
 #
