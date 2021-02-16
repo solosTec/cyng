@@ -8,9 +8,11 @@
 #ifndef CYNG_SQL_HPP
 #define CYNG_SQL_HPP
 
-
 #include <cyng/sql/dialect.h>
+#include <cyng/sql/convert.hpp>
 #include <cyng/store/meta.h>
+#include <cyng/io/ostream.h>
+
 #include <vector>
 #include <boost/predef.h>
 
@@ -26,6 +28,16 @@ namespace cyng
 		class insert;
 		class update;
 		class remove;
+
+		/**
+		 * expands to ?
+		 */
+		struct placeholder	{};
+
+		/**
+		 * expands to all columns that are primary key
+		 */
+		struct pk {};
 
 		using clause_t = std::vector<std::string>;
 
@@ -83,7 +95,18 @@ namespace cyng
 			{
 			public:
 				sql_where(dialect, clause_t&&);
-				void where(std::string);
+
+				/**
+				 * Use an arbitrary string as where clause.
+				 */
+				sql_group_by where(std::string);
+
+				/**
+				 * Specify the record by it's primary key
+				 */
+				sql_group_by where(meta_sql const&, pk);
+			private:
+				clause_t reset_clause();
 			};
 
 			class sql_from : public base
@@ -96,6 +119,17 @@ namespace cyng
 				clause_t reset_clause();
 
 			};
+
+			class sql_values : public base
+			{
+			public:
+				sql_values(dialect, clause_t&&);
+			};
+
+			/**
+			 * substitute data type with placeholder
+			 */
+			std::string substitute_ph(dialect, type_code);
 		}
 
 
@@ -159,8 +193,69 @@ namespace cyng
 		public:
 			insert(dialect, meta_sql const&);
 
+			template <typename Head, typename ...Args >
+			details::sql_values values(meta_sql const& m, Head&& v, Args &&... args) {
+
+				clause_.push_back("VALUES");
+				clause_.push_back("(");
+
+				//
+				//	insert values
+				//
+				BOOST_ASSERT(m.size() == sizeof...(Args) + 1);
+
+				//
+				//	ToDo: recursive insertion of values
+				//
+				clause_.push_back(to_sql(dialect_, v));
+				((clause_.push_back(","),  clause_.push_back(to_sql(dialect_, args))), ...);
+
+				clause_.push_back(")");
+				return details::sql_values(dialect_, reset_clause(m));
+			}
+
+			/**
+			 * @param n number of placeholders
+			 */
+			details::sql_values bind_values(meta_sql const& m);
+
 		private:
 			void columns(meta_sql const&);
+			clause_t reset_clause(meta_sql const& m);
+
+		};
+
+		/**
+		 * Update table statement
+		 * UPDATE tbl SET col = val, ... WHERE cond
+		 */
+		class update : public details::base
+		{
+		public:
+			update(dialect, meta_sql const&);
+
+			/**
+			 * update the complete table body
+			 */
+			details::sql_where set_placeholder(meta_sql const& m);
+
+		private:
+			clause_t reset_clause(meta_sql const& m);
+
+		};
+
+		/**
+		 * Delete table statement
+		 * DELETE FROM tbl WHERE cond
+		 */
+		class remove : public details::base
+		{
+		public:
+			remove(dialect, meta_sql const&);
+			details::sql_where self();
+		private:
+			clause_t reset_clause();
+
 		};
 
 	}

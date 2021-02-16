@@ -83,7 +83,7 @@ namespace cyng
 //				bool bind_null(int index);
 
 				template < type_code C >
-				bool bind_value_by_code(object obj, std::size_t column_size);
+				bool bind_value_by_code(object& obj, std::size_t column_size);
 
 
 				operator sqlite3_stmt*();

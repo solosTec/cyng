@@ -11,6 +11,7 @@ set (sql_cpp
 set (sql_h
     include/cyng/sql/sql.hpp
     include/cyng/sql/dialect.h
+    include/cyng/sql/convert.hpp
 )
 
 # define the docscript lib

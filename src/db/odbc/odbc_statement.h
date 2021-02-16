@@ -98,7 +98,7 @@ namespace cyng
 				void stop();
 
 				template < type_code C >
-				bool bind_value_by_code(object obj, std::size_t column_size);
+				bool bind_value_by_code(object& obj, std::size_t column_size);
 
 				/**
 				 * Call SQLFetch

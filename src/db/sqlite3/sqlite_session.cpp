@@ -88,11 +88,6 @@ namespace cyng
 
 			statement_ptr session::create_statement()
 			{
-				//
-				//	FixMe: implement
-				//
-				BOOST_ASSERT_MSG(false, "ToDo: implement");
-				//return statement_ptr();
 				return statement_factory(connection_.get());
 			}
 				

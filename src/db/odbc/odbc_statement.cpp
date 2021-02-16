@@ -490,7 +490,7 @@ namespace cyng
 			}
 
 			template < type_code C >
-			bool statement::bind_value_by_code(object obj, std::size_t column_size)
+			bool statement::bind_value_by_code(object& obj, std::size_t column_size)
 			{
 				typedef typename cyng::traits::reverse_type< C >::type type;
 				//static_assert(!std::is_same<type, cyng::undef>::value, "undefined type");

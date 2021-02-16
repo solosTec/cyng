@@ -46,7 +46,6 @@ namespace cyng {
 			MEDIA_GAS = 7,
 			MEDIA_WATER_COLD = 8,
 			MEDIA_WATER_HOT = 9
-
 		};
 
 	public:
@@ -125,6 +124,38 @@ namespace cyng {
 	bool operator>(obis const&, obis const&) noexcept;
 	bool operator<=(obis const&, obis const&) noexcept;
 	bool operator>=(obis const&, obis const&) noexcept;
+
+	/**
+	 * Generate an OBIS code
+	 */
+	constexpr obis make_obis(std::uint32_t a
+		, std::uint32_t b
+		, std::uint32_t c
+		, std::uint32_t d
+		, std::uint32_t e
+		, std::uint32_t f) {
+
+		return obis(static_cast<std::uint8_t>(a & 0xFF)
+			, static_cast<std::uint8_t>(b & 0xFF)
+			, static_cast<std::uint8_t>(c & 0xFF)
+			, static_cast<std::uint8_t>(d & 0xFF)
+			, static_cast<std::uint8_t>(e & 0xFF)
+			, static_cast<std::uint8_t>(f & 0xFF));
+	}
+
+	/**
+	 * Generate an OBIS code from an existing code but change the storage field
+	 *
+	 * @param s storage value
+	 */
+	constexpr obis make_obis(obis const& code, std::uint32_t s) {
+		return obis(code[obis::VG_MEDIUM]
+			, code[obis::VG_CHANNEL]
+			, code[obis::VG_INDICATOR]
+			, code[obis::VG_MODE]
+			, code[obis::VG_QUANTITY]
+			, static_cast<std::uint8_t>(s & 0xFF));
+	}
 
 }
 

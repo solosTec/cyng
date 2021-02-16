@@ -538,7 +538,7 @@ namespace cyng
 			}
 
 			template < type_code C >
-			bool statement::bind_value_by_code(object obj, std::size_t column_size)
+			bool statement::bind_value_by_code(object& obj, std::size_t column_size)
 			{
 				using type = typename cyng::traits::reverse_type< C >::type;
 
@@ -575,8 +575,8 @@ namespace cyng
 					//	standard library
 					case TC_STRING:	
 						//	hold a reference
-						static_data_.push_back(obj);
-						return bind_value_by_code<TC_STRING>(obj, column_size);
+						static_data_.push_back(obj);				
+						return bind_value_by_code<TC_STRING>(static_data_.back(), column_size);
 
 					case TC_TIME_POINT:	return bind_value_by_code<TC_TIME_POINT>(obj, column_size);
 					case TC_NANO_SECOND:	return bind_value_by_code<TC_NANO_SECOND>(obj, column_size);
@@ -589,7 +589,7 @@ namespace cyng
 					case TC_BUFFER:		//!<	internal buffer type
 						//	hold a reference
 						static_data_.push_back(obj);
-						return bind_value_by_code<TC_BUFFER>(obj, column_size);
+						return bind_value_by_code<TC_BUFFER>(static_data_.back(), column_size);
 
 					case TC_MAC48:			return bind_value_by_code<TC_MAC48>(obj, column_size);
 					case TC_MAC64:			return bind_value_by_code<TC_MAC64>(obj, column_size);

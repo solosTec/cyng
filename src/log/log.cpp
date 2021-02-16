@@ -45,11 +45,43 @@ namespace cyng {
 
 	void log::stop(eod) {
 
+		//
+		//	write to console
+		//
+		if (con_) {
+			con_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop console logger");
+			con_.reset();
+		}
+
+		//
+		//	write to rolling file
+		//
+		if (rfile_) {
+			rfile_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop file logger");
+			rfile_.reset();
+		}
+
+		//
+		//	write to event log
+		//
+#ifdef APPENDER_EVENT_LOG
+		if (event_) {
+			event_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop event logger");
+			event_.reset();
+		}
+#endif
+
+		//
+		//	write to sys log
+		//
+#ifdef APPENDER_SYS_LOG
+		if (sys_) {
+			sys_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop sys logger");
+			sys_.reset();
+		}
+#endif
+
 	}
-
-	//void log::write(object const& obj) {
-
-	//}
 
 	void log::write(std::chrono::system_clock::time_point ts, severity lev, std::uint32_t tip, std::string msg) {
 		if (lev >= level_) {

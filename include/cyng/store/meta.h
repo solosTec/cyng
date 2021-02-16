@@ -70,6 +70,8 @@ namespace cyng {
 			: meta(name, cols.begin(), cols.end(), pk)	//	forward
 		{}
 
+		meta(meta const&) = default;
+
 		std::string const& get_name() const noexcept {
 			return name_;
 		}

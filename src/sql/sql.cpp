@@ -15,6 +15,9 @@ namespace cyng
 {
 	namespace sql {
 
+		//
+		//	+-- SELECT -----------------------------------------------+
+		//
 		select::select(dialect d)
 			: dialect_(d)
 			, clause_({ "SELECT" })
@@ -73,16 +76,16 @@ namespace cyng
 		}
 
 		//
-		//	CREATE
+		//	+-- CREATE -----------------------------------------------+
 		//
 		create::create(dialect d, meta_sql const& m)
 			: details::base(d, clause_t{ "CREATE", "TABLE"} )
 		{
-			clause_.push_back(m.get_name());
-
-			if (has_feature(dialect_, IF_NOT_EXISTS))	{
+			if (has_feature(dialect_, IF_NOT_EXISTS)) {
 				clause_.push_back("IF NOT EXISTS");
 			}
+
+			clause_.push_back(m.get_name());
 
 			clause_.push_back("(");
 
@@ -146,12 +149,11 @@ namespace cyng
 		}
 
 		//
-		//	INSERT
+		//	+-- INSERT -----------------------------------------------+
 		//
 		insert::insert(dialect d, meta_sql const& m)
-			: details::base(d, clause_t{ "INSERT", "INTO" })
+			: details::base(d, clause_t{ "INSERT", "INTO", m.get_name() })
 		{
-			clause_.push_back(m.get_name());
 			columns(m);
 		}
 
@@ -174,7 +176,95 @@ namespace cyng
 			clause_.push_back(")");
 		}
 
+		clause_t insert::reset_clause(meta_sql const& m) {
+			clause_t tmp = std::move(clause_);
+			clause_.push_back("INSERT");
+			clause_.push_back("INTO");
+			clause_.push_back(m.get_name());
+			columns(m);
+			return tmp;
+		}
+
+
+		details::sql_values insert::bind_values(meta_sql const& m) {
+			clause_.push_back("VALUES");
+			clause_.push_back("(");
+
+			//
+			//	insert placeholder
+			//
+			bool init = false;
+			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
+				if (!init) {
+					init = true;
+				}
+				else {
+					clause_.push_back(",");
+				}
+				clause_.push_back(details::substitute_ph(dialect_, col.type_));
+			});
+
+			clause_.push_back(")");
+			return details::sql_values(dialect_, reset_clause(m));
+		}
+
+		//
+		//	+-- UPDATE -----------------------------------------------+
+		//
+		update::update(dialect d, meta_sql const& m)
+			: details::base(d, clause_t{ "UPDATE", m.get_name() })
+		{}
+
+		details::sql_where update::set_placeholder(meta_sql const& m) {
+
+			clause_.push_back("SET");
+
+			bool init = false;
+			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
+				if (!pk) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						clause_.push_back(",");
+					}
+					clause_.push_back(col.name_);
+					clause_.push_back("=");
+					clause_.push_back(details::substitute_ph(dialect_, col.type_));
+				}
+			});
+
+			return details::sql_where(dialect_, reset_clause(m));
+		}
+
+		clause_t update::reset_clause(meta_sql const& m) {
+			clause_t tmp = std::move(clause_);
+			clause_.push_back("UPDATE");
+			clause_.push_back(m.get_name());
+			return tmp;
+		}
+
+		//
+		//	+-- REMOVE -----------------------------------------------+
+		//
+		remove::remove(dialect d, meta_sql const& m)
+			: details::base(d, clause_t{ "DELETE", "FROM", m.get_name() })
+		{}
+
+		details::sql_where remove::self() {
+			return details::sql_where(dialect_, reset_clause());
+		}
+
+		clause_t remove::reset_clause() {
+			//	remains unchanged
+			return clause_;
+		}
+
 		namespace details {
+
+			//
+			//	+-- base ---------------------------------------------+
+			//
 			base::base(dialect d, clause_t&& vec)
 				: dialect_(d)
 				, clause_(std::move(vec))
@@ -212,6 +302,9 @@ namespace cyng
 				return to_str();
 			}
 
+			//
+			//	+-- from ---------------------------------------------+
+			//
 			sql_from::sql_from(dialect d, clause_t&& vec)
 				: base(d, std::move(vec))
 			{
@@ -231,26 +324,89 @@ namespace cyng
 				return from(m.get_name());
 			}
 
-			sql_where::sql_where(dialect d, clause_t&& vec)
-				: base(d, std::move(vec))
-			{}
-
-			void sql_where::where(std::string cond) {
-				clause_.push_back("WHERE");
-				clause_.push_back(cond);
-			}
-
+			//
+			//	+-- group by -----------------------------------------+
+			//
 			sql_group_by::sql_group_by(dialect d, clause_t&& vec)
 				: base(d, std::move(vec))
 			{}
 
+			//
+			//	+-- having -------------------------------------------+
+			//
 			sql_having::sql_having(dialect d, clause_t&& vec)
 				: base(d, std::move(vec))
 			{}
 
+			//
+			//	+-- order by -----------------------------------------+
+			//
 			sql_order_by::sql_order_by(dialect d, clause_t&& vec)
 				: base(d, std::move(vec))
 			{}
+
+			//
+			//	+-- where --------------------------------------------+
+			//
+			sql_where::sql_where(dialect d, clause_t&& vec)
+				: base(d, std::move(vec))
+			{}
+
+			sql_group_by sql_where::where(std::string cond) {
+				clause_.push_back("WHERE");
+				clause_.push_back(cond);
+				return sql_group_by(dialect_, reset_clause());
+			}
+
+			sql_group_by sql_where::where(meta_sql const& m, pk) {
+				clause_.push_back("WHERE");
+				bool init = false;
+				m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
+					if (pk) {
+						if (!init) {
+							init = true;
+						}
+						else {
+							clause_.push_back("AND");
+						}
+						clause_.push_back(col.name_);
+						clause_.push_back("=");
+						clause_.push_back(details::substitute_ph(dialect_, col.type_));
+					}
+					});
+				return sql_group_by(dialect_, reset_clause());
+			}
+
+			clause_t sql_where::reset_clause() {
+				return std::move(clause_);
+			}
+
+			//
+			//	+-- values -------------------------------------------+
+			//
+			sql_values::sql_values(dialect d, clause_t&& vec)
+				: base(d, std::move(vec))
+			{}
+
+			//
+			//	+-- substitute ---------------------------------------+
+			//
+			std::string substitute_ph(dialect d, type_code code) {
+				switch (d) {
+				case dialect::SQLITE:
+					switch (code) {
+					case TC_TIME_POINT:
+						return "julianday(?)";
+					default:
+						break;
+					}
+					break;
+				default:
+					break;
+				}
+
+				return "?";
+			}
 
 		}
 	}

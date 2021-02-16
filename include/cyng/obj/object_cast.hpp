@@ -26,7 +26,7 @@ namespace cyng {
 		using value_type = wrapper< T >;
 
 		//	cast to the correct pointer
-		auto const p = static_cast< value_type* >(obj.obj_.get());
+		auto const p = dynamic_cast< value_type* >(obj.obj_.get());
 		
 		//	if cast failed we return a null pointer
 		return (!p)
