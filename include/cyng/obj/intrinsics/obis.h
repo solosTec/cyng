@@ -80,7 +80,10 @@ namespace cyng {
 
 		data_type const& data() const;
 
-		value_type operator[](value_group) const;
+		constexpr value_type operator[](value_group vg) const {
+			BOOST_ASSERT(vg < VG_EOG);
+			return value_[vg];
+		}
 
 	private:
 		data_type	value_;

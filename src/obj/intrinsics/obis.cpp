@@ -38,12 +38,6 @@ namespace cyng	{
 		return value_;
 	}
 
-	obis::value_type obis::operator[](obis::value_group vg) const {
-		BOOST_ASSERT(vg < VG_EOG);
-		return value_[vg];
-	}
-
-
 	bool is_private(obis const& o) {
 		return 	(o[obis::VG_MEDIUM] >= 0x80 && o[obis::VG_MEDIUM] <= 0xC7)
 			|| (o[obis::VG_CHANNEL] >= 0x80 && o[obis::VG_CHANNEL] <= 0xC7)
