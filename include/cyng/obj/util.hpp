@@ -72,6 +72,13 @@ namespace cyng {
 		return { name, make_object(std::forward<Args>(args)...) };
 	}
 
+	template < typename... Args >
+	[[nodiscard]]
+	param_t make_param(obis const& o, Args&&... args)
+	{	
+		return { to_str(o), make_object(std::forward<Args>(args)...) };
+	}
+
 	[[nodiscard]]
 	std::string make_string(buffer_t const&);
 

@@ -100,8 +100,10 @@ namespace cyng {
 	std::vector<channel_ptr> registry::get_all_channels() const
 	{
 		//
-		//	read lock
+		//	shutdown mode
 		//
+		BOOST_ASSERT(shutdown_);
+
 		std::vector<channel_ptr> vec;
 
 		vec.reserve(list_.size());
@@ -128,7 +130,7 @@ namespace cyng {
 			//	stop all channels
 			//
 			for (auto ptr : channels) {
-				ptr->stop();
+				ptr->shutdown();
 			}
 
 			return true;

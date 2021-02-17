@@ -21,15 +21,12 @@ namespace cyng {
 	class dom_walker
 	{
 	public:
-	public:
 		virtual ~dom_walker();
 		virtual void visit(object const&, type_code, std::size_t depth, walker_state, bool is_vector) = 0;
 		virtual void open(type_code, std::size_t depth, std::size_t size) = 0;
 		virtual void close(type_code, std::size_t depth, walker_state) = 0;
 		virtual void pair(std::size_t, std::size_t depth) = 0;
 		virtual void pair(std::string, std::size_t depth) = 0;
-	private:
-
 	};
 
 	void traverse(object const&, dom_walker&);

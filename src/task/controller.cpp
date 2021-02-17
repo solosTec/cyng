@@ -20,6 +20,14 @@ namespace cyng {
         return registry_;
     }
 
+    void controller::shutdown() {
+        registry_.shutdown();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        cancel();
+    }
+
     std::string cleanup_task_name(std::string const& name)
     {
         //	class node::xxxxxxx

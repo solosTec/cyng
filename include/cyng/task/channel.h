@@ -125,12 +125,21 @@ namespace cyng {
 
 		}
 
+		template < typename R, typename P >
+		void suspend(std::chrono::duration<R, P> d, std::string slot, tuple_t&& msg) {
+			suspend(d, lookup(slot), std::move(msg));
+		}
 
 	private:
 		/**
 		 * callback from registry to manage the lifetime of the task object
 		 */
 		void destruct(task_interface*);
+
+		/**
+		 * stop channel without synchronisation 
+		 */
+		bool shutdown();
 
 	private:
 		boost::asio::io_context::strand dispatcher_;

@@ -15,6 +15,9 @@
 
 namespace cyng {
 
+	/**
+	 * Manages the tread pool of the IO context.
+	 */
 	class scheduler
 	{
 	public:
@@ -24,7 +27,17 @@ namespace cyng {
 	public:
 		scheduler();
 		scheduler(std::size_t num_threads);
+
+		/**
+		 * Removes the work item and stops the IO context.
+		 */
+		void cancel();
+
+		/**
+		 * Wait for all pending requests (join).
+		 */
 		void stop();
+
 		io_context_t& get_ctx();
 
 		/**

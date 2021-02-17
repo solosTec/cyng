@@ -1,6 +1,10 @@
 #include <cyng/task/scheduler.h>
 #include <algorithm>
 
+#ifdef _DEBUG_TASK
+#include <iostream>
+#endif
+
 namespace cyng {
 
 	scheduler::scheduler()
@@ -34,23 +38,37 @@ namespace cyng {
 		}
 	}
 
-	void scheduler::stop()
+	void scheduler::cancel()
 	{
 		//
 		//	remove work set
 		//
 		work_.reset();
+		ctx_.stop();
+		std::this_thread::yield();
+	}
+
+	void scheduler::stop()
+	{
 
 		//
 		//	blocks until all work has finished and there are no more handlers to be dispatched
 		//
-		while (ctx_.run() != 0)
-		{
-			//std::cout << "pending handlers" << std::endl;
-			std::this_thread::sleep_for(std::chrono::seconds(1));
-		}
 
-		ctx_.stop();
+		std::size_t count{ 0 };
+		do 	{
+			count = ctx_.run();
+
+#ifdef _DEBUG_TASK
+			std::cout 
+				<< count
+				<< " pending handlers" 
+				<< std::endl;
+#endif
+
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+
+		}	while (count != 0);
 
 		join();
 

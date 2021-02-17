@@ -271,7 +271,7 @@ target_compile_features(cyng_task PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 #
 target_compile_definitions(cyng_task 
     PRIVATE 
-        $<$<CONFIG:Debug>:_DEBUG_OBJECT>
+        $<$<CONFIG:Debug>:_DEBUG_TASK>
         $<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:GNU>>:BOOST_ASIO_HAS_STD_FUTURE>       
 )
 

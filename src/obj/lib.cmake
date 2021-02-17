@@ -71,9 +71,11 @@ set (object_algorithm
     include/cyng/obj/algorithm/find.h
     include/cyng/obj/algorithm/reader.hpp
     include/cyng/obj/algorithm/dom_walker.h
+#    include/cyng/obj/algorithm/dom_transformer.h
     src/obj/find.cpp
     src/obj/reader.cpp
     src/obj/dom_walker.cpp
+#    src/obj/dom_transformer.cpp
 )
 
 

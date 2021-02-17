@@ -36,6 +36,25 @@ namespace cyng {
 	}	
 
 	/**
+	 * be carefull and don't change the underlying data type
+	 * only the value.
+	 */
+	template < typename T >
+	T* object_cast(object& obj) noexcept
+	{
+		using value_type = wrapper< T >;
+
+		//	cast to the correct pointer
+		auto p = dynamic_cast<value_type*>(obj.obj_.get());
+
+		//	if cast failed we return a null pointer
+		return (!p)
+			? nullptr
+			: &p->value_
+			;
+	}
+
+	/**
 	 * The object releases the pointer.
 	 * Note: Don't forget to delete the pointer
 	 *

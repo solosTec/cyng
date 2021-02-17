@@ -33,6 +33,7 @@ namespace cyng
 			, sanitizer_(std::bind(&parser::next_code_point, this, std::placeholders::_1))
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1))
 			, stack_()
+			, sgen_()
 		{
 		}
 
@@ -63,6 +64,9 @@ namespace cyng
 			switch (sym.type_) {
 			case symbol_type::STRING:			//!<	text and symbols
 				process_string(std::move(sym));
+				break;
+			case symbol_type::UUID:
+				process_uuid(std::move(sym));
 				break;
 			case symbol_type::NUMBER:
 				process_number(std::move(sym));
@@ -137,6 +141,11 @@ namespace cyng
 		void parser::process_string(symbol&& sym)
 		{
 			stack_.push(make_object(sym.value_));
+		}
+
+		void parser::process_uuid(symbol&& sym)
+		{
+			stack_.push(make_object(sgen_(sym.value_)));
 		}
 
 		void parser::process_number(symbol&& sym)
