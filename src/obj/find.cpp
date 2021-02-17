@@ -247,6 +247,7 @@ namespace cyng {
 
 	object find(object const& obj, std::string const& name)
 	{
+		if (!obj)	return obj;
 		switch (obj.rtti().tag())
 		{
 		case TC_TUPLE:

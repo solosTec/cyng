@@ -22,6 +22,8 @@ namespace cyng {
 		friend void swap(object&, object&);
 		template <typename T>
 		friend const T* object_cast(object const&) noexcept;
+		template < typename T >
+		friend T* object_cast(object& obj) noexcept;
 		template < typename U >
 		friend auto object_release(object& obj) noexcept -> std::pair<U*, obj_interface*>;
 		template <typename T, typename... Args>

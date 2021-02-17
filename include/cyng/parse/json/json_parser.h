@@ -21,6 +21,8 @@
 #include <stack>
 #include <algorithm>	//	for_each
 
+#include <boost/uuid/string_generator.hpp>
+
 namespace cyng	
 {
 	namespace json
@@ -83,6 +85,7 @@ namespace cyng
 
 			void process_symbol(symbol&&);
 			void process_string(symbol&&);
+			void process_uuid(symbol&& sym);
 			void process_number(symbol&&);
 			void process_float(symbol&&);
 			void process_bool(symbol&&);
@@ -123,6 +126,8 @@ namespace cyng
 			 * parser value stack
 			 */
 			std::stack<object>	stack_;
+
+			boost::uuids::string_generator sgen_;
 
 		};
 	}

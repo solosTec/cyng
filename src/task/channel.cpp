@@ -86,6 +86,27 @@ namespace cyng {
         return false;
     }
 
+    bool channel::shutdown() {
+
+        //
+        //  mark channel as closed
+        //
+        if (!closed_.exchange(true)) {
+
+            //
+            //  cancel timer
+            //
+            timer_.cancel();
+            auto sp = this->shared_from_this(); //  extend life time
+
+            task_->stop(std::bind(&channel::destruct, sp, std::placeholders::_1));
+
+            return true;
+        }
+        return false;
+
+    }
+
     std::string const& channel::get_name() const noexcept
     {
         return name_;

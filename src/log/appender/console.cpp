@@ -41,6 +41,13 @@ namespace cyng {
 				switch (lev) {
 				case severity::LEVEL_TRACE:
 				case severity::LEVEL_DEBUG:
+					//	no color
+					std::cerr
+						<< format(ts, lev, tip, msg)
+						<< std::endl
+						;
+					break;
+
 				case severity::LEVEL_INFO:
 					std::cerr
 						<< "\033[32m"	//	green

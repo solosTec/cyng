@@ -18,6 +18,9 @@ namespace cyng {
 
 	std::string cleanup_task_name(std::string const&);
 
+	/**
+	 * Create channels/tasks with unique IDs.
+	 */
 	class controller : public scheduler
 	{
 	public:
@@ -25,6 +28,11 @@ namespace cyng {
 		controller(std::size_t num_threads);
 
 		registry& get_registry();
+
+		/**
+		 * Stop all running tasks and the IO context
+		 */
+		void shutdown();
 
 		/** @brief create a task
 		 * 

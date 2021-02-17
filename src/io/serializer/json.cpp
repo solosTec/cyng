@@ -158,19 +158,47 @@ namespace cyng {
 		}
 		std::size_t serializer <std::uint8_t, JSON>::write(std::ostream& os, std::uint8_t v)
 		{
-			return serializer<std::uint8_t, PLAIN>::write(os, v);
+			boost::io::ios_flags_saver  ifs(os);
+			auto const pos = os.tellp();
+
+			os
+				<< std::dec
+				<< v
+				;
+			return os.tellp() - pos;
 		}
 		std::size_t serializer <std::uint16_t, JSON>::write(std::ostream& os, std::uint16_t v)
 		{
-			return serializer<std::uint16_t, PLAIN>::write(os, v);
+			boost::io::ios_flags_saver  ifs(os);
+			auto const pos = os.tellp();
+
+			os
+				<< std::dec
+				<< v
+				;
+			return os.tellp() - pos;
 		}
 		std::size_t serializer <std::uint32_t, JSON>::write(std::ostream& os, std::uint32_t v)
 		{
-			return serializer<std::uint32_t, PLAIN>::write(os, v);
+			boost::io::ios_flags_saver  ifs(os);
+			auto const pos = os.tellp();
+
+			os
+				<< std::dec
+				<< v
+				;
+			return os.tellp() - pos;
 		}
 		std::size_t serializer <std::uint64_t, JSON>::write(std::ostream& os, std::uint64_t v)
 		{
-			return serializer<std::uint64_t, PLAIN>::write(os, v);
+			boost::io::ios_flags_saver  ifs(os);
+			auto const pos = os.tellp();
+
+			os
+				<< std::dec
+				<< v
+				;
+			return os.tellp() - pos;
 		}
 		std::size_t serializer <double, JSON>::write(std::ostream& os, double v)
 		{

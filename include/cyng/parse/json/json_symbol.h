@@ -26,6 +26,7 @@ namespace cyng
 			SYM_EOF,		//!<	no more symbols
 			UNKNOWN,		//!<	unknown or error state
 			STRING,			//!<	text in quoted
+			UUID,			//!<	UUID string
 			LITERAL,		//!<	text without quotes
 			NUMBER,			//!<	number (int)
 			FLOAT,			//!<	number (float)
