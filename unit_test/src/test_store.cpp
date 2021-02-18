@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(auto_table)
 
 BOOST_AUTO_TEST_CASE(db)
 {
-	cyng::db store;
+	cyng::store store;
 	store.create_table(cyng::meta_store("demo-1"
 		, {
 			cyng::column("id", cyng::TC_INT64),

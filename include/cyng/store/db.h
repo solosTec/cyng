@@ -70,10 +70,10 @@ namespace cyng {
 		};
 	}
 
-	class db
+	class store
 	{
 	public:
-		db();
+		store();
 
 		/**
 		 * create and insert a new table

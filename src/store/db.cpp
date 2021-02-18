@@ -3,12 +3,12 @@
 
 namespace cyng {
 
-	db::db()
+	store::store()
 		: tables_()
 		, m_()
 	{}
 
-	bool db::create_table(meta_store const& m) {
+	bool store::create_table(meta_store const& m) {
 
 		//
 		//	write lock
@@ -21,7 +21,7 @@ namespace cyng {
 		return tables_.emplace(m.get_name(), std::make_shared<table>(m)).second;
 	}
 
-	bool db::create_auto_table(meta_store const& m, key_t const& start_key, auto_table::auto_key_f f)
+	bool store::create_auto_table(meta_store const& m, key_t const& start_key, auto_table::auto_key_f f)
 	{
 		//
 		//	write lock
@@ -35,7 +35,7 @@ namespace cyng {
 	}
 
 
-	std::size_t db::size() const noexcept {
+	std::size_t store::size() const noexcept {
 		//
 		//	read lock
 		//
@@ -43,7 +43,7 @@ namespace cyng {
 		return tables_.size();
 	}
 
-	void db::clear(std::string const& name, boost::uuids::uuid source) {
+	void store::clear(std::string const& name, boost::uuids::uuid source) {
 		//
 		//	read lock
 		//

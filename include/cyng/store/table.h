@@ -17,13 +17,13 @@
 
 namespace cyng {
 
-	class db;
+	class store;
 	class table : public pub, public std::enable_shared_from_this<table> {
 
 		//
 		//	wants to access the mutex
 		//
-		friend db;
+		friend store;
 
 		using table_t = std::unordered_map< key_t, body, std::hash<key_t>, std::equal_to<key_t> >;
 
