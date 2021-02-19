@@ -130,6 +130,11 @@ namespace cyng
 			 * substitute data type with placeholder
 			 */
 			std::string substitute_ph(dialect, type_code);
+
+			/**
+			 * handle datetime (for SQLite)
+			 */
+			std::string substitute_dt(std::string name, dialect, type_code);
 		}
 
 

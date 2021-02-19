@@ -12,6 +12,11 @@
 
 #include <type_traits>
 #include <sstream>
+
+#ifdef _DEBUG_OBJECT
+#include <iostream>
+#endif
+
 #include <boost/numeric/conversion/cast.hpp>
 
 namespace cyng {
@@ -69,7 +74,7 @@ namespace cyng {
 			}
 		}
 		catch (boost::numeric::positive_overflow const& ex) {
-#ifdef _DEBUG
+#ifdef _DEBUG_OBJECT
 			std::cerr
 				<< "***Warning: "
 				<< ex.what()
@@ -78,7 +83,7 @@ namespace cyng {
 #endif
 		}
 		catch (boost::numeric::negative_overflow const& ex) {
-#ifdef _DEBUG
+#ifdef _DEBUG_OBJECT
 			std::cerr
 				<< "***Warning: "
 				<< ex.what()
@@ -87,7 +92,7 @@ namespace cyng {
 #endif
 		}
 		catch (boost::numeric::bad_numeric_cast const& ex) {
-#ifdef _DEBUG
+#ifdef _DEBUG_OBJECT
 			std::cerr
 				<< "***Warning: "
 				<< ex.what()
@@ -96,7 +101,7 @@ namespace cyng {
 #endif
 		}
 		catch (std::invalid_argument const& ex) {
-#ifdef _DEBUG
+#ifdef _DEBUG_OBJECT
 			std::cerr
 				<< "***Warning: "
 				<< ex.what()

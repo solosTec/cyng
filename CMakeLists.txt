@@ -399,6 +399,7 @@ target_compile_definitions(cyng_sys
 
 #
 #   There is a dependency to parse library
+#   dependencies: cyng_parse
 #
 target_link_libraries(cyng_sys 
     PRIVATE 
@@ -433,6 +434,7 @@ target_compile_definitions(cyng_parse
 
 #
 #   There is a dependency to the io library
+#   dependencies: cyng_io
 #
 target_link_libraries(cyng_parse 
     PRIVATE 
@@ -527,9 +529,11 @@ target_compile_definitions(cyng_db
 
 #
 # CYNG_ODBC_CONNECTOR
+#   dependencies: cyng_sql
 #
 target_link_libraries(cyng_db 
     PRIVATE 
+        "$<$<PLATFORM_ID:Linux>:cyng_sql>"
         Boost::boost 
 		"$<$<PLATFORM_ID:Windows>:odbc32>"
         $<$<AND:$<BOOL:${CYNG_ODBC_CONNECTOR}>,$<PLATFORM_ID:Linux>>:odbc>

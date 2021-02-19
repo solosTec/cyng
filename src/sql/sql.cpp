@@ -6,8 +6,6 @@
  */ 
 
 #include <cyng/sql/sql.hpp>
-//#include <algorithm>
-//#include <iterator>
 #include <string>
 #include <boost/algorithm/string.hpp>
 
@@ -36,16 +34,25 @@ namespace cyng
 		}
 		details::sql_from select::all(meta_sql const& m, bool qualified) {
 
+			bool init = false;
 			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
 
-				//
-				//	ToDo: check for datetime() in case of SQLite3
-				//
-				if (qualified) {
-					clause_.push_back(m.get_name() + "." + col.name_);
+				if (!init) {
+					init = true;
 				}
 				else {
-					clause_.push_back(col.name_);
+					clause_.push_back(",");
+				}
+
+				//
+				//	Build a full qualified name if requested and 
+				//	check for datetime() in case of SQLite3
+				//
+				if (qualified) {
+					clause_.push_back(details::substitute_dt(m.get_name() + "." + col.name_, dialect_, col.type_));
+				}
+				else {
+					clause_.push_back(details::substitute_dt(col.name_, dialect_, col.type_));
 				}
 				});
 			return details::sql_from(dialect_, reset_clause());
@@ -406,6 +413,24 @@ namespace cyng
 				}
 
 				return "?";
+			}
+
+			std::string substitute_dt(std::string name, dialect d, type_code code) {
+				switch (d) {
+				case dialect::SQLITE:
+					switch (code) {
+					case TC_TIME_POINT:
+						return "datetime(" + name + ")";
+					default:
+						break;
+					}
+					break;
+				default:
+					break;
+				}
+
+				return name;
+
 			}
 
 		}
