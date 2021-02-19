@@ -16,6 +16,7 @@
 #include <thread>
 #include <memory>
 
+#include<boost/core/ignore_unused.hpp>
 
 namespace cyng {
 
