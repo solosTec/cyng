@@ -14,16 +14,17 @@
 
 namespace cyng {
 
-	namespace {
+	namespace details {
 
 		template <typename T >
 		struct cast_policy	{
 
-			static T cast(object const& obj, T const& def) {
-				T const* p = object_cast<T>(obj);
+			using R = std::decay_t<T>;
+			static R cast(object const& obj, T const& def) {
+				R const* p = object_cast<R>(obj);
 				//	if cast failed we return a default value
 				return (!p)
-					? def
+					? R{ def }
 					: *p
 					;			
 			}
@@ -37,12 +38,54 @@ namespace cyng {
 		template <>
 		struct cast_policy<object>	{
 
+			using R = object;
 			static object cast(object const& obj, object const&) {
 				return (!obj)
 					? object()
 					: obj.clone();
 			}
 		};
+
+		template <>
+		struct cast_policy<char const*>
+		{
+			using R = std::string;
+			static R cast(object const& obj, char const* def) {
+				R const* p = object_cast<R>(obj);
+				return (!p)
+					? R(def)
+					: *p
+					;
+			}
+		};
+
+		template <>
+		struct cast_policy<char const* const&>
+		{
+			using R = std::string;
+			static R cast(object const& obj, char const* const& def) {
+				R const* p = object_cast<R>(obj);
+				return (!p)
+					? R(def)
+					: *p
+					;
+
+			}
+		};
+
+		template <std::size_t N>
+		struct cast_policy<const char(&) [N]>
+		{
+			using R = std::string;
+			static R cast(object const& obj, const char(& def)[N]) {
+				R const* p = object_cast<R>(obj);
+				return (!p)
+					? R(def, N - 1)
+					: *p
+					;			
+			}
+		};
+
 	}
 
 	/**
@@ -54,10 +97,10 @@ namespace cyng {
 	 */
 	template < typename T >
 	[[nodiscard]]
-	auto value_cast(object const& obj, T const& def) -> std::decay_t<T>  
+	auto value_cast(object const& obj, T const& def) -> typename details::cast_policy<T>::R
 	{
-		using type = std::decay_t<T>;
-		using policy = cast_policy<type>;
+		using policy = details::cast_policy<T>;
+		using type = typename policy::R;
 		return policy::cast(obj, def);
 	}
 

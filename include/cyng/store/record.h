@@ -9,6 +9,8 @@
 
 #include <cyng/store/key.hpp>
 #include <cyng/store/meta.h>
+#include <cyng/obj/value_cast.hpp>
+#include <type_traits>
 
 #include <functional>
 #include <boost/uuid/uuid.hpp>
@@ -59,6 +61,11 @@ namespace cyng {
 		 * access by column name
 		 */
 		object at(std::string) const;
+
+		template <typename T>
+		auto value(std::string name, T&& def) const -> typename details::cast_policy<T>::R {
+			return value_cast<T>(at(name), std::forward<T>(def));
+		}
 
 		/**
 		 * access by column index (pk included)
