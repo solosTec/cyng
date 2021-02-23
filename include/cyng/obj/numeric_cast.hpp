@@ -18,6 +18,7 @@
 #endif
 
 #include <boost/numeric/conversion/cast.hpp>
+#include<boost/core/ignore_unused.hpp>
 
 namespace cyng {
 
@@ -80,6 +81,8 @@ namespace cyng {
 				<< ex.what()
 				<< std::endl
 				;
+#else
+			boost::ignore_unused(ex);
 #endif
 		}
 		catch (boost::numeric::negative_overflow const& ex) {
@@ -89,6 +92,8 @@ namespace cyng {
 				<< ex.what()
 				<< std::endl
 				;
+#else
+			boost::ignore_unused(ex);
 #endif
 		}
 		catch (boost::numeric::bad_numeric_cast const& ex) {
@@ -98,6 +103,8 @@ namespace cyng {
 				<< ex.what()
 				<< std::endl
 				;
+#else
+			boost::ignore_unused(ex);
 #endif
 		}
 		catch (std::invalid_argument const& ex) {
@@ -107,6 +114,8 @@ namespace cyng {
 				<< ex.what()
 				<< std::endl
 				;
+#else
+			boost::ignore_unused(ex);
 #endif
 		}
 		return def;

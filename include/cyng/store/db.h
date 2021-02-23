@@ -7,15 +7,16 @@
 #ifndef CYNG_STORE_DB_H
 #define CYNG_STORE_DB_H
 
-//#include <cyng/store/table.h>
 #include <cyng/store/auto_table.h>
 #include <cyng/meta.hpp>
+#include <cyng/io/ostream.h>
 
 #include <functional>
 #include <shared_mutex>
 #include <map>
 #include <tuple>
-#include <cyng/io/ostream.h>
+#include <type_traits>
+
 
 namespace cyng {
 
@@ -87,9 +88,12 @@ namespace cyng {
 		 */
 		std::size_t size() const noexcept;
 
-		//void access(std::initializer_list<access_specifier> init);
+		/**
+		 * safe access to multiple tables at once
+		 */
 		template <typename F, typename ...Tbls>
-		void access(F&& f, Tbls&& ... tbls) {
+		constexpr decltype(auto)
+		access(F&& f, Tbls&& ... tbls) /*-> typename std::invoke_result<F>::type*/ {
 
 			//
 			//	read lock on database
@@ -125,7 +129,7 @@ namespace cyng {
 			//
 			//	Call function f
 			//
-			std::apply([f](auto &&... args) { f(args...); }, std::move(ts));
+			return std::apply([f](auto &&... args) { f(args...); }, std::move(ts));
  
 			//
 			//	implicit unlock of all affected tables
@@ -144,6 +148,38 @@ namespace cyng {
 		 * @param source identifier for data source
 		 */
 		void clear(std::string const& name, boost::uuids::uuid source);
+
+		/**
+		 * Complexity O(1) up to O(N)
+		 *
+		 * @brief simple record lookup
+		 */
+		//record lookup(std::string const& name, key_t const& key);
+
+		/**
+		 * Select a specific value from a table. The requested will be temporarily
+		 * read locked.
+		 */
+		template <typename ...Args>
+		object get_object(std::string name, std::string column, Args&& ... args)
+		{
+			//
+			//	build key
+			//
+			auto const key = key_generator(std::forward<Args>(args)...);
+
+			object obj;
+			access([&](table const* tbl) {
+
+				//
+				//	search record
+				//
+				obj = tbl->lookup(key).at(column);
+
+			}, access::read(name));
+
+			return obj;
+		}
 
 	private:
 

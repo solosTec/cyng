@@ -36,7 +36,8 @@ namespace cyng {
 		 * Writes a binary buffer as hex values separated
 		 * by a single character (preferrable a white space)
 		 */
-		std::string to_hex(buffer_t const&, char = ' ');
+		std::string to_hex(buffer_t const&, char);
+		std::string to_hex(buffer_t const&);
 
 	}
 }

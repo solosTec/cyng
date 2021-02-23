@@ -89,7 +89,12 @@ namespace cyng {
 #endif
 			return std::move(obj);
 		}
-
+		object boxing<object&>::create(object& obj) {
+#ifdef _DEBUG_OBJECT
+			std::cerr << "boxing<object&>::create(object& obj)" << std::endl;
+#endif
+			return std::move(obj);
+		}
 	}
 
 	vector_t make_vector(vector_t&& vec) {

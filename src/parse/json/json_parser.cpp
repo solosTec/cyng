@@ -33,7 +33,6 @@ namespace cyng
 			, sanitizer_(std::bind(&parser::next_code_point, this, std::placeholders::_1))
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1))
 			, stack_()
-			, sgen_()
 		{
 		}
 
@@ -65,9 +64,9 @@ namespace cyng
 			case symbol_type::STRING:			//!<	text and symbols
 				process_string(std::move(sym));
 				break;
-			case symbol_type::UUID:
-				process_uuid(std::move(sym));
-				break;
+			//case symbol_type::UUID:
+			//	process_uuid(std::move(sym));
+			//	break;
 			case symbol_type::NUMBER:
 				process_number(std::move(sym));
 				break;
@@ -143,11 +142,6 @@ namespace cyng
 			stack_.push(make_object(sym.value_));
 		}
 
-		void parser::process_uuid(symbol&& sym)
-		{
-			stack_.push(make_object(sgen_(sym.value_)));
-		}
-
 		void parser::process_number(symbol&& sym)
 		{
 			try {
@@ -194,8 +188,7 @@ namespace cyng
 				//	
 				if (stack_.size() > 2) {
 
-					auto obj = std::move(stack_.top());
-					stack_.pop();
+					auto obj = get_top_element();
 		
 					BOOST_ASSERT(is_of_type<TC_STRING>(stack_.top()));
 					
@@ -218,6 +211,12 @@ namespace cyng
 #endif
 				}
 			}
+		}
+
+		object parser::get_top_element() {
+			auto obj = std::move(stack_.top());
+			stack_.pop();
+			return obj;
 		}
 
 		void parser::swap(vector_t& vec)

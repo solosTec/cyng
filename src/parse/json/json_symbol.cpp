@@ -64,7 +64,7 @@ namespace cyng
 			case symbol_type::SYM_EOF:	return "EOF";
 			case symbol_type::UNKNOWN:	return "?";
 			case symbol_type::STRING:	return "STR";
-			case symbol_type::UUID:		return "UID";
+			//case symbol_type::UUID:		return "UID";
 			case symbol_type::LITERAL:	return "LIT";
 			case symbol_type::NUMBER:	return "NUM";
 			case symbol_type::FLOAT:	return "FLT";

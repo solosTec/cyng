@@ -10,6 +10,16 @@
 namespace cyng {
 	namespace io {
 
+		std::string to_hex(buffer_t const& buffer) {
+
+			std::string r;
+			r.reserve(buffer.size() * 2);
+			for (const char c : buffer) {
+				r += to_hex(c);
+			}
+			return r;
+		}
+
 		std::string to_hex(buffer_t const& buffer, char sp)
 		{
 			//

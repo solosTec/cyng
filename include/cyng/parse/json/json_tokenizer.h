@@ -13,7 +13,6 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 
-//#include <cyng/parse/json/json_token.h>
 #include <cyng/parse/json/json_symbol.h>
 
 namespace cyng	

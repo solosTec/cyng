@@ -94,6 +94,7 @@ namespace cyng {
 				//	ToDo: publish
 				//	ToDo: update secondary key(s)
 				//
+				return true;
 			}
 		}
 		return false;

@@ -274,5 +274,14 @@ namespace cyng {
 
 			return os.tellp() - pos;
 		}
+
+		std::size_t serializer <buffer_t, JSON>::write(std::ostream& os, buffer_t const& buffer)
+		{
+			auto const pos = os.tellp();
+			//	store and reset stream state
+			boost::io::ios_flags_saver  ifs(os);
+			os << '"' << buffer << '"';
+			return os.tellp() - pos;
+		}
 	}
 }

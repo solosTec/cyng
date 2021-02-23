@@ -122,6 +122,12 @@ namespace cyng {
 			static std::size_t write(std::ostream& os, std::string const& v);
 		};
 
+		template <>
+		struct serializer <buffer_t, JSON>
+		{
+			static std::size_t write(std::ostream& os, buffer_t const& v);
+		};
+
 	}
 }
 #endif

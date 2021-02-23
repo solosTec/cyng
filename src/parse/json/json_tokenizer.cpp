@@ -162,11 +162,6 @@ namespace cyng
 			if (boost::algorithm::equals(buffer_, "null"))			cb_(symbol(symbol_type::NOTHING, buffer_));
 			else if (boost::algorithm::equals(buffer_, "true"))		cb_(symbol(symbol_type::BOOLEAN, buffer_));
 			else if (boost::algorithm::equals(buffer_, "false"))	cb_(symbol(symbol_type::BOOLEAN, buffer_));
-			//	00000000-b800-4000-ae00-000076000000
-			else if (buffer_.size() == 36 && buffer_.at(8) == '-' && buffer_.at(13) == '-' && buffer_.at(18) == '-' && buffer_.at(23) == '-') {
-				cb_(symbol(symbol_type::UUID, buffer_));
-			}
-
 			else {
 				try {
 					//

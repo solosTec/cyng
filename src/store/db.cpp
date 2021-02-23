@@ -48,10 +48,18 @@ namespace cyng {
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		//access([&source](table* tbl) {
-		//	tbl->clear(source);
-		//}, access::write(name));
+		access([&source](table* tbl) -> void {
+			tbl->clear(source);
+		}, access::write(name));
 	}
+
+	//record store::lookup(std::string const& name, key_t const& key) {
+
+	//	std::shared_lock<std::shared_mutex> sl(m_);
+	//	return this->access([&key](table const* tbl) -> record {
+	//		return tbl->lookup(key);
+	//	}, access::read(name));
+	//}
 
 	namespace access {
 		read::read(std::string name)

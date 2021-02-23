@@ -209,6 +209,12 @@ namespace cyng {
 			static object create(object const& obj);
 			static object create(object&& obj);
 		};
+		template <>
+		struct boxing<object&>
+		{
+			static object create(object& obj);
+		};
+
 	}
 
 

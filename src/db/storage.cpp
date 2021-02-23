@@ -20,6 +20,7 @@
 #endif
 
 #include <boost/algorithm/string.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 namespace cyng
 {
@@ -174,47 +175,54 @@ namespace cyng
 		case TC_BOOL:
 			//	true is encoded as "true"
 			return make_object(boost::algorithm::equals("true", val));
-			//case cyng::TC_CHAR:
-		case cyng::TC_FLOAT:
+			//case TC_CHAR:
+		case TC_FLOAT:
 			return make_object(std::stof(val));
-		case cyng::TC_DOUBLE:
+		case TC_DOUBLE:
 			return make_object(std::stod(val));
-		case cyng::TC_FLOAT80:
+		case TC_FLOAT80:
 			return make_object(std::stold(val));
-		case cyng::TC_UINT8:
+		case TC_UINT8:
 			return make_object(static_cast<std::uint8_t>(std::stoul(val, nullptr, 16)));
-		case cyng::TC_UINT16:
+		case TC_UINT16:
 			return make_object(static_cast<std::uint16_t>(std::stoul(val, nullptr, 16)));
-		case cyng::TC_UINT32:
+		case TC_UINT32:
 			return make_object(static_cast<std::uint32_t>(std::stoul(val, nullptr, 16)));
-		case cyng::TC_UINT64:
+		case TC_UINT64:
 			return make_object(static_cast<std::uint64_t>(std::stoull(val, nullptr, 16)));
-		case cyng::TC_INT8:
+		case TC_INT8:
 			return make_object(static_cast<std::int8_t>(std::stoi(val)));
-		case cyng::TC_INT16:
+		case TC_INT16:
 			return make_object(static_cast<std::int16_t>(std::stoi(val)));
-		case cyng::TC_INT32:
+		case TC_INT32:
 			return make_object(static_cast<std::int32_t>(std::stoi(val)));
-		case cyng::TC_INT64:
+		case TC_INT64:
 			return make_object(static_cast<std::int64_t>(std::stoi(val)));
-			//case cyng::TC_STRING:	//	default
-			//case cyng::TC_TIME_POINT: 
-		case cyng::TC_MICRO_SECOND:		return make_object(to_microseconds(val));
-		case cyng::TC_MILLI_SECOND:		return make_object(to_milliseconds(val));
-		case cyng::TC_SECOND:			return make_object(to_seconds(val));
-		case cyng::TC_MINUTE:			return make_object(to_minutes(val));
-		case cyng::TC_HOUR:				return make_object(to_hours(val));
+			//case TC_STRING:	//	default
+			//case TC_TIME_POINT: 
+		case TC_MICRO_SECOND:	return make_object(to_microseconds(val));
+		case TC_MILLI_SECOND:	return make_object(to_milliseconds(val));
+		case TC_SECOND:			return make_object(to_seconds(val));
+		case TC_MINUTE:			return make_object(to_minutes(val));
+		case TC_HOUR:			return make_object(to_hours(val));
 
-		case cyng::TC_VERSION:			return make_object(to_version(val));
-		case cyng::TC_REVISION:			return make_object(to_revision(val));
+		case TC_VERSION:		return make_object(to_version(val));
+		case TC_REVISION:		return make_object(to_revision(val));
 
-		//case cyng::TC_CODE:
-		//case cyng::TC_LABEL:
-		case cyng::TC_SEVERITY:			return make_object(to_severity(val));
-		case cyng::TC_BUFFER:			return make_object(to_buffer(val));
-		case cyng::TC_MAC48:			return make_object(to_mac48(val));
-		case cyng::TC_MAC64:			return make_object(to_mac64(val));
-		case cyng::TC_IP_TCP_ENDPOINT:
+		//case TC_CODE:
+		//case TC_LABEL:
+		case TC_SEVERITY:		return make_object(to_severity(val));
+		case TC_BUFFER:			return make_object(to_buffer(val));
+		case TC_MAC48:			return make_object(to_mac48(val));
+		case TC_MAC64:			return make_object(to_mac64(val));
+
+		case TC_UUID:			
+		{
+			boost::uuids::string_generator sgen;			
+			return make_object(sgen(val));
+		}
+
+		case TC_IP_TCP_ENDPOINT:
 		{
 			//auto const r = parse_tcp_ep(val);
 			//return (r.second)
@@ -224,7 +232,7 @@ namespace cyng
 		}
 		break;
 
-		case cyng::TC_IP_ADDRESS:
+		case TC_IP_ADDRESS:
 			return make_object(boost::asio::ip::make_address(val));
 
 		default:
