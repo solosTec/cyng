@@ -198,7 +198,8 @@ namespace cyng
 			return make_object(static_cast<std::int32_t>(std::stoi(val)));
 		case TC_INT64:
 			return make_object(static_cast<std::int64_t>(std::stoi(val)));
-			//case TC_STRING:	//	default
+		//case TC_STRING:	//	default
+		case TC_FS_PATH:		return make_object(std::filesystem::path(val));
 			//case TC_TIME_POINT: 
 		case TC_MICRO_SECOND:	return make_object(to_microseconds(val));
 		case TC_MILLI_SECOND:	return make_object(to_milliseconds(val));

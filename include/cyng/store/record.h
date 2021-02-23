@@ -73,6 +73,9 @@ namespace cyng {
 		object at(std::size_t) const;
 
 	private:
+		object get_data(std::size_t) const;
+
+	private:
 		meta_store const meta_;
 		key_t const key_;
 		data_t const data_;

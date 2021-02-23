@@ -133,6 +133,10 @@ namespace cyng {
 		return value_cast<T>(find(c, key), def);
 	}
 
+	/**
+	 * Full specified function has higher priority than templated functions 
+	 */
+	std::string find_value(param_map_t c, std::string key, const char* def);
 }
 
 #endif //	CYNG_OBJ_ALGORITHM_FIND_H

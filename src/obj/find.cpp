@@ -268,5 +268,9 @@ namespace cyng {
 		return obj;
 	}
 
+	std::string find_value(param_map_t c, std::string key, const char* def)
+	{
+		return value_cast<std::string>(find(c, key), std::string(def));
+	}
 }
 

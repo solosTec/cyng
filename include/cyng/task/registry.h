@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_SCRIPT_REGISTRY_H
-#define CYNG_SCRIPT_REGISTRY_H
+#ifndef CYNG_TASK_REGISTRY_H
+#define CYNG_TASK_REGISTRY_H
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/task/channel.h>

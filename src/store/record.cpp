@@ -67,6 +67,13 @@ namespace cyng {
 		return at(idx);
 	}
 
+	object record::get_data(std::size_t idx) const {
+		return (idx < data_.size())
+			? data_.at(idx)
+			: object()
+			;
+	}
+
 	/**
 	 * access by column index (pk included)
 	 */
@@ -74,7 +81,7 @@ namespace cyng {
 		if (idx < meta_.size()) {
 			return (meta_.is_pk(idx))
 				? key_.at(idx)
-				: data_.at(idx - meta_.key_size())
+				: get_data(idx - meta_.key_size())
 				;
 		}
 		return object();

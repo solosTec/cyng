@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_SCRIPT_TASK_CHANNEL_H
-#define CYNG_SCRIPT_TASK_CHANNEL_H
+#ifndef CYNG_TASK_CHANNEL_H
+#define CYNG_TASK_CHANNEL_H
 
 #include <boost/asio.hpp>
 #include <cstdint>

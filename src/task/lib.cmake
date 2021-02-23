@@ -11,6 +11,7 @@ set (task_cpp
 )
     
 set (tsk_h
+    include/cyng/task/task_fwd.h
     include/cyng/task/channel.h
     include/cyng/task/controller.h
     include/cyng/task/registry.h

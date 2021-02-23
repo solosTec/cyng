@@ -4,8 +4,8 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_SCRIPT_TASK_CONTROLLER_H
-#define CYNG_SCRIPT_TASK_CONTROLLER_H
+#ifndef CYNG_TASK_CONTROLLER_H
+#define CYNG_TASK_CONTROLLER_H
 
 #include <cyng/task/scheduler.h>
 #include <cyng/task/registry.h>
