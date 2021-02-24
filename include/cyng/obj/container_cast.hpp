@@ -35,6 +35,17 @@ namespace cyng {
 		;
 	}
 
+	template <typename C >
+	[[nodiscard]]
+	C container_cast(object&& obj) {
+		//	std::pair<T*, obj_interface*>
+		auto rp = object_release<C>(obj);
+		return (rp.first != nullptr)
+			? std::move(*(rp.first))	//	move
+			: C{}
+		;
+	}
+
 	/**
 	 * @brief copy C1 into C2
 	 *

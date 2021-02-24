@@ -9,6 +9,7 @@ set (parse_cpp
     src/parse/version.cpp
     src/parse/duration.cpp
     src/parse/buffer.cpp
+    src/parse/string.cpp
 )
     
 set (parse_h
@@ -17,6 +18,7 @@ set (parse_h
     include/cyng/parse/version.h
     include/cyng/parse/duration.h
     include/cyng/parse/buffer.h
+    include/cyng/parse/string.h
     include/cyng/parse/json.h
     include/cyng/parse/csv.h
 )

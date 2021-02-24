@@ -163,7 +163,7 @@ namespace cyng {
 
 			os
 				<< std::dec
-				<< v
+				<< +v
 				;
 			return os.tellp() - pos;
 		}

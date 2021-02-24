@@ -384,6 +384,15 @@ namespace cyng
 				return sql_group_by(dialect_, reset_clause());
 			}
 
+			sql_order_by sql_where::order_by(std::string cond) {
+
+				clause_.push_back("ORDER");
+				clause_.push_back("BY");
+				clause_.push_back(cond);
+				return sql_order_by(dialect_, reset_clause());
+
+			}
+
 			clause_t sql_where::reset_clause() {
 				return std::move(clause_);
 			}

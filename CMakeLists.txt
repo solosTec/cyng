@@ -429,7 +429,7 @@ target_compile_features(cyng_parse PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 #
 target_compile_definitions(cyng_parse 
     PRIVATE 
-        $<$<CONFIG:Debug>:_DEBUG_PARSE>
+        $<$<CONFIG:Debug>:__DEBUG_PARSE>
 )
 
 #

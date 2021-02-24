@@ -10,6 +10,7 @@ set (sys_cpp
     src/sys/mac.cpp
     src/sys/port.cpp
     src/sys/locale.cpp
+    src/sys/filesystem.cpp
 )
     
 set (sys_h
@@ -19,6 +20,7 @@ set (sys_h
     include/cyng/sys/mac.h
     include/cyng/sys/port.h
     include/cyng/sys/locale.h
+    include/cyng/sys/filesystem.h
     include/cyng/sys/linux.hpp
     include/cyng/sys/windows.hpp
 )

@@ -55,6 +55,16 @@ namespace cyng {
 			return ss.str();
 		}
 
+		void serialize_json(std::ostream& os, param_map_t const& pmap) {
+			serializer <param_map_t, JSON>::write(os, pmap);
+		}
+
+		std::string to_json(param_map_t const& pmap) {
+			std::stringstream ss;
+			serialize_json(ss, pmap);
+			return ss.str();
+		}
+
 		void serialize_json_pretty(std::ostream& os, object const& obj) {
 			json_walker walker(os);
 			traverse(obj, walker);

@@ -100,6 +100,9 @@ namespace cyng
 				 * Use an arbitrary string as where clause.
 				 */
 				sql_group_by where(std::string);
+				//void having(std::string);
+				sql_order_by order_by(std::string);
+				//void offset(std::string);
 
 				/**
 				 * Specify the record by it's primary key

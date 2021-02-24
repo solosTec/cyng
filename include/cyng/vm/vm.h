@@ -13,12 +13,15 @@
 
 #include <tuple>
 #include <functional>
+#include <array>
+#include <type_traits>
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/nil_generator.hpp>
 
 #ifdef _DEBUG_VM
 #include <cyng/io/ostream.h>
+#include <iostream>
 #endif
 
 
@@ -59,6 +62,18 @@ namespace cyng {
 		boost::uuids::uuid const parent_;
 	};
 
+	/**
+	 * helper template to compute the arity of
+	 * a function object
+	 */
+	template <typename R, typename ... Args>
+	constexpr size_t get_arg_count(R(*f)(Args ...))	{
+		return sizeof...(Args);
+	}
+	template <typename R, typename ... Args>
+	constexpr size_t get_arg_count(std::function<R(Args...)>) {
+		return sizeof...(Args);
+	}
 
 	/**
 	 * The VM contains a list of internal function objects and and optional
@@ -82,6 +97,17 @@ namespace cyng {
 			std::tuple<Fns...>
 		>;
 
+		/**
+		 * The offset marks the beginning of the external functions
+		 * in the signatures_t tuple.
+		 */
+		constexpr static std::size_t offset = std::tuple_size_v< signatures_t > - sizeof...(Fns);
+
+		/**
+		 * array with the arity of all external functions
+		 */
+		using arity_t = std::array<std::size_t, sizeof...(Fns)>;
+
 	public:
 		vm(mesh& fab, Fns... fns)
 			: vm(fab, boost::uuids::nil_uuid(), std::forward<Fns>(fns)...)	//	delegate
@@ -97,10 +123,15 @@ namespace cyng {
 				//	external functions
 				std::forward<Fns>(fns)...
 			}
-		{}
+			, arity_{ get_arg_count(fns)... }
+		{
+			std::cout << get_arg_count(std::get<1>(sigs_)) << ", " << offset << std::endl;
+			//
+		}
 
 	private:
 		signatures_t sigs_;
+		arity_t const arity_;
 	};
 
 }

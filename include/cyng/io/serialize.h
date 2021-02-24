@@ -8,6 +8,7 @@
 #define CYNG_IO_SERIALIZE_H
 
 #include <ostream>
+#include <cyng/obj/intrinsics/container.h>
 
 namespace cyng {
 	class object;
@@ -44,10 +45,11 @@ namespace cyng {
 		/**
 		 * Serialization to JSON.
 		 * struct JSON {};
-		//struct JSON_PRETTY {};
 		 */
 		void serialize_json(std::ostream&, object const&);
 		std::string to_json(object const&);
+		void serialize_json(std::ostream&, param_map_t const&);
+		std::string to_json(param_map_t const&);		
 
 		void serialize_json_pretty(std::ostream&, object const&);
 		std::string to_json_pretty(object const&);
