@@ -124,10 +124,7 @@ namespace cyng {
 				std::forward<Fns>(fns)...
 			}
 			, arity_{ get_arg_count(fns)... }
-		{
-			std::cout << get_arg_count(std::get<1>(sigs_)) << ", " << offset << std::endl;
-			//
-		}
+		{}
 
 	private:
 		signatures_t sigs_;
