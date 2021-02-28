@@ -34,23 +34,24 @@ namespace cyng {
 		//index_.clear();
 
 		//
-		//	ToDo: publish
+		//	publish
 		//
+		this->pub::forward(this, source);
 
-		//this->pub::clear_signal_(this, source);
 	}
 
 	bool table::insert(key_t const& key
-		, data_t&& data
+		, data_t const& data
 		, std::uint64_t generation
 		, boost::uuids::uuid source) {
 
 		if (meta().check_integrity(key, data)) {
-			if (emplace(key, std::move(data), generation, false)) {
+			if (emplace(key, data, generation)) {
 
 				//
-				//	ToDo: publish
+				//	publish
 				//
+				this->pub::forward(this, key, data, generation, source);
 				return true;
 			}
 		}
@@ -58,21 +59,20 @@ namespace cyng {
 	}
 
 	bool table::emplace(key_t const& key
-		, data_t&& data
-		, std::uint64_t generation
-		, bool merge) {
+		, data_t const& data
+		, std::uint64_t generation) {
 
+		//
+		//	r.second is true an insertion happend 
+		//	otherwise an update is required
+		//
 		auto const r = data_.emplace(std::piecewise_construct
 			, std::forward_as_tuple(key)
 			, std::forward_as_tuple(data, generation));
 
-		if (!r.second && merge) {
-			//
-			//	update
-			//
-			update(r.first, key, std::move(data));
-			return true;
-		}
+		//
+		//	ToDo: update secondary key(s)
+		//
 		//if (r.second && meta().has_sk()) {
 
 		//	//
@@ -88,13 +88,36 @@ namespace cyng {
 		, boost::uuids::uuid source) {
 
 		if (meta().check_integrity(key, data)) {
-			if (emplace(key, std::move(data), generation, true)) {
+
+			auto const r = data_.emplace(std::piecewise_construct
+				, std::forward_as_tuple(key)
+				, std::forward_as_tuple(data, generation));
+
+			if (r.second) {
 
 				//
-				//	ToDo: publish
+				//	publish insert
+				//
+				this->pub::forward(this
+					, key
+					, data
+					, generation
+					, source);
+
+
 				//	ToDo: update secondary key(s)
 				//
 				return true;
+			}
+			else {
+
+				//
+				//	update record and publish modifications
+				//
+				update(r.first
+					, key
+					, std::move(data)
+					, source);
 			}
 		}
 		return false;
@@ -102,7 +125,8 @@ namespace cyng {
 
 	void table::update(table_t::iterator pos
 		, key_t const& key
-		, data_t&& data)
+		, data_t&& data
+		, boost::uuids::uuid source)
 	{
 		//
 		//	write lock this record
@@ -117,8 +141,23 @@ namespace cyng {
 		//
 		//	update data
 		//
-		pos->second.data_ = std::move(data);
+		BOOST_ASSERT(data.size() == pos->second.data_.size());
+		for (std::size_t idx = 0; idx < data.size(); ++idx) {
 
+			if (pos->second.data_.at(idx) != data.at(idx)) {
+
+				//
+				//	publish
+				//
+				attr_t attr(idx, data.at(idx));
+				this->pub::forward(this, key, attr, pos->second.generation_, source);
+
+				//
+				//	apply
+				//
+				swap(pos->second.data_.at(idx), data.at(idx));
+			}
+		}
 	}
 
 	bool table::exist(key_t const& key) const {
@@ -153,8 +192,9 @@ namespace cyng {
 
 
 			//
-			//	ToDo: publish
+			//	publish
 			//
+			forward(this, key, source);
 			return true;
 		}
 		return false;

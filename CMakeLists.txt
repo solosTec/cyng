@@ -51,7 +51,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         #set(Boost_USE_STATIC_LIBS ON)
         # target is Windows 10
 	    add_compile_definitions(_WIN32_WINNT=0x0A00 _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN)
-#        add_compile_options("/bigobj")
+        add_compile_options(/bigobj)
+        add_compile_options(/MP)
         message(STATUS "** compile definitions: ${CMAKE_CXX_FLAGS}")
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
@@ -250,37 +251,6 @@ target_link_libraries(cyng_vm
 )
 
 #
-# add library: cyng_task
-#
-include (src/task/lib.cmake)
-add_library(cyng_task ${GLOBAL_LIBRARY_TYPE} ${task_lib})
-
-target_include_directories(cyng_task
-    PUBLIC 
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_compile_features(cyng_task PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
-
-#
-#   debug class object
-#
-target_compile_definitions(cyng_task 
-    PRIVATE 
-        $<$<CONFIG:Debug>:_DEBUG_TASK>
-        $<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:GNU>>:BOOST_ASIO_HAS_STD_FUTURE>       
-)
-
-target_link_libraries(cyng_task 
-    PRIVATE 
-        Boost::boost 
-)
-
-#
 # add library: cyng_store
 #
 include (src/store/lib.cmake)
@@ -314,8 +284,41 @@ target_compile_options(cyng_store
 
 target_link_libraries(cyng_store 
     PRIVATE 
+        "$<$<PLATFORM_ID:Linux>:cyng_task>"
         Boost::boost 
 )
+
+#
+# add library: cyng_task
+#
+include (src/task/lib.cmake)
+add_library(cyng_task ${GLOBAL_LIBRARY_TYPE} ${task_lib})
+
+target_include_directories(cyng_task
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_task PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug class object
+#
+target_compile_definitions(cyng_task 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_TASK>
+        $<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:GNU>>:BOOST_ASIO_HAS_STD_FUTURE>       
+)
+
+target_link_libraries(cyng_task 
+    PRIVATE 
+        Boost::boost 
+)
+
 
 #
 # add library: cyng_io

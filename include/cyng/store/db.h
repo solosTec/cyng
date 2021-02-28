@@ -8,6 +8,7 @@
 #define CYNG_STORE_DB_H
 
 #include <cyng/store/auto_table.h>
+#include <cyng/store/slot.h>
 #include <cyng/meta.hpp>
 #include <cyng/io/ostream.h>
 
@@ -180,6 +181,14 @@ namespace cyng {
 
 			return obj;
 		}
+
+		void connect(std::string name, slot);
+		void connect_insert(std::string name, slot);
+		void connect_modify(std::string name, slot);
+		void connect_remove(std::string name, slot);
+		void connect_clear(std::string name, slot);
+
+		void disconnect(std::string name, slot);
 
 	private:
 

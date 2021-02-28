@@ -132,6 +132,12 @@ namespace cyng {
 		return obj.rtti().rtti() == typeid(T);
 	}
 
+	/**
+	 * compare hash values
+	 */
+	bool operator==(object const&, object const&);
+	bool operator!=(object const&, object const&);
+
 }
 
 #include <functional>

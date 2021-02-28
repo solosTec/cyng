@@ -22,7 +22,7 @@ namespace cyng {
 		using value_type = std::uint8_t;
 		using SIZE = std::integral_constant<std::size_t, 6>;
 		//	internal data type
-		using data_type = std::array< std::uint8_t, SIZE::value >;
+		using data_type = std::array< value_type, SIZE::value >;
 
 		enum value_group {
 			VG_MEDIUM = 0,		//	A

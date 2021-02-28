@@ -69,7 +69,7 @@ namespace cyng {
 		 * @return true if the record was actually inserted.
 		 */
 		bool insert(key_t const& key
-			, data_t&& data
+			, data_t const& data
 			, std::uint64_t generation
 			, boost::uuids::uuid source);
 
@@ -163,14 +163,18 @@ namespace cyng {
 		std::size_t loop(std::function<bool(record&&, std::size_t)> f) const;
 
 	private:
+
+		/**
+		 * @return true  if insertion happened, otherwise false
+		 */
 		bool emplace(key_t const& key
-			, data_t&& data
-			, std::uint64_t generation
-			, bool merge);
+			, data_t const& data
+			, std::uint64_t generation);
 
 		void update(table_t::iterator
 			, key_t const& key
-			, data_t&& data);
+			, data_t&& data
+			, boost::uuids::uuid source);
 
 	private:
 		meta_store const meta_;

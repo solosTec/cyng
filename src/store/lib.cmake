@@ -8,7 +8,6 @@ set (store_cpp
     src/store/meta.cpp
     src/store/table.cpp
     src/store/auto_table.cpp
-    src/store/pub.cpp
     src/store/record.cpp
     src/store/db.cpp
 )
@@ -23,9 +22,20 @@ set (store_h
     include/cyng/store/db.h
 )
 
+set (store_signal
+    include/cyng/store/pub.h
+    include/cyng/store/slot.h
+    src/store/pub.cpp
+    src/store/slot.cpp
+)
+
+source_group("signal" FILES ${store_signal})
+
+
 # define the docscript lib
 set (store_lib
   ${store_cpp}
   ${store_h}
+  ${store_signal}
 )
 
