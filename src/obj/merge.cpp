@@ -19,18 +19,28 @@ namespace cyng {
 			auto cp = pos;
 			++pos;
 			if (pos == il.end()) {
+				//	complete
 				(*ptr)[*cp] = val;
 				break;
 			}
 
-			auto obj = find(pm, *cp);
-			if (is_of_type<TC_PARAM_MAP>(obj)) {
-				ptr = const_cast<param_map_t*>(object_cast<param_map_t>(obj));
-				BOOST_ASSERT(ptr != nullptr);
+			//	find
+			auto pos = ptr->find(*cp);
+			if (pos != ptr->end()) {
+				BOOST_ASSERT(is_of_type<TC_PARAM_MAP>(pos->second));
+				if (is_of_type<TC_PARAM_MAP>(pos->second)) {
+					//	update
+					ptr = const_cast<param_map_t*>(object_cast<param_map_t>(pos->second));
+				}
+				else	{
+					//	wrong data type
+					//	only paramater maps are supported
+					break;
+				}
 			}
 			else {
-				obj = cyng::param_map_factory()();
-				(*ptr)[*cp] = obj;
+				//	new
+				(*ptr)[*cp] = cyng::param_map_factory()();
 				ptr = const_cast<param_map_t*>(object_cast<param_map_t>(ptr->at(*cp)));
 				BOOST_ASSERT(ptr != nullptr);
 			}
