@@ -234,7 +234,10 @@ namespace cyng
 		break;
 
 		case TC_IP_ADDRESS:
-			return make_object(boost::asio::ip::make_address(val));
+		{
+			boost::system::error_code ec;
+			return make_object(boost::asio::ip::make_address(val, ec));
+		}
 
 		default:
 			break;
