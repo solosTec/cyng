@@ -31,7 +31,7 @@ namespace cyng {
 			else {
 				obj = cyng::param_map_factory()();
 				(*ptr)[*cp] = obj;
-				ptr = const_cast<param_map_t*>(object_cast<param_map_t>(obj));
+				ptr = const_cast<param_map_t*>(object_cast<param_map_t>(ptr->at(*cp)));
 				BOOST_ASSERT(ptr != nullptr);
 			}
 		}
