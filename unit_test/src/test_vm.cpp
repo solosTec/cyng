@@ -107,13 +107,16 @@ BOOST_AUTO_TEST_CASE(library)
 	cyng::mesh fabric(ctl);
 
 	session s;
-	//std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);
-	std::function<void(int)> f = [&s](int i) {
+	//std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);	//	ok
+	std::function<void(int)> f = [&s](int i) {	//	ok
 		s.foo(i);
 	};
 
-	//auto vm = fabric.create_proxy(f);
-	auto vm = fabric.create_proxy(std::move(f));
+	auto vm = fabric.create_proxy(f);	//	ok
+	//auto vm = fabric.create_proxy(std::move(f));	//	ok
+
+	//auto vm = fabric.create_proxy(std::bind(&session::foo, &s, std::placeholders::_1));	//	not ok
+
 	vm.load(make_object(cyng::op::TIDY));
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));

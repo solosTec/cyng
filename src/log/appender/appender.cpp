@@ -22,9 +22,9 @@ namespace cyng {
 				<< lev
 				<< ' '
 #if BOOST_OS_WINDOWS
-				<< std::dec
+				<< std::hex
 				<< std::setfill(' ')
-				<< std::setw(5)
+				<< std::setw(8)
 #endif
 				<< tip
 				<< " -- "

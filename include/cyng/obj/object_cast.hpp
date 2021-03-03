@@ -70,7 +70,7 @@ namespace cyng {
 		auto ptr = obj.obj_.release();
 
 		//	cast to the correct pointer
-		auto p = static_cast<value_type*>(ptr);
+		auto p = dynamic_cast<value_type*>(ptr);
 
 		//	if cast failed we return a null pointer
 		if (p == nullptr) {

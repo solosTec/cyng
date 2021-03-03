@@ -108,10 +108,11 @@ namespace cyng {
 			dispatcher_.post([this, handler, name]() mutable {
 				auto channels = lookup_sync(name);
 
-				if (!channels.empty())
-					handler(boost::system::error_code{}, channels);
-				else
-					handler(boost::asio::error::not_found, channels);
+				//if (!channels.empty())
+				//	handler(boost::system::error_code{}, channels);
+				//else
+				//	handler(boost::asio::error::not_found, channels);
+				handler(boost::system::error_code{}, channels);
 
 				});
 

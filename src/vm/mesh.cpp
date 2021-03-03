@@ -13,30 +13,9 @@ namespace cyng {
 		, uuid_rgn_()
 	{}
 
-	//channel_ptr mesh::create_vm() {
-	//	return create_vm<std::tuple<>>(boost::uuids::nil_uuid());
-	//}
-
-	//channel_ptr mesh::create_vm(boost::uuids::uuid parent) {
-
-	//	//
-	//	//	create a uuid
-	//	//
-	//	auto const tag = uuid_rgn_();
-
-	//	//
-	//	//	create task channel
-	//	//
-	//	return ctl_.create_named_channel<vm<std::tuple<>>>(boost::uuids::to_string(tag), *this, parent);
-
-	//}
-
-	//vm_proxy mesh::create_proxy() {
-	//	return create_vm();
-	//}
-	//vm_proxy mesh::create_proxy(boost::uuids::uuid parent) {
-	//	return create_vm<std::tuple<>>(parent);
-	//}
+	controller& mesh::get_ctl() {
+		return ctl_;
+	}
 
 	channel_ptr mesh::lookup(boost::uuids::uuid tag) {
 		auto res = ctl_.get_registry().lookup(boost::uuids::to_string(tag));

@@ -34,7 +34,7 @@ namespace cyng {
 				}
 				else	{
 					//	wrong data type
-					//	only paramater maps are supported
+					//	only parameter maps are supported
 					break;
 				}
 			}

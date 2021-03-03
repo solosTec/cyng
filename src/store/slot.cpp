@@ -22,7 +22,7 @@ namespace cyng {
 		, boost::uuids::uuid tag) {
 
 		auto sp = channel_.lock();
-		if (sp)	sp->dispatch("insert", cyng::make_tuple(
+		if (sp)	sp->dispatch("db.insert", cyng::make_tuple(
 			tbl,
 //			tbl->meta().get_name(), 
 			key,
@@ -42,7 +42,7 @@ namespace cyng {
 
 		auto sp = channel_.lock();
 
-		if (sp)	sp->dispatch("modify", cyng::make_tuple(
+		if (sp)	sp->dispatch("db.modify", cyng::make_tuple(
 			tbl,
 			//			tbl->meta().get_name(), 
 			key,
@@ -59,6 +59,13 @@ namespace cyng {
 		, boost::uuids::uuid tag) {
 
 		auto sp = channel_.lock();
+
+		if (sp)	sp->dispatch("db.remove", cyng::make_tuple(
+			tbl,
+			key,
+			tag
+		));
+
 		return sp.operator bool();
 
 	}
@@ -67,6 +74,10 @@ namespace cyng {
 		, boost::uuids::uuid tag) {
 
 		auto sp = channel_.lock();
+		if (sp)	sp->dispatch("db.clear", cyng::make_tuple(
+			tbl,
+			tag
+		));
 		return sp.operator bool();
 	}
 

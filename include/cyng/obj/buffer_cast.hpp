@@ -38,6 +38,41 @@ namespace cyng {
 	[[nodiscard]]
 	buffer_t to_buffer(object const& obj);
 
+	[[nodiscard]]
+	buffer_t to_buffer(std::string const& str);
+
+	/**
+	 * Convert content of an buffer into a numeric data type
+	 * as big-endian.
+	 */
+	template <typename T>
+	[[nodiscard]]
+	T to_numeric_be(buffer_t const& buffer) {
+		T r = T();
+		auto const size = std::min(sizeof(T), buffer.size());
+
+		std::memcpy(&r, buffer.data(), size);
+		return r;
+	}
+
+	/**
+	 * Convert content of an buffer into a numeric data type
+	 * as little-endian.
+	 */
+	template <typename T>
+	[[nodiscard]]
+	T to_numeric_le(buffer_t const& buffer) {
+
+		T r = T();
+		auto const size = std::min(sizeof(T), buffer.size());
+
+		buffer_t src;
+		src.resize(size);
+		std::reverse_copy(buffer.begin(), buffer.begin() + size, src.begin());
+		std::memcpy(&r, src.data(), size);
+		return r;
+	}
+
 	/**
 	 * Convert content of an buffer into a numeric data type
 	 * as big-endian. Reverse buffer before calling this function
@@ -47,30 +82,40 @@ namespace cyng {
 	[[nodiscard]]
 	T to_numeric(buffer_t const& buffer) {
 
-		T r = T();
-		auto const size = std::min(sizeof(T), buffer.size());
-
 		//
 		//	check network byte ordering
 		//
 #if defined(docc_BIG_ENDIAN)
-		std::memcpy(&r, buffer.data(), size);
+		return to_numeric_be<T>(buffer);
 #else
-		buffer_t src;
-		src.resize(size);
-		std::reverse_copy(buffer.begin(), buffer.begin() + size, src.begin());
-		std::memcpy(&r, src.data(), size);
+		return to_numeric_le<T>(buffer);
 #endif
-		// if constexpr (std::endian::native == std::endian::little) {
-		// 	buffer_t src;
-		// 	src.resize(size);
-		// 	std::reverse_copy(buffer.begin(), buffer.begin() + size, src.begin());
-		// 	std::memcpy(&r, src.data(), size);
-		// }
-		// else {
-		// 	std::memcpy(&r, buffer.data(), size);
-		// }
+	}
 
+	template <typename T>
+	[[nodiscard]]
+	T to_numeric_be(buffer_t const& buffer, std::size_t offset) {
+
+		T r = T();
+		auto const size = std::min(sizeof(T), buffer.size());
+		BOOST_ASSERT(sizeof(T) <= buffer.size() - offset);
+
+		std::memcpy(&r, buffer.data() + offset, size);
+		return r;
+	}
+
+	template <typename T>
+	[[nodiscard]]
+	T to_numeric_le(buffer_t const& buffer, std::size_t offset) {
+
+		T r = T();
+		auto const size = std::min(sizeof(T), buffer.size());
+		BOOST_ASSERT(sizeof(T) <= buffer.size() - offset);
+
+		buffer_t src;
+		src.resize(sizeof(T));
+		std::reverse_copy(buffer.begin() + offset, buffer.begin() + size, src.begin());
+		std::memcpy(&r, src.data(), sizeof(T));
 		return r;
 	}
 
@@ -78,44 +123,27 @@ namespace cyng {
 	[[nodiscard]]
 	T to_numeric(buffer_t const& buffer, std::size_t offset) {
 
-		T r = T();
-		auto const size = std::min(sizeof(T) + offset, buffer.size());
-		BOOST_ASSERT(sizeof(T) == buffer.size() - offset);
-
 		//
 		//	check network byte ordering
 		//
 #if defined(docc_BIG_ENDIAN)
-		std::memcpy(&r, buffer.data() + offset, size);
+		return to_numeric_be<T>(buffer, offset);
 #else
-		buffer_t src;
-		src.resize(sizeof(T));
-		std::reverse_copy(buffer.begin() + offset, buffer.begin() + size, src.begin());
-		std::memcpy(&r, src.data(), sizeof(T));
+		return to_numeric_le<T>(buffer, offset);
 #endif
-		//if constexpr (std::endian::native == std::endian::little) {
-		//	buffer_t src;
-		//	src.resize(sizeof(T));
-		//	std::reverse_copy(buffer.begin() + offset, buffer.begin() + size, src.begin());
-		//	std::memcpy(&r, src.data(), sizeof(T));
-		//}
-		//else {
-		//	std::memcpy(&r, buffer.data() + offset, size);
-		//}
-
-		return r;
 
 	}
 
 	/** @brief Copy an arithmetic type into an buffer
-	 *
+	 *	big endian
 	 */
 	template <typename T, std::size_t N = sizeof(T), std::size_t OFFSET = 0>
 	[[nodiscard]]
-	buffer_t to_buffer(T n) {
+	buffer_t to_buffer_be(T n) {
 
 		static_assert(OFFSET <= N, "index out if range");
 		static_assert(N + OFFSET <= sizeof(T), "type size exceeded");
+		static_assert(std::is_trivial<T>::value, "trivial data type required");
 
 		using length_t = std::integral_constant<std::size_t, N - OFFSET>;
 
@@ -127,20 +155,25 @@ namespace cyng {
 			auto r = vec.data();
 			const void* src = reinterpret_cast<const char*>(&n) + OFFSET;
 			std::memcpy(r, src, length_t::value);
-
-			//
-			//	check network byte ordering
-			//
-#if !defined(docc_BIG_ENDIAN)
-			std::reverse(vec.begin(), vec.end());
-#endif
-
-			//if constexpr (std::endian::native == std::endian::little) {
-			//	std::reverse(vec.begin(), vec.end());
-			//}
-
 		}
 		return vec;
+	}
+
+	/** @brief Copy an arithmetic type into an buffer
+	 *
+	 */
+	template <typename T, std::size_t N = sizeof(T), std::size_t OFFSET = 0>
+	[[nodiscard]]
+	buffer_t to_buffer(T n) {
+
+		auto buffer = to_buffer_be<T, N, OFFSET>(n);
+		//
+		//	check network byte ordering
+		//
+#if !defined(docc_BIG_ENDIAN)
+		std::reverse(buffer.begin(), buffer.end());
+#endif
+		return buffer;
 	}
 
 	/**

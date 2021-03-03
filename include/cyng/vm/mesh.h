@@ -99,6 +99,10 @@ namespace cyng {
 		 */
 		channel_ptr lookup(boost::uuids::uuid tag);
 
+		/**
+		 * get access to task manager
+		 */
+		controller& get_ctl();
 
 	private:
 		template <typename... Fns>

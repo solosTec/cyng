@@ -17,5 +17,10 @@ namespace cyng {
 			: buffer_t{}
 		;
 	}
+
+	buffer_t to_buffer(std::string const& str) {
+		return { std::begin(str), std::end(str) };
+	}
+
 }
 
