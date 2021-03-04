@@ -10,6 +10,7 @@ set (vm_cpp
     src/vm/stack.cpp
     src/vm/context.cpp
     src/vm/library.cpp
+    src/vm/generator.cpp
 )
     
 set (vm_h
@@ -21,6 +22,7 @@ set (vm_h
     include/cyng/vm/stack.h
     include/cyng/vm/stack_interface.h
     include/cyng/vm/vm.h
+    include/cyng/vm/generator.hpp
 )
 
 # define the docscript lib

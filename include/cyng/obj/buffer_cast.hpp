@@ -42,6 +42,13 @@ namespace cyng {
 	buffer_t to_buffer(std::string const& str);
 
 	/**
+	 * Copy the buffer into a string but terminates copying
+	 * when a 0 value occurs.
+	 */
+	[[nodiscard]]
+	std::string to_string_nil(buffer_t const& str, std::size_t offset);
+
+	/**
 	 * Convert content of an buffer into a numeric data type
 	 * as big-endian.
 	 */
