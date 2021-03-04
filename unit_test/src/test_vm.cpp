@@ -7,6 +7,7 @@
 #include <cyng/vm/memory.h>
 #include <cyng/vm/stack.h>
 #include <cyng/vm/mesh.h>
+#include <cyng/vm/linearize.hpp>
 #include <cyng/task/controller.h>
 #include <cyng/io/serialize.h>
 //#include <cyng/obj/container_factory.hpp>
@@ -158,6 +159,13 @@ BOOST_AUTO_TEST_CASE(mesh)
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	ctl.stop();
 
+}
+
+BOOST_AUTO_TEST_CASE(linearize)
+{
+	auto deq_simple = cyng::linearize(1, 3.14758, std::string("boo"));
+
+	auto deq_tlv = cyng::convert_to_deque(1, 3.14758, std::string("boo"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

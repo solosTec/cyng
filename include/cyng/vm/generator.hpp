@@ -8,7 +8,8 @@
 #define CYNG_VM_GENERATOR_HPP
 
 #include <cyng/obj/util.hpp>
- 
+#include <cyng/vm/linearize.hpp>
+
 #ifdef _DEBUG_VM
 #include <cyng/io/ostream.h>
 #include <iostream>
@@ -24,6 +25,14 @@ namespace cyng {
 	deque_t generate_invoke(std::string const& name, Args&&... args)
 	{
 		return make_deque(std::forward<Args>(args)..., sizeof...(Args), name, cyng::op::INVOKE);
+	}
+
+	/**
+	 * same generate_invoke<>() but serialized
+	 */
+	template < typename ...Args >
+	std::deque<buffer_t> serialize_invoke(std::string const& name, Args&&... args) {
+		return convert_to_deque(std::forward<Args>(args)..., sizeof...(Args), name, cyng::op::INVOKE);
 	}
 }
 #endif

@@ -62,9 +62,13 @@ namespace cyng {
 		{
 		case op::PUSH: 	os << "PUSH";	break;
 
-		case op::NOW: 	os << "NOW";	break;
-		case op::PID: 	os << "PID";	break;
-		case op::TID: 	os << "TID";	break;
+		case op::CALL: 	os << "CALL";	break;
+		case op::RET: 	os << "RET";	break;
+
+		case op::INVOKE:	os << "INVOKE";	break;
+		case op::NOW: 		os << "NOW";	break;
+		case op::PID: 		os << "PID";	break;
+		case op::TID: 		os << "TID";	break;
 
 		//	assembly
 		case op::MAKE_ATTR: 		os << "MAKE_ATTR";	break;
@@ -81,7 +85,6 @@ namespace cyng {
 		case op::ASSERT_VALUE:	os << "ASSERT_VALUE";	break;
 
 		case op::HALT:	os << "HALT";	break;
-
 		case op::NOOP: 	os << "NOOP";	break;
 
 		default:
