@@ -25,6 +25,7 @@ set (object_h
     include/cyng/obj/type_interface.h
     include/cyng/obj/util.hpp
     include/cyng/obj/compare.hpp
+    include/cyng/obj/clone.hpp
 )
 
 set (object_intrinscis

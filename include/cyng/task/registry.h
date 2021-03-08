@@ -52,6 +52,14 @@ namespace cyng {
 		 */
 		bool reset();
 
+		/**
+		 * collect all channels with the specified name and dispatch the data
+		 * to the names slot.
+		 *
+		 * @return count of found channels
+		 */
+		std::size_t dispatch(std::string channel, std::string slot, tuple_t&& msg);
+
 	private:
 		channel_ptr lookup_sync(std::size_t);
 
@@ -130,6 +138,8 @@ namespace cyng {
 		 */
 		std::atomic<bool> shutdown_;
 	};
+
+
 }
 
 #endif

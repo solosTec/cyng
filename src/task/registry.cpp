@@ -1,4 +1,5 @@
 #include <cyng/task/registry.h>
+#include <cyng/obj/clone.hpp>
 
 #include <algorithm>
 #include <iterator>
@@ -146,4 +147,15 @@ namespace cyng {
 		BOOST_ASSERT(list_.empty());
 		return (shutdown_.exchange(false) && list_.empty());
 	}
+
+	std::size_t registry::dispatch(std::string channel, std::string slot, tuple_t&& msg) {
+		auto channels = lookup(channel);
+		for (auto& chp : channels) {
+			//	since every dispatch call expects it's own copy
+			//	of the data, we have to clone it.
+			chp->dispatch(slot, clone(msg));
+		}
+		return channels.size();
+	}
+
 }
