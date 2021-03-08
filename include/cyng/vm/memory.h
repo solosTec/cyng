@@ -7,8 +7,8 @@
 #ifndef CYNG_VM_MEMORY_H
 #define CYNG_VM_MEMORY_H
 
-#include <cyng/vm/memory_interface.h>
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/object.h>
 
 namespace cyng {
 
@@ -16,7 +16,7 @@ namespace cyng {
 	 * The memory_interface isn't really necessary - it's more an attempt
 	 * to get the interface clean.
 	 */
-	class memory : public memory_interface
+	class memory //: public memory_interface
 	{
 	public:
 		memory();
@@ -37,19 +37,19 @@ namespace cyng {
 		 *
 		 * pc = x
 		 */
-		virtual void ja(std::size_t) override;
+		void ja(std::size_t);
 
 		/** @brief jump relative forward
 		 *
 		 * pc += x
 		 */
-		virtual void jrf(std::size_t) override;
+		void jrf(std::size_t);
 
 		/** @brief jump relative backward
 		 *
 		 * pc -= x
 		 */
-		virtual void jrb(std::size_t) override;
+		void jrb(std::size_t);
 
 		/** @brief has more test
 		 *

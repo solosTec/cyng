@@ -7,8 +7,7 @@
 #ifndef CYNG_VM_MESH_H
 #define CYNG_VM_MESH_H
 
-#include <cyng/task/channel.h>
-#include <cyng/obj/util.hpp>
+#include <cyng/vm/proxy.h>
 #include <cyng/task/controller.h>
 #include <type_traits>
 
@@ -18,56 +17,6 @@
 
 namespace cyng {
 
-	/**
-	 * Proxy class to access a VM instance
-	 */
-	class vm_proxy
-	{
-	public:
-		vm_proxy() = delete;
-		vm_proxy(channel_ptr);
-		vm_proxy(vm_proxy const&) = default;
-
-		/**
-		 * run the loaded program
-		 */
-		void run();
-
-		/**
-		 * load a single instruction or value
-		 */
-		void load(object&&);
-
-		/**
-		 * load a bunch of instructions or values at once
-		 */
-		void load(deque_t&&);
-
-		/**
-		 * load the specified arguments and run this as program.
-		 */
-		template < typename ...Args >
-		void execute(Args&&... args) {
-			load(make_deque(std::forward<Args>(args)...));
-			run();
-		}
-
-		/**
-		 * stop VM
-		 */
-		void stop();
-
-		/**
-		 * @return the VM tag
-		 */
-		boost::uuids::uuid get_tag() const;
-
-
-	private:
-		channel_ptr	vm_;
-	};
-
-	class controller;
 	template <typename... Fns>	class vm;
 
 	/**
@@ -130,11 +79,6 @@ namespace cyng {
 		controller& ctl_;
 		boost::uuids::random_generator	uuid_rgn_;
 	};
-
-	/**
-	 * extract UUID from channel name
-	 */
-	boost::uuids::uuid get_tag(channel_ptr);
 
 }
 #endif

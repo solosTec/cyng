@@ -7,7 +7,7 @@
 #ifndef CYNG_VM_STACK_H
 #define CYNG_VM_STACK_H
 
-#include <cyng/vm/stack_interface.h>
+//#include <cyng/vm/stack_interface.h>
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/value_cast.hpp>
 
@@ -15,7 +15,7 @@
 
 namespace cyng {
 
-	class stack : public stack_interface
+	class stack //: public stack_interface
 	{
 	public:
 		stack();
@@ -24,74 +24,74 @@ namespace cyng {
 		 *
 		 * mem[--sp] = x
 		 */
-		virtual void push(object) noexcept override;
+		void push(object) noexcept;
 
 		/** @brief pop value from stack
 		 *
 		 */
-		virtual void pop() override;
+		void pop();
 
 		/** @brief get top value of stack
 		 *
 		 */
-		virtual object& top() override;
+		object& top();
 
 		/** @brief get top value of stack and remove it
 		 *
 		 */
-		virtual object&& remove() override;
+		object&& remove();
 
 		/** @brief establish base address
 		 *
 		 * mem[--sp] = bp; bp = sp;
 		 */
-		virtual void esba() override;
+		void esba();
 
 		/** @brief restore base address
 		 *
 		 * sp = bp; bp = mem[sp++];
 		 */
-		virtual void reba() override;
+		void reba();
 
 		/** @brief build an attribute
 		 *
 		 */
-		virtual void make_attr()override;
+		void make_attr();
 
 		/** @brief build a parameter
 		 *
 		 */
-		virtual void make_param() override;
+		void make_param();
 
 		/** @brief build an attribute map
 		 *
 		 */
-		virtual void make_attr_map() override;
+		void make_attr_map();
 
 		/** @brief build a parameter map
 		 *
 		 */
-		virtual void make_param_map() override;
+		void make_param_map();
 
 		/** @brief build a tuple (std::list<object>)
 		 *
 		 */
-		virtual void make_tuple() override;
+		void make_tuple();
 
 		/** @brief build a vector (std::vector<object>)
 		 *
 		 */
-		virtual void make_vector() override;
+		void make_vector();
 
 		/** @brief build a deque (std::deque<object>)
 		 *
 		 */
-		virtual void make_deque() override;
+		void make_deque();
 
 		/** @brief swap two top elements
 		 *
 		 */
-		virtual void swap() override;
+		void swap();
 
 		/**
 		 * asserts a type on stack(only for testing)
