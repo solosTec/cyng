@@ -216,34 +216,10 @@ namespace cyng {
 		//	write buffer
 		for (auto const c : v)
 		{
-			if (c > 31 && c < 127)
-			{
-				os << c;
-			}
-			else if (c == '\\')
-			{
-				os << "\\\\";
-			}
-			else if (c == '"')
-			{
-				os << "\\\"";
-			}
-			else if (c == '\n')
-			{
-				os << "\\n";
-			}
-			else if (c == '\t')
-			{
-				os << "\\t";
-			}
-			else
-			{
-				os
-					<< "\\x"
-					<< std::setw(2)
-					<< (+c & 0xFF)
-					;
-			}
+			os
+				<< std::setw(2)
+				<< (+c & 0xFF)
+				;
 		}
 		return os;
 	}

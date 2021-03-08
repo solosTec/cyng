@@ -164,8 +164,13 @@ BOOST_AUTO_TEST_CASE(mesh)
 BOOST_AUTO_TEST_CASE(linearize)
 {
 	auto deq_simple = cyng::linearize(1, 3.14758, std::string("boo"));
+	BOOST_REQUIRE_EQUAL(deq_simple.size(), 3);
+	BOOST_REQUIRE_EQUAL(deq_simple.at(0).size(), 4);
+	BOOST_REQUIRE_EQUAL(deq_simple.at(1).size(), 8);
+	BOOST_REQUIRE_EQUAL(deq_simple.at(2).size(), 3);
 
 	auto deq_tlv = cyng::convert_to_deque(1, 3.14758, std::string("boo"));
+	BOOST_REQUIRE_EQUAL(deq_tlv.size(), 3);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
