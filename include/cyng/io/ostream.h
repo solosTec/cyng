@@ -155,7 +155,7 @@ namespace cyng {
 	 * Write the time stamp in the following format:
 	 *
 	 * @code
-	 * yyyy-mm-dd hh:mm:ss.ssssss
+	 * yyyy-mm-ddThh:mm:ss+NNNN
 	 * @endcode
 	 *
 	 * All elements of fixed with and padded with zeros (0) if required

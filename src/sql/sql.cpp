@@ -121,17 +121,23 @@ namespace cyng
 
 			bool init = false;
 			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
-				if (!init)	{
-					init = true;
-				}
-				else	{
-					clause_.push_back(",");
+
+				//
+				//	ROWID is already in place.
+				//
+				if (!boost::algorithm::equals(col.name_, "ROWID")) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						clause_.push_back(",");
+					}
+
+					clause_.push_back(col.name_);
+					clause_.push_back(get_field_type(dialect_, col.type_, col.width_));
 				}
 
-				clause_.push_back(col.name_);
-				clause_.push_back(get_field_type(dialect_, col.type_, col.width_));
-
-				});
+			});
 		}
 
 		void create::pks(meta_sql const& m) {
@@ -170,16 +176,21 @@ namespace cyng
 
 			bool init = false;
 			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
-				if (!init) {
-					init = true;
-				}
-				else {
-					clause_.push_back(",");
-				}
 
-				clause_.push_back(col.name_);
+				//
+				//	ROWID will set automatically
+				//
+				if (!boost::algorithm::equals(col.name_, "ROWID")) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						clause_.push_back(",");
+					}
 
-				});
+					clause_.push_back(col.name_);
+				}
+			});
 			clause_.push_back(")");
 		}
 
@@ -202,13 +213,18 @@ namespace cyng
 			//
 			bool init = false;
 			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
-				if (!init) {
-					init = true;
+				//
+				//	ROWID will set automatically
+				//
+				if (!boost::algorithm::equals(col.name_, "ROWID")) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						clause_.push_back(",");
+					}
+					clause_.push_back(details::substitute_ph(dialect_, col.type_));
 				}
-				else {
-					clause_.push_back(",");
-				}
-				clause_.push_back(details::substitute_ph(dialect_, col.type_));
 			});
 
 			clause_.push_back(")");

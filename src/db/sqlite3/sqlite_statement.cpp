@@ -31,14 +31,16 @@ namespace cyng
 						;
 				}
 
-				template <>
-				bool bind_value< null >(sqlite3_stmt* stmt, int index, null const* ptr)
-				{
+				bool bind_null_value(sqlite3_stmt* stmt, int index) {
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::int64_t >(sqlite3_stmt* stmt, int index, std::int64_t const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, int val)
+				{
+					return is_ok(::sqlite3_bind_int(stmt, index, val));
+				}
+
+				bool bind_value(sqlite3_stmt* stmt, int index, std::int64_t const* ptr)
 				{
 					return (ptr != nullptr)
 						? is_ok(::sqlite3_bind_int64(stmt, index, *ptr))
@@ -46,8 +48,7 @@ namespace cyng
 						;
 				}
 
-				template <>
-				bool bind_value< std::uint64_t >(sqlite3_stmt* stmt, int index, std::uint64_t const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::uint64_t const* ptr)
 				{
 					//
 					//	There is a limitation in SQLite3 that only signed 64 bit integers
@@ -60,8 +61,7 @@ namespace cyng
 						;
 				}
 
-				template <>
-				bool bind_value< float >(sqlite3_stmt* stmt, int index, float const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, float const* ptr)
 				{
 					return (ptr != nullptr)
 						? is_ok(::sqlite3_bind_double(stmt, index, static_cast<double>(*ptr)))
@@ -70,8 +70,7 @@ namespace cyng
 
 				}
 
-				template <>
-				bool bind_value< double >(sqlite3_stmt* stmt, int index, double const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, double const* ptr)
 				{
 					return (ptr != nullptr)
 						? is_ok(::sqlite3_bind_double(stmt, index, *ptr))
@@ -80,8 +79,7 @@ namespace cyng
 
 				}
 
-				template <>
-				bool bind_value< long double >(sqlite3_stmt* stmt, int index, long double const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, long double const* ptr)
 				{
 					return (ptr != nullptr)
 						? is_ok(::sqlite3_bind_double(stmt, index, static_cast<double>(*ptr)))
@@ -90,8 +88,7 @@ namespace cyng
 
 				}
 
-				template <>
-				bool bind_value< std::string >(sqlite3_stmt* stmt, int index, std::string const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::string const* ptr)
 				{
 					//
 					//	With SQLITE_STATIC SQLite assumes that the information is in static, 
@@ -103,8 +100,7 @@ namespace cyng
 						;
 				}
 
-				template <>
-				bool bind_value< std::chrono::system_clock::time_point >(sqlite3_stmt* stmt, int index, std::chrono::system_clock::time_point const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::system_clock::time_point const* ptr)
 				{
 					//	julianday() converts string representation into float
 					//	yyyy-mm-dd hh:mm:ss
@@ -114,17 +110,21 @@ namespace cyng
 						//	the content before returning.
 						//	If well prepared this statement call the SQLite julianday() function and converts 
 						//	the string into a float value.
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
+						std::time_t const tt = std::chrono::system_clock::to_time_t(*ptr);
+						auto tm = *std::gmtime(&tt);
+						
+						std::stringstream ss;
+						ss << std::put_time(&tm, "%Y-%m-%d %T");
+						auto const str = ss.str();
 
 						//const std::string str = to_str(*ptr);
-						//BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
-						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+						BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::chrono::nanoseconds >(sqlite3_stmt* stmt, int index, std::chrono::nanoseconds const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::nanoseconds const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -134,8 +134,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::chrono::microseconds >(sqlite3_stmt* stmt, int index, std::chrono::microseconds const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::microseconds const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -145,8 +144,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::chrono::milliseconds >(sqlite3_stmt* stmt, int index, std::chrono::milliseconds const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::milliseconds const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -156,8 +154,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::chrono::seconds >(sqlite3_stmt* stmt, int index, std::chrono::seconds const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::seconds const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -167,8 +164,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::chrono::minutes >(sqlite3_stmt* stmt, int index, std::chrono::minutes const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::minutes const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -178,8 +174,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::chrono::hours >(sqlite3_stmt* stmt, int index, std::chrono::hours const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::chrono::hours const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -189,19 +184,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				//template <>
-				//bool bind_value< cyng::chrono::days >(sqlite3_stmt* stmt, int index, cyng::chrono::days const* ptr)
-				//{
-				//	if (ptr != nullptr)
-				//	{
-				//		const auto value = ptr->count();
-				//		return bind_value(stmt, index, &value);
-				//	}
-				//	return is_ok(::sqlite3_bind_null(stmt, index));
-				//}
-
-				template <>
-				bool bind_value< buffer_t >(sqlite3_stmt* stmt, int index, buffer_t const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, buffer_t const* ptr)
 				{
 					//
 					//	SQLite assumes that the information is in static, unmanaged space and does not need to be freed
@@ -212,8 +195,7 @@ namespace cyng
 						;
 				}
 
-				template <>
-				bool bind_value< mac48 >(sqlite3_stmt* stmt, int index, mac48 const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, mac48 const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -225,8 +207,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< mac64 >(sqlite3_stmt* stmt, int index, mac64 const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, mac64 const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -238,35 +219,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< crypto::digest_md5 >(sqlite3_stmt* stmt, int index, crypto::digest_md5 const* ptr) {
-					if (ptr != nullptr)
-					{
-						auto const str = to_string(*ptr);
-						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-				template <>
-				bool bind_value< crypto::digest_sha1 >(sqlite3_stmt* stmt, int index, crypto::digest_sha1 const* ptr) {
-					if (ptr != nullptr)
-					{
-						auto const str = to_string(*ptr);
-						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-				template <>
-				bool bind_value< crypto::digest_sha256 >(sqlite3_stmt* stmt, int index, crypto::digest_sha256 const* ptr) {
-					if (ptr != nullptr)
-					{
-						auto const str = to_string(*ptr);
-						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-				template <>
-				bool bind_value< crypto::digest_sha512 >(sqlite3_stmt* stmt, int index, crypto::digest_sha512 const* ptr) {
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::digest_md5 const* ptr) {
 					if (ptr != nullptr)
 					{
 						auto const str = to_string(*ptr);
@@ -275,8 +228,34 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< crypto::aes_128_key >(sqlite3_stmt* stmt, int index, crypto::aes_128_key const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::digest_sha1 const* ptr) {
+					if (ptr != nullptr)
+					{
+						auto const str = to_string(*ptr);
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::digest_sha256 const* ptr) {
+					if (ptr != nullptr)
+					{
+						auto const str = to_string(*ptr);
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::digest_sha512 const* ptr) {
+					if (ptr != nullptr)
+					{
+						auto const str = to_string(*ptr);
+						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::aes_128_key const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -286,8 +265,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< crypto::aes_192_key >(sqlite3_stmt* stmt, int index, crypto::aes_192_key const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::aes_192_key const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -297,8 +275,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< crypto::aes_256_key >(sqlite3_stmt* stmt, int index, crypto::aes_256_key const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, crypto::aes_256_key const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -308,60 +285,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< attr_map_t >(sqlite3_stmt* stmt, int index, attr_map_t const* ptr)
-				{
-					if (ptr != nullptr)
-					{
-						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
-						//	the content before returning.
-						//const std::string str = cyng::io::to_string(*ptr, cyng::io::custom_callback());
-						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-				
-				template <>
-				bool bind_value< param_map_t >(sqlite3_stmt* stmt, int index, param_map_t const* ptr)
-				{
-					if (ptr != nullptr)
-					{
-						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
-						//	the content before returning.
-						//const std::string str = cyng::io::to_string(*ptr, cyng::io::custom_callback());
-						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-
-				template <>
-				bool bind_value< attr_t >(sqlite3_stmt* stmt, int index, attr_t const* ptr)
-				{
-					if (ptr != nullptr)
-					{
-						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
-						//	the content before returning.
-						//const std::string str = cyng::io::to_literal(*ptr, cyng::io::custom_callback());
-						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-
-				template <>
-				bool bind_value< param_t >(sqlite3_stmt* stmt, int index, param_t const* ptr)
-				{
-					if (ptr != nullptr)
-					{
-						//	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
-						//	the content before returning.
-						//const std::string str = cyng::io::to_literal(*ptr, cyng::io::custom_callback());
-						//return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), str.size(), SQLITE_TRANSIENT));
-					}
-					return is_ok(::sqlite3_bind_null(stmt, index));
-				}
-
-				template <>
-				bool bind_value< boost::uuids::uuid >(sqlite3_stmt* stmt, int index, boost::uuids::uuid const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, boost::uuids::uuid const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -373,8 +297,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< std::filesystem::path >(sqlite3_stmt* stmt, int index, std::filesystem::path const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, std::filesystem::path const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -386,8 +309,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< boost::asio::ip::address >(sqlite3_stmt* stmt, int index, boost::asio::ip::address const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, boost::asio::ip::address const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -399,8 +321,7 @@ namespace cyng
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
 
-				template <>
-				bool bind_value< boost::asio::ip::tcp::endpoint >(sqlite3_stmt* stmt, int index, boost::asio::ip::tcp::endpoint const* ptr)
+				bool bind_value(sqlite3_stmt* stmt, int index, boost::asio::ip::tcp::endpoint const* ptr)
 				{
 					if (ptr != nullptr)
 					{
@@ -413,6 +334,18 @@ namespace cyng
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
+
+				bool bind_value(sqlite3_stmt* stmt, int index, obis const* ptr)
+				{
+					if (ptr != nullptr)
+					{
+						//	store boost::asio::ip::tcp::endpoint as string
+						auto val = ptr->to_uint64();
+						is_ok(::sqlite3_bind_int64(stmt, index, val));
+					}
+					return is_ok(::sqlite3_bind_null(stmt, index));
+				}
+
 			}
 
 			statement::statement(connection* con)
@@ -544,7 +477,7 @@ namespace cyng
 
 				BOOST_ASSERT_MSG(is_valid(), "SQLite statement invalid");
 
-				if (!detail::bind_value< type >(stmt_, bind_counter_, object_cast<type>(obj)))
+				if (!detail::bind_value(stmt_, bind_counter_, object_cast<type>(obj)))
 				{
 					connection_->show_diagnostics();
 					return false;
@@ -556,7 +489,7 @@ namespace cyng
 			{
 				switch (obj.rtti().tag())
 				{	
-					case TC_NULL:	return bind_value_by_code<TC_NULL>(obj, column_size);
+					case TC_NULL:		return detail::bind_null_value(stmt_, column_size);
 
 					case TC_BOOL:		return bind_value_by_code<TC_BOOL>(obj, column_size);
 					case TC_INT8:		return bind_value_by_code<TC_INT8>(obj, column_size);
@@ -593,6 +526,9 @@ namespace cyng
 
 					case TC_MAC48:			return bind_value_by_code<TC_MAC48>(obj, column_size);
 					case TC_MAC64:			return bind_value_by_code<TC_MAC64>(obj, column_size);
+					//case TC_PID:
+					case TC_OBIS:			return bind_value_by_code<TC_OBIS>(obj, column_size);
+					//case TC_EDIS:
 
 
 					case TC_DIGEST_MD5:		return bind_value_by_code<TC_DIGEST_MD5>(obj, column_size);
@@ -609,11 +545,6 @@ namespace cyng
 					//	...
 					//
 						
-					case TC_ATTR_MAP:		return bind_value_by_code<TC_ATTR_MAP>(obj, column_size);
-					case TC_PARAM_MAP:		return bind_value_by_code<TC_PARAM_MAP>(obj, column_size);
-					case TC_ATTR:		return bind_value_by_code<TC_ATTR>(obj, column_size);
-					case TC_PARAM:		return bind_value_by_code<TC_PARAM>(obj, column_size);
-
 					//
 					//	some data types are not implemented yet
 					//	...
@@ -629,6 +560,7 @@ namespace cyng
 						
 						
 					default:
+						BOOST_ASSERT_MSG(false, "data type not implemented");
 						break;
 				}
 				return false;
