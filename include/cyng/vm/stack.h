@@ -7,7 +7,6 @@
 #ifndef CYNG_VM_STACK_H
 #define CYNG_VM_STACK_H
 
-//#include <cyng/vm/stack_interface.h>
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/value_cast.hpp>
 
@@ -15,7 +14,7 @@
 
 namespace cyng {
 
-	class stack //: public stack_interface
+	class stack 
 	{
 	public:
 		stack();
@@ -103,6 +102,10 @@ namespace cyng {
 		  */
 		void assert_value();
 
+		/**
+		 * prepare parameters for function call
+		 */
+		std::tuple<std::string, cyng::tuple_t> invoke();
 
 	private:
 		std::size_t saved_bp() const;

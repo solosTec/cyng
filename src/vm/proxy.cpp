@@ -45,8 +45,9 @@ namespace cyng {
 	void vm_proxy::load(object&& obj) {
 		//	slot 0
 		//	ctx_.load(obj)
+		auto const execute = is_same_type<op>(obj);
 		vm_->dispatch(0, make_tuple(std::move(obj)));
-
+		if (execute)	run();
 	}
 
 	void vm_proxy::load(deque_t&& deq) {
@@ -56,6 +57,11 @@ namespace cyng {
 
 	void vm_proxy::stop() {
 		vm_->stop();
+	}
+
+	void vm_proxy::set_channel_name(std::string name, std::size_t idx) {
+		//	slot 1
+		vm_->dispatch(3, cyng::make_tuple(name, idx));
 	}
 
 	boost::uuids::uuid vm_proxy::get_tag() const {

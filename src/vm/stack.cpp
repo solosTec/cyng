@@ -184,4 +184,19 @@ namespace cyng {
 		BOOST_ASSERT_MSG(obj.hash() == s_.back().hash(), "ASSERT_VALUE");
 	}
 
+	std::tuple<std::string, cyng::tuple_t> stack::invoke() {
+		//
+		//	stack :
+		// * channel/function name
+		// * parameter count
+		// * parameters ...
+		//
+		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (invoke)");
+		auto const name = top_value<std::string>();
+		pop();
+		make_tuple();
+		auto tpl = top_value<tuple_t>();
+		pop();
+		return { name, tpl };
+	}
 }

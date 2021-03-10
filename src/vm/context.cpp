@@ -1,6 +1,7 @@
 #include <cyng/vm/context.h>
 #include <cyng/vm/vm.h>
 #include <cyng/obj/factory.hpp>
+#include <cyng/obj/intrinsics/pid.h>
 
 #include <thread>
 
@@ -40,7 +41,7 @@ namespace cyng {
 	}
 
 	void context::pid() {
-		push(make_object<std::uint64_t>(boost::this_process::get_id()));
+		push(make_object< cyng::pid >(boost::this_process::get_id()));
 	}
 
 	void context::tid() {

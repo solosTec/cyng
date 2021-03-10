@@ -10,12 +10,13 @@
 
 namespace cyng {
 
-	vm_base::vm_base(mesh& fab)
-		: vm_base(fab, boost::uuids::nil_uuid())	//	delegate
+	vm_base::vm_base(channel_weak wp, mesh& fab)
+		: vm_base(wp, fab, boost::uuids::nil_uuid())	//	delegate
 	{}
 
-	vm_base::vm_base(mesh& fab, boost::uuids::uuid tag)
-	: mesh_(fab)
+	vm_base::vm_base(channel_weak wp, mesh& fab, boost::uuids::uuid tag)
+	: channel_(wp)
+		, mesh_(fab)
 		, ctx_()
 		, parent_(tag)
 	{}
@@ -67,6 +68,9 @@ namespace cyng {
 		case op::TID:	//	thread id
 			ctx_.tid();
 			break;
+		case op::INVOKE:	//	call function over channel
+			invoke();
+			break;
 
 			//	assembly
 		case op::MAKE_ATTR:		
@@ -104,5 +108,9 @@ namespace cyng {
 		}
 
 	}
+
+	//void vm_base::dispatch(std::string slot, tuple_t&& msg) {
+	//	//mesh_.get_ctl().get_registry().
+	//}
 
 }

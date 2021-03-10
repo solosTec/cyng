@@ -62,6 +62,11 @@ namespace cyng {
 		 */
 		boost::uuids::uuid get_tag() const;
 
+		/**
+		 * allows to give external slots a name to 
+		 * call with invoke().
+		 */
+		void set_channel_name(std::string name, std::size_t idx);
 
 	private:
 		channel_ptr	vm_;

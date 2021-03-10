@@ -28,7 +28,14 @@ namespace cyng {
 			: pid_(pid)
 		{}
 		pid(pid const&) = default;
-		pid() = delete;
+
+		/**
+		 * Default constructor is required in some container
+		 * classes.
+		 */
+		constexpr pid()
+			: pid_(0)
+		{}
 
 		pid& operator=(pid const&) = default;
 

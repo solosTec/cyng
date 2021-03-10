@@ -46,6 +46,9 @@ namespace cyng {
 		 */
 		void now();
 
+		/**
+		 * prepare parameters for function call
+		 */
 	};
 }
 #endif

@@ -10,6 +10,7 @@
 #include <cyng/vm/context.h>
 #include <cyng/meta.hpp>
 #include <cyng/obj/intrinsics/eod.h>
+#include <cyng/task/channel.h>
 
 #include <tuple>
 #include <functional>
@@ -18,6 +19,7 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/nil_generator.hpp>
+#include <boost/algorithm/string.hpp>
 
 #ifdef _DEBUG_VM
 #include <cyng/io/ostream.h>
@@ -35,8 +37,8 @@ namespace cyng {
 	class vm_base
 	{
 	public:
-		vm_base(mesh& fab);
-		vm_base(mesh& fab, boost::uuids::uuid tag);
+		vm_base(channel_weak, mesh& fab);
+		vm_base(channel_weak, mesh& fab, boost::uuids::uuid tag);
 
 	protected:
 
@@ -52,7 +54,14 @@ namespace cyng {
 		void exec(object const& obj);
 		void exec(op);
 
+		/**
+		 * call a function over a channel
+		 */
+		virtual void invoke() = 0;
+		//void dispatch(std::string slot, tuple_t&& msg);
+
 	protected:
+		channel_weak channel_;
 		/**
 		 * So VM is able to post messages to all receivers
 		 * in the same realm.
@@ -92,6 +101,7 @@ namespace cyng {
 				std::function<void(object)>,
 				std::function<void(deque_t)>,
 				std::function<void()>,	//	run
+				std::function<void(std::string, std::size_t)>,	//	set_channel_name
 				std::function<void(eod)>	//	stop
 			>,
 			std::tuple<Fns...>
@@ -109,22 +119,53 @@ namespace cyng {
 		using arity_t = std::array<std::size_t, sizeof...(Fns)>;
 
 	public:
-		vm(mesh& fab, Fns... fns)
-			: vm(fab, boost::uuids::nil_uuid(), std::forward<Fns>(fns)...)	//	delegate
-
+		vm(channel_weak wp, mesh& fab, Fns... fns)
+			: vm(wp, fab, boost::uuids::nil_uuid(), std::forward<Fns>(fns)...)	//	delegate
 		{}
-		vm(mesh& fab, boost::uuids::uuid tag, Fns... fns)
-			: vm_base(fab, tag)
+
+		vm(channel_weak wp, mesh& fab, boost::uuids::uuid tag, Fns... fns)
+			: vm_base(wp, fab, tag)
 			, sigs_{
 				[&](object obj) {	ctx_.load(std::move(obj)); },
 				[&](deque_t deq) {	ctx_.load(std::move(deq)); },
 				std::bind(&vm::run, this),
+				std::bind(&vm::set_channel_name, this, std::placeholders::_1, std::placeholders::_2),
 				std::bind(&vm::stop, this, std::placeholders::_1),	//	eod
 				//	external functions
 				std::forward<Fns>(fns)...
 			}
 			, arity_{ get_arg_count(fns)... }
-		{}
+		{
+			//auto sp = channel_.lock();
+			//if (sp) {
+			//	sp->set_channel_name("cluster.login", offset + 1);
+			//}
+		}
+
+	protected:
+		/**
+		 * call a function over a channel
+		 */
+		virtual void invoke() override {
+
+			//
+			//	stack :
+			// * channel/function name
+			// * parameter count
+			// * parameters ...
+			//
+			auto [slot, msg] = ctx_.invoke();
+			auto sp = channel_.lock();
+			if (sp)	sp->dispatch(slot, std::move(msg));
+		}
+
+	private:
+		void set_channel_name(std::string name, std::size_t idx) {
+			auto sp = channel_.lock();
+			if (sp) {
+				sp->set_channel_name(name, offset + idx);
+			}
+		}
 
 	private:
 		signatures_t sigs_;
