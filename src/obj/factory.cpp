@@ -104,12 +104,12 @@ namespace cyng {
 		return std::move(vec);
 	}
 
-// 	vector_t const& make_vector(vector_t const& vec) {
-// #ifdef _DEBUG_OBJECT
-// 		std::cerr << "make_vector(const&" << vec.size() << ")" << std::endl;
-// #endif
-// 		return vec;
-// 	}
+	object address_factory(std::string str) {
+		//	dotted address notation
+		boost::system::error_code ec;
+		return make_object(boost::asio::ip::make_address(str, ec));
+
+	}
 
 }
 

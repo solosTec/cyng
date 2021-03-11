@@ -241,8 +241,8 @@ target_compile_features(cyng_vm
 #
 target_compile_definitions(cyng_vm 
     PRIVATE 
-        $<$<CONFIG:Debug>:_DEBUG_OBJECT>
-        $<$<CONFIG:Debug>:_DEBUG_VM>
+        $<$<CONFIG:Debug>:__DEBUG_OBJECT>
+        $<$<CONFIG:Debug>:__DEBUG_VM>
 )
 
 target_link_libraries(cyng_vm 

@@ -135,12 +135,7 @@ namespace cyng {
 				std::forward<Fns>(fns)...
 			}
 			, arity_{ get_arg_count(fns)... }
-		{
-			//auto sp = channel_.lock();
-			//if (sp) {
-			//	sp->set_channel_name("cluster.login", offset + 1);
-			//}
-		}
+		{}
 
 	protected:
 		/**
@@ -160,6 +155,9 @@ namespace cyng {
 		}
 
 	private:
+		/**
+		 * give a name to an external slot
+		 */
 		void set_channel_name(std::string name, std::size_t idx) {
 			auto sp = channel_.lock();
 			if (sp) {

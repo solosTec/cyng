@@ -197,6 +197,7 @@ namespace cyng {
 		make_tuple();
 		auto tpl = top_value<tuple_t>();
 		pop();
+		std::reverse(tpl.begin(), tpl.end());
 		return { name, tpl };
 	}
 }

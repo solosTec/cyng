@@ -290,10 +290,10 @@ namespace cyng {
 	vector_t make_vector(vector_t&& vec);
 
 	/**
-	 * Returns a copy
+	 * create an object of type boost::asio::ip::address
 	 */
-	// [[nodiscard]]
-	// vector_t const& make_vector(vector_t const& vec);
+	[[nodiscard]]
+	object address_factory(std::string);
 
 }
 
