@@ -67,6 +67,7 @@ namespace cyng {
 		struct unwrap_function_impl<R(T::*)(Args...) const>
 			: unwrap_function_impl<R(Args...)> 
 		{ };
+
 		template<typename T, typename R, typename... Args>
 		struct unwrap_function_impl<R(T::*)(Args...)>
 			: unwrap_function_impl<R(Args...)>

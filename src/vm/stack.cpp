@@ -200,4 +200,22 @@ namespace cyng {
 		std::reverse(tpl.begin(), tpl.end());
 		return { name, tpl };
 	}
+
+	std::tuple<std::size_t, cyng::tuple_t> stack::invoke_r() {
+		//
+		//	stack :
+		// * channel/function id
+		// * parameter count
+		// * parameters ...
+		//
+		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (invoke)");
+		auto const id = top_value<std::size_t>();
+		pop();
+		make_tuple();
+		auto tpl = top_value<tuple_t>();
+		pop();
+		std::reverse(tpl.begin(), tpl.end());
+		return { id, tpl };
+
+	}
 }

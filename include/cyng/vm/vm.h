@@ -11,6 +11,8 @@
 #include <cyng/meta.hpp>
 #include <cyng/obj/intrinsics/eod.h>
 #include <cyng/task/channel.h>
+#include <cyng/obj/function_cast.hpp>
+#include <cyng/obj/factory.hpp>
 
 #include <tuple>
 #include <functional>
@@ -29,6 +31,56 @@
 
 namespace cyng {
 
+	namespace {
+		template <std::size_t N>
+		struct invoke_r_helper
+		{
+			template <typename Tpl>
+			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl, context& ctx) {
+				using F = typename std::tuple_element<N, Tpl>::type;
+#ifdef _DEBUG_TEST
+				std::cout << "invoke_r: " << idx << ", " << N << std::endl;
+#endif
+				if (idx == N) {
+					using R = typename F::result_type;
+					if constexpr (std::is_same<R, void>::value) {
+						function_call<F>(std::get<N>(tpl), msg);
+						ctx.push(cyng::make_object());	//	void => null
+					}
+					else {
+						ctx.push(cyng::make_object<R>(function_call<F>(std::get<N>(tpl), msg)));
+					}
+					return;
+				}
+				invoke_r_helper<N - 1>::call(idx, msg, tpl, ctx);
+			}
+		};
+
+		template <>
+		struct invoke_r_helper<0>
+		{
+			template <typename Tpl>
+			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl, context& ctx) {
+
+				using F = typename std::tuple_element<0, Tpl>::type;
+				using R = typename F::result_type;
+#ifdef _DEBUG_TEST
+				std::cout << "invoke_r: " << idx << ", " << 0 << std::endl;
+#endif
+				if constexpr (std::is_same<R, void>::value) {
+					function_call<F>(std::get<0>(tpl), msg);
+					ctx.push(cyng::make_object());	//	void => null
+				}
+				else {
+					ctx.push(cyng::make_object<R>(function_call<F>(std::get<0>(tpl), msg)));
+				}
+			}
+		};
+	}
+
+	//
+	//	forward declaration
+	//
 	class mesh;
 
 	/**
@@ -58,7 +110,7 @@ namespace cyng {
 		 * call a function over a channel
 		 */
 		virtual void invoke() = 0;
-		//void dispatch(std::string slot, tuple_t&& msg);
+		virtual void invoke_r() = 0;
 
 	protected:
 		channel_weak channel_;
@@ -107,6 +159,8 @@ namespace cyng {
 			std::tuple<Fns...>
 		>;
 
+		constexpr static std::size_t func_count = sizeof...(Fns);
+
 		/**
 		 * The offset marks the beginning of the external functions
 		 * in the signatures_t tuple.
@@ -152,6 +206,16 @@ namespace cyng {
 			auto [slot, msg] = ctx_.invoke();
 			auto sp = channel_.lock();
 			if (sp)	sp->dispatch(slot, std::move(msg));
+		}
+
+		/**
+		 * direct function call (no channel involved) and put return value
+		 * on stack.
+		 */
+		virtual void invoke_r() override {
+
+			auto [slot, msg] = ctx_.invoke_r();
+			invoke_r_helper<sizeof...(Fns)>::call(offset + slot, msg, sigs_, ctx_);
 		}
 
 	private:

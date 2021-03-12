@@ -106,6 +106,7 @@ namespace cyng {
 		 * prepare parameters for function call
 		 */
 		std::tuple<std::string, cyng::tuple_t> invoke();
+		std::tuple<std::size_t, cyng::tuple_t> invoke_r();
 
 	private:
 		std::size_t saved_bp() const;
