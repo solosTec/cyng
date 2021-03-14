@@ -270,12 +270,10 @@ namespace cyng
 						BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
 						//	format is "2014-11-28 11:06:44"
 						//	parse time stamp
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<std::chrono::system_clock::time_point, bool > r = parse_db_timestamp(result);
-						//return (r.second)
-						//	? make_object(r.first)
-						//	: make_now()
-						//	;
+						std::tm tm = {};
+						std::stringstream ss(result);
+						ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+						return make_object(std::chrono::system_clock::from_time_t(std::mktime(&tm)));
 					}
 					return make_object();
 				}

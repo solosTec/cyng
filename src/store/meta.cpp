@@ -65,7 +65,16 @@ namespace cyng {
 				vec.push_back(column(col.name_, col.type_));
 			}
 		});
-		return meta_store(m.get_name(), std::begin(vec), std::end(vec), m.key_size());
+
+		//
+		//	restore table name
+		//
+		auto table_name = m.get_name();
+		if ((table_name.size() > 1) && (table_name.at(0) == 'T')) {
+			table_name.erase(0, 1);
+			table_name.at(0) = std::tolower(table_name.at(0));
+		}
+		return meta_store(table_name, std::begin(vec), std::end(vec), m.key_size());
 
 	}
 
