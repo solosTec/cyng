@@ -25,6 +25,9 @@ namespace cyng {
 				<< std::hex
 				<< std::setfill(' ')
 				<< std::setw(8)
+#else
+				<< std::setfill(' ')
+				<< std::setw(10)
 #endif
 				<< tip
 				<< " -- "
