@@ -86,6 +86,10 @@ namespace cyng {
         return false;
     }
 
+    bool channel::cancel_timer() {
+        return timer_.cancel() > 0;
+    }
+
     bool channel::shutdown() {
 
         //

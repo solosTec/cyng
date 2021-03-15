@@ -95,6 +95,13 @@ namespace cyng {
 		 */
 		bool stop();
 
+		/*
+		 * cancel timer
+		 * 
+		 * @return true if timer was active
+		 */
+		bool cancel_timer();
+
 		/**
 		 * Channel names must not be unique.
 		 * 
