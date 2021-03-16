@@ -1,5 +1,6 @@
 #include <cyng/store/record.h>
 #include <cyng/obj/util.hpp>
+#include <cyng/io/ostream.h>
 
 namespace cyng {
 
@@ -61,6 +62,21 @@ namespace cyng {
 			make_param("data", data)
 		);
 	}
+
+	std::string record::to_string() const {
+		std::stringstream ss;
+		meta_.loop([&](std::size_t idx, column const& col, bool pk) {
+			if (pk) {
+				ss << '<' << col.name_ << ": " << key_.at(idx) << '>';
+			}
+			else {
+				ss << '[' << col.name_ << ": " << data_.at(idx) << ']';
+			}
+		});
+
+		return ss.str();
+	}
+
 
 	object record::at(std::string name) const {
 		auto const idx = meta_.get_index_by_name(name);

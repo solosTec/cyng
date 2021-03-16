@@ -90,6 +90,11 @@ namespace cyng {
 		std::size_t size() const noexcept;
 
 		/**
+		 * @return size of table
+		 */
+		std::size_t size(std::string const& name) noexcept;
+
+		/**
 		 * safe access to multiple tables at once
 		 */
 		template <typename F, typename ...Tbls>

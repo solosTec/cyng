@@ -56,6 +56,7 @@ namespace cyng {
 		 * as parameter name.
 		 */
 		tuple_t to_tuple() const;
+		std::string to_string() const;
 
 		/**
 		 * access by column name

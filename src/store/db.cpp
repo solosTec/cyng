@@ -43,6 +43,20 @@ namespace cyng {
 		return tables_.size();
 	}
 
+	std::size_t store::size(std::string const& name) noexcept {
+
+		std::size_t size{ 0 };
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+		access([&size](table const* tbl) -> void {
+			size = tbl->size();
+		}, access::read(name));
+
+		return size;
+	}
+
 	void store::clear(std::string const& name, boost::uuids::uuid source) {
 		//
 		//	read lock
