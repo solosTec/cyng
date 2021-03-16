@@ -46,8 +46,8 @@ namespace cyng {
 			template < typename CharT, typename Traits, typename I >
 			std::size_t operator()(std::basic_ostream<CharT, Traits>& stream, I begin, I last) {
 
-				using value_type = typename I::value_type;
-				using char_type = std::make_unsigned<value_type>::type;
+				using value_type = typename std::iterator_traits<I>::value_type;
+				using char_type = typename std::make_unsigned<value_type>::type;
 
 				bool gap = false;
 				std::size_t	count = 0;
