@@ -43,7 +43,7 @@ namespace cyng {
 
 	std::chrono::seconds to_seconds(std::string const& str) {
 		auto const [h, m, s] = split(str);
-		return std::chrono::minutes(static_cast<std::chrono::minutes::rep>(s) + (m * 60ULL) + (h * 60ULL * 60ULL));
+		return std::chrono::seconds(static_cast<std::chrono::seconds::rep>(s) + (m * 60ULL) + (h * 60ULL * 60ULL));
 	}
 
 	std::chrono::minutes to_minutes(std::string const& str) {
