@@ -48,10 +48,15 @@ namespace cyng {
 
 	namespace crypto
 	{
-		using digest_md5 = digest<16>;
-		using digest_sha1 = digest<20>;
-		using digest_sha256 = digest<32>;
-		using digest_sha512 = digest<64>;
+		constexpr std::size_t md5_size = 16;
+		constexpr std::size_t sha1_size = 20;
+		constexpr std::size_t sha256_size = 32;
+		constexpr std::size_t sha512_size = 64;
+
+		using digest_md5 = digest<md5_size>;
+		using digest_sha1 = digest<sha1_size>;
+		using digest_sha256 = digest<sha256_size>;
+		using digest_sha512 = digest<sha512_size>;
 	}
 
 }

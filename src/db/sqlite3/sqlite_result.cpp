@@ -9,7 +9,9 @@
 #include "sqlite_result.h"
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/tag.hpp>
+#include <cyng/obj/buffer_cast.hpp>
 #include <cyng/parse/mac.h>
+#include <cyng/parse/buffer.h>
 
 #include <filesystem>
 #include <utility>
@@ -443,17 +445,14 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 40, "invalid SHA1 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::sha1_size * 2, "invalid SHA1 format");
 						std::string const inp((const char*)ptr, size);
 
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<buffer_t, bool > const r = parse_hex_string(inp);
-						//if (r.second && r.first.size() == sizeof(crypto::digest_sha1::value_type)) {
-
-						//	crypto::digest_sha1::value_type val;
-						//	std::copy(r.first.begin(), r.first.end(), val.begin());
-						//	return make_object(crypto::digest_sha1(std::move(val)));
-						//}
+						//	Example:
+						//	12dea96fec20593566ab75692c9949596833adc9
+						// 
+						auto const buffer = to_buffer(inp);
+						return make_object(make_digest<cyng::crypto::sha1_size>(buffer));
 					}
 					return make_object();
 				}
@@ -466,17 +465,11 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 64, "invalid SHA256 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::sha256_size * 2, "invalid SHA256 format");
 						std::string const inp((const char*)ptr, size);
 
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<buffer_t, bool > const r = parse_hex_string(inp);
-						//if (r.second && r.first.size() == sizeof(crypto::digest_sha256::value_type)) {
-
-						//	crypto::digest_sha256::value_type val;
-						//	std::copy(r.first.begin(), r.first.end(), val.begin());
-						//	return make_object(crypto::digest_sha256(std::move(val)));
-						//}
+						auto const buffer = to_buffer(inp);
+						return make_object(make_digest<cyng::crypto::sha256_size>(buffer));
 					}
 					return make_object();
 				}
@@ -489,17 +482,11 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 128, "invalid SHA512 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::sha512_size * 2, "invalid SHA512 format");
 						std::string const inp((const char*)ptr, size);
 
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<buffer_t, bool > const r = parse_hex_string(inp);
-						//if (r.second && r.first.size() == sizeof(crypto::digest_sha512::value_type)) {
-
-						//	crypto::digest_sha512::value_type val;
-						//	std::copy(r.first.begin(), r.first.end(), val.begin());
-						//	return make_object(crypto::digest_sha512(std::move(val)));
-						//}
+						auto const buffer = to_buffer(inp);
+						return make_object(make_digest<cyng::crypto::sha512_size>(buffer));
 					}
 					return make_object();
 				}
@@ -512,17 +499,11 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 32, "invalid AESkey128 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::aes128_size * 2, "invalid AESkey128 format");
 						std::string const inp((const char*)ptr, size);
 
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<buffer_t, bool > const r = parse_hex_string(inp);
-						//if (r.second && r.first.size() == sizeof(crypto::aes_128_key::key_type)) {
-
-						//	crypto::aes_128_key::key_type key;
-						//	std::copy(r.first.begin(), r.first.end(), key.begin());
-						//	return make_object(crypto::aes_128_key(std::move(key)));
-						//}
+						auto const buffer = to_buffer(inp);
+						return make_object(make_aes_key<cyng::crypto::aes128_size>(buffer));
 					}
 					return make_object();
 				}
@@ -535,17 +516,11 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 48, "invalid AESkey192 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::aes192_size * 2, "invalid AESkey192 format");
 						std::string const inp((const char*)ptr, size);
 
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<buffer_t, bool > const r = parse_hex_string(inp);
-						//if (r.second && r.first.size() == sizeof(crypto::aes_192_key::key_type)) {
-
-						//	crypto::aes_192_key::key_type key;
-						//	std::copy(r.first.begin(), r.first.end(), key.begin());
-						//	return make_object(crypto::aes_192_key(std::move(key)));
-						//}
+						auto const buffer = to_buffer(inp);
+						return make_object(make_aes_key<cyng::crypto::aes192_size>(buffer));
 					}
 					return make_object();
 				}
@@ -558,17 +533,11 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == 64, "invalid AESkey256 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::aes256_size * 2, "invalid AESkey256 format");
 						std::string const inp((const char*)ptr, size);
 
-						BOOST_ASSERT_MSG(false, "ToDo: implement");
-						//std::pair<buffer_t, bool > const r = parse_hex_string(inp);
-						//if (r.second && r.first.size() == sizeof(crypto::aes_256_key::key_type)) {
-
-						//	crypto::aes_256_key::key_type key;
-						//	std::copy(r.first.begin(), r.first.end(), key.begin());
-						//	return make_object(crypto::aes_256_key(std::move(key)));
-						//}
+						auto const buffer = to_buffer(inp);
+						return make_object(make_aes_key<cyng::crypto::aes256_size>(buffer));
 					}
 					return make_object();
 				}
