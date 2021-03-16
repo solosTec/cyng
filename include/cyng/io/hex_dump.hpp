@@ -47,6 +47,7 @@ namespace cyng {
 			std::size_t operator()(std::basic_ostream<CharT, Traits>& stream, I begin, I last) {
 
 				using value_type = typename I::value_type;
+				using char_type = std::make_unsigned<value_type>::type;
 
 				bool gap = false;
 				std::size_t	count = 0;
@@ -100,7 +101,7 @@ namespace cyng {
 						<< std::setfill('0')
 						<< std::setw(2)
 						<< std::hex
-						<< +(*pos & std::numeric_limits<value_type>::max())
+						<< +(*pos & std::numeric_limits<char_type>::max())
 						<< std::dec	//	reset
 						;
 
