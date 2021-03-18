@@ -59,13 +59,24 @@ namespace cyng {
 
 	};
 
+	//
+	//	forward declarations
+	//
 	class task_interface;
 	class registry;
+	class channel;
+	template <typename Token>
+	void exec(channel&, Token&&);
+	boost::asio::io_context::strand& expose_dispatcher(channel& cr);
+
 	class channel : public std::enable_shared_from_this<channel>, public slot_names
 	{
 		template <typename T >
 		friend class task;
 		friend class registry;
+		template <typename Token>
+		friend void exec(channel&, Token&&);
+		friend boost::asio::io_context::strand& expose_dispatcher(channel& cr);
 
 	public:
 		channel(boost::asio::io_context& io, task_interface*, std::string name);
@@ -166,6 +177,13 @@ namespace cyng {
 
 	};
 
+	/**
+	 * Use the same strand as the channel
+	 */
+	template <typename Token>
+	void exec(channel& cr, Token&& token) {
+		boost::asio::post(cr.dispatcher_, std::forward<Token>(token));
+	}
 
 }
 

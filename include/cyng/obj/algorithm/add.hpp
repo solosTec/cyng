@@ -19,7 +19,7 @@ namespace cyng {
      */
 	template <typename T, template<typename, typename = std::allocator<T>> class C>
 	void add(C<T>& target, C<T> const& source) {
-		target.insert(target.begin(), source.begin(), source.end());
+		target.insert(target.end(), source.begin(), source.end());
 	}
 
 	/**
@@ -27,7 +27,7 @@ namespace cyng {
 	 */
 	template <typename T, template<typename, typename = std::allocator<T>> class C>
 	void add(C<T>& target, C<T>&& source) {
-		target.insert(target.begin(), std::make_move_iterator(source.begin()), std::make_move_iterator(source.end()));
+		target.insert(target.end(), std::make_move_iterator(source.begin()), std::make_move_iterator(source.end()));
 	}
 }
 

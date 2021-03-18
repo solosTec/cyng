@@ -13,11 +13,20 @@
 
 namespace cyng {
 
+	class vm_proxy;
+	template <typename Token>
+	void exec(vm_proxy&, Token&&);
+	boost::asio::io_context::strand& expose_dispatcher(vm_proxy& pr);
+
 	/**
 	 * Proxy class to access a VM instance
 	 */
 	class vm_proxy
 	{
+		template <typename Token>
+		friend void exec(vm_proxy&, Token&&);
+		friend boost::asio::io_context::strand& expose_dispatcher(vm_proxy& pr);
+
 	public:
 		vm_proxy();
 		vm_proxy(channel_ptr);
@@ -77,6 +86,16 @@ namespace cyng {
 	 */
 	boost::uuids::uuid get_tag(channel_ptr);
 
+	/**
+	 * Use the same strand as the channel
+	 */
+	template <typename Token>
+	void exec(vm_proxy& pr, Token&& token) {
+		BOOST_ASSERT(pr.vm_);
+		exec(*pr.vm_, std::forward<Token>(token));
+	}
+
+	boost::asio::io_context::strand& expose_dispatcher(vm_proxy& pr);
 }
 #endif
 

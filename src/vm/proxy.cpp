@@ -68,5 +68,10 @@ namespace cyng {
 		return cyng::get_tag(vm_);
 	}
 
+	boost::asio::io_context::strand& expose_dispatcher(vm_proxy& pr) {
+		BOOST_ASSERT(pr.vm_);
+		return expose_dispatcher(*pr.vm_);
+	}
+
 }
 

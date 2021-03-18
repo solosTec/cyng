@@ -32,9 +32,9 @@ namespace cyng {
             message m(this->shared_from_this(), slot, std::move(msg));
             auto sp = this->shared_from_this(); //  extend life time
 
-            dispatcher_.post([this, sp, m]() {
+            boost::asio::post(dispatcher_, [this, sp, m]()->void {
                 task_->dispatch(m.slot_, m.msg_);
-            });
+             });
         }
     }
 
@@ -124,6 +124,9 @@ namespace cyng {
             ;
     }
 
+    boost::asio::io_context::strand& expose_dispatcher(channel& cr) {
+        return cr.dispatcher_;
+    }
 
     message::message(channel_ptr cp, std::size_t id, tuple_t&& msg)
         : cp_(cp)
