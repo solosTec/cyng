@@ -81,19 +81,18 @@ namespace cyng {
 		return sp.operator bool();
 	}
 
-	//bool operator==(slot const& s1, slot const& s2) {
-	//	auto l1 = s1.channel_.lock();
-	//	auto l2 = s2.channel_.lock();
-	//	return (l1 && l2)
-	//		? l1.get() == l2.get()
-	//		: false
-	//		;
-	//}
+	bool slot::forward(table const* tbl
+		, bool trx) {
+
+		auto sp = channel_.lock();
+		if (sp)	sp->dispatch("db.trx", cyng::make_tuple(
+			tbl,
+			trx
+		));
+		return sp.operator bool();
+	}
 
 
-	//slot_ptr make_slot(slot_interface* p) {
-	//	return slot_ptr(p);
-	//}
 	slot_ptr make_slot(channel& ch) {
 		return std::make_shared<slot>(ch);
 	}

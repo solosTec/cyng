@@ -177,6 +177,12 @@ public:
 		return true;
 	}
 
+	virtual bool forward(cyng::table const*
+		, bool) override {
+		return true;
+	}
+
+
 };
 
 BOOST_AUTO_TEST_CASE(slot)

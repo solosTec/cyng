@@ -165,6 +165,11 @@ namespace cyng {
 	void table::charge(slot_ptr sp) {
 
 		//
+		//	start transaction
+		//
+		sp->forward(this, true);
+
+		//
 		//	table already locked
 		//
 
@@ -182,6 +187,11 @@ namespace cyng {
 				, row.second.generation_
 				, source);
 		}
+
+		//
+		//	commit transaction
+		//
+		sp->forward(this, false);
 
 	}
 

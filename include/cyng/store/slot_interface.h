@@ -25,24 +25,43 @@ namespace cyng {
 
 	public:
 
+		/**
+		 * insert
+		 */
 		virtual bool forward(table const*
 			, key_t const&
 			, data_t const&
 			, std::uint64_t
 			, boost::uuids::uuid) = 0;
 
+		/**
+		 * update
+		 */
 		virtual bool forward(table const* tbl
 			, key_t const& key
 			, attr_t const& attr
 			, std::uint64_t gen
 			, boost::uuids::uuid tag) = 0;
 
+		/**
+		 * remove
+		 */
 		virtual bool forward(table const* tbl
 			, key_t const& key
 			, boost::uuids::uuid tag) = 0;
 
+		/**
+		 * clear
+		 */
 		virtual bool forward(table const*
 			, boost::uuids::uuid) = 0;
+
+		/**
+		 * transaction
+		 */
+		virtual bool forward(table const*
+			, bool) = 0;
+
 	};
 
 	using slot_ptr = std::shared_ptr<slot_interface>;

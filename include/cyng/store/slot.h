@@ -12,15 +12,8 @@
 
 namespace cyng {
 
-	//
-	//	forward declaration(s)
-	//
-	//class slot;
-	//bool operator==(slot const&, slot const&);
-
 	class slot : public slot_interface
 	{
-		//friend bool operator==(slot const&, slot const&);
 
 	public:
 		explicit slot(channel&);
@@ -46,6 +39,10 @@ namespace cyng {
 
 		virtual bool forward(table const*
 			, boost::uuids::uuid) override;
+
+		virtual bool forward(table const*
+			, bool) override;
+
 
 	private:
 		channel_weak channel_;
