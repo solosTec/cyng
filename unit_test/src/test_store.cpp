@@ -6,6 +6,7 @@
 #include <cyng/store/meta.h>
 #include <cyng/store/auto_table.h>
 #include <cyng/store/db.h>
+#include <cyng/store/slot.h>
 
 #include <cyng/obj/tag.hpp>
 #include <cyng/io/ostream.h>
@@ -139,4 +140,67 @@ BOOST_AUTO_TEST_CASE(db)
 		}, cyng::access::read("demo-1"), cyng::access::write("demo-2"), cyng::access::write("demo-3"));
 
 }
+
+class data_sink : public cyng::slot_interface {
+
+public:
+	virtual bool forward(cyng::table const* tbl
+		, cyng::key_t const&
+		, cyng::data_t const&
+		, std::uint64_t
+		, boost::uuids::uuid) override {
+
+		std::cout 
+			<< "insert " 
+			<< tbl->meta().get_name() 
+			<< std::endl;
+		return true;
+	}
+
+	virtual bool forward(cyng::table const* tbl
+		, cyng::key_t const& key
+		, cyng::attr_t const& attr
+		, std::uint64_t gen
+		, boost::uuids::uuid tag) override {
+		return true;
+
+	}
+
+	virtual bool forward(cyng::table const* tbl
+		, cyng::key_t const& key
+		, boost::uuids::uuid tag) override {
+		return true;
+	}
+
+	virtual bool forward(cyng::table const*
+		, boost::uuids::uuid) override {
+		return true;
+	}
+
+};
+
+BOOST_AUTO_TEST_CASE(slot)
+{
+	cyng::store store;
+	store.create_table(cyng::meta_store("demo"
+		, {
+			cyng::column("id", cyng::TC_INT64),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
+		}
+	, 1));
+
+	
+	auto sp = cyng::make_slot(new data_sink());
+	store.connect("demo", sp);
+
+	auto const key = cyng::key_generator(12u);
+	store.insert("demo", key
+		, cyng::data_generator("Y", std::chrono::system_clock::now())
+		, 1u	//	gen
+		, boost::uuids::nil_uuid());
+
+	store.disconnect("demo", sp);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

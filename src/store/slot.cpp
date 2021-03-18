@@ -81,12 +81,30 @@ namespace cyng {
 		return sp.operator bool();
 	}
 
-	bool operator==(slot const& s1, slot const& s2) {
-		auto l1 = s1.channel_.lock();
-		auto l2 = s2.channel_.lock();
-		return (l1 && l2)
-			? l1.get() == l2.get()
-			: false
+	//bool operator==(slot const& s1, slot const& s2) {
+	//	auto l1 = s1.channel_.lock();
+	//	auto l2 = s2.channel_.lock();
+	//	return (l1 && l2)
+	//		? l1.get() == l2.get()
+	//		: false
+	//		;
+	//}
+
+
+	//slot_ptr make_slot(slot_interface* p) {
+	//	return slot_ptr(p);
+	//}
+	slot_ptr make_slot(channel& ch) {
+		return std::make_shared<slot>(ch);
+	}
+	slot_ptr make_slot(channel_ptr cp) {
+		return std::make_shared<slot>(cp);
+	}
+	slot_ptr make_slot(channel_weak cw) {
+		auto cp = cw.lock();
+		return (cp)
+			? make_slot(cp)
+			: slot_ptr()
 			;
 	}
 

@@ -176,6 +176,8 @@ namespace cyng {
 			, data_t&& data
 			, boost::uuids::uuid source);
 
+		void charge(slot_ptr) override;
+
 	private:
 		meta_store const meta_;
 		table_t	data_;

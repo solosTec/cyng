@@ -1,5 +1,6 @@
 #include <cyng/store/table.h>
 
+#include <boost/uuid/nil_generator.hpp>
 
 namespace cyng {
 
@@ -30,6 +31,7 @@ namespace cyng {
 	}
 
 	void table::clear(boost::uuids::uuid source)	{
+
 		data_.clear();
 		//index_.clear();
 
@@ -158,6 +160,29 @@ namespace cyng {
 				swap(pos->second.data_.at(idx), data.at(idx));
 			}
 		}
+	}
+
+	void table::charge(slot_ptr sp) {
+
+		//
+		//	table already locked
+		//
+
+		auto const source = boost::uuids::nil_uuid();
+		for (auto const& row : data_)
+		{
+			//
+			//	read lock this record
+			//
+			std::shared_lock<std::shared_mutex> ulock(row.second.m_);
+
+			sp->forward(this
+				, row.first
+				, row.second.data_
+				, row.second.generation_
+				, source);
+		}
+
 	}
 
 	bool table::exist(key_t const& key) const {

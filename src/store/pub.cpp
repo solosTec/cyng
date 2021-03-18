@@ -10,34 +10,42 @@ namespace cyng {
 		, slots_clear_()
 	{}
 
-	void pub::connect(slot s) {
-		connect_insert(s);
-		connect_modify(s);
-		connect_remove(s);
-		connect_clear(s);
+	void pub::connect(slot_ptr sp) {
+
+		BOOST_ASSERT(sp);
+
+		connect_insert(sp);
+		connect_modify(sp);
+		connect_remove(sp);
+		connect_clear(sp);
+
+		//
+		//	load initial data set
+		//
+		charge(sp);
 	}
 
-	void pub::connect_insert(slot s) {
-		slots_insert_.push_back(s);
+	void pub::connect_insert(slot_ptr sp) {
+		slots_insert_.push_back(sp);
 	}
 
-	void pub::connect_modify(slot s) {
-		slots_modify_.push_back(s);
+	void pub::connect_modify(slot_ptr sp) {
+		slots_modify_.push_back(sp);
 	}
 
-	void pub::connect_remove(slot s) {
-		slots_remove_.push_back(s);
+	void pub::connect_remove(slot_ptr sp) {
+		slots_remove_.push_back(sp);
 	}
 
-	void pub::connect_clear(slot s) {
-		slots_clear_.push_back(s);
+	void pub::connect_clear(slot_ptr sp) {
+		slots_clear_.push_back(sp);
 	}
 
-	void pub::disconnect(slot s) {
-		cyng::disconnect(slots_insert_, s);
-		cyng::disconnect(slots_modify_, s);
-		cyng::disconnect(slots_remove_, s);
-		cyng::disconnect(slots_clear_, s);
+	void pub::disconnect(slot_ptr sp) {
+		cyng::disconnect(slots_insert_, sp);
+		cyng::disconnect(slots_modify_, sp);
+		cyng::disconnect(slots_remove_, sp);
+		cyng::disconnect(slots_clear_, sp);
 	}
 
 	void pub::forward(table const* tbl
@@ -46,11 +54,11 @@ namespace cyng {
 		, std::uint64_t gen
 		, boost::uuids::uuid tag) {
 
-		std::forward_list<slot> expired;
+		std::forward_list<slot_ptr> expired;
 
-		for (auto& s : slots_insert_) {
-			if (!s.forward(tbl, key, data, gen, tag)) {
-				expired.push_front(s);
+		for (auto& sp : slots_insert_) {
+			if (!sp->forward(tbl, key, data, gen, tag)) {
+				expired.push_front(sp);
 			}
 		}
 
@@ -63,11 +71,11 @@ namespace cyng {
 		, std::uint64_t gen
 		, boost::uuids::uuid tag) {
 
-		std::forward_list<slot> expired;
+		std::forward_list<slot_ptr> expired;
 
-		for (auto& s : slots_insert_) {
-			if (!s.forward(tbl, key, attr, gen, tag)) {
-				expired.push_front(s);
+		for (auto& sp : slots_insert_) {
+			if (!sp->forward(tbl, key, attr, gen, tag)) {
+				expired.push_front(sp);
 			}
 		}
 
@@ -82,11 +90,11 @@ namespace cyng {
 		, key_t const& key
 		, boost::uuids::uuid tag) {
 
-		std::forward_list<slot> expired;
+		std::forward_list<slot_ptr> expired;
 
-		for (auto& s : slots_insert_) {
-			if (!s.forward(tbl, key, tag)) {
-				expired.push_front(s);
+		for (auto& sp : slots_insert_) {
+			if (!sp->forward(tbl, key, tag)) {
+				expired.push_front(sp);
 			}
 		}
 
@@ -100,11 +108,11 @@ namespace cyng {
 	void pub::forward(table const* tbl
 		, boost::uuids::uuid tag) {
 
-		std::forward_list<slot> expired;
+		std::forward_list<slot_ptr> expired;
 
-		for (auto& s : slots_insert_) {
-			if (!s.forward(tbl, tag)) {
-				expired.push_front(s);
+		for (auto& sp : slots_insert_) {
+			if (!sp->forward(tbl, tag)) {
+				expired.push_front(sp);
 			}
 		}
 
@@ -112,7 +120,7 @@ namespace cyng {
 
 	}
 
-	bool disconnect(std::vector<slot>& vec, slot s) {
+	bool disconnect(std::vector<slot_ptr>& vec, slot_ptr s) {
 		auto pos = std::find(std::begin(vec), std::end(vec), s);
 		if (pos != std::end(vec)) {
 			vec.erase(pos);
@@ -121,7 +129,7 @@ namespace cyng {
 		return false;
 	}
 
-	void tidy(std::vector<slot>& vec, std::forward_list<slot>& expired) {
+	void tidy(std::vector<slot_ptr>& vec, std::forward_list<slot_ptr>& expired) {
 
 		for (auto& s : expired) {
 			disconnect(vec, s);

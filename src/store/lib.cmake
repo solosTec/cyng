@@ -25,6 +25,7 @@ set (store_h
 set (store_signal
     include/cyng/store/pub.h
     include/cyng/store/slot.h
+    include/cyng/store/slot_interface.h
     src/store/pub.cpp
     src/store/slot.cpp
 )

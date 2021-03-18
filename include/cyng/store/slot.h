@@ -7,20 +7,20 @@
 #ifndef CYNG_STORE_SLOT_H
 #define CYNG_STORE_SLOT_H
 
+#include <cyng/store/slot_interface.h>
 #include <cyng/task/channel.h>
-#include <cyng/store/key.hpp>
-
-#include <boost/uuid/uuid.hpp>
 
 namespace cyng {
 
-	class table;
+	//
+	//	forward declaration(s)
+	//
+	//class slot;
+	//bool operator==(slot const&, slot const&);
 
-	class slot;
-	bool operator==(slot const&, slot const&);
-	class slot
+	class slot : public slot_interface
 	{
-		friend bool operator==(slot const&, slot const&);
+		//friend bool operator==(slot const&, slot const&);
 
 	public:
 		explicit slot(channel&);
@@ -28,27 +28,32 @@ namespace cyng {
 		explicit slot(channel_weak);
 		slot(slot const&) = default;
 
-		bool forward(table const*
+		virtual bool forward(table const*
 			, key_t const&
 			, data_t const&
 			, std::uint64_t
-			, boost::uuids::uuid);
+			, boost::uuids::uuid) override;
 
-		bool forward(table const* tbl
+		virtual bool forward(table const* tbl
 			, key_t const& key
 			, attr_t const& attr
 			, std::uint64_t gen
-			, boost::uuids::uuid tag);
+			, boost::uuids::uuid tag) override;
 
-		bool forward(table const* tbl
+		virtual bool forward(table const* tbl
 			, key_t const& key
-			, boost::uuids::uuid tag);
+			, boost::uuids::uuid tag) override;
 
-		bool forward(table const*
-			, boost::uuids::uuid);
+		virtual bool forward(table const*
+			, boost::uuids::uuid) override;
+
 	private:
 		channel_weak channel_;
 	};
+
+	slot_ptr make_slot(channel&);
+	slot_ptr make_slot(channel_ptr);
+	slot_ptr make_slot(channel_weak);
 
 }
 #endif

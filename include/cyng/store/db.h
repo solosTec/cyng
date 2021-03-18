@@ -8,7 +8,7 @@
 #define CYNG_STORE_DB_H
 
 #include <cyng/store/auto_table.h>
-#include <cyng/store/slot.h>
+#include <cyng/store/slot_interface.h>
 #include <cyng/meta.hpp>
 #include <cyng/io/ostream.h>
 
@@ -93,6 +93,22 @@ namespace cyng {
 		 * @return size of table
 		 */
 		std::size_t size(std::string const& name) noexcept;
+
+		/**
+		 * Place a new record into the table. Failes if a records
+		 * with the same key already exists.
+		 *
+		 * @param key the record key
+		 * @param data the body to insert
+		 * @param generation only needed for insert operations
+		 * @param source identifier for data source
+		 * @return true if the record was actually inserted.
+		 */
+		bool insert(std::string const& name
+			, key_t const& key
+			, data_t const& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source);
 
 		/**
 		 * safe access to multiple tables at once
@@ -187,13 +203,13 @@ namespace cyng {
 			return obj;
 		}
 
-		void connect(std::string name, slot);
-		void connect_insert(std::string name, slot);
-		void connect_modify(std::string name, slot);
-		void connect_remove(std::string name, slot);
-		void connect_clear(std::string name, slot);
+		void connect(std::string name, slot_ptr);
+		void connect_insert(std::string name, slot_ptr);
+		void connect_modify(std::string name, slot_ptr);
+		void connect_remove(std::string name, slot_ptr);
+		void connect_clear(std::string name, slot_ptr);
 
-		void disconnect(std::string name, slot);
+		void disconnect(std::string name, slot_ptr);
 
 	private:
 

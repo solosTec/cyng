@@ -251,104 +251,114 @@ namespace cyng {
 		std::size_t serializer <attr_t, BINARY>::write(std::ostream& os, attr_t const& v)
 		{
 			//	serialize value
-			serialize_binary(os, v.second);
+			std::size_t size = serialize_binary(os, v.second);
 
 			//	serialize index as object
-			serialize_binary(os, make_object(v.first));
+			size += serialize_binary(os, make_object(v.first));
 
 			//	serialize instruction
-			return serialize_binary(os, make_object(op::MAKE_ATTR));
+			return size + serialize_binary(os, make_object(op::MAKE_ATTR));
 		}
 
 		std::size_t serializer <param_t, BINARY>::write(std::ostream& os, param_t const& v)
 		{
 			//	serialize value
-			serialize_binary(os, v.second);
+			std::size_t size = serialize_binary(os, v.second);
 
 			//	serialize name
-			serialize_binary(os, make_object(v.first));
+			size += serialize_binary(os, make_object(v.first));
 
 			//	serialize instruction
-			return serialize_binary(os, make_object(op::MAKE_PARAM));
+			return size + serialize_binary(os, make_object(op::MAKE_PARAM));
 
 		}
 
 
 		std::size_t serializer <attr_map_t, BINARY>::write(std::ostream& os, attr_map_t const& amap)
 		{
+			std::size_t size{ 0 };
+
 			//	serialize each element from attribute map
 			for (auto const& attr : amap)	{
-				serializer <attr_t, BINARY>::write(os, attr);
+				size += serializer <attr_t, BINARY>::write(os, attr);
 			}
 
 			//	element count as object
-			serialize_binary(os, make_object<std::size_t>(amap.size()));
+			size += serialize_binary(os, make_object<std::size_t>(amap.size()));
 
 			//	serialize instruction
-			return serialize_binary(os, make_object(op::MAKE_ATTR_MAP));
+			return size + serialize_binary(os, make_object(op::MAKE_ATTR_MAP));
 		}
 
 		std::size_t serializer <param_map_t, BINARY>::write(std::ostream& os, param_map_t const& pmap)
 		{
+			std::size_t size{ 0 };
+
 			//	serialize each element from parameter map
 			for (auto const& param : pmap) {
-				serializer <param_t, BINARY>::write(os, param);
+				size += serializer <param_t, BINARY>::write(os, param);
 			}
 
 			//	element count
-			serialize_binary(os, make_object<std::size_t>(pmap.size()));
+			size += serialize_binary(os, make_object<std::size_t>(pmap.size()));
 
 			//	serialize instruction
-			return serialize_binary(os, make_object(op::MAKE_PARAM_MAP));
+			return size + serialize_binary(os, make_object(op::MAKE_PARAM_MAP));
 		}
 
 		std::size_t serializer <tuple_t, BINARY>::write(std::ostream& os, tuple_t const& v)
 		{
+			std::size_t size{ 0 };
+
 			//	serialize each element from the tuple
 			for (auto const& obj : v) {
-				serialize_binary(os, obj);
+				size += serialize_binary(os, obj);
 			}
 
 			//	element count as object
-			serialize_binary(os, make_object<std::size_t>(v.size()));
+			size += serialize_binary(os, make_object<std::size_t>(v.size()));
 
 			//
 			//	serialize instruction to build a tuple
 			//
-			return serialize_binary(os, make_object(op::MAKE_TUPLE));
+			return size + serialize_binary(os, make_object(op::MAKE_TUPLE));
 		}
 
 		std::size_t serializer <vector_t, BINARY>::write(std::ostream& os, vector_t const& v)
 		{
+			std::size_t size{ 0 };
+
 			//	serialize each element from vector
 			for (auto const& obj : v) {
-				serialize_binary(os, obj);
+				size += serialize_binary(os, obj);
 			}
 
 			//	element count as object
-			serialize_binary(os, make_object<std::size_t>(v.size()));
+			size += serialize_binary(os, make_object<std::size_t>(v.size()));
 
 			//
 			//	serialize instruction to build a vector
 			//
-			return serialize_binary(os, make_object(op::MAKE_VECTOR));
+			return size + serialize_binary(os, make_object(op::MAKE_VECTOR));
 
 		}
 
 		std::size_t serializer <deque_t, BINARY>::write(std::ostream& os, deque_t const& v)
 		{
+			std::size_t size{ 0 };
+
 			//	serialize each element from set
 			for (auto const& obj : v) {
-				serialize_binary(os, obj);
+				size += serialize_binary(os, obj);
 			}
 
 			//	element count as object
-			serialize_binary(os, make_object<std::size_t>(v.size()));
+			size += serialize_binary(os, make_object<std::size_t>(v.size()));
 
 			//
 			//	serialize instruction to build a set
 			//
-			return serialize_binary(os, make_object(op::MAKE_DEQUE));
+			return size + serialize_binary(os, make_object(op::MAKE_DEQUE));
 		}
 
 	}

@@ -8,7 +8,7 @@
 #define CYNG_STORE_PUB_H
 
 #include <cyng/store/key.hpp>
-#include <cyng/store/slot.h>
+#include <cyng/store/slot_interface.h>
 
 #include <vector>
 #include <forward_list>
@@ -20,34 +20,20 @@ namespace cyng {
 	class table;
 	class pub
 	{
-	//public:
-	//	using insert_signal = std::function<void(table const*
-	//		, key_t const&
-	//		, data_t const&
-	//		, std::uint64_t
-	//		, boost::uuids::uuid)>;
-	//	using remove_signal = std::function<void(table const*
-	//		, key_t const&
-	//		, boost::uuids::uuid)>;
-	//	using clear_signal = std::function<void(table const*, boost::uuids::uuid)>;
-	//	using modify_signal = std::function<void(table const*
-	//		, key_t const&
-	//		, attr_t const&
-	//		, std::uint64_t
-	//		, boost::uuids::uuid)>;
-
 	public:
 		pub();
 
-		void connect(slot);
-		void connect_insert(slot);
-		void connect_modify(slot);
-		void connect_remove(slot);
-		void connect_clear(slot);
+		void connect(slot_ptr);
+		void connect_insert(slot_ptr);
+		void connect_modify(slot_ptr);
+		void connect_remove(slot_ptr);
+		void connect_clear(slot_ptr);
 
-		void disconnect(slot);
+		void disconnect(slot_ptr);
 
 	protected:
+		virtual void charge(slot_ptr) = 0;
+
 		/**
 		 * signal an insert event
 		 */
@@ -80,21 +66,21 @@ namespace cyng {
 			, boost::uuids::uuid);
 
 	private:
-		std::vector<slot>	slots_insert_;
-		std::vector<slot>	slots_modify_;
-		std::vector<slot>	slots_remove_;
-		std::vector<slot>	slots_clear_;
+		std::vector<slot_ptr>	slots_insert_;
+		std::vector<slot_ptr>	slots_modify_;
+		std::vector<slot_ptr>	slots_remove_;
+		std::vector<slot_ptr>	slots_clear_;
 	};
 
 	/**
 	 * remove a slot from the container
 	 */
-	bool disconnect(std::vector<slot>&, slot);
+	bool disconnect(std::vector<slot_ptr>&, slot_ptr);
 
 	/**
 	 * remove a list of slots from the container
 	 */
-	void tidy(std::vector<slot>&, std::forward_list<slot>&);
+	void tidy(std::vector<slot_ptr>&, std::forward_list<slot_ptr>&);
 }
 #endif
 

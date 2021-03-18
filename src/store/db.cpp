@@ -57,6 +57,25 @@ namespace cyng {
 		return size;
 	}
 
+	bool store::insert(std::string const& name
+		, key_t const& key
+		, data_t const& data
+		, std::uint64_t generation
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+		access([&](table* tbl) -> void {
+			result = tbl->insert(key, data, generation, source);
+			}, access::write(name));
+
+		return result;
+
+	}
+
 	void store::clear(std::string const& name, boost::uuids::uuid source) {
 		//
 		//	read lock
@@ -75,70 +94,70 @@ namespace cyng {
 	//	}, access::read(name));
 	//}
 
-	void store::connect(std::string name, slot s) {
+	void store::connect(std::string name, slot_ptr sp) {
 
 		//
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		access([&s](table* tbl) -> void {
-			tbl->connect(s);
+		access([sp](table* tbl) -> void {
+			tbl->connect(sp);
 			}, access::write(name));
 
 	}
 
-	void store::connect_insert(std::string name, slot s) {
+	void store::connect_insert(std::string name, slot_ptr sp) {
 
 		//
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		access([&s](table* tbl) -> void {
-			tbl->connect_insert(s);
+		access([sp](table* tbl) -> void {
+			tbl->connect_insert(sp);
 			}, access::write(name));
 	}
 
-	void store::connect_modify(std::string name, slot s) {
+	void store::connect_modify(std::string name, slot_ptr sp) {
 
 		//
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		access([&s](table* tbl) -> void {
-			tbl->connect_modify(s);
+		access([sp](table* tbl) -> void {
+			tbl->connect_modify(sp);
 			}, access::write(name));
 	}
 
-	void store::connect_remove(std::string name, slot s) {
+	void store::connect_remove(std::string name, slot_ptr sp) {
 
 		//
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		access([&s](table* tbl) -> void {
-			tbl->connect_remove(s);
+		access([sp](table* tbl) -> void {
+			tbl->connect_remove(sp);
 			}, access::write(name));
 	}
 
-	void store::connect_clear(std::string name, slot s) {
+	void store::connect_clear(std::string name, slot_ptr sp) {
 
 		//
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		access([&s](table* tbl) -> void {
-			tbl->connect_clear(s);
+		access([sp](table* tbl) -> void {
+			tbl->connect_clear(sp);
 			}, access::write(name));
 	}
 
-	void store::disconnect(std::string name, slot s) {
+	void store::disconnect(std::string name, slot_ptr sp) {
 
 		//
 		//	read lock
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
-		access([&s](table* tbl) -> void {
-			tbl->disconnect(s);
+		access([sp](table* tbl) -> void {
+			tbl->disconnect(sp);
 			}, access::write(name));
 	}
 
