@@ -59,9 +59,19 @@ namespace cyng {
 			serializer <param_map_t, JSON>::write(os, pmap);
 		}
 
+		void serialize_json(std::ostream& os, tuple_t const& tpl) {
+			serializer <tuple_t, JSON>::write(os, tpl);
+		}
+
 		std::string to_json(param_map_t const& pmap) {
 			std::stringstream ss;
 			serialize_json(ss, pmap);
+			return ss.str();
+		}
+
+		std::string to_json(tuple_t const& tpl) {
+			std::stringstream ss;
+			serialize_json(ss, tpl);
 			return ss.str();
 		}
 

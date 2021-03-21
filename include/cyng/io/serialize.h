@@ -49,7 +49,9 @@ namespace cyng {
 		void serialize_json(std::ostream&, object const&);
 		std::string to_json(object const&);
 		void serialize_json(std::ostream&, param_map_t const&);
-		std::string to_json(param_map_t const&);		
+		void serialize_json(std::ostream&, tuple_t const&);
+		std::string to_json(param_map_t const&);
+		std::string to_json(tuple_t const&);
 
 		void serialize_json_pretty(std::ostream&, object const&);
 		std::string to_json_pretty(object const&);
