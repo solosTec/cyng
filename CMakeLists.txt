@@ -608,6 +608,8 @@ install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql c
     EXPORT cyng-export
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BIN_DIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDE_DIR}
 )
 
 install(EXPORT cyng-export
