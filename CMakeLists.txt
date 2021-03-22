@@ -529,6 +529,13 @@ target_compile_definitions(cyng_db
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_DB>
 )
+#
+# -Wno-psabi for gcc > 7.1
+#
+target_compile_options(cyng_db 
+    PRIVATE 
+        $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
+)
 
 #
 # CYNG_ODBC_CONNECTOR
