@@ -12,18 +12,24 @@ namespace cyng {
 
 	void pub::connect(slot_ptr sp) {
 
-		BOOST_ASSERT(sp);
-
-		connect_insert(sp);
-		connect_modify(sp);
-		connect_remove(sp);
-		connect_clear(sp);
+		connect_only(sp);
 
 		//
 		//	load initial data set
 		//
 		charge(sp);
 	}
+
+	void pub::connect_only(slot_ptr sp) {
+
+		BOOST_ASSERT(sp);
+
+		connect_insert(sp);
+		connect_modify(sp);
+		connect_remove(sp);
+		connect_clear(sp);
+	}
+
 
 	void pub::connect_insert(slot_ptr sp) {
 		slots_insert_.push_back(sp);

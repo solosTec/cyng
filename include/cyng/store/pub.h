@@ -23,7 +23,15 @@ namespace cyng {
 	public:
 		pub();
 
+		/**
+		 * During the connection, all data will be sent as inserts.
+		 */
 		void connect(slot_ptr);
+
+		/**
+		 * No inserts will be sent.
+		 */
+		void connect_only(slot_ptr);
 		void connect_insert(slot_ptr);
 		void connect_modify(slot_ptr);
 		void connect_remove(slot_ptr);

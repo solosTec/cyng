@@ -114,7 +114,7 @@ namespace cyng {
 		 * safe access to multiple tables at once
 		 */
 		template <typename F, typename ...Tbls>
-		constexpr decltype(auto)
+		decltype(auto)
 		access(F&& f, Tbls&& ... tbls) /*-> typename std::invoke_result<F>::type*/ {
 
 			//
@@ -204,6 +204,7 @@ namespace cyng {
 		}
 
 		void connect(std::string name, slot_ptr);
+		void connect_only(std::string name, slot_ptr);
 		void connect_insert(std::string name, slot_ptr);
 		void connect_modify(std::string name, slot_ptr);
 		void connect_remove(std::string name, slot_ptr);

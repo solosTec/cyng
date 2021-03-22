@@ -89,7 +89,7 @@ namespace cyng {
 	//record store::lookup(std::string const& name, key_t const& key) {
 
 	//	std::shared_lock<std::shared_mutex> sl(m_);
-	//	return this->access([&key](table const* tbl) -> record {
+	//	return access([&key](table const* tbl) -> record {
 	//		return tbl->lookup(key);
 	//	}, access::read(name));
 	//}
@@ -103,7 +103,16 @@ namespace cyng {
 		access([sp](table* tbl) -> void {
 			tbl->connect(sp);
 			}, access::write(name));
+	}
 
+	void store::connect_only(std::string name, slot_ptr sp) {
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+		access([sp](table* tbl) -> void {
+			tbl->connect_only(sp);
+			}, access::write(name));
 	}
 
 	void store::connect_insert(std::string name, slot_ptr sp) {
