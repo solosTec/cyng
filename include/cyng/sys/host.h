@@ -67,22 +67,22 @@ namespace cyng {
 		}
 		
 //#define cyng_HOST_FQDN "leo"
-		constexpr std::uint32_t get_number_of_logical_cores() {
+		constexpr std::uint32_t get_host_number_of_logical_cores() {
 			return cyng_HOST_NUMBER_OF_PHYSICAL_CORES;
 		}
-		constexpr std::uint32_t get_number_of_physical_cores() {
+		constexpr std::uint32_t get_host_number_of_physical_cores() {
 			return cyng_HOST_NUMBER_OF_PHYSICAL_CORES;
 		}
-		constexpr std::uint32_t get_total_virtual_memory() {
+		constexpr std::uint32_t get_host_total_virtual_memory() {
 			return cyng_TOTAL_VIRTUAL_MEMORY;
 		}
-		constexpr std::uint32_t get_total_physical_memory() {
+		constexpr std::uint32_t get_host_total_physical_memory() {
 			return cyng_TOTAL_PHYSICAL_MEMORY;
 		}
-		constexpr const char* get_processor_description() {
+		constexpr const char* get_host_processor_description() {
 			return cyng_PROCESSOR_DESCRIPTION;
 		}
-		constexpr const char* get_os_release() {
+		constexpr const char* get_host_os_release() {
 			return cyng_OS_RELEASE;
 		}
 		constexpr const char* get_os_version() {

@@ -13,9 +13,25 @@ namespace cyng {
 	namespace sys
 	{
 		/**
-		 * @return available memory in system in bytes
+		 * @return available physical memory in system in bytes
 		 */
 		std::uint64_t get_total_ram();
+
+		/**
+		 * @return total ram - available ram
+		 */
+		std::uint64_t get_used_ram();
+
+		/**
+		 * @return available virtual memory in system in bytes
+		 */
+		std::uint64_t get_total_virtual_memory();
+
+		/**
+		 * @return available total virtual memory - available virtual memory
+		 */
+		std::uint64_t get_used_virtual_memory();
+
 	}
 }
 #endif
