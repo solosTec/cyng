@@ -27,7 +27,7 @@ namespace cyng {
 		 */
 		template <typename ...Args>
 		auto read_virtual_file(std::string name, Args& ...args)	-> std::tuple<Args...> {
-			std::ifstream ifs(name, std::ios::in);
+			std::ifstream ifs(name);
 			((ifs >> args), ...);
 			return std::tuple<Args...>(std::forward<Args>(args)...);
 		}

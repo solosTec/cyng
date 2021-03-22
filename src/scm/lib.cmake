@@ -6,6 +6,7 @@ set (scm_lib)
 set (scm_cpp
  	src/scm/service.cpp
  	src/scm/mgr.cpp
+ 	src/scm/win_registry.cpp
 )
     
 set (scm_h

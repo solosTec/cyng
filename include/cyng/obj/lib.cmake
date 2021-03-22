@@ -11,7 +11,6 @@ set (sys_cpp
     src/sys/port.cpp
     src/sys/locale.cpp
     src/sys/filesystem.cpp
-    src/sys/dns.cpp
     src/sys/ntp.cpp
 )
     
@@ -23,7 +22,6 @@ set (sys_h
     include/cyng/sys/port.h
     include/cyng/sys/locale.h
     include/cyng/sys/filesystem.h
-    include/cyng/sys/dns.h
     include/cyng/sys/ntp.h
     include/cyng/sys/linux.hpp
     include/cyng/sys/windows.hpp
