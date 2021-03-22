@@ -76,6 +76,22 @@ namespace cyng {
 
 	}
 
+	bool store::erase(std::string const& name
+		, key_t const& key
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+		access([&](table* tbl) -> void {
+			result = tbl->erase(key, source);
+			}, access::write(name));
+
+		return result;
+	}
+
 	void store::clear(std::string const& name, boost::uuids::uuid source) {
 		//
 		//	read lock

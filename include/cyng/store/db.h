@@ -111,6 +111,14 @@ namespace cyng {
 			, boost::uuids::uuid source);
 
 		/**
+		 * @param key the record key
+		 * @return true if the record was actually deleted
+		 */
+		bool erase(std::string const& name
+			, key_t const& key
+			, boost::uuids::uuid source);
+
+		/**
 		 * safe access to multiple tables at once
 		 */
 		template <typename F, typename ...Tbls>
