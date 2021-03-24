@@ -13,6 +13,7 @@ set (sys_cpp
     src/sys/filesystem.cpp
     src/sys/dns.cpp
     src/sys/ntp.cpp
+    src/sys/info.cpp
 )
     
 set (sys_h
@@ -27,6 +28,7 @@ set (sys_h
     include/cyng/sys/ntp.h
     include/cyng/sys/linux.hpp
     include/cyng/sys/windows.hpp
+    include/cyng/sys/info.h
 )
 
 # define the docscript lib
