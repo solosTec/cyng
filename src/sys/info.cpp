@@ -18,6 +18,7 @@
 
 #elif BOOST_OS_LINUX
 
+#include <filesystem>
 #include <sys/utsname.h>
 #include <sys/sysinfo.h>
 #include <fstream>
