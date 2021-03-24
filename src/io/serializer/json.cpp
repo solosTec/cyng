@@ -292,10 +292,18 @@ namespace cyng {
 			std::time_t const tt = std::chrono::system_clock::to_time_t(v);
 			auto tm = *std::gmtime(&tt);
 			//	example: 04 Dec 1995 00:12:00 GMT
-			os << std::put_time(&tm, "%d %b %Y %H:%M:%S%Z");
+			//os.imbue(std::locale("en_US.UTF-8"));
+			os << std::put_time(&tm, "%d %b %Y %H:%M:%S UTC");
 
 			return os.tellp() - pos;
 
+		}
+
+		std::size_t serializer <std::filesystem::path, JSON>::write(std::ostream& os, std::filesystem::path const& v)	{
+
+			auto const pos = os.tellp();
+			os << v.string();
+			return os.tellp() - pos;
 		}
 
 	}

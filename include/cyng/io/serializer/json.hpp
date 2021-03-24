@@ -14,6 +14,7 @@
 #include <cyng/obj/intrinsics/null.h>
 
 #include <chrono>
+#include <filesystem>
 
 namespace cyng {
 	namespace io {
@@ -138,6 +139,16 @@ namespace cyng {
 		{
 			static std::size_t write(std::ostream& os, std::chrono::system_clock::time_point const& v);
 		};
+
+		/**
+		 *  Get rid of enclosing quotation marks 
+		 */
+		template <>
+		struct serializer <std::filesystem::path, JSON>
+		{
+			static std::size_t write(std::ostream& os, std::filesystem::path const& v);
+		};
+
 	}
 }
 #endif
