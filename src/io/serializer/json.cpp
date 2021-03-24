@@ -11,6 +11,8 @@
 #include <cyng/io/ostream.h>
 #include <cyng/io/parser/utf-8.h>
 
+#include  <iomanip>
+
 #include <boost/io/ios_state.hpp>
 
 namespace cyng {
@@ -283,5 +285,18 @@ namespace cyng {
 			os << '"' << buffer << '"';
 			return os.tellp() - pos;
 		}
+
+		std::size_t serializer <std::chrono::system_clock::time_point, JSON>::write(std::ostream& os, std::chrono::system_clock::time_point const& v)	{
+
+			auto const pos = os.tellp();
+			std::time_t const tt = std::chrono::system_clock::to_time_t(v);
+			auto tm = *std::gmtime(&tt);
+			//	example: 04 Dec 1995 00:12:00 GMT
+			os << std::put_time(&tm, "%d %b %Y %H:%M:%S%Z");
+
+			return os.tellp() - pos;
+
+		}
+
 	}
 }

@@ -13,6 +13,8 @@
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/intrinsics/null.h>
 
+#include <chrono>
+
 namespace cyng {
 	namespace io {
 
@@ -128,6 +130,14 @@ namespace cyng {
 			static std::size_t write(std::ostream& os, buffer_t const& v);
 		};
 
+		/**
+		 *  Generates a date time string that can be parsed in JavaScript with Date.parse()
+		 */
+		template <>
+		struct serializer <std::chrono::system_clock::time_point, JSON>
+		{
+			static std::size_t write(std::ostream& os, std::chrono::system_clock::time_point const& v);
+		};
 	}
 }
 #endif
