@@ -111,11 +111,59 @@ namespace cyng {
 			, boost::uuids::uuid source);
 
 		/**
+		 * Place a new record into the table. If a records
+		 * with the same key already exists it will be replaced.
+		 *
+		 * @param key the record key
+		 * @param data the body to insert
+		 * @param generation only needed for insert operations
+		 * @param source identifier for data source
+		 * @return true if the record was actually inserted or modified
+		 */
+		bool merge(std::string const& name
+			, key_t const& key
+			, data_t&& data
+			, std::uint64_t generation
+			, boost::uuids::uuid source);
+
+		/**
 		 * @param key the record key
 		 * @return true if the record was actually deleted
 		 */
 		bool erase(std::string const& name
 			, key_t const& key
+			, boost::uuids::uuid source);
+
+		/**
+		 * If a matching record was found, the record will be write/exclusive locked.
+		 * The modification signal is send in every case, even when old and new values
+		 * are equal. (This should be changed in an upcoming version).
+		 *
+		 * @param name table name
+		 * @param key the record key
+		 * @param attr a specific attribute of the record body.
+		 * @param source identifier for data source
+		 * @return true if new value was sucessfully written.
+		 */
+		bool modify(std::string const& name
+			, key_t const& key
+			, attr_t&& attr
+			, boost::uuids::uuid source);
+
+		/**
+		 * If a matching record was found, the record will be write/exclusive locked.
+		 * The modification signal is send in every case, even when old and new values
+		 * are equal. (This should be changed in an upcoming version).
+		 *
+		 * @param name table name
+		 * @param key the record key
+		 * @param param a specific parameter of the record body.
+		 * @param source identifier for data source
+		 * @return true if new value was sucessfully written.
+		 */
+		bool modify(std::string const& name
+			, key_t const& key
+			, param_t const& param
 			, boost::uuids::uuid source);
 
 		/**

@@ -76,6 +76,27 @@ namespace cyng {
 
 	}
 
+	bool store::merge(std::string const& name
+		, key_t const& key
+		, data_t&& data
+		, std::uint64_t generation
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+		access([&](table* tbl) -> void {
+			result = tbl->merge(key, std::move(data), generation, source);
+			}, access::write(name));
+
+		return result;
+
+	}
+
+
 	bool store::erase(std::string const& name
 		, key_t const& key
 		, boost::uuids::uuid source) {
@@ -90,6 +111,46 @@ namespace cyng {
 			}, access::write(name));
 
 		return result;
+	}
+
+	bool store::modify(std::string const& name
+		, key_t const& key
+		, attr_t&& attr
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+
+		access([&](table* tbl) -> void {
+			result = tbl->modify(key, std::move(attr), source);
+			}, access::write(name));
+
+		return result;
+
+	}
+
+	bool store::modify(std::string const& name
+		, key_t const& key
+		, param_t const& param
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+
+		access([&](table* tbl) -> void {
+			result = tbl->modify(key, param, source);
+			}, access::write(name));
+
+		return result;
+
 	}
 
 	void store::clear(std::string const& name, boost::uuids::uuid source) {

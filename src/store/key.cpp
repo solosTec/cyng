@@ -37,5 +37,15 @@ namespace std {
 			: false
 			;
 	}
+
+	bool less<cyng::key_t>::operator()(cyng::key_t const& pk1, cyng::key_t const& pk2) const noexcept {
+
+		static const hash<cyng::key_t> h;
+		return (pk1.size() == pk2.size())
+			? h(pk1) < h(pk2)
+			: true
+			;
+	}
+
 }
 

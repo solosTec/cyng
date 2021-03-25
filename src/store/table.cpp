@@ -136,11 +136,6 @@ namespace cyng {
 		std::unique_lock<std::shared_mutex> ulock(pos->second.m_);
 
 		//
-		//	update generation
-		//
-		++pos->second.generation_;
-
-		//
 		//	update data
 		//
 		BOOST_ASSERT(data.size() == pos->second.data_.size());
@@ -158,6 +153,12 @@ namespace cyng {
 				//	apply
 				//
 				swap(pos->second.data_.at(idx), data.at(idx));
+
+				//
+				//	update generation
+				//
+				++pos->second.generation_;
+
 			}
 		}
 	}
@@ -194,6 +195,52 @@ namespace cyng {
 		sp->forward(this, false);
 
 	}
+
+	bool table::modify(key_t const& key
+		, attr_t&& attr
+		, boost::uuids::uuid source) {
+
+		auto pos = data_.find(key);
+		if (pos != data_.end()) {
+
+			//
+			//	write lock this record
+			//
+			std::unique_lock<std::shared_mutex> ulock(pos->second.m_);
+
+			if (pos->second.data_.at(attr.first) != attr.second) {
+
+				//
+				//	publish
+				//
+				//attr_t attr(idx, data.at(idx));
+				this->pub::forward(this, key, attr, pos->second.generation_, source);
+
+				//
+				//	apply
+				//
+				swap(pos->second.data_.at(attr.first), attr.second);
+
+				//
+				//	update generation
+				//
+				++pos->second.generation_;
+
+				return true;
+
+			}
+		}
+		return false;
+	}
+
+	bool table::modify(key_t const& key
+		, param_t const& param
+		, boost::uuids::uuid source) {
+
+		auto const idx = meta().get_index_by_name(param.first);
+		return modify(key, attr_t(idx, param.second), source);
+	}
+
 
 	bool table::exist(key_t const& key) const {
 		return data_.find(key) != data_.end();

@@ -18,7 +18,7 @@
 namespace cyng {
 
 	using key_t = vector_t;
-	using key_list_t = std::list<key_t>;	//	not unique
+	using key_list_t = std::set<key_t>;	//	unique
 	using data_t = key_t;
 
 	template < typename ...Args >
@@ -50,7 +50,6 @@ namespace cyng {
 	};
 }
 
-//std::equal_to<key_t>
 #include <functional>
 
 namespace std {
@@ -60,6 +59,13 @@ namespace std {
 	public:
 		bool operator()(cyng::key_t const& pk1, cyng::key_t const& pk2) const noexcept;
 	};
+
+	template <>
+	class less<cyng::key_t> {
+	public:
+		bool operator()(cyng::key_t const& c1, cyng::key_t const& c2) const noexcept;
+	};
+
 }
 
 #endif

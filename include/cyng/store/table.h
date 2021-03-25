@@ -88,6 +88,30 @@ namespace cyng {
 			, std::uint64_t generation
 			, boost::uuids::uuid source);
 
+		/**
+		 * If a matching record was found, the record will be write/exclusive locked.
+		 * The modification signal is send only in case the new and old values are different.
+		 *
+		 * @param key the record key
+		 * @param attr a specific attribute of the record body.
+		 * @return true if new value was sucessfully written.
+		 */
+		bool modify(key_t const& key
+			, attr_t&& attr
+			, boost::uuids::uuid source);
+
+		/**
+		 * If a matching record was found, the record will be write/exclusive locked.
+		 * The modification signal is send only in case the new and old values are different.
+		 *
+		 * @param key the record key
+		 * @param param a specific parameter of the record body.
+		 * @return true if new value was sucessfully written.
+		 */
+		bool modify(key_t const& key
+			, param_t const& param
+			, boost::uuids::uuid source);
+
 		/** @brief search for primary key
 		 * 
 		 * Complexity O(1) up to O(N)
