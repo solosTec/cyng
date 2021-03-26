@@ -6,11 +6,14 @@
 #include <cyng/sys/host.h>
 #include <cyng/sys/memory.h>
 #include <cyng/sys/process.h>
+#include <cyng/sys/cpu.h>
 #include <cyng/sys/locale.h>
+
 #include <cyng/io/ostream.h>
 
 #include <iostream>
 #include <fstream> 
+#include <thread>
 
 
 BOOST_AUTO_TEST_SUITE(sys_suite)
@@ -28,13 +31,21 @@ BOOST_AUTO_TEST_CASE(locale)
 
 BOOST_AUTO_TEST_CASE(meminfo)
 {
-	//std::ifstream ifs("D:\\reboot\\cyng\\unit_test\\src\\meminfo.txt");
-	//std::string name, unit;
-	//std::uint64_t value;
-	//while (ifs) {
-	//	ifs >> name >> value >> unit;
-	//}
+	//
+	//	on the buildsystem should total RAM always the same.
+	//
+	auto const tr1 = cyng::sys::get_total_ram() / (1024 * 1024);
+	auto const tr2 = cyng::sys::get_host_total_physical_memory();	//	MB
+//	std::cout << tr1 << ", " << cyng::sys::get_host_total_physical_memory() << std::endl;	
+	BOOST_CHECK_EQUAL(tr1, tr2);
 
+	// std::cout << cyng::sys::get_total_ram() << std::endl;
+	// std::cout << cyng::sys::get_used_ram() << std::endl;
+
+	for(int i = 0; i < 100; ++i) {
+		std::cout << cyng::sys::get_cpu_load(0) << std::endl;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
 }
 
 

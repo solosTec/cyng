@@ -21,6 +21,7 @@
 #include <fstream> 
 #include <string> 
 #include <cctype>
+#include <iostream>
 
 #include <boost/algorithm/string.hpp>
 
@@ -102,7 +103,7 @@ namespace cyng {
 			std::uint64_t value;
 			while (ifs) {
 				ifs >> name >> value >> unit;
-				if (boost::algorithm::equals(unit, "kb")) {
+				if (boost::algorithm::equals(unit, "kB")) {
 					r.emplace(name, value * 1024u);
 				}
 				else {
