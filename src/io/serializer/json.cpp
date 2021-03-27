@@ -33,33 +33,38 @@ namespace cyng {
 		std::size_t serializer <vector_t, JSON>::write(std::ostream& os, vector_t const& vec)
 		{
 			auto const pos = os.tellp();
-			os << '[';
-
-			//	serialize each element from the tuple
-			bool init = false;
-
-			for (auto const& obj : vec) {
-				if (!init) {
-					init = true;
-				}
-				else {
-					os << ", ";
-				}
-				auto const tag = obj.rtti().tag();
-				switch (tag)
-				{
-				case TC_ATTR:
-				case TC_PARAM:
-					os << '{';
-					serialize_json(os, obj);
-					os << '}';
-					break;
-				default:
-					serialize_json(os, obj);
-				}
+			if (vec.empty()) {
+				os << "null";
 			}
+			else {
+				os << '[';
 
-			os << ']';
+				//	serialize each element from the tuple
+				bool init = false;
+
+				for (auto const& obj : vec) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						os << ", ";
+					}
+					auto const tag = obj.rtti().tag();
+					switch (tag)
+					{
+					case TC_ATTR:
+					case TC_PARAM:
+						os << '{';
+						serialize_json(os, obj);
+						os << '}';
+						break;
+					default:
+						serialize_json(os, obj);
+					}
+				}
+
+				os << ']';
+			}
 			return os.tellp() - pos;
 
 		}
@@ -67,21 +72,26 @@ namespace cyng {
 		std::size_t serializer <tuple_t, JSON>::write(std::ostream& os, tuple_t const& tpl) {
 
 			auto const pos = os.tellp();
-			os << '{';
-
-			//	serialize each element from the tuple
-			bool init = false;
-			for (auto const& obj : tpl) {
-				if (!init) {
-					init = true;
-				}
-				else {
-					os << ", ";
-				}
-				serialize_json(os, obj);
+			if (tpl.empty()) {
+				os << "null";
 			}
+			else {
+				os << '{';
 
-			os << '}';
+				//	serialize each element from the tuple
+				bool init = false;
+				for (auto const& obj : tpl) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						os << ", ";
+					}
+					serialize_json(os, obj);
+				}
+
+				os << '}';
+			}
 			return os.tellp() - pos;
 		}
 
@@ -115,29 +125,32 @@ namespace cyng {
 		std::size_t serializer <param_map_t, JSON>::write(std::ostream& os, param_map_t const& pm) {
 
 			auto const pos = os.tellp();
-
-			os << '{';
-
-			bool flag = false;
-			for (auto const& p : pm) {
-				if (flag)	{
-					os << ',';
-				}
-				else	{
-					flag = true;
-				}
-
-				os
-					<< '"'
-					<< p.first
-					<< '"'
-					<< ':'
-					;
-
-				serialize_json(os, p.second);
+			if (pm.empty()) {
+				os << "null";
 			}
-			os << '}';
+			else {
+				os << '{';
 
+				bool flag = false;
+				for (auto const& p : pm) {
+					if (flag) {
+						os << ',';
+					}
+					else {
+						flag = true;
+					}
+
+					os
+						<< '"'
+						<< p.first
+						<< '"'
+						<< ':'
+						;
+
+					serialize_json(os, p.second);
+				}
+				os << '}';
+			}
 			return os.tellp() - pos;
 		}
 

@@ -8,6 +8,7 @@
 #define CYNG_SYS_MEMORY_H
 
 #include <cstdint>
+#include <cstddef>
 
 namespace cyng {
 	namespace sys

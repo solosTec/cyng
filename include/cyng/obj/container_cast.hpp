@@ -9,7 +9,10 @@
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/object_cast.hpp>
+#include <cyng/obj/value_cast.hpp>
+
 #include <iterator>
+#include <algorithm>
 
 namespace cyng {
 
@@ -61,6 +64,7 @@ namespace cyng {
 	 * @brief move C1 into C2
 	 *
 	 * The data types are not verified.
+	 * Use this if container elements are moveable.
 	 */
 	template <typename C2, typename C1 >
 	[[nodiscard]]
@@ -89,7 +93,21 @@ namespace cyng {
 	 */
 	param_map_t to_param_map(tuple_t const& tpl);
 
-	//param_map_t to_param_map(vector_t const& vec);
+	/**
+	 * Convert a param_map_t to a std::map<>. Works for parameter maps with a homogenous
+	 * second data type.
+	 */
+	template <typename T>
+	auto to_map(param_map_t const& pm, T def) -> std::map<std::string, T> {
+		std::map<std::string, T> r;
+		std::transform(pm.begin(), pm.end(), std::inserter(r, r.end()), [def](param_map_t::value_type const& val) {
+
+			return std::make_pair(val.first, cyng::value_cast<T>(val.second, def));
+
+			});
+
+		return r;
+	}
 
 
 }
