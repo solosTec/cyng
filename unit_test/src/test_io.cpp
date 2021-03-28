@@ -192,10 +192,10 @@ BOOST_AUTO_TEST_CASE(json)
 	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(false)), "false");
 	//std::cout << cyng::io::to_json(cyng::make_object(std::filesystem::path("readme.txt"))) << std::endl;
 	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(std::filesystem::path("readme.txt"))), "\"readme.txt\"");
-	//	09 Feb 1974 00:00:00 UTC
+	//	1974-02-09T00:00:00+0100
 	//auto const tp = std::chrono::system_clock::time_point(std::chrono::hours(36000));
 	//std::cout << cyng::io::to_json(cyng::make_object(tp));
-	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(std::chrono::system_clock::time_point(std::chrono::hours(36000)))), "\"09 Feb 1974 00:00:00 UTC\"");
+	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(std::chrono::system_clock::time_point(std::chrono::hours(36000)))), "\"1974-02-09T00:00:00+0100\"");
 }
 
 BOOST_AUTO_TEST_CASE(csv)

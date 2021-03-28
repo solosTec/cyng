@@ -304,9 +304,9 @@ namespace cyng {
 			auto const pos = os.tellp();
 			std::time_t const tt = std::chrono::system_clock::to_time_t(v);
 			auto tm = *std::gmtime(&tt);
-			//	example: 04 Dec 1995 00:12:00 GMT
-			//os.imbue(std::locale("en_US.UTF-8"));
-			os << '"' << std::put_time(&tm, "%d %b %Y %H:%M:%S UTC") << '"';
+			//	example: 1995-12-04T00:12:00-0430
+			// ISO 8601
+			os << '"' << std::put_time(&tm, "%FT%T%z") << '"';
 
 			return os.tellp() - pos;
 
