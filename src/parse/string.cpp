@@ -18,5 +18,27 @@ namespace cyng {
 		return result;
 	}
 
+	std::vector<boost::string_view> split(boost::string_view str, boost::string_view delims) {
+
+		std::vector<boost::string_view> result;
+
+		boost::string_view::size_type start = 0;
+		auto pos = str.find_first_of(delims, start);
+		while (pos != boost::string_view::npos)
+		{
+			if (pos != start) {
+				result.push_back(str.substr(start, pos - start));
+			}
+			start = pos + 1;
+			pos = str.find_first_of(delims, start);
+		}
+
+		if (start < str.length()) {
+			result.push_back(str.substr(start, str.length() - start));
+		}
+		return result;
+	}
+
+
 }
 
