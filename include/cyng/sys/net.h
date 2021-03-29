@@ -1,0 +1,35 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2021 Sylko Olzscher
+ *
+ */
+#ifndef CYNG_SYS_NET_H
+#define CYNG_SYS_NET_H
+
+
+#include <string>
+#include <vector>
+#include <boost/asio/ip/address.hpp>
+
+
+namespace cyng {
+	namespace sys
+	{
+		/** @brief resolve the specified host name.
+		 * 
+		 * Requires DNS
+		 * 
+		 * @return resolved IP address
+		 */
+		boost::asio::ip::address resolve_address(std::string host);
+
+		/**
+		 * @return list of all available nics
+		 */
+		std::vector<std::string> get_nic_names();
+		std::vector<std::string> get_nic_prefix();
+	}
+}
+#endif
+

@@ -8,6 +8,7 @@
 #include <cyng/sys/process.h>
 #include <cyng/sys/cpu.h>
 #include <cyng/sys/locale.h>
+#include <cyng/sys/net.h>
 
 #include <cyng/io/ostream.h>
 
@@ -48,5 +49,16 @@ BOOST_AUTO_TEST_CASE(meminfo)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(net)
+{
+	//	138.201.95.180
+	//std::cout << cyng::sys::resolve_address("segw.ch") << std::endl;
+	BOOST_CHECK_EQUAL(cyng::sys::resolve_address("segw.ch").to_string(), "138.201.95.180");
+	//cyng::sys::get_nic_names();
+	//auto const pres = cyng::sys::get_nic_prefix();
+	//for (auto const p : pres) {
+	//	std::cout << p << std::endl;
+	//}
+}
 
 BOOST_AUTO_TEST_SUITE_END()

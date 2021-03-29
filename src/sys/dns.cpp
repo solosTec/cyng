@@ -65,7 +65,8 @@ namespace cyng
 #endif
 
 
-#if BOOST_OS_WINDOWS
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+
 		/**
 		 * @see https://docs.microsoft.com/en-gb/windows/win32/api/iphlpapi/nf-iphlpapi-getnetworkparams?redirectedfrom=MSDN
 		 */

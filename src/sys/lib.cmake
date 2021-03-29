@@ -15,6 +15,7 @@ set (sys_cpp
     src/sys/ntp.cpp
     src/sys/info.cpp
     src/sys/cpu.cpp
+    src/sys/net.cpp
 )
     
 set (sys_h
@@ -31,6 +32,7 @@ set (sys_h
     include/cyng/sys/windows.hpp
     include/cyng/sys/info.h
     include/cyng/sys/cpu.h
+    include/cyng/sys/net.h
 )
 
 # define the docscript lib
