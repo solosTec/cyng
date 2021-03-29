@@ -30,6 +30,8 @@
 #include <netdb.h>
 #include <ifaddrs.h>
 
+#include <boost/algorithm/string.hpp>
+
 #else
 #warning unknow OS
 #endif
@@ -156,7 +158,7 @@ namespace cyng
 
 		}
 
-		boost::asio::ip::address get_address(std::string nic) {
+		boost::asio::ip::address get_address_IPv6(std::string nic) {
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
@@ -220,26 +222,29 @@ namespace cyng
 				//	next entry
 				//
 				if (ifa->ifa_addr == NULL) continue;
+				auto const family = ifa->ifa_addr->sa_family;
 
-				int s = getnameinfo(ifa->ifa_addr
-					, sizeof(struct sockaddr_in)
-					, host
-					, NI_MAXHOST
-					, NULL
-					, 0
-					, NI_NUMERICHOST);
+				if (family == AF_INET6) 	{
+					int s = getnameinfo(ifa->ifa_addr
+						, sizeof(struct sockaddr_in6)
+						, host
+						, NI_MAXHOST
+						, NULL
+						, 0
+						, NI_NUMERICHOST);
 
-				if (boost::algorithm::equals(ifa->ifa_name, ifname) && (ifa->ifa_addr->sa_family == AF_INET))
-				{
-					if (s == 0) {
-#ifdef _DEBUG
-						std::cout
-							<< ifa->ifa_name
-							<< " => "
-							<< host
-							<< std::endl;
+					if (boost::algorithm::equals(ifa->ifa_name, nic) && (ifa->ifa_addr->sa_family == AF_INET6))
+					{
+						if (s == 0) {
+#ifdef _DEBUG_SYS
+							std::cout
+								<< ifa->ifa_name
+								<< " => "
+								<< host
+								<< std::endl;
 #endif
-						break;
+							break;
+						}
 					}
 				}
 			}
