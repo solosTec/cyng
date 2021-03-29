@@ -20,7 +20,6 @@
 #include <iphlpapi.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 //#include <cyng/scm/win_registry.h>
-#include <boost/asio.hpp>
 
 #elif defined(BOOST_OS_LINUX_AVAILABLE)
 
@@ -30,6 +29,8 @@
 #warning unknow OS
 #endif
 
+#include <boost/asio.hpp>
+
 namespace cyng 
 {
 	namespace sys 
@@ -37,14 +38,16 @@ namespace cyng
 		boost::asio::ip::address resolve_address(std::string host) {
 			try {
 				boost::asio::io_service io_service;
-				boost::asio::ip::udp::resolver   resolver(io_service);
-				boost::asio::ip::udp::socket socket(io_service);
+				boost::asio::ip::tcp::resolver   resolver(io_service);
 				boost::system::error_code ec;
-				boost::asio::connect(socket, resolver.resolve(host, ""), ec);
-				return socket.remote_endpoint().address();
+				auto const results = resolver.resolve(host, "http");
+				if (!results.empty())	return results.begin()->endpoint().address();
 			}
 			catch (std::exception const& ex) {
 				boost::ignore_unused(ex);
+#ifdef _DEBUG_SYS
+				std::cout << ex.what() << std::endl;
+#endif				
 			}
 			return boost::asio::ip::address();
 
@@ -95,7 +98,7 @@ namespace cyng
 #ifdef _DEBUG_SYS
 				std::cout << p.path() << std::endl;
 #endif 
-				nics.push_back(p.filename());
+				nics.push_back(p.path().filename());
 
 			}
 #endif

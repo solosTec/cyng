@@ -55,10 +55,10 @@ BOOST_AUTO_TEST_CASE(net)
 	//std::cout << cyng::sys::resolve_address("segw.ch") << std::endl;
 	BOOST_CHECK_EQUAL(cyng::sys::resolve_address("segw.ch").to_string(), "138.201.95.180");
 	//cyng::sys::get_nic_names();
-	//auto const pres = cyng::sys::get_nic_prefix();
-	//for (auto const p : pres) {
-	//	std::cout << p << std::endl;
-	//}
+	// auto const pres = cyng::sys::get_nic_prefix();
+	// for (auto const p : pres) {
+	// 	std::cout << p << std::endl;
+	// }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
