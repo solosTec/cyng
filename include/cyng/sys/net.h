@@ -29,6 +29,12 @@ namespace cyng {
 		 */
 		std::vector<std::string> get_nic_names();
 		std::vector<std::string> get_nic_prefix();
+
+		/**
+		 * @return IPv4 and IPv6 address of specified nic
+		 */
+		boost::asio::ip::address get_address(std::string nic);
+
 	}
 }
 #endif

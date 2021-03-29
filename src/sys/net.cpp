@@ -26,6 +26,11 @@
 
 #include <filesystem>
 
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <ifaddrs.h>
+
 #else
 #warning unknow OS
 #endif
@@ -145,6 +150,101 @@ namespace cyng
 			return get_nic_names();
 #endif
 
+
+		}
+
+		boost::asio::ip::address get_address(std::string nic) {
+
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+
+			std::vector<std::string> prefix;
+
+			// Allocate information for up to 128 NICs
+			IP_ADAPTER_ADDRESSES AdapterInfo[128];
+
+			// Save memory size of buffer
+			DWORD dwBufLen = sizeof(AdapterInfo);
+
+			// Arguments for GetAdapterAddresses:
+			DWORD dwStatus = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, AdapterInfo, &dwBufLen);
+			// [out] buffer to receive data
+			// [in] size of receive data buffer
+
+
+			if (dwStatus == NO_ERROR) {
+				// Contains pointer to current adapter info
+				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
+
+				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
+
+#ifdef _DEBUG_SYS
+					std::wcout << pAdapterInfo->FriendlyName << '%' << pAdapterInfo->IfIndex << std::endl;
+					BOOST_ASSERT(pAdapterInfo->IfIndex == pAdapterInfo->Ipv6IfIndex);
+					if (pAdapterInfo->FirstPrefix) {
+						auto pPrefix = pAdapterInfo->FirstPrefix;
+						int i = 0;
+						for (; pPrefix != NULL; i++) {
+							//boost::asio::ip::address_v4 addr(pPrefix->Address.lpSockaddr);
+							
+							pPrefix = pPrefix->Next;
+						}
+						printf("\tNumber of IP Adapter Prefix entries: %d\n", i);
+					}
+#endif
+					//prefix.push_back(std::to_string(pAdapterInfo->IfIndex));
+
+					// Progress through linked list
+					pAdapterInfo = pAdapterInfo->Next;
+				};
+			}
+			return boost::asio::ip::address();
+
+#else
+			struct ifaddrs* ifaddr, * ifa;
+			char host[NI_MAXHOST];
+
+			//
+			//	init ifaddr
+			//
+			if (getifaddrs(&ifaddr) == -1) return boost::asio::ip::address();
+
+			//
+			//	loop over all interfaces
+			//
+			for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
+			{
+				//
+				//	next entry
+				//
+				if (ifa->ifa_addr == NULL) continue;
+
+				int s = getnameinfo(ifa->ifa_addr
+					, sizeof(struct sockaddr_in)
+					, host
+					, NI_MAXHOST
+					, NULL
+					, 0
+					, NI_NUMERICHOST);
+
+				if (boost::algorithm::equals(ifa->ifa_name, ifname) && (ifa->ifa_addr->sa_family == AF_INET))
+				{
+					if (s == 0) {
+#ifdef _DEBUG
+						std::cout
+							<< ifa->ifa_name
+							<< " => "
+							<< host
+							<< std::endl;
+#endif
+						break;
+					}
+				}
+			}
+
+			freeifaddrs(ifaddr);
+			return boost::asio::ip::make_address(host);
+
+#endif
 
 		}
 
