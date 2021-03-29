@@ -66,6 +66,10 @@ namespace cyng {
 		case op::RET: 	os << "RET";	break;
 
 		case op::INVOKE:	os << "INVOKE";	break;
+		case op::INVOKE_R:	os << "INVOKE_R";	break;
+		case op::FORWARD:	os << "FORWARD";	break;
+
+		case op::IDENT:		os << "IDENT";	break;
 		case op::NOW: 		os << "NOW";	break;
 		case op::PID: 		os << "PID";	break;
 		case op::TID: 		os << "TID";	break;

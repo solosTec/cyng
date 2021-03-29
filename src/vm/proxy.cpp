@@ -17,8 +17,7 @@ namespace cyng {
 		try {
 			return gen(cp->get_name());
 		}
-		catch(std::runtime_error const&) {
-		}
+		catch(std::runtime_error const&) {}
 		return boost::uuids::nil_uuid();
 	}
 

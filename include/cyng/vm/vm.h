@@ -112,6 +112,13 @@ namespace cyng {
 		virtual void invoke() = 0;
 		virtual void invoke_r() = 0;
 
+	private:
+		/**
+		 * push UUID on stack
+		 */
+		void ident();
+		void forward();
+
 	protected:
 		channel_weak channel_;
 		/**

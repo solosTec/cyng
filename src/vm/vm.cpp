@@ -1,5 +1,6 @@
 #include <cyng/vm/vm.h>
 #include <cyng/vm/mesh.h>
+#include <cyng/vm/proxy.h>
 
 #include <cyng/io/ostream.h>
 
@@ -68,8 +69,19 @@ namespace cyng {
 		case op::TID:	//	thread id
 			ctx_.tid();
 			break;
-		case op::INVOKE:	//	call function over channel
+		case op::IDENT:
+			ident();
+			break;
+		case op::INVOKE:	
+			//	call function over channel
 			invoke();
+			break;
+		case op::INVOKE_R:	
+			//	call function over channel with return value
+			invoke_r();
+			break;
+		case op::FORWARD:
+			forward();
 			break;
 
 			//	assembly
@@ -109,8 +121,25 @@ namespace cyng {
 
 	}
 
-	//void vm_base::dispatch(std::string slot, tuple_t&& msg) {
-	//	//mesh_.get_ctl().get_registry().
-	//}
+	void vm_base::ident() {
+		auto sp = channel_.lock();
+		if (sp) {
+			ctx_.push(cyng::make_object(get_tag(sp)));
+		}
+		else {
+			ctx_.push(cyng::make_object(boost::uuids::nil_uuid()));
+		}
+	}
+
+	void vm_base::forward() {
+		//
+		//	get target UUID
+		// 
+		auto tag = ctx_.forward();
+		auto channel = mesh_.lookup(tag);
+		auto [slot, msg] = ctx_.invoke();
+		if (channel)	channel->dispatch(slot, std::move(msg));
+	}
+
 
 }

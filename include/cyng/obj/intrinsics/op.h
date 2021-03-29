@@ -44,8 +44,11 @@ namespace cyng {
 		ADD = 0xF1,	//!< 	add, temp = mem[sp++]; mem[sp] = mem[sp] + temp; cy = carry
 		SUB = 0xF2,	//!< 	subtract, temp = mem[sp++]; mem[sp] = mem[sp] - temp
 
-		INVOKE = 0x100,	//!< 	call a library function
-		//IDENT,			//!< 	push VM tag onto stack
+		INVOKE = 0x100,		//!< 	call a library function
+		INVOKE_R,			//!< 	call a library function
+		FORWARD,			//!<	forward function call to other VM
+
+		IDENT,			//!< 	push VM tag onto stack (if available)
 		NOW,			//!<	push current timestamp on stack
 		PID,			//!<	push current process id on stack
 		TID,			//!<	push current thread id on stack

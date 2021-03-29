@@ -10,6 +10,8 @@
 #include <cyng/obj/util.hpp>
 #include <cyng/vm/linearize.hpp>
 
+#include <boost/uuid/uuid.hpp>
+
 #ifdef _DEBUG_VM
 #include <cyng/io/ostream.h>
 #include <iostream>
@@ -34,6 +36,15 @@ namespace cyng {
 	std::deque<buffer_t> serialize_invoke(std::string const& name, Args&&... args) {
 		return convert_to_deque(std::forward<Args>(args)..., sizeof...(Args), name, cyng::op::INVOKE);
 	}
+
+	/**
+	 * same generate_invoke<>() but serialized
+	 */
+	template < typename ...Args >
+	std::deque<buffer_t> serialize_forward(std::string const& name, boost::uuids::uuid tag, Args&&... args) {
+		return convert_to_deque(std::forward<Args>(args)..., sizeof...(Args), name, tag, cyng::op::FORWARD);
+	}
+
 }
 #endif
 

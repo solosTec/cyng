@@ -3,6 +3,8 @@
 
 #include <algorithm>
 
+#include <boost/uuid/nil_generator.hpp>>
+
 namespace cyng {
 
 	stack::stack()
@@ -199,6 +201,12 @@ namespace cyng {
 		pop();
 		std::reverse(tpl.begin(), tpl.end());
 		return { name, tpl };
+	}
+
+	boost::uuids::uuid stack::forward() {
+		auto const tag = top_value(boost::uuids::nil_uuid());
+		pop();
+		return tag;
 	}
 
 	std::tuple<std::size_t, cyng::tuple_t> stack::invoke_r() {

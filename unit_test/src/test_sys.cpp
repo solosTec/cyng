@@ -59,8 +59,8 @@ BOOST_AUTO_TEST_CASE(net)
 	//for (auto const p : pres) {
 	//	std::cout << p << std::endl;
 	//}
-	cyng::sys::get_address("Ethernet");
-	std::cout << cyng::sys::get_address("ens33");
+	//cyng::sys::get_address("Ethernet");
+	//std::cout << cyng::sys::get_address("ens33");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
