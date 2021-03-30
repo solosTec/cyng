@@ -15,11 +15,12 @@
 namespace cyng {
 
 	/**
-	 * @tparam N bitsize of AES key (possible values are 128, 196, 256)
+	 * @tparam N bitsize of AES key (possible values are 128, 192, 256)
 	 */
 	template <std::size_t N>
 	struct aes_key
 	{
+		static_assert(N == 128 || N == 192 || N == 256, "invalid size for AES key");
 		using value_type = std::uint8_t;
 		using SIZE = std::integral_constant<std::size_t, N / 8>;
 		using key_type = std::array<value_type, SIZE::value>;
@@ -30,6 +31,10 @@ namespace cyng {
 		 * @return size in bytes
 		 */
 		constexpr static std::size_t size() noexcept
+		{
+			return N;
+		}
+		constexpr static std::size_t bytes() noexcept
 		{
 			return SIZE::value;
 		}

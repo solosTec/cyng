@@ -121,7 +121,8 @@ namespace cyng {
 
 		buffer_t src;
 		src.resize(sizeof(T));
-		std::reverse_copy(buffer.begin() + offset, buffer.begin() + size, src.begin());
+		auto const pos = buffer.begin() + offset;
+		std::reverse_copy(pos, pos + size, src.begin());
 		std::memcpy(&r, src.data(), sizeof(T));
 		return r;
 	}
@@ -175,7 +176,7 @@ namespace cyng {
 
 		auto buffer = to_buffer_be<T, N, OFFSET>(n);
 		//
-		//	check network byte ordering
+		//	convert to network byte ordering
 		//
 #if !defined(docc_BIG_ENDIAN)
 		std::reverse(buffer.begin(), buffer.end());

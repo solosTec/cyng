@@ -129,6 +129,7 @@ namespace cyng {
 
 
 					default:
+						BOOST_ASSERT_MSG(false, "unknown data type to serialize");
 						break;
 					}
 

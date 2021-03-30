@@ -200,7 +200,8 @@ BOOST_AUTO_TEST_CASE(json)
 	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(std::chrono::system_clock::time_point(std::chrono::hours(36000)))), "\"1974-02-09T00:00:00+0100\"");
 
 	auto const key_1 = cyng::make_aes_key<cyng::crypto::aes128_size>(cyng::hex_to_buffer("6B59703373367639792F423F4528482B"));
-	std::cout << cyng::io::to_json(cyng::make_object(key_1)) << std::endl;
+	//std::cout << cyng::io::to_json(cyng::make_object(key_1)) << std::endl;
+	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(key_1)), "\"6B59703373367639792F423F4528482B\"");
 
 }
 
@@ -250,7 +251,7 @@ BOOST_AUTO_TEST_CASE(parser)
 		using cyng::operator<<;
 		//std::cout << obj << std::endl;
 		auto const str = cyng::io::to_typed(obj);
-		// std::cout << str << std::endl;
+		//std::cout << str << std::endl;
 		BOOST_REQUIRE_EQUAL(cmp, str);
 		});
 
@@ -455,6 +456,16 @@ BOOST_AUTO_TEST_CASE(parser)
 	cmp = cyng::io::to_typed(obj);	//	
 	inp = convert(obj);
 	p.read(std::begin(inp), std::end(inp));
+
+	//
+	//	AES key 128
+	//
+	auto const key_128 = cyng::make_aes_key<cyng::crypto::aes128_size>(cyng::hex_to_buffer("6B59703373367639792F423F4528482B"));
+	obj = cyng::make_object(key_128);
+	cmp = cyng::io::to_typed(obj);	//	
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
 
 }
 

@@ -342,7 +342,7 @@ namespace cyng {
 			static std::size_t write(std::ostream& os, aes_key<N> const& key) {
 
 				serialize_type_tag<aes_key<N>>(os);
-				auto const ll = serialize_length(os, aes_key<N>::size());
+				auto const ll = serialize_length(os, aes_key<N>::bytes());
 				return write_binary(os, key.key_) + sizeof(std::uint16_t) + ll;
 
 			}

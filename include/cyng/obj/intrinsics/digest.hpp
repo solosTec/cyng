@@ -15,6 +15,8 @@ namespace cyng {
 	template <std::size_t N>
 	struct digest
 	{
+		static_assert(N == 16 || N == 20 || N == 32 || N == 64, "invalid size for digest");
+
 		using value_type = std::uint8_t;
 		using digest_type = std::array<value_type, N>;
 

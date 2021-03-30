@@ -102,12 +102,14 @@ namespace cyng {
 				buffer_.reserve(length_);
 				break;
 			case 3:
+				//	size is send in network byte order
 				length_ = to_numeric<std::uint16_t>(buffer_, 1);
 				buffer_.clear();
 				buffer_.reserve(length_);
 				break;
 			default:
 				BOOST_ASSERT(length == 9);
+				//	size is send in network byte order
 				length_ = to_numeric<std::uint64_t>(buffer_, 1);
 				buffer_.clear();
 				buffer_.reserve(length_);
@@ -205,13 +207,13 @@ namespace cyng {
 				return make_object(make_digest<crypto::digest_sha512::size()>(buffer_));
 
 			case TC_AES128:	
-				BOOST_ASSERT(buffer_.size() == crypto::aes_128_key::size());
+				BOOST_ASSERT(buffer_.size() == crypto::aes_128_key::bytes());
 				return make_object(make_aes_key<crypto::aes_128_key::size()>(buffer_));
 			case TC_AES192:
-				BOOST_ASSERT(buffer_.size() == crypto::aes_192_key::size());
+				BOOST_ASSERT(buffer_.size() == crypto::aes_192_key::bytes());
 				return make_object(make_aes_key<crypto::aes_192_key::size()>(buffer_));
 			case TC_AES256:
-				BOOST_ASSERT(buffer_.size() == crypto::aes_256_key::size());
+				BOOST_ASSERT(buffer_.size() == crypto::aes_256_key::bytes());
 				return make_object(make_aes_key<crypto::aes_256_key::size()>(buffer_));
 
 			case TC_TUPLE:	
