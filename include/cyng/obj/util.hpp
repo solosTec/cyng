@@ -12,6 +12,10 @@
 
 #include <boost/assert.hpp>
 
+#ifdef _DEBUG
+#include <iostream>
+#endif
+
 namespace cyng {
 
 	/**
@@ -122,6 +126,7 @@ namespace cyng {
 	template <std::size_t N>
 	auto make_aes_key(buffer_t const& buffer) -> aes_key<N> {
 		using type = aes_key<N>;
+		std::cout << buffer.size() << "/" << type::size() << std::endl;
 		if (buffer.size() >= type::size()) {
 			typename type::key_type a{ 0 };
 			auto pos = std::begin(buffer);

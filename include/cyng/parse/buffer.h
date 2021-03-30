@@ -16,7 +16,7 @@ namespace cyng {
 	 * Expect an string with hexadecimal characters and
 	 * an even numbered length.
 	 */
-	buffer_t to_buffer(std::string const&);
+	buffer_t hex_to_buffer(std::string const&);
 	
 }
 #endif

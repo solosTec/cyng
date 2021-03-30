@@ -27,10 +27,11 @@ namespace cyng {
 
 		/**
 		 * Interface for ::AES_set_encrypt_key()
+		 * @return size in bytes
 		 */
 		constexpr static std::size_t size() noexcept
 		{
-			return N;
+			return SIZE::value;
 		}
 
 		/**
@@ -79,9 +80,9 @@ namespace cyng {
 
 	namespace crypto
 	{
-		constexpr std::size_t aes128_size = 16;
-		constexpr std::size_t aes192_size = 24;
-		constexpr std::size_t aes256_size = 32;
+		constexpr std::size_t aes128_size = 128;
+		constexpr std::size_t aes192_size = 192;
+		constexpr std::size_t aes256_size = 256;
 
 		using aes_128_key = aes_key<128>;	//	16 bytes
 		using aes_192_key = aes_key<192>;	//	24 bytes

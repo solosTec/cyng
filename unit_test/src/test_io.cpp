@@ -10,6 +10,8 @@
 #include <cyng/io/parser/parser.h>
 #include <cyng/obj/factory.hpp>
 #include <cyng/sys/process.h>
+#include <cyng/parse/buffer.h>
+#include <cyng/obj/util.hpp>
 
 #include <fstream>
 
@@ -196,6 +198,10 @@ BOOST_AUTO_TEST_CASE(json)
 	//auto const tp = std::chrono::system_clock::time_point(std::chrono::hours(36000));
 	//std::cout << cyng::io::to_json(cyng::make_object(tp));
 	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(std::chrono::system_clock::time_point(std::chrono::hours(36000)))), "\"1974-02-09T00:00:00+0100\"");
+
+	auto const key_1 = cyng::make_aes_key<cyng::crypto::aes128_size>(cyng::hex_to_buffer("6B59703373367639792F423F4528482B"));
+	std::cout << cyng::io::to_json(cyng::make_object(key_1)) << std::endl;
+
 }
 
 BOOST_AUTO_TEST_CASE(csv)

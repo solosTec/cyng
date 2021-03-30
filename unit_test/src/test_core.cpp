@@ -13,6 +13,9 @@
 #include <cyng/obj/container_cast.hpp>
 #include <cyng/obj/algorithm/find.h>
 #include <cyng/obj/algorithm/reader.hpp>
+#include <cyng/obj/intrinsics/buffer.h>
+#include <cyng/parse/buffer.h>
+
 #include <cyng.h>
 
 #include <boost/uuid/nil_generator.hpp>
@@ -114,6 +117,14 @@ BOOST_AUTO_TEST_CASE(constructor)
     BOOST_REQUIRE_EQUAL(cyng::make_object(boost::asio::ip::tcp::endpoint()).rtti().type_name(), "ip:tcp:ep");
     BOOST_REQUIRE_EQUAL(cyng::make_object(boost::asio::ip::udp::endpoint()).rtti().type_name(), "ip:udp:ep");
     BOOST_REQUIRE_EQUAL(cyng::make_object(boost::asio::ip::icmp::endpoint()).rtti().type_name(), "ip:icmp:ep");
+
+    //
+    //  AES key
+    //
+    auto const key_1 = cyng::make_aes_key<cyng::crypto::aes128_size>(cyng::hex_to_buffer("6B59703373367639792F423F4528482B"));
+    BOOST_REQUIRE_EQUAL(key_1.key_.at(0), 0x6b);
+    BOOST_REQUIRE_EQUAL(key_1.key_.at(0xF), 0x2b);
+
 }
 
 BOOST_AUTO_TEST_CASE(type_name_test)
