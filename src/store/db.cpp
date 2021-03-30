@@ -153,6 +153,26 @@ namespace cyng {
 
 	}
 
+	bool store::modify(std::string const& name
+		, key_t const& key
+		, param_map_t const& pm
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+
+		access([&](table* tbl) -> void {
+			result = tbl->modify(key, pm, source);
+			}, access::write(name));
+
+		return result;
+
+	}
+
 	void store::clear(std::string const& name, boost::uuids::uuid source) {
 		//
 		//	read lock

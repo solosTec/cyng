@@ -99,6 +99,9 @@ namespace cyng {
 		bool modify(key_t const& key
 			, attr_t&& attr
 			, boost::uuids::uuid source);
+		bool modify(key_t const& key
+			, attr_map_t&& am
+			, boost::uuids::uuid source);
 
 		/**
 		 * If a matching record was found, the record will be write/exclusive locked.
@@ -110,6 +113,10 @@ namespace cyng {
 		 */
 		bool modify(key_t const& key
 			, param_t const& param
+			, boost::uuids::uuid source);
+
+		bool modify(key_t const& key
+			, param_map_t const& pm
 			, boost::uuids::uuid source);
 
 		/** @brief search for primary key

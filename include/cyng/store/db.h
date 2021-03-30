@@ -166,6 +166,11 @@ namespace cyng {
 			, param_t const& param
 			, boost::uuids::uuid source);
 
+		bool modify(std::string const& name
+			, key_t const& key
+			, param_map_t const& pm
+			, boost::uuids::uuid source);
+
 		/**
 		 * safe access to multiple tables at once
 		 */

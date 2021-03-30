@@ -234,11 +234,63 @@ namespace cyng {
 	}
 
 	bool table::modify(key_t const& key
+		, attr_map_t&& am
+		, boost::uuids::uuid source) {
+
+		auto pos = data_.find(key);
+		if (pos != data_.end()) {
+
+			//
+			//	write lock this record
+			//
+			std::unique_lock<std::shared_mutex> ulock(pos->second.m_);
+
+			for (auto attr : am) {
+
+				if (pos->second.data_.at(attr.first) != attr.second) {
+
+					//
+					//	publish
+					//
+					this->pub::forward(this, key, attr, pos->second.generation_, source);
+
+					//
+					//	apply
+					//
+					swap(pos->second.data_.at(attr.first), attr.second);
+
+					//
+					//	update generation
+					//
+					++pos->second.generation_;
+
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+
+	bool table::modify(key_t const& key
 		, param_t const& param
 		, boost::uuids::uuid source) {
 
 		auto const idx = meta().get_index_by_name(param.first);
 		return modify(key, attr_t(idx, param.second), source);
+	}
+
+	bool table::modify(key_t const& key
+		, param_map_t const& pm
+		, boost::uuids::uuid source) {
+
+		attr_map_t am;
+		std::transform(pm.begin(), pm.end(), std::inserter(am, am.end()), [this](param_map_t::value_type const& param) {
+			auto const idx = meta().get_index_by_name(param.first);
+			return attr_t(idx, param.second);
+			});
+
+		return modify(key, std::move(am), source);
 	}
 
 
