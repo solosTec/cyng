@@ -12,13 +12,14 @@
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/parse/mac.h>
 #include <cyng/parse/buffer.h>
+#include <cyng/parse/string.h>
 
 #include <filesystem>
 #include <utility>
 #include <iomanip>
 
 #include <boost/numeric/conversion/converter.hpp>
-#include <boost/uuid/string_generator.hpp>
+//#include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/nil_generator.hpp>
 
 #ifdef _DEBUG_DB
@@ -271,10 +272,7 @@ namespace cyng
 						BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
 						//	format is "2014-11-28 11:06:44"
 						//	parse time stamp
-						std::tm tm = {};
-						std::stringstream ss(result);
-						ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-						return make_object(std::chrono::system_clock::from_time_t(std::mktime(&tm)));
+						return make_object(to_tp_datetime(result));
 					}
 					return make_object();
 				}
@@ -499,11 +497,9 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == cyng::crypto::aes128_size * 2, "invalid AESkey128 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::aes128_size / 4, "invalid AESkey128 format");
 						std::string const inp((const char*)ptr, size);
-
-						auto const buffer = to_buffer(inp);
-						return make_object(make_aes_key<cyng::crypto::aes128_size>(buffer));
+						return make_object(to_aes_key<crypto::aes128_size>(inp));
 					}
 					return make_object();
 				}
@@ -516,11 +512,9 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == cyng::crypto::aes192_size * 2, "invalid AESkey192 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::aes192_size / 4, "invalid AESkey192 format");
 						std::string const inp((const char*)ptr, size);
-
-						auto const buffer = to_buffer(inp);
-						return make_object(make_aes_key<cyng::crypto::aes192_size>(buffer));
+						return make_object(to_aes_key<crypto::aes192_size>(inp));
 					}
 					return make_object();
 				}
@@ -533,11 +527,9 @@ namespace cyng
 					if (ptr != NULL)
 					{
 						int size = ::sqlite3_column_bytes(stmt, index);
-						BOOST_ASSERT_MSG(size == cyng::crypto::aes256_size * 2, "invalid AESkey256 format");
+						BOOST_ASSERT_MSG(size == cyng::crypto::aes256_size / 4, "invalid AESkey256 format");
 						std::string const inp((const char*)ptr, size);
-
-						auto const buffer = to_buffer(inp);
-						return make_object(make_aes_key<cyng::crypto::aes256_size>(buffer));
+						return make_object(to_aes_key<crypto::aes256_size>(inp));
 					}
 					return make_object();
 				}
@@ -599,9 +591,7 @@ namespace cyng
 						if (str.size() != 36) {
 							return make_object(boost::uuids::nil_uuid());
 						}
-						boost::uuids::string_generator gen;
-						const boost::uuids::uuid result = gen(str);
-						return make_object(result);
+						return make_object(to_uuid(str));
 					}
 					return make_object();
 				}
@@ -633,16 +623,7 @@ namespace cyng
 						BOOST_ASSERT(str.size() == static_cast<std::size_t>(size));
 						BOOST_ASSERT(str.size() > 6);
 
-						//
-						//	convert to IP address
-						//
-						boost::system::error_code ec;
-						auto const address = boost::asio::ip::make_address(str, ec);
-
-						return (!ec)
-							? cyng::make_object(address)
-							: cyng::make_object(boost::asio::ip::make_address("0.0.0.0"))
-							;
+						return make_object(to_ip_address(str));
 					}
 					return make_object(boost::asio::ip::address());
 				}

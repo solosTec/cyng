@@ -197,7 +197,7 @@ namespace cyng {
 	//	initialize static
 	//
 	template <typename COLUMN>
-	COLUMN meta<COLUMN>::null_("", TC_EOD, 0);
+	COLUMN meta<COLUMN>::null_("", TC_EOD/*, 0*/);
 		
 	/**
 	 * in-memory table
