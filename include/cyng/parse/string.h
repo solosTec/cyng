@@ -9,6 +9,7 @@
 
 #include <cyng/obj/intrinsics/aes_key.hpp>
 #include <cyng/obj/buffer_cast.hpp>
+#include <cyng/obj/util.hpp>
 
 #include <string>
 #include <vector>
