@@ -30,10 +30,10 @@ namespace cyng {
 		return s_.back();
 	}
 
-	object&& stack::remove()
+	object stack::remove()
 	{
-		auto &&obj = std::move(s_.back());
-		top();
+		auto obj = std::move(s_.back());
+		pop();
 		return std::move(obj);
 	}
 
@@ -56,8 +56,7 @@ namespace cyng {
 	void stack::make_attr()
 	{
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (attr)");
-		auto const idx = top_value<std::size_t>();
-		pop();
+		auto const idx = pop_value<std::size_t>();
 		push(make_object(attr_t(idx, remove())));
 	}
 
@@ -67,8 +66,7 @@ namespace cyng {
 	void stack::make_param()
 	{
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (param)");
-		auto const key = top_value<std::string>();
-		pop();
+		auto const key = pop_value<std::string>();
 		push(make_object(param_t(key, remove())));
 	}
 
@@ -83,8 +81,7 @@ namespace cyng {
 		pop();
 		attr_map_t amap;
 		while (size-- != 0) {
-			amap.insert(top_value<attr_t>());
-			pop();
+			amap.insert(pop_value<attr_t>());
 		}
 		push(make_object(std::move(amap)));
 	}
@@ -101,8 +98,7 @@ namespace cyng {
 		pop();
 		param_map_t pmap;
 		while (size-- != 0) {
-			pmap.insert(top_value<param_t>());
-			pop();
+			pmap.insert(pop_value<param_t>());
 		}
 		push(make_object(std::move(pmap)));
 	}
@@ -174,8 +170,7 @@ namespace cyng {
 
 	void stack::assert_type() {
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (assert_type)");
-		auto tag = top_value<type_code>();
-		pop();
+		auto const tag = pop_value<type_code>();
 		BOOST_ASSERT_MSG(s_.back().rtti().tag() == tag, "ASSERT_TYPE");
 	}
 
@@ -194,11 +189,9 @@ namespace cyng {
 		// * parameters ...
 		//
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (invoke)");
-		auto const name = top_value<std::string>();
-		pop();
+		auto const name = pop_value<std::string>();
 		make_tuple();
-		auto tpl = top_value<tuple_t>();
-		pop();
+		auto tpl = pop_value<tuple_t>();
 		std::reverse(tpl.begin(), tpl.end());
 		return { name, tpl };
 	}

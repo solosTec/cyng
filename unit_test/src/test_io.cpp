@@ -9,6 +9,7 @@
 #include <cyng/io/ostream.h>
 #include <cyng/io/parser/parser.h>
 #include <cyng/obj/factory.hpp>
+#include <cyng/obj/container_factory.hpp>
 #include <cyng/sys/process.h>
 #include <cyng/parse/buffer.h>
 #include <cyng/obj/util.hpp>
@@ -466,6 +467,13 @@ BOOST_AUTO_TEST_CASE(parser)
 	inp = convert(obj);
 	p.read(std::begin(inp), std::end(inp));
 
+	//
+	//	param_t
+	//
+	//obj = cyng::pair_factory("abc", "hello");
+	//cmp = cyng::io::to_typed(obj);	//	
+	//inp = convert(obj);
+	//p.read(std::begin(inp), std::end(inp));
 
 }
 

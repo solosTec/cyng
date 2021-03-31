@@ -40,8 +40,6 @@ BOOST_AUTO_TEST_CASE(vm)
 	cyng::mesh fabric(ctl);
 	auto vm = fabric.create_proxy();
 	//	ctx_.load(obj)
-	vm.load(make_object(cyng::op::TIDY));
-	vm.run();
 
 	vm.execute(
 		cyng::op::NOW,
@@ -50,6 +48,30 @@ BOOST_AUTO_TEST_CASE(vm)
 		cyng::make_object<std::size_t>(3),
 		cyng::op::MAKE_TUPLE,
 		cyng::TC_TUPLE,
+		cyng::op::ASSERT_TYPE
+	);
+
+	vm.load(make_object(cyng::op::TIDY));
+	vm.run();
+
+	vm.execute(
+		cyng::op::NOW,
+		cyng::make_object("abc"),
+		cyng::op::MAKE_PARAM,
+		cyng::TC_PARAM,
+		cyng::op::ASSERT_TYPE
+	);
+
+	vm.execute(
+		cyng::op::NOW,
+		cyng::make_object("now-1"),
+		cyng::op::MAKE_PARAM,
+		cyng::op::NOW,
+		cyng::make_object("now-2"),
+		cyng::op::MAKE_PARAM,
+		cyng::make_object<std::size_t>(2),
+		cyng::op::MAKE_PARAM_MAP,
+		cyng::TC_PARAM_MAP,
 		cyng::op::ASSERT_TYPE
 	);
 

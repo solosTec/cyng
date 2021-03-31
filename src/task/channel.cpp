@@ -2,6 +2,12 @@
 #include <cyng/task/task.hpp>
 #include <cyng/obj/object.h>
 
+#ifdef _DEBUG_TASK
+#include <boost/algorithm/string.hpp>
+#include <string>
+#include <iostream>
+#include <cyng/io/ostream.h>
+#endif
 
 namespace cyng {
 
@@ -39,6 +45,21 @@ namespace cyng {
     }
 
     void channel::dispatch(std::string slot, tuple_t&& msg) {
+#ifdef _DEBUG_TASK
+        //  search for a bug in "db.req.update"
+        if (boost::algorithm::equals(slot, "db.req.update")) {
+            std::cout
+                << std::endl
+                << std::endl
+                << slot
+                << ": "
+                << msg
+                << std::endl
+                << std::endl
+                ;
+        }
+        
+#endif
         dispatch(lookup(slot), std::move(msg));
     }
 

@@ -38,7 +38,7 @@ namespace cyng {
 		/** @brief get top value of stack and remove it
 		 *
 		 */
-		object&& remove();
+		object remove();
 
 		/** @brief establish base address
 		 *
@@ -121,6 +121,13 @@ namespace cyng {
 			return value_cast<T>(s_.back(), def);
 		}
 
+		template <typename T>
+		T pop_value(T def = T())
+		{
+			T value = top_value(def);
+			pop();
+			return value;
+		}
 
 	private:
 		deque_t s_;
