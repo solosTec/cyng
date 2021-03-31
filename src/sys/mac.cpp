@@ -67,7 +67,7 @@ namespace cyng {
 			std::string line;
 			if (std::getline(infile, line, '\n'))
 			{
- 				std::cout << "parse: " << line << std::endl;
+ 				//std::cout << "parse: " << line << std::endl;
                 auto const mac = to_mac48(line);
 				//
 				//	skip value from loopback device
