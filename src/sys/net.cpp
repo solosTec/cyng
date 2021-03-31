@@ -239,14 +239,17 @@ namespace cyng
 		}
 
 #if defined(BOOST_OS_LINUX_AVAILABLE)
-		boost::asio::ip::address get_address_IPv6(std::string nic, ipv6_scope sc) {
+		std::string get_address_IPv6(std::string nic, ipv6_scope sc) {
 
-			boost::asio::ip::address result;
+			std::string result("0.0.0.0");
 			read_ipv6_info([&result, nic, sc](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
-				std::cout << address << " - " << name << " - " << std::hex << scope << std::endl;
+				//std::cout << address << " - " << name << " - " << std::hex << scope << std::endl;
 				if (boost::algorithm::equals(name, nic) && sc == scope) {
 					// std::cout << to_ipv6(address, scope) << std::endl;
-					result = to_ipv6(address, scope);
+					result = (scope == LINKLOCAL)
+						? to_ipv6(address, scope).to_string() + "%" + name 
+						: to_ipv6(address, scope).to_string()
+						;
 					return false;
 				}
 				return true;
