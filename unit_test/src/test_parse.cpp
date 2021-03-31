@@ -4,7 +4,10 @@
 
 #include <boost/test/unit_test.hpp>
 #include <cyng/parse/hex.h>
+#include <cyng/parse/buffer.h>
 #include <cyng/parse/mac.h>
+#include <cyng/parse/net.h>
+
 #include <cyng/io/ostream.h>
 #include <cyng/parse/json/json_parser.h>
 #include <cyng/parse/csv/csv_parser.h>
@@ -13,6 +16,10 @@
 #include <cyng/obj/container_cast.hpp>
 
 #include <iostream>
+#include <iomanip>
+#include <fstream>
+
+#include <boost/asio.hpp>
 
 BOOST_AUTO_TEST_SUITE(parse_suite)
 
@@ -115,6 +122,47 @@ BOOST_AUTO_TEST_CASE(csv)
 
 	csvp1.read(std::begin(inp_01), std::end(inp_01));
 
+}
+
+//void read_ipv6_info(std::function<void(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
+//	std::ifstream ifs("D:\\reboot\\cyng\\build\\if_inet6.txt");
+//	ifs >> std::setbase(16);
+//	std::string address, name;
+//	std::uint64_t index, len, scope, flag;
+//	while (ifs) {
+//		ifs >> address >> index >> len >> scope >> flag >> name;
+//		cb(address, name, index, len, scope, flag);
+//	}
+//}
+
+BOOST_AUTO_TEST_CASE(ipv6)
+{
+	//cat / proc / net / if_inet6
+	//00000000000000000000000000000001 01 80 10 80       lo
+	//fe80000000000000022518fffef11fd1 05 40 20 80      br0
+	//fe80000000000000022518fffef11fd3 04 40 20 80     eth2
+	//2a001e8000640006022518fffef11fd1 05 40 00 00      br0
+
+	boost::system::error_code ec;
+	boost::asio::ip::address_v6::bytes_type t;
+	//boost::asio::detail::array<unsigned char, 16>
+	auto addr = cyng::hex_to_buffer("2a001e8000640006022518fffef11fd1");
+	BOOST_REQUIRE_EQUAL(addr.size(), 16);
+	auto pos = addr.begin();
+	for (auto& e : t) {
+		e = *pos++;
+	}
+	//	2a00:1e80:64:6:225:18ff:fef1:1fd1
+	//std::cout << boost::asio::ip::make_address_v6(t, 0).to_string() << std::endl;
+	BOOST_REQUIRE_EQUAL(boost::asio::ip::make_address_v6(t, 0).to_string(), "2a00:1e80:64:6:225:18ff:fef1:1fd1");
+	//BOOST_TEST(!ec);
+
+	//read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) {
+	//	
+	//	std::cout << address << " - " << name << std::endl;
+
+	//	std::cout << cyng::to_ipv6(address, scope) << std::endl;;
+	//	});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

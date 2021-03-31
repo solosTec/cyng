@@ -10,6 +10,7 @@ set (parse_cpp
     src/parse/duration.cpp
     src/parse/buffer.cpp
     src/parse/string.cpp
+    src/parse/net.cpp
 )
     
 set (parse_h
@@ -21,6 +22,7 @@ set (parse_h
     include/cyng/parse/string.h
     include/cyng/parse/json.h
     include/cyng/parse/csv.h
+    include/cyng/parse/net.h
 )
 
 set (parse_json

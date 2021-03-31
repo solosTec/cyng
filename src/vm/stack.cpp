@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include <boost/uuid/nil_generator.hpp>>
+#include <boost/uuid/nil_generator.hpp>
 
 namespace cyng {
 

@@ -6,8 +6,10 @@
  */
 
 #include <cyng/sys/net.h>
+#include <cyng/parse/net.h>
 
 #include <iostream>
+#include <iomanip>
 
 #include <boost/predef.h>
 #include <boost/assert.hpp>
@@ -158,6 +160,20 @@ namespace cyng
 
 		}
 
+#if defined(BOOST_OS_LINUX_AVAILABLE)
+		void read_ipv6_info(std::function<void(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
+			std::ifstream ifs("/proc/net/if_inet6");
+			ifs >> std::setbase(16);
+			std::string address, name;
+			std::uint64_t index, len, scope, flag;
+			while (ifs) {
+				ifs >> address >> index >> len >> scope >> flag >> name;
+				cb(address, name, index, len, scope, flag);
+			}
+		}
+
+#endif
+
 		boost::asio::ip::address get_address_IPv6(std::string nic) {
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
@@ -205,56 +221,32 @@ namespace cyng
 			return boost::asio::ip::address();
 
 #else
-			struct ifaddrs* ifaddr, * ifa;
-			char host[NI_MAXHOST];
-
-			//
-			//	init ifaddr
-			//
-			if (getifaddrs(&ifaddr) == -1) return boost::asio::ip::address();
-
-			//
-			//	loop over all interfaces
-			//
-			for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
-			{
-				//
-				//	next entry
-				//
-				if (ifa->ifa_addr == NULL) continue;
-				auto const family = ifa->ifa_addr->sa_family;
-
-				if (family == AF_INET6) 	{
-					int s = getnameinfo(ifa->ifa_addr
-						, sizeof(struct sockaddr_in6)
-						, host
-						, NI_MAXHOST
-						, NULL
-						, 0
-						, NI_NUMERICHOST);
-
-					if (boost::algorithm::equals(ifa->ifa_name, nic) && (ifa->ifa_addr->sa_family == AF_INET6))
-					{
-						if (s == 0) {
-#ifdef _DEBUG_SYS
-							std::cout
-								<< ifa->ifa_name
-								<< " => "
-								<< host
-								<< std::endl;
-#endif
-							break;
-						}
-					}
-				}
-			}
-
-			freeifaddrs(ifaddr);
-			return boost::asio::ip::make_address(host);
+			boost::asio::ip::address address;
+			read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) {
+				std::cout << address << " - " << name << std::endl;
+				//if (boost::algorithm::equals())
+				std::cout << to_ipv6(address, scope) << std::endl;
+				address = to_ipv6(address, scope);
+				});
+			return address;
 
 #endif
 
 		}
+
+#if defined(BOOST_OS_LINUX_AVAILABLE)
+		boost::asio::ip::address get_address_IPv6(std::string nic, ipv6_scope) {
+			boost::asio::ip::address address;
+			read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) {
+				std::cout << address << " - " << name << std::endl;
+
+				std::cout << to_ipv6(address, scope) << std::endl;
+				address = to_ipv6(address, scope);
+				});
+			return address;
+
+		}
+#endif
 
 	}
 }
