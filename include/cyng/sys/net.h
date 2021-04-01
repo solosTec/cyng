@@ -52,7 +52,7 @@ namespace cyng {
 		boost::asio::ip::address get_address_IPv6(std::string nic);
 
 #if defined(BOOST_OS_LINUX_AVAILABLE)
-		std::string get_address_IPv6(std::string nic, ipv6_scope);
+		boost::asio::ip::address get_address_IPv6(std::string nic, ipv6_scope);
 #endif
 
 	}
