@@ -76,6 +76,27 @@ namespace cyng {
 
 	}
 
+	bool store::insert_auto(std::string const& name
+		, data_t&& data
+		, boost::uuids::uuid source) {
+
+		bool result = false;
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+		access([&](table* tbl) -> void {
+			auto ptr = dynamic_cast<auto_table*>(tbl);
+			if (ptr != nullptr) {
+				result = ptr->insert(std::move(data), source).second;
+			}
+		}, access::write(name));
+
+		return result;
+
+	}
+
+
 	bool store::merge(std::string const& name
 		, key_t const& key
 		, data_t&& data

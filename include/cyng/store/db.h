@@ -110,6 +110,10 @@ namespace cyng {
 			, std::uint64_t generation
 			, boost::uuids::uuid source);
 
+		bool insert_auto(std::string const& name
+			, data_t&& data
+			, boost::uuids::uuid source);
+
 		/**
 		 * Place a new record into the table. If a records
 		 * with the same key already exists it will be replaced.
