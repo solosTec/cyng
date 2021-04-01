@@ -92,9 +92,27 @@ namespace cyng {
 				;
 		}
 
+		/**
+		 * @param col this is the zero-based index of the complete record
+		 * including the key.
+		 *
+		 * @return the column of the specified index
+		 */
 		COLUMN const& get_column(std::size_t col) const noexcept {
 			return (col < columns_.size())
 				? columns_.at(col)
+				: null_
+				;
+		}
+
+		/**
+		 * @param col this is the zero-based index in the data body. 
+		 * 
+		 * @return the column of the specified index
+		 */
+		COLUMN const& get_body_column(std::size_t col) const noexcept {
+			return (col < body_size())
+				? columns_.at(col + key_size())
 				: null_
 				;
 		}

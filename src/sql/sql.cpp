@@ -260,6 +260,34 @@ namespace cyng
 			return details::sql_where(dialect_, reset_clause(m));
 		}
 
+		details::sql_where update::set_placeholder(meta_sql const& m, std::size_t idx) {
+
+			clause_.push_back("SET");
+			BOOST_ASSERT(idx < m.body_size());
+
+			auto const& col = m.get_body_column(idx + 1);	//	skip "gen"
+
+			//
+			//	value
+			//
+			clause_.push_back(col.name_);
+			clause_.push_back("=");
+			clause_.push_back(details::substitute_ph(dialect_, col.type_));
+
+			//
+			//	gen (first column after the key)
+			//
+			auto const& gen = m.get_column(m.key_size());
+			BOOST_ASSERT(boost::algorithm::equals(gen.name_, "gen"));
+			clause_.push_back(",");
+			clause_.push_back(gen.name_);
+			clause_.push_back("=");
+			clause_.push_back(details::substitute_ph(dialect_, gen.type_));
+
+			return details::sql_where(dialect_, reset_clause(m));
+		}
+
+
 		clause_t update::reset_clause(meta_sql const& m) {
 			clause_t tmp = std::move(clause_);
 			clause_.push_back("UPDATE");

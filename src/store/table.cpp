@@ -248,7 +248,8 @@ namespace cyng {
 			for (auto attr : am) {
 		
 				BOOST_ASSERT(attr.first != std::numeric_limits<std::size_t>::max());
-				if ((attr.first < meta().size())
+				
+				if ((attr.first < meta().body_size())
 					&& (pos->second.data_.at(attr.first) != attr.second)) {
 
 					//
@@ -278,7 +279,7 @@ namespace cyng {
 		, param_t const& param
 		, boost::uuids::uuid source) {
 
-		auto const idx = meta().get_index_by_name(param.first);
+		auto const idx = meta().get_body_index_by_name(param.first);
 		return modify(key, attr_t(idx, param.second), source);
 	}
 
@@ -288,7 +289,7 @@ namespace cyng {
 
 		attr_map_t am;
 		std::transform(pm.begin(), pm.end(), std::inserter(am, am.end()), [this](param_map_t::value_type const& param) {
-			auto const idx = meta().get_index_by_name(param.first);
+			auto const idx = meta().get_body_index_by_name(param.first);
 			return attr_t(idx, param.second);
 			});
 

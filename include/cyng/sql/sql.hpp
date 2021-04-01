@@ -247,6 +247,13 @@ namespace cyng
 			 */
 			details::sql_where set_placeholder(meta_sql const& m);
 
+			/**
+			 * update a single column and the "gen" column
+			 * 
+			 * @param col zero based index of data body
+			 */
+			details::sql_where set_placeholder(meta_sql const& m, std::size_t col);
+
 		private:
 			clause_t reset_clause(meta_sql const& m);
 
