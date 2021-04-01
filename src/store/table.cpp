@@ -246,8 +246,10 @@ namespace cyng {
 			std::unique_lock<std::shared_mutex> ulock(pos->second.m_);
 
 			for (auto attr : am) {
-
-				if (pos->second.data_.at(attr.first) != attr.second) {
+		
+				BOOST_ASSERT(attr.first != std::numeric_limits<std::size_t>::max());
+				if ((attr.first < meta().size())
+					&& (pos->second.data_.at(attr.first) != attr.second)) {
 
 					//
 					//	publish
