@@ -184,7 +184,7 @@ namespace cyng {
 			//	type - length - value
 			//
 			serialize_type_tag<pid>(os);
-			auto const ll = serialize_length(os, sizeof(mac64::address_type));
+			auto const ll = serialize_length(os, sizeof(pid::value_type));
 			write_binary(os, v.operator value_type());
 			return sizeof(value_type) + sizeof(std::uint16_t) + ll;
 		}
