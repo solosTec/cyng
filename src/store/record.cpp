@@ -19,7 +19,7 @@ namespace cyng {
 	{}
 
 	bool record::empty() const {
-		return meta_.check_integrity(key_, data_);
+		return !meta_.check_integrity(key_, data_);
 	}
 
 	key_t const& record::key() const {
