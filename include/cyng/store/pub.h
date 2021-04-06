@@ -37,7 +37,10 @@ namespace cyng {
 		void connect_remove(slot_ptr);
 		void connect_clear(slot_ptr);
 
-		void disconnect(slot_ptr);
+		/**
+		 * @return true if insert-slot was active
+		 */
+		bool disconnect(slot_ptr);
 
 	protected:
 		virtual void charge(slot_ptr) = 0;

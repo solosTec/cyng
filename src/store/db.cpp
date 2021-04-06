@@ -288,6 +288,22 @@ namespace cyng {
 			}, access::write(name));
 	}
 
+	std::size_t store::disconnect(slot_ptr sp) {
+
+		//
+		//	read lock
+		//
+		std::shared_lock<std::shared_mutex> sldb(m_);
+
+		std::size_t counter{ 0 };
+		for (auto& tbl : tables_) {
+			std::shared_lock<std::shared_mutex> sltbl(tbl.second->m_);
+			if (tbl.second->disconnect(sp))	counter++;
+		}
+
+		return counter;
+	}
+
 	namespace access {
 		read::read(std::string name)
 			: name_(name)

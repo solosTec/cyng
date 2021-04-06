@@ -47,11 +47,11 @@ namespace cyng {
 		slots_clear_.push_back(sp);
 	}
 
-	void pub::disconnect(slot_ptr sp) {
-		cyng::disconnect(slots_insert_, sp);
+	bool pub::disconnect(slot_ptr sp) {
 		cyng::disconnect(slots_modify_, sp);
 		cyng::disconnect(slots_remove_, sp);
 		cyng::disconnect(slots_clear_, sp);
+		return cyng::disconnect(slots_insert_, sp);
 	}
 
 	void pub::forward(table const* tbl

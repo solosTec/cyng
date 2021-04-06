@@ -277,6 +277,13 @@ namespace cyng {
 
 		void disconnect(std::string name, slot_ptr);
 
+		/**
+		 * disconnect from all tables
+		 * 
+		 * @return number of disconnected tables
+		 */
+		std::size_t disconnect(slot_ptr);
+
 	private:
 
 		template <typename ...Tbls>
