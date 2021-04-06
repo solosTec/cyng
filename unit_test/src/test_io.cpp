@@ -202,7 +202,9 @@ BOOST_AUTO_TEST_CASE(json)
 
 	auto const key_1 = cyng::make_aes_key<cyng::crypto::aes128_size>(cyng::hex_to_buffer("6B59703373367639792F423F4528482B"));
 	//std::cout << cyng::io::to_json(cyng::make_object(key_1)) << std::endl;
-	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(key_1)), "\"6B59703373367639792F423F4528482B\"");
+	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(key_1)), "\"6b59703373367639792f423f4528482b\"");
+	//std::cout << cyng::io::to_json(cyng::make_object(cyng::pid(12345))) << std::endl;
+	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(cyng::pid(12345))), "\"012345\"");
 
 }
 
