@@ -297,7 +297,7 @@ namespace cyng {
 
 		std::size_t counter{ 0 };
 		for (auto& tbl : tables_) {
-			std::shared_lock<std::shared_mutex> sltbl(tbl.second->m_);
+			std::unique_lock<std::shared_mutex> sltbl(tbl.second->m_);
 			if (tbl.second->disconnect(sp))	counter++;
 		}
 
