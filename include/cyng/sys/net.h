@@ -10,8 +10,10 @@
 
 #include <string>
 #include <vector>
-#include <boost/asio/ip/address.hpp>
+#include <cstdint>
 
+#include <boost/asio/ip/address.hpp>
+#include <boost/predef.h>
 
 namespace cyng {
 	namespace sys
@@ -53,6 +55,7 @@ namespace cyng {
 
 #if defined(BOOST_OS_LINUX_AVAILABLE)
 		boost::asio::ip::address get_address_IPv6(std::string nic, ipv6_scope);
+		void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)>);
 #endif
 
 	}

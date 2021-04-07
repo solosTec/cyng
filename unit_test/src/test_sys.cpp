@@ -9,6 +9,8 @@
 #include <cyng/sys/cpu.h>
 #include <cyng/sys/locale.h>
 #include <cyng/sys/net.h>
+#include <cyng/parse/net.h>
+
 
 #include <cyng/io/ostream.h>
 
@@ -61,6 +63,16 @@ BOOST_AUTO_TEST_CASE(net)
 	//}
 	//cyng::sys::get_address("Ethernet");
 	//std::cout << cyng::sys::get_address("ens33");
+
+	cyng::sys::read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
+		std::cout << address << " - " << name << " - " << scope << std::endl;
+		if (boost::algorithm::equals(name, "ens33") && 0x020 == scope) {
+			std::cout << cyng::to_ipv6(address, 0) << "%" << name << std::endl;
+			return false;
+		}
+		return true;
+		});
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
