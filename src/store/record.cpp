@@ -42,6 +42,15 @@ namespace cyng {
 
 	tuple_t record::to_tuple() const {
 
+		//
+		//	no additional parameters
+		//
+		return to_tuple(param_map_t());
+
+	}
+
+	tuple_t record::to_tuple(param_map_t&& pm) const {
+
 		param_map_t key, data;
 		meta_.loop([&](std::size_t idx, column const& col, bool pk) {
 			if (pk) {
@@ -56,6 +65,13 @@ namespace cyng {
 		//	generation_ is part of the data body
 		//
 		data["gen"] = make_object(gen_);
+
+		//
+		//	additional parameters
+		//
+		std::for_each(pm.begin(), pm.end(), [&data](param_map_value const& val) {
+			data[val.first] = val.second;
+			});
 
 		return cyng::make_tuple(
 			make_param("key", key),

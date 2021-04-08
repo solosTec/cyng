@@ -56,6 +56,18 @@ namespace cyng {
 		 * as parameter name.
 		 */
 		tuple_t to_tuple() const;
+
+		/**
+		 * Same as to_tuple() but with the option to add more
+		 * parameters.
+		 *
+		 * @param pm addition parameters
+		 */
+		tuple_t to_tuple(param_map_t&& pm) const;
+
+		/**
+		 * convert a record to a string with pks in <> and data in [] enclosed.
+		 */
 		std::string to_string() const;
 
 		/**
