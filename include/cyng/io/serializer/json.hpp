@@ -12,6 +12,7 @@
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/intrinsics/null.h>
+#include <cyng/obj/intrinsics/severity.h>
 
 #include <chrono>
 #include <filesystem>
@@ -148,6 +149,16 @@ namespace cyng {
 		{
 			static std::size_t write(std::ostream& os, std::filesystem::path const& v);
 		};
+
+		/**
+		 *  Severity level without spaces
+		 */
+		template <>
+		struct serializer <severity, JSON>
+		{
+			static std::size_t write(std::ostream& os, severity v);
+		};
+
 
 	}
 }

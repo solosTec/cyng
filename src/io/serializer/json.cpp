@@ -328,5 +328,20 @@ namespace cyng {
 			return os.tellp() - pos;
 		}
 
+		std::size_t serializer <severity, JSON>::write(std::ostream& os, severity s)	{
+			auto const pos = os.tellp();
+			switch (s)
+			{
+			case severity::LEVEL_TRACE:		os << "TRACE";		break;
+			case severity::LEVEL_DEBUG: 	os << "DEBUG";		break;
+			case severity::LEVEL_INFO: 		os << "INFO";		break;
+			case severity::LEVEL_WARNING: 	os << "WARNING";	break;
+			case severity::LEVEL_ERROR: 	os << "ERROR";		break;
+			case severity::LEVEL_FATAL: 	os << "FATAL";		break;
+			default:
+				break;
+			}
+			return os.tellp() - pos;
+		}
 	}
 }

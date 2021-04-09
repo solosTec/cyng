@@ -209,6 +209,9 @@ BOOST_AUTO_TEST_CASE(json)
 	//std::cout << cyng::io::to_json(cyng::make_object(cyng::pid(12345))) << std::endl;
 	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(cyng::pid(12345))), "\"012345\"");
 
+	BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(cyng::severity::LEVEL_WARNING)), "WARNING");
+
+
 }
 
 BOOST_AUTO_TEST_CASE(csv)
