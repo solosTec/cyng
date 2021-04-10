@@ -330,6 +330,7 @@ namespace cyng {
 
 		std::size_t serializer <severity, JSON>::write(std::ostream& os, severity s)	{
 			auto const pos = os.tellp();
+			os << '"';
 			switch (s)
 			{
 			case severity::LEVEL_TRACE:		os << "TRACE";		break;
@@ -341,6 +342,7 @@ namespace cyng {
 			default:
 				break;
 			}
+			os << '"';
 			return os.tellp() - pos;
 		}
 	}
