@@ -4,6 +4,11 @@
 #include <algorithm>
 
 #include <boost/uuid/nil_generator.hpp>
+#ifdef _DEBUG
+#include <boost/algorithm/string.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <iostream>
+#endif
 
 namespace cyng {
 
@@ -198,6 +203,7 @@ namespace cyng {
 
 	boost::uuids::uuid stack::forward() {
 		auto const tag = top_value(boost::uuids::nil_uuid());
+		BOOST_ASSERT_MSG(!tag.is_nil(), "forward tag is nil");
 		pop();
 		return tag;
 	}

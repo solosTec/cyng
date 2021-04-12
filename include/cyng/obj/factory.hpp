@@ -199,6 +199,15 @@ namespace cyng {
 			 */
 			static ptr_t create(std::string const& val);
 		};
+		template <>
+		struct boxing<buffer_t&>
+		{
+			using value_t = buffer_t;
+			using wrapper_t = wrapper<value_t>;
+			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
+
+			static ptr_t create(buffer_t& val);
+		};
 
 		/**
 		 * Implementing the "don't wrap objects" rule

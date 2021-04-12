@@ -29,6 +29,12 @@ namespace cyng {
 		return make_deque(std::forward<Args>(args)..., sizeof...(Args), name, cyng::op::INVOKE);
 	}
 
+	template < typename ...Args >
+	deque_t generate_forward(std::string const& name, boost::uuids::uuid tag, Args&&... args)
+	{
+		return make_deque(std::forward<Args>(args)..., sizeof...(Args), name, tag, cyng::op::FORWARD);
+	}
+
 	/**
 	 * same generate_invoke<>() but serialized
 	 */

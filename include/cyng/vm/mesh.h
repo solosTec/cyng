@@ -71,7 +71,6 @@ namespace cyng {
 			//	create task channel
 			//
 			using vm_t = vm<typename std::decay<Fns>::type...>;	//	no references
-			//return ctl_.create_named_channel<vm_t>(boost::uuids::to_string(tag), *this, parent, std::forward<Fns>(fns)...);
 			return ctl_.create_named_channel_with_ref<vm_t>(boost::uuids::to_string(tag), *this, parent, std::forward<Fns>(fns)...);
 
 		}

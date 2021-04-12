@@ -73,6 +73,10 @@ namespace cyng {
 			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
 		}
 
+		boxing<buffer_t>::ptr_t boxing<buffer_t&>::create(buffer_t& val) {
+			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
+		}
+
 		boxing<buffer_t>::ptr_t boxing<buffer_t>::create(std::string const& val) {
 			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(value_t(std::begin(val), std::end(val))), object::tracker_);
 		}

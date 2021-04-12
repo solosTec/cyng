@@ -137,6 +137,7 @@ namespace cyng {
 		// 
 		auto tag = ctx_.forward();
 		auto channel = mesh_.lookup(tag);
+		BOOST_ASSERT_MSG(channel, "channel not found");
 		auto [slot, msg] = ctx_.invoke();
 		if (channel)	channel->dispatch(slot, std::move(msg));
 	}

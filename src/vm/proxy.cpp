@@ -38,6 +38,7 @@ namespace cyng {
 
 	void vm_proxy::run() {
 		//	slot 2
+		//	run()
 		vm_->dispatch(2, make_tuple());
 	}
 
@@ -51,6 +52,7 @@ namespace cyng {
 
 	void vm_proxy::load(deque_t&& deq) {
 		//	slot 1
+		//	ctx_.load(deq)
 		vm_->dispatch(1, cyng::make_tuple(std::move(deq)));
 	}
 
@@ -59,7 +61,8 @@ namespace cyng {
 	}
 
 	void vm_proxy::set_channel_name(std::string name, std::size_t idx) {
-		//	slot 1
+		//	slot 3
+		//	set_channel_name(name, index)
 		vm_->dispatch(3, cyng::make_tuple(name, idx));
 	}
 
