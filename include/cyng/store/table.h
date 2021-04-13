@@ -94,7 +94,7 @@ namespace cyng {
 		 *
 		 * @param key the record key
 		 * @param attr a specific attribute of the record body.
-		 * @return true if new value was sucessfully written.
+		 * @return true if new and old values were different
 		 */
 		bool modify(key_t const& key
 			, attr_t&& attr
@@ -109,7 +109,7 @@ namespace cyng {
 		 *
 		 * @param key the record key
 		 * @param param a specific parameter of the record body.
-		 * @return true if new value was sucessfully written.
+		 * @return true if new and old values were different
 		 */
 		bool modify(key_t const& key
 			, param_t const& param
