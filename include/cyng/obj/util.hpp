@@ -194,6 +194,11 @@ namespace cyng {
 		return obj.rtti().tag() == TC;
 	}
 
+	/**
+	 * merge two UUIDs with XOR. This is independend from the 
+	 * ordering of the parameters.
+	 */
+	boost::uuids::uuid merge(boost::uuids::uuid, boost::uuids::uuid);
 }
 
 #endif //	CYNG_OBJ_UTIL_HPP

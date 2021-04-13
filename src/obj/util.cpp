@@ -136,5 +136,14 @@ namespace cyng {
 		BOOST_ASSERT(buffer.size() == 1);
 		return static_cast<severity>(to_numeric<std::uint8_t>(buffer));
 	}
+
+	boost::uuids::uuid merge(boost::uuids::uuid u1, boost::uuids::uuid u2) {
+		boost::uuids::uuid r;
+		for (std::size_t idx = 0; idx < boost::uuids::uuid::static_size(); ++idx) {
+			r.data[idx] = u1.data[idx] ^ u2.data[idx];
+		}
+		return r;
+	}
+
 }
 
