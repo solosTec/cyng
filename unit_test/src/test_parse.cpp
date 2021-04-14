@@ -111,12 +111,11 @@ BOOST_AUTO_TEST_CASE(json)
 
 BOOST_AUTO_TEST_CASE(csv)
 {
-	auto const inp_01 = std::string("\"name-1\", \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
+	auto const inp_01 = std::string("\"name-1\",, \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
 	cyng::csv::parser csvp1(',', [](cyng::vector_t&& vec) {
 		//std::cout << vec << std::endl;
 		//std::cout << cyng::to_string(vec) << std::endl;
-		//	"[name-1,name-2,name-3,1,2,3,true,false,4200.00]"
-		BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[name-1,name-2,name-3,1,2,3,true,false,4200.00]");
+		BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[name-1,null,name-2,name-3,1,2,3,true,false,4200.00]");
 
 		});
 

@@ -122,6 +122,8 @@ namespace cyng
 			 */
 			std::stack<object>	stack_;
 
+			bool sep_flag_;
+
 		};
 	}
 } 	//	cyng

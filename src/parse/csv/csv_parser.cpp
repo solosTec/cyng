@@ -32,6 +32,7 @@ namespace cyng
 			, sanitizer_(std::bind(&parser::next_code_point, this, std::placeholders::_1))
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1), sep)
 			, stack_()
+			, sep_flag_(false)
 		{
 		}
 
@@ -62,18 +63,23 @@ namespace cyng
 			switch (sym.type_) {
 			case symbol_type::STRING:			//!<	text and symbols
 				process_string(std::move(sym));
+				sep_flag_ = false;
 				break;
 			case symbol_type::NUMBER:
 				process_number(std::move(sym));
+				sep_flag_ = false;
 				break;
 			case symbol_type::FLOAT:
 				process_float(std::move(sym));
+				sep_flag_ = false;
 				break;
 			case symbol_type::BOOLEAN:
 				process_bool(std::move(sym));
+				sep_flag_ = false;
 				break;
 			case symbol_type::NOTHING:
 				process_null(std::move(sym));
+				sep_flag_ = false;
 				break;
 
 			case symbol_type::SEPARATOR:
@@ -82,6 +88,7 @@ namespace cyng
 
 			case symbol_type::SYM_EOL:
 				process_eol(std::move(sym));
+				sep_flag_ = false;
 				break;
 
 			default:
@@ -92,6 +99,12 @@ namespace cyng
 
 		void parser::process_separator(symbol&& sym)
 		{
+			if (sep_flag_) {
+				stack_.push(make_object());
+			}
+			else {
+				sep_flag_ = true;
+			}
 			//BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
 		}
 
