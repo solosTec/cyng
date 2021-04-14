@@ -10,6 +10,7 @@
 #include <cyng/obj/intrinsics/aes_key.hpp>
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/util.hpp>
+#include <cyng/parse/buffer.h>
 
 #include <string>
 #include <vector>
@@ -45,7 +46,7 @@ namespace cyng {
 
 		BOOST_ASSERT_MSG(str.size() == N / 4, "invalid AES key format");
 
-		auto const buffer = to_buffer(str);
+		auto const buffer = hex_to_buffer(str);
 		return make_aes_key<N>(buffer);
 
 	}

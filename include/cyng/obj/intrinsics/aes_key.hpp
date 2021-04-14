@@ -30,13 +30,14 @@ namespace cyng {
 		 * Interface for ::AES_set_encrypt_key()
 		 * @return size in bytes
 		 */
-		constexpr static std::size_t size() noexcept
-		{
+		constexpr static std::size_t size() noexcept	{
 			return N;
 		}
-		constexpr static std::size_t bytes() noexcept
-		{
+		constexpr static std::size_t bytes() noexcept	{
 			return SIZE::value;
+		}
+		constexpr static std::size_t hex_size() noexcept	{
+			return N / 4u;
 		}
 
 		/**
