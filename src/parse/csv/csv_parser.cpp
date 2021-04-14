@@ -27,8 +27,7 @@ namespace cyng
 	namespace csv
 	{
 		parser::parser(char sep, parser_callback cb)
-			//: state_()
-			: cb_(cb)
+		: cb_(cb)
 			, result_{}
 			, sanitizer_(std::bind(&parser::next_code_point, this, std::placeholders::_1))
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1), sep)
@@ -93,8 +92,7 @@ namespace cyng
 
 		void parser::process_separator(symbol&& sym)
 		{
-			//BOOST_ASSERT_MSG(sym.value_.size() == 1, "invalid symbol");
-			BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
+			//BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
 		}
 
 

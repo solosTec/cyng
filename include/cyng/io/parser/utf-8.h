@@ -46,6 +46,7 @@ namespace cyng {
 			std::array<std::uint8_t, 4 >  char_;
 			std::size_t pos_, size_;
 			std::uint32_t value_;
+			bool bom_;
 
 			// we now need to remove a few of the leftmost bits, but how many depends
 			// upon how many extra bytes we've extracted:

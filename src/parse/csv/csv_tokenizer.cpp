@@ -57,6 +57,9 @@ namespace cyng
 			case state::UNICODE:
 				std::tie(state_, advance) = state_unicode(cp);
 				break;
+			case state::BOM:
+				std::tie(state_, advance) = state_bom(cp);
+				break;
 			default:
 				BOOST_ASSERT_MSG(false, "undefined state");
 				break;
@@ -114,6 +117,11 @@ namespace cyng
 			case '9':
 				buffer_.append(1, cp);
 				return std::make_pair(state::NUMBER, true);
+
+			case 0xef:	//	BOM
+				return (buffer_.empty())
+					? std::make_pair(state::BOM, false)
+					: std::make_pair(state::LITERAL, true);
 
 			default:
 				buffer_.append(1, cp);
@@ -254,6 +262,25 @@ namespace cyng
 				break;
 			}
 			return std::make_pair(state::ERROR_, true);
+		}
+
+		std::pair<tokenizer::state, bool> tokenizer::state_bom(std::uint32_t cp) {
+
+			buffer_.append(1, cp);
+
+			if (buffer_.size() == 3) {
+				if (buffer_.at(0) == 0xef
+					&& buffer_.at(1) == 0xbb
+					&& buffer_.at(2) == 0xbf) {
+
+					//	skip bom
+					buffer_.clear();
+					return std::make_pair(state::START, true);
+
+				}
+				return std::make_pair(state::LITERAL, true);
+			}
+			return std::make_pair(state_, true);
 		}
 
 		std::pair<tokenizer::state, bool> tokenizer::convert_to_unicode()

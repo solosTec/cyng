@@ -94,14 +94,6 @@ namespace cyng
 			void process_bool(symbol&&);
 			void process_null(symbol&&);
 
-			//void build_object();
-			//void build_member();
-			//void build_array();
-
-			//void swap(vector_t&);
-			//void swap(param_map_t&);
-
-			//void swap(state);
 			vector_t cleanup();
 
 		private:

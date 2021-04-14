@@ -33,6 +33,7 @@ namespace cyng
 				DIGITS,		//	0 ... 9
 				ESCAPE,		//	'\'
 				UNICODE,
+				BOM,		//	0xEF, 0xBB, 0xBF
 			}	state_;
 
 		public:
@@ -53,6 +54,7 @@ namespace cyng
 			std::pair<state, bool> state_exponent(std::uint32_t);
 			std::pair<state, bool> state_digits(std::uint32_t);
 			std::pair<state, bool> state_unicode(std::uint32_t);
+			std::pair<state, bool> state_bom(std::uint32_t);
 			std::pair<state, bool> convert_to_unicode();
 
 			void build_literal();
