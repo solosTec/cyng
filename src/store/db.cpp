@@ -123,12 +123,16 @@ namespace cyng {
 		, boost::uuids::uuid source) {
 
 		bool result = false;
+
 		//
-		//	read lock
+		//	read lock on db
 		//
 		std::shared_lock<std::shared_mutex> sl(m_);
 		access([&](table* tbl) -> void {
+
+			//	write lock on table
 			result = tbl->erase(key, source);
+
 			}, access::write(name));
 
 		return result;

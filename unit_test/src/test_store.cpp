@@ -11,6 +11,7 @@
 #include <cyng/obj/tag.hpp>
 #include <cyng/io/ostream.h>
 #include <cyng/obj/value_cast.hpp>
+#include <cyng/parse/string.h>
 
 #include <boost/uuid/nil_generator.hpp>
 
@@ -69,6 +70,33 @@ BOOST_AUTO_TEST_CASE(table)
 	auto rec2 = tbl.find_first("name", std::string("O"));
 	// std::cout << rec2.to_tuple() << std::endl;
 
+}
+
+BOOST_AUTO_TEST_CASE(erase)
+{
+	cyng::meta_store const m("demo"
+		, {
+			cyng::column("tag", cyng::TC_UUID),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
+		}
+	, 1);
+
+	cyng::table tbl(m);
+	auto const tag = cyng::to_uuid("28c4b783-f35d-49f1-9027-a75dbae9f5e2");
+	auto const key = cyng::key_generator(tag);
+	tbl.insert(key
+		, cyng::data_generator("A", std::chrono::system_clock::now())
+		, 1u	//	gen
+		, boost::uuids::nil_uuid());
+
+	//std::cout << tbl.size() << std::endl;
+	BOOST_REQUIRE_EQUAL(tbl.size(), 1);
+	BOOST_REQUIRE(tbl.exist(key));
+
+	auto const b = tbl.erase(key, boost::uuids::nil_uuid());
+	BOOST_REQUIRE(b);
+	BOOST_REQUIRE_EQUAL(tbl.size(), 0);
 }
 
 BOOST_AUTO_TEST_CASE(auto_table)

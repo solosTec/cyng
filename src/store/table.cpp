@@ -325,13 +325,18 @@ namespace cyng {
 		//	update secondary key
 		//
 
-		if (data_.erase(key) != 0)	{
-
+		auto const pos = data_.find(key);
+		if (pos != data_.end())	{
 
 			//
 			//	publish
 			//
 			forward(this, key, source);
+
+			//
+			//	remove
+			//
+			data_.erase(pos);
 			return true;
 		}
 		return false;
