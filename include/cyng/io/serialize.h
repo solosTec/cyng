@@ -31,7 +31,9 @@ namespace cyng {
 		 * struct TYPED {};
 		 */
 		void serialize_typed(std::ostream&, object const&);
+		void serialize_typed(std::ostream&, vector_t const&);
 		std::string to_typed(object const&);
+		std::string to_typed(vector_t const&);
 
 		/**
 		 * Serialization to an internal binary

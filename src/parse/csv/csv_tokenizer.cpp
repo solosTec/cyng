@@ -360,6 +360,9 @@ namespace cyng
 			case 'E':
 				buffer_.append(1, cp);
 				return std::make_pair(state::EXPONENT, true);
+			case '.':
+				buffer_.append(1, cp);
+				return std::make_pair(state::LITERAL, true);
 			default:
 				break;
 			}

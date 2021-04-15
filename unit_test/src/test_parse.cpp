@@ -9,6 +9,7 @@
 #include <cyng/parse/net.h>
 
 #include <cyng/io/ostream.h>
+#include <cyng/io/serialize.h>
 #include <cyng/parse/json/json_parser.h>
 #include <cyng/parse/csv/csv_parser.h>
 #include <cyng/obj/tag.hpp>
@@ -120,6 +121,16 @@ BOOST_AUTO_TEST_CASE(csv)
 		});
 
 	csvp1.read(std::begin(inp_01), std::end(inp_01));
+
+	auto const inp_02 = std::string("CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster AS 1440,IEC 62056,Lucerne,Office 2,Yes,,,");
+	cyng::csv::parser csvp2(',', [](cyng::vector_t&& vec) {
+		//std::cout << vec << std::endl;
+		//std::cout << cyng::to_string(vec) << std::endl;
+		BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster,AS,1440,IEC,62056,Lucerne,Office,2,Yes,null,null]");
+
+		});
+
+	csvp2.read(std::begin(inp_02), std::end(inp_02));
 
 }
 

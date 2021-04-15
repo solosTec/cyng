@@ -26,9 +26,12 @@ namespace cyng {
 		}
 
 
-		void serialize_typed(std::ostream& os, object const& obj)
-		{
+		void serialize_typed(std::ostream& os, object const& obj)	{
 			serialize<TYPED>::write(os, obj);
+		}
+
+		void serialize_typed(std::ostream& os, vector_t const& vec) {
+			serializer <vector_t, TYPED>::write(os, vec);
 		}
 
 		std::string to_typed(object const& obj)
@@ -37,6 +40,13 @@ namespace cyng {
 			serialize_typed(ss, obj);
 			return ss.str();
 		}
+
+		std::string to_typed(vector_t const& vec) {
+			std::stringstream ss;
+			serialize_typed(ss, vec);
+			return ss.str();
+		}
+
 
 		std::size_t serialize_binary(std::ostream& os, object const& obj)
 		{
