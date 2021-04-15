@@ -32,15 +32,15 @@ namespace cyng
 			, sanitizer_(std::bind(&parser::next_code_point, this, std::placeholders::_1))
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1), sep)
 			, stack_()
-			, sep_flag_(false)
-		{
-		}
+			, counter_{ 0 }
+		{}
 
 		parser::~parser()
 		{}
 
 		void parser::put(char c)
 		{
+			//	callback to next_code_point()
 			sanitizer_.put(c);
 		}
 
@@ -49,6 +49,10 @@ namespace cyng
 #ifdef _DEBUG_PARSE
 			std::cerr << tok << std::endl;
 #endif
+			//
+			//	tokenizer is allowed to reject input
+			//	up to 32 times
+			//
 			std::size_t limit{ 32u };
 			while(!tokenizer_.put(tok) && limit != 0u) { 
 				--limit;
@@ -63,23 +67,9 @@ namespace cyng
 			switch (sym.type_) {
 			case symbol_type::STRING:			//!<	text and symbols
 				process_string(std::move(sym));
-				sep_flag_ = false;
-				break;
-			case symbol_type::NUMBER:
-				process_number(std::move(sym));
-				sep_flag_ = false;
-				break;
-			case symbol_type::FLOAT:
-				process_float(std::move(sym));
-				sep_flag_ = false;
-				break;
-			case symbol_type::BOOLEAN:
-				process_bool(std::move(sym));
-				sep_flag_ = false;
 				break;
 			case symbol_type::NOTHING:
 				process_null(std::move(sym));
-				sep_flag_ = false;
 				break;
 
 			case symbol_type::SEPARATOR:
@@ -88,7 +78,6 @@ namespace cyng
 
 			case symbol_type::SYM_EOL:
 				process_eol(std::move(sym));
-				sep_flag_ = false;
 				break;
 
 			default:
@@ -99,57 +88,18 @@ namespace cyng
 
 		void parser::process_separator(symbol&& sym)
 		{
-			if (sep_flag_) {
-				stack_.push(make_object());
-			}
-			else {
-				sep_flag_ = true;
-			}
-			//BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
+			BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
 		}
-
 
 		void parser::process_string(symbol&& sym)
 		{
-			stack_.push(make_object(sym.value_));
-		}
-
-		void parser::process_number(symbol&& sym)
-		{
-			try {
-				stack_.push(make_object(boost::lexical_cast<std::int64_t>(sym.value_)));
-			}
-			catch (boost::bad_lexical_cast const& ex) {
-#ifdef _DEBUG_PARSE
-				std::cout << ex.what() << std::endl;
-#endif
-				stack_.push(make_object(sym.value_));
-			}
-		}
-
-		void parser::process_float(symbol&& sym)
-		{
-			try {
-				stack_.push(make_object(boost::lexical_cast<std::double_t>(sym.value_)));
-			}
-			catch (boost::bad_lexical_cast const& ex) {
-#ifdef _DEBUG_PARSE
-				std::cout << ex.what() << std::endl;
-#endif
-				stack_.push(make_object(sym.value_));
-			}
-		}
-
-		void parser::process_bool(symbol&& sym)
-		{
-			bool const b = boost::algorithm::equals(sym.value_, "true");
-			stack_.push(make_object(b));
+			stack_.push(sym.value_);
 		}
 
 		void parser::process_null(symbol&& sym)
 		{
 			BOOST_ASSERT(sym.value_.empty());
-			stack_.push(make_object());
+			stack_.push("");
 		}
 
 		void parser::process_eol(symbol&& sym)
@@ -157,10 +107,10 @@ namespace cyng
 			if (!stack_.empty())	cb_(cleanup());
 		}
 
-		vector_t parser::cleanup()
+		line_t parser::cleanup()
 		{
 			BOOST_ASSERT(!stack_.empty());
-			vector_t vec;
+			line_t vec;
 			vec.reserve(stack_.size());
 			while (!stack_.empty()) {
 				vec.push_back(std::move(stack_.top()));

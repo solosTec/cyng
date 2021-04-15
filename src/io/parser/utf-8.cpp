@@ -8,7 +8,6 @@ namespace cyng {
             , pos_{ 0 }
             , size_{ 0 }
             , value_{ 0 }
-            , bom_(false)
             {}
 
         std::size_t u8_to_u32::size() const
@@ -23,29 +22,7 @@ namespace cyng {
 
         std::pair<std::uint32_t, bool> u8_to_u32::put(char c)
         {
-            //  BOM: 0xef, 0xbb, 0xbf
-            if (c == static_cast<char>(0xef) && pos_ == 0) {
-                bom_ = true;
-                char_[pos_++] = c;
-                return { 0, false };
-            }
-            else if (bom_) {
-                char_[pos_++] = c;
-                if (pos_ == 3) {
-
-                    bom_ = false;
-                    pos_ = 0;
-
-                    if (char_.at(1) == 0xbb && char_.at(2) == 0xbf) {
-                        //  bom
-                        return { 0, false };
-                    }
-
-                    return { value_, true };
-                }
-                return { 0, false };
-            }
-            else if ((c > 0x7Fu) || (size_ != 0))
+            if ((c > 0x7Fu) || (size_ != 0))
             {
                 //
                 //  initialize glyph
@@ -122,6 +99,13 @@ namespace cyng {
 
             char_[0] = c | utf8_prefix(size);
             return { char_.data(), size };
+        }
+
+        bool is_bom(char c1, char c2, char c3) {
+            return (static_cast<char>(0xef) == c1)
+                && (static_cast<char>(0xbb) == c2)
+                && (static_cast<char>(0xbf) == c3)
+                ;
         }
 
     }

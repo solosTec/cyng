@@ -27,13 +27,9 @@ namespace cyng
 				START,
 				STRING,
 				LITERAL,
-				NUMBER,		//	1 ... 9
-				FRACTION,	//	0....
-				EXPONENT,	//	e+
-				DIGITS,		//	0 ... 9
+				SEPARATOR,
 				ESCAPE,		//	'\'
 				UNICODE,
-				BOM,		//	0xEF, 0xBB, 0xBF
 			}	state_;
 
 		public:
@@ -49,12 +45,8 @@ namespace cyng
 			std::pair<state, bool> state_string(std::uint32_t);
 			std::pair<state, bool> state_literal(std::uint32_t);
 			std::pair<state, bool> state_escape(std::uint32_t);
-			std::pair<state, bool> state_number(std::uint32_t);
-			std::pair<state, bool> state_fraction(std::uint32_t);
-			std::pair<state, bool> state_exponent(std::uint32_t);
-			std::pair<state, bool> state_digits(std::uint32_t);
+			std::pair<state, bool> state_separator(std::uint32_t);
 			std::pair<state, bool> state_unicode(std::uint32_t);
-			std::pair<state, bool> state_bom(std::uint32_t);
 			std::pair<state, bool> convert_to_unicode();
 
 			void build_literal();

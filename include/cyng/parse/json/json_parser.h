@@ -60,12 +60,39 @@ namespace cyng
 			template < typename I >
 			auto read(I start, I end) -> typename std::iterator_traits<I>::difference_type
 			{
-				std::for_each(start, end, [this](char c)
+				using value_type = typename std::iterator_traits<I>::value_type;
+
+				//	only char is supported
+				static_assert(std::is_same_v<value_type, char>, "only char is supported");
+
+				bool bom = false;
+				std::array<char, 3> trailer = { 0, 0, 0 };
+				std::for_each(start, end, [this, &bom, &trailer](char c)
 					{
 						//
-						//	Decode input stream
+						//	detect bom
 						//
-						this->put(c);
+						bom = bom || ((counter_ == 0) && (static_cast<char>(0xef) == c));
+						if (bom) {
+							trailer[counter_] = c;
+							if (counter_ == 2) {
+								bom = false;
+								if (!utf8::is_bom(trailer.at(0), trailer.at(1), trailer.at(2))) {
+									//	not a bom
+									this->put(trailer.at(0));
+									this->put(trailer.at(1));
+									this->put(trailer.at(2));
+								}
+								//	skip BOM
+							}
+						}
+						else {
+							//
+							//	Decode input stream
+							//
+							this->put(c);
+						}
+						++counter_;
 					});
 
 				return std::distance(start, end);
@@ -126,6 +153,7 @@ namespace cyng
 			 * parser value stack
 			 */
 			std::stack<object>	stack_;
+			std::size_t counter_;
 
 		};
 	}

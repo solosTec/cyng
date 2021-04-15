@@ -15,7 +15,7 @@ namespace cyng {
 		vector_t parse(std::string const& inp, char sep) {
 
 			vector_t result;
-			parser csvp(sep, [&result](vector_t&& vec) {
+			parser csvp(sep, [&result](line_t&& vec) {
 				result.push_back(make_object(std::move(vec)));
 				});
 
@@ -35,7 +35,7 @@ namespace cyng {
 
 				ifs.unsetf(std::ios::skipws);
 
-				parser csvp(sep, [&result](vector_t&& vec) {
+				parser csvp(sep, [&result](line_t&& vec) {
 					result.push_back(make_object(std::move(vec)));
 					});
 

@@ -28,13 +28,12 @@ namespace cyng
 			UNKNOWN,		//!<	unknown or error state
 			STRING,			//!<	text in quoted
 			LITERAL,		//!<	text without quotes
-			NUMBER,			//!<	number (int)
-			FLOAT,			//!<	number (float)
-			BOOLEAN,		//!<	true/false
+			//NUMBER,			//!<	number (int)
+			//FLOAT,			//!<	number (float)
+			//BOOLEAN,		//!<	true/false
 			NOTHING,		//!<	null
 
 			SEPARATOR,		//!<	',', ';'
-			//SYMBOL,			//!<	':', '[', ']', '{', '}'
 			WS,				//!<	' ', '\t'
 		};
 

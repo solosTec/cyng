@@ -33,8 +33,8 @@ namespace cyng
 			, sanitizer_(std::bind(&parser::next_code_point, this, std::placeholders::_1))
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1))
 			, stack_()
-		{
-		}
+			, counter_{ 0 }
+		{}
 
 		parser::~parser()
 		{}
@@ -49,6 +49,10 @@ namespace cyng
 #ifdef _DEBUG_PARSE
 			std::cerr << tok << std::endl;
 #endif
+			//
+			//	tokenizer is allowed to reject input
+			//	up to 32 times
+			//
 			std::size_t limit{ 32u };
 			while(!tokenizer_.put(tok) && limit != 0u) { 
 				--limit;

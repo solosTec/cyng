@@ -12,6 +12,7 @@
 #include <cyng/io/serialize.h>
 #include <cyng/parse/json/json_parser.h>
 #include <cyng/parse/csv/csv_parser.h>
+#include <cyng/parse/csv/line_cast.hpp>
 #include <cyng/obj/tag.hpp>
 #include <cyng/obj/util.hpp>
 #include <cyng/obj/container_cast.hpp>
@@ -112,21 +113,51 @@ BOOST_AUTO_TEST_CASE(json)
 
 BOOST_AUTO_TEST_CASE(csv)
 {
-	auto const inp_01 = std::string("\"name-1\",, \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
-	cyng::csv::parser csvp1(',', [](cyng::vector_t&& vec) {
-		//std::cout << vec << std::endl;
+	auto const inp_01 = std::string("\"name-1\", \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
+	cyng::csv::parser csvp1(',', [](cyng::csv::line_t&& line) {
+		for (auto const& s : line) {
+			std::cout << '"' << s << '"' << std::endl;
+		}
 		//std::cout << cyng::to_string(vec) << std::endl;
-		BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[name-1,null,name-2,name-3,1,2,3,true,false,4200.00]");
+		//BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[name-1,null,name-2,name-3,1,2,3,true,false,4200.00]");
+		auto const tpl = cyng::csv::line_cast<std::string
+			, std::string
+			, std::string
+			, std::uint32_t
+			, std::uint16_t
+			, std::int32_t
+			, bool
+			, bool
+			, double>(line);
+
+		BOOST_REQUIRE_EQUAL(std::get<0>(tpl), "name-1");
+		BOOST_REQUIRE_EQUAL(std::get<1>(tpl), "name-2");
+		BOOST_REQUIRE_EQUAL(std::get<2>(tpl), "name-3");
+
+		BOOST_REQUIRE_EQUAL(std::get<3>(tpl), 1u);
+		BOOST_REQUIRE_EQUAL(std::get<4>(tpl), 2u);
+		BOOST_REQUIRE_EQUAL(std::get<5>(tpl), 3);
+
+		BOOST_REQUIRE_EQUAL(std::get<6>(tpl), true);
+		BOOST_REQUIRE_EQUAL(std::get<7>(tpl), false);
 
 		});
 
 	csvp1.read(std::begin(inp_01), std::end(inp_01));
 
-	auto const inp_02 = std::string("CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster AS 1440,IEC 62056,Lucerne,Office 2,Yes,,,");
-	cyng::csv::parser csvp2(',', [](cyng::vector_t&& vec) {
-		//std::cout << vec << std::endl;
+	//	simulate BOM
+	auto inp_02 = std::string("qqqCH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster AS 1440,IEC 62056,Lucerne,Office 2,Yes,,,");
+	inp_02.at(0) = 0xef;
+	inp_02.at(1) = 0xbb;
+	inp_02.at(2) = 0xbf;
+	cyng::csv::parser csvp2(',', [](cyng::csv::line_t&& vec) {
+		for (auto const& s : vec) {
+			std::cout << '"' << s << '"' << std::endl;
+		}
 		//std::cout << cyng::to_string(vec) << std::endl;
-		BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster,AS,1440,IEC,62056,Lucerne,Office,2,Yes,null,null]");
+		//auto const s = cyng::to_string(vec);
+		//	                    [CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster AS 1440,IEC 62056,Lucerne,Office 2,Yes,null,null]
+		//BOOST_REQUIRE_EQUAL(s, "[CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster AS 1440,IEC 62056,Lucerne,Office 2,Yes,null,null]");
 
 		});
 

@@ -42,23 +42,11 @@ namespace cyng
 			case state::ESCAPE:
 				std::tie(state_, advance) = state_escape(cp);
 				break;
-			case state::NUMBER:
-				std::tie(state_, advance) = state_number(cp);
-				break;
-			case state::FRACTION:
-				std::tie(state_, advance) = state_fraction(cp);
-				break;
-			case state::EXPONENT:
-				std::tie(state_, advance) = state_exponent(cp);
-				break;
-			case state::DIGITS:
-				std::tie(state_, advance) = state_digits(cp);
+			case state::SEPARATOR:
+				std::tie(state_, advance) = state_separator(cp);
 				break;
 			case state::UNICODE:
 				std::tie(state_, advance) = state_unicode(cp);
-				break;
-			case state::BOM:
-				std::tie(state_, advance) = state_bom(cp);
 				break;
 			default:
 				BOOST_ASSERT_MSG(false, "undefined state");
@@ -69,24 +57,15 @@ namespace cyng
 
 		std::pair<tokenizer::state, bool> tokenizer::state_start(std::uint32_t cp)
 		{
+			//
+			//	first at all detect the separator symbol
+			//
+			if (sep_ == cp) {
+				cb_(symbol(symbol_type::SEPARATOR, cp));
+				return std::make_pair(state::SEPARATOR, true);
+			}
+
 			switch (cp) {
-			case ',':
-			case ':': 
-			case ';':
-			case '.':
-			case '~':
-			case '+':
-			case '*':
-			case '&':
-			case '/':
-			case '|':
-			case '!':
-				if (sep_ == cp) {
-					cb_(symbol(symbol_type::SEPARATOR, cp));
-					return std::make_pair(state_, true);
-				}
-				buffer_.append(1, cp);
-				return std::make_pair(state::LITERAL, true);
 
 			case ' ': 
 			case '\t':
@@ -98,30 +77,8 @@ namespace cyng
 				cb_(symbol(symbol_type::SYM_EOL, cp));
 				return std::make_pair(state_, true);
 
-			//case '\'':
 			case '"':
 				return std::make_pair(state::STRING, true);
-
-			case '0':
-				return std::make_pair(state::EXPONENT, true);
-
-			case '-':	//	sign
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				buffer_.append(1, cp);
-				return std::make_pair(state::NUMBER, true);
-
-			case 0xef:	//	BOM
-				return (buffer_.empty())
-					? std::make_pair(state::BOM, false)
-					: std::make_pair(state::LITERAL, true);
 
 			default:
 				buffer_.append(1, cp);
@@ -155,10 +112,6 @@ namespace cyng
 		std::pair<tokenizer::state, bool> tokenizer::state_literal(std::uint32_t cp)
 		{
 			switch (cp) {
-			case ' ':	//	ws is ok
-			case '\t':
-				build_literal();
-				return std::make_pair(state::START, true);
 
 			case '\n':
 			case '\r':
@@ -184,8 +137,6 @@ namespace cyng
 		void tokenizer::build_literal()
 		{
 			if (buffer_.empty())			cb_(symbol(symbol_type::NOTHING, buffer_));
-			else if (boost::algorithm::equals(buffer_, "true"))		cb_(symbol(symbol_type::BOOLEAN, buffer_));
-			else if (boost::algorithm::equals(buffer_, "false"))	cb_(symbol(symbol_type::BOOLEAN, buffer_));
 			else {
 				try {
 					//
@@ -264,23 +215,19 @@ namespace cyng
 			return std::make_pair(state::ERROR_, true);
 		}
 
-		std::pair<tokenizer::state, bool> tokenizer::state_bom(std::uint32_t cp) {
+		std::pair<tokenizer::state, bool> tokenizer::state_separator(std::uint32_t cp) {
 
-			buffer_.append(1, cp);
-
-			if (buffer_.size() == 3) {
-				if (buffer_.at(0) == 0xef
-					&& buffer_.at(1) == 0xbb
-					&& buffer_.at(2) == 0xbf) {
-
-					//	skip bom
-					buffer_.clear();
-					return std::make_pair(state::START, true);
-
-				}
-				return std::make_pair(state::LITERAL, true);
+			if (sep_ == cp) {
+				BOOST_ASSERT(buffer_.empty());
+				cb_(symbol(symbol_type::NOTHING, buffer_));
+				cb_(symbol(symbol_type::SEPARATOR, cp));
+				return std::make_pair(state_, true);
 			}
-			return std::make_pair(state_, true);
+
+			//
+			//	take the same symbol and start a new token
+			//
+			return std::make_pair(state::START, false);
 		}
 
 		std::pair<tokenizer::state, bool> tokenizer::convert_to_unicode()
@@ -304,110 +251,6 @@ namespace cyng
 			}
 			return std::make_pair(state_, true);
 		}
-
-		std::pair<tokenizer::state, bool> tokenizer::state_number(std::uint32_t cp)
-		{
-			switch (cp) {
-			case '.':
-				buffer_.append(1, cp);
-				return std::make_pair(state::FRACTION, true);
-
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '0':
-				buffer_.append(1, cp);
-				return std::make_pair(state_, true);
-
-			case 'e':
-			case 'E':
-				buffer_.append(1, '.');
-				buffer_.append(1, '0');
-				buffer_.append(1, cp);
-				return std::make_pair(state::EXPONENT, true);
-
-			default:
-				break;
-			}
-
-			cb_(symbol(symbol_type::NUMBER, buffer_));
-			buffer_.clear();
-			return std::make_pair(state::START, false);
-		}
-
-		std::pair<tokenizer::state, bool> tokenizer::state_fraction(std::uint32_t cp)
-		{
-			switch (cp) {
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '0':
-				buffer_.append(1, cp);
-				return std::make_pair(state_, true);
-			case 'e':
-			case 'E':
-				buffer_.append(1, cp);
-				return std::make_pair(state::EXPONENT, true);
-			case '.':
-				buffer_.append(1, cp);
-				return std::make_pair(state::LITERAL, true);
-			default:
-				break;
-			}
-
-			cb_(symbol(symbol_type::FLOAT, buffer_));
-			buffer_.clear();
-			return std::make_pair(state::START, false);
-		}
-
-		std::pair<tokenizer::state, bool> tokenizer::state_exponent(std::uint32_t cp)
-		{
-			switch (cp) {
-			case '-':
-			case '+':
-				buffer_.append(1, cp);
-				return std::make_pair(state::DIGITS, true);
-			default:
-				break;
-			}
-			return std::make_pair(state::DIGITS, false);
-		}
-
-		std::pair<tokenizer::state, bool> tokenizer::state_digits(std::uint32_t cp)
-		{
-			switch (cp) {
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '0':
-				buffer_.append(1, cp);
-				return std::make_pair(state_, true);
-			default:
-				break;
-			}
-			cb_(symbol(symbol_type::FLOAT, buffer_));
-			buffer_.clear();
-			return std::make_pair(state::START, false);
-		}
-
 	}
 }
 

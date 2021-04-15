@@ -39,6 +39,7 @@ set (parse_csv
     include/cyng/parse/csv/csv_parser.h
     include/cyng/parse/csv/csv_symbol.h
     include/cyng/parse/csv/csv_tokenizer.h
+    include/cyng/parse/csv/line_cast.hpp
     src/parse/csv/csv_parser.cpp
     src/parse/csv/csv_symbol.cpp
     src/parse/csv/csv_tokenizer.cpp

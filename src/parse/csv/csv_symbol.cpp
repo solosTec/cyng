@@ -66,9 +66,9 @@ namespace cyng
 			case symbol_type::UNKNOWN:	return "?";
 			case symbol_type::STRING:	return "STR";
 			case symbol_type::LITERAL:	return "LIT";
-			case symbol_type::NUMBER:	return "NUM";
-			case symbol_type::FLOAT:	return "FLT";
-			case symbol_type::BOOLEAN:	return "LOG";	//	logical
+			//case symbol_type::NUMBER:	return "NUM";
+			//case symbol_type::FLOAT:	return "FLT";
+			//case symbol_type::BOOLEAN:	return "LOG";	//	logical
 			case symbol_type::NOTHING:	return "NUL";
 
 			case symbol_type::SEPARATOR:return "SEP";

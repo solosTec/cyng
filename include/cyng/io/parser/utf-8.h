@@ -19,6 +19,11 @@ namespace cyng {
 	namespace utf8 {
 
 		/**
+		 * @return true if c1 == 0xef, c2 == 0xbb and c3 == 0xbf
+		 */
+		bool is_bom(char c1, char c2, char c3);
+
+		/**
 		 * @brief helper class to convert an utf-8 string to codepoints
 		 *
 		 */
@@ -46,7 +51,6 @@ namespace cyng {
 			std::array<std::uint8_t, 4 >  char_;
 			std::size_t pos_, size_;
 			std::uint32_t value_;
-			bool bom_;
 
 			// we now need to remove a few of the leftmost bits, but how many depends
 			// upon how many extra bytes we've extracted:

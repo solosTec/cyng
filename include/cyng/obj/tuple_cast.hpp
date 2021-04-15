@@ -89,8 +89,8 @@ namespace cyng {
 				cast_type< T >::set(inp.crbegin(), inp.crend(), out);
 				return out;
 			}
-
 		};
+
 		template <typename ... Args>
 		struct tuple_cast_helper< std::tuple< Args... >>
 		{

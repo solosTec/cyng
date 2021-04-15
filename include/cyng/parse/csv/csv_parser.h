@@ -20,11 +20,15 @@
 #include <functional>
 #include <stack>
 #include <algorithm>	//	for_each
+#include <iterator>
+#include <type_traits>
 
 namespace cyng	
 {
 	namespace csv
 	{
+		using line_t = std::vector<std::string>;
+
 		/**
 		 * Parse CSV data into a list of CYNG objects.
 		 * This demonstrates quite impressively, how powerful
@@ -44,7 +48,7 @@ namespace cyng
 		class parser
 		{
 		public:
-			using parser_callback = std::function<void(vector_t&&)>;
+			using parser_callback = std::function<void(line_t &&)>;
 
 		public:
 			/**
@@ -64,12 +68,39 @@ namespace cyng
 			template < typename I >
 			auto read(I start, I end) -> typename std::iterator_traits<I>::difference_type
 			{
-				std::for_each(start, end, [this](char c)
+				using value_type = typename std::iterator_traits<I>::value_type;
+
+				//	only char is supported
+				static_assert(std::is_same_v<value_type, char>, "only char is supported");
+
+				bool bom = false;
+				std::array<char, 3> trailer = { 0, 0, 0 };
+				std::for_each(start, end, [this, &bom, &trailer](value_type c)
 					{
 						//
-						//	Decode input stream
+						//	detect bom
 						//
-						this->put(c);
+						bom = bom || ((counter_ == 0) && (static_cast<char>(0xef) == c));
+						if (bom) {
+							trailer[counter_] = c;
+							if (counter_ == 2) {
+								bom = false;
+								if (!utf8::is_bom(trailer.at(0), trailer.at(1), trailer.at(2))) {
+									//	not a bom
+									this->put(trailer.at(0));
+									this->put(trailer.at(1));
+									this->put(trailer.at(2));
+								}
+								//	remove BOM
+							}
+						}
+						else {
+							//
+							//	Decode input stream
+							//
+							this->put(c);
+						}
+						++counter_;
 					});
 
 				put('\n');
@@ -89,12 +120,9 @@ namespace cyng
 			void process_eol(symbol&&);
 			void process_separator(symbol&&);
 			void process_string(symbol&&);
-			void process_number(symbol&&);
-			void process_float(symbol&&);
-			void process_bool(symbol&&);
 			void process_null(symbol&&);
 
-			vector_t cleanup();
+			line_t cleanup();
 
 		private:
 			/**
@@ -120,10 +148,12 @@ namespace cyng
 			/**
 			 * parser value stack
 			 */
-			std::stack<object>	stack_;
+			std::stack<std::string>	stack_;
 
-			bool sep_flag_;
-
+			/**
+			 * this flag helps to detect empty columns
+			 */
+			std::size_t counter_;
 		};
 	}
 } 	//	cyng
