@@ -56,7 +56,7 @@ namespace cyng {
 		template <typename T, int BASE>
 		struct string_policy {
 			static T cast(std::string const& str) {
-				static_assert(false, "not a numeric type");
+				//static_assert(false, "not a numeric type");
 				return T();
 			}
 		};
