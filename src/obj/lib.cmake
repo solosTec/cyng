@@ -7,16 +7,12 @@ set (object_cpp
     src/obj/object.cpp
     src/obj/tracker.cpp
     src/obj/factory.cpp
-    src/obj/value_cast.cpp
-    src/obj/buffer_cast.cpp
-    src/obj/container_cast.cpp
     src/obj/util.cpp
     src/obj/tag.cpp
     src/obj/container_factory.cpp
 )
     
 set (object_h
-    include/cyng/obj/buffer_cast.hpp
     include/cyng/obj/container_factory.hpp
     include/cyng/obj/factory.hpp
     include/cyng/obj/object.h
@@ -66,6 +62,11 @@ set (object_cast
     include/cyng/obj/value_cast.hpp
     include/cyng/obj/vector_cast.hpp
     include/cyng/obj/container_cast.hpp
+    include/cyng/obj/array_cast.hpp
+    include/cyng/obj/buffer_cast.hpp
+    src/obj/value_cast.cpp
+    src/obj/buffer_cast.cpp
+    src/obj/container_cast.cpp
 )
 
 set (object_algorithm 

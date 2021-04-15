@@ -12,7 +12,7 @@
 
 #include <algorithm>
 //#include <bit>
-#include <cyng.h>	//	docc_BIG_ENDIAN
+#include <cyng.h>	//	cyng_BIG_ENDIAN
 #include <cstring>
 #include <array>
 
@@ -92,7 +92,7 @@ namespace cyng {
 		//
 		//	check network byte ordering
 		//
-#if defined(docc_BIG_ENDIAN)
+#if defined(cyng_BIG_ENDIAN)
 		return to_numeric_be<T>(buffer);
 #else
 		return to_numeric_le<T>(buffer);
@@ -134,7 +134,7 @@ namespace cyng {
 		//
 		//	check network byte ordering
 		//
-#if defined(docc_BIG_ENDIAN)
+#if defined(cyng_BIG_ENDIAN)
 		return to_numeric_be<T>(buffer, offset);
 #else
 		return to_numeric_le<T>(buffer, offset);
@@ -178,7 +178,7 @@ namespace cyng {
 		//
 		//	convert to network byte ordering
 		//
-#if !defined(docc_BIG_ENDIAN)
+#if !defined(cyng_BIG_ENDIAN)
 		std::reverse(buffer.begin(), buffer.end());
 #endif
 		return buffer;

@@ -7,7 +7,7 @@
 
 #include <cyng/parse/hex.h>
 #include <boost/assert.hpp>
-#include <cyng.h>	//	docc_BIG_ENDIAN
+#include <cyng.h>	//	cyng_BIG_ENDIAN
 
 namespace cyng
 {
@@ -59,7 +59,7 @@ namespace cyng
 	}
 
 	std::uint8_t hex_to_u8(char c1, char c2)	{
-#if defined(docc_BIG_ENDIAN)
+#if defined(cyng_BIG_ENDIAN)
 		return hex_to_u8_be(c1, c2);
 #else
 		return hex_to_u8_le(c1, c2);
@@ -90,7 +90,7 @@ namespace cyng
 	}
 
 	std::uint16_t hex_to_u16(char c1, char c2, char c3, char c4) {
-#if defined(docc_BIG_ENDIAN)
+#if defined(cyng_BIG_ENDIAN)
 		return hex_to_u16_be(c1, c2, c3, c4);
 #else
 		return hex_to_u16_le(c1, c2, c3, c4);

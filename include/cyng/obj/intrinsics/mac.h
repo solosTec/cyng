@@ -11,7 +11,7 @@
 #include <cyng/obj/intrinsics/buffer.h>
 #include <array>
 #include <algorithm>
-#include <cyng.h>	//	docc_BIG_ENDIAN
+#include <cyng.h>	//	cyng_BIG_ENDIAN
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/asio/ip/address.hpp>
@@ -208,7 +208,7 @@ namespace cyng
 		{}
 
 		constexpr mac64(std::uint8_t o1, std::uint8_t o2, std::uint8_t o3, std::uint8_t o4, std::uint8_t o5, std::uint8_t o6, std::uint8_t o7, std::uint8_t o8)
-#if defined(docc_BIG_ENDIAN)
+#if defined(cyng_BIG_ENDIAN)
 			: address_({ std::uint16_t((o2 << 8) | (o1 & 0xff))
 				, std::uint16_t((o4 << 8) | (o3 & 0xff))
 				, std::uint16_t((o6 << 8) | (o5 & 0xff))

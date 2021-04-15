@@ -23,7 +23,7 @@ namespace cyng	{
 
 		//	check network byte ordering
 		//
-#if defined(docc_BIG_ENDIAN)
+#if defined(cyng_BIG_ENDIAN)
 		std::memcpy(&r, value_.data(), obis::size());
 #else
 		data_type tmp{ 0 };

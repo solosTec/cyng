@@ -16,7 +16,7 @@
 #include <functional>
 #include <algorithm>
 //#include <bit>
-//#include <cyng.h>	//	docc_BIG_ENDIAN
+//#include <cyng.h>	//	cyng_BIG_ENDIAN
 
 namespace cyng {
 	namespace io {
