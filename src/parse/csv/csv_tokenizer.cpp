@@ -48,6 +48,9 @@ namespace cyng
 			case state::UNICODE:
 				std::tie(state_, advance) = state_unicode(cp);
 				break;
+			case state::EOL:
+				std::tie(state_, advance) = state_eol(cp);
+				break;
 			default:
 				BOOST_ASSERT_MSG(false, "undefined state");
 				break;
@@ -61,6 +64,9 @@ namespace cyng
 			//	first at all detect the separator symbol
 			//
 			if (sep_ == cp) {
+				//if (buffer_.empty()) {
+				//	cb_(symbol(symbol_type::NOTHING, buffer_));
+				//}
 				cb_(symbol(symbol_type::SEPARATOR, cp));
 				return std::make_pair(state::SEPARATOR, true);
 			}
@@ -75,7 +81,7 @@ namespace cyng
 			case '\n':
 			case '\r':
 				cb_(symbol(symbol_type::SYM_EOL, cp));
-				return std::make_pair(state_, true);
+				return std::make_pair(state::EOL, true);
 
 			case '"':
 				return std::make_pair(state::STRING, true);
@@ -88,6 +94,19 @@ namespace cyng
 
 			return std::make_pair(state::ERROR_, true);
 
+		}
+
+		std::pair<tokenizer::state, bool> tokenizer::state_eol(std::uint32_t cp) {
+
+			switch (cp) {
+
+			case '\n':
+			case '\r':
+				return std::make_pair(state_, true);
+			default:
+				break;
+			}
+			return std::make_pair(state::START, false);
 		}
 
 		std::pair<tokenizer::state, bool> tokenizer::state_string(std::uint32_t cp)

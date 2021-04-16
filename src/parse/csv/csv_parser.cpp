@@ -33,6 +33,7 @@ namespace cyng
 			, tokenizer_(std::bind(&parser::next_symbol, this, std::placeholders::_1), sep)
 			, stack_()
 			, counter_{ 0 }
+			, line_{ 0 }
 		{}
 
 		parser::~parser()
@@ -88,7 +89,18 @@ namespace cyng
 
 		void parser::process_separator(symbol&& sym)
 		{
-			BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
+#ifdef _DEBUG_PARSE
+			if (stack_.empty()) {
+				std::cerr << "***no data:" << counter_ << std::endl;
+			}
+#endif
+			if (stack_.empty()) {
+				stack_.push("");
+			}
+			//	
+			// stack is empty when nothing or only separators where found
+			// 
+			//BOOST_ASSERT_MSG(!stack_.empty(), "empty stack ");
 		}
 
 		void parser::process_string(symbol&& sym)
@@ -104,6 +116,11 @@ namespace cyng
 
 		void parser::process_eol(symbol&& sym)
 		{
+			++line_;
+#ifdef _DEBUG_PARSE
+			//std::cerr << "line:" << line_ << " - " << stack_.size() << std::endl;
+#endif
+
 			if (!stack_.empty())	cb_(cleanup());
 		}
 

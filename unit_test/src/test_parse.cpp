@@ -13,6 +13,8 @@
 #include <cyng/parse/json/json_parser.h>
 #include <cyng/parse/csv/csv_parser.h>
 #include <cyng/parse/csv/line_cast.hpp>
+#include <cyng/parse/csv.h>
+
 #include <cyng/obj/tag.hpp>
 #include <cyng/obj/util.hpp>
 #include <cyng/obj/container_cast.hpp>
@@ -115,9 +117,9 @@ BOOST_AUTO_TEST_CASE(csv)
 {
 	auto const inp_01 = std::string("\"name-1\", \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
 	cyng::csv::parser csvp1(',', [](cyng::csv::line_t&& line) {
-		for (auto const& s : line) {
-			std::cout << '"' << s << '"' << std::endl;
-		}
+		//for (auto const& s : line) {
+		//	std::cout << '"' << s << '"' << std::endl;
+		//}
 		//std::cout << cyng::to_string(vec) << std::endl;
 		//BOOST_REQUIRE_EQUAL(cyng::to_string(vec), "[name-1,null,name-2,name-3,1,2,3,true,false,4200.00]");
 		auto const tpl = cyng::csv::line_cast<std::string
@@ -151,9 +153,9 @@ BOOST_AUTO_TEST_CASE(csv)
 	inp_02.at(1) = 0xbb;
 	inp_02.at(2) = 0xbf;
 	cyng::csv::parser csvp2(',', [](cyng::csv::line_t&& vec) {
-		for (auto const& s : vec) {
-			std::cout << '"' << s << '"' << std::endl;
-		}
+		//for (auto const& s : vec) {
+		//	std::cout << '"' << s << '"' << std::endl;
+		//}
 		//std::cout << cyng::to_string(vec) << std::endl;
 		//auto const s = cyng::to_string(vec);
 		//	                    [CH0000000000000000000000003218421,RS485,192.168.0.200,6006,Elster,Elster AS 1440,IEC 62056,Lucerne,Office 2,Yes,null,null]
@@ -163,6 +165,32 @@ BOOST_AUTO_TEST_CASE(csv)
 
 	csvp2.read(std::begin(inp_02), std::end(inp_02));
 
+	auto const inp_03 = std::string("\"name-1\", \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
+	cyng::csv::parse_typed<std::string
+		, std::string
+		, std::string
+		, std::uint32_t
+		, std::uint16_t
+		, std::int32_t
+		, bool
+		, bool
+		, double>(inp_03, [](std::string s1
+		, std::string
+		, std::string
+		, std::uint32_t
+		, std::uint16_t
+		, std::int32_t
+		, bool
+		, bool
+		, double) {
+			std::cout << s1 << std::endl;
+		}, true);
+
+	auto const inp_04 = std::string(",,,,,");
+	cyng::csv::parser csvp4(',', [](cyng::csv::line_t&& vec) {
+		std::cout << std::endl;
+		});
+	csvp4.read(std::begin(inp_04), std::end(inp_04));
 }
 
 //void read_ipv6_info(std::function<void(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {

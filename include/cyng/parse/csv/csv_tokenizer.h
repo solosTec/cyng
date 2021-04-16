@@ -30,6 +30,7 @@ namespace cyng
 				SEPARATOR,
 				ESCAPE,		//	'\'
 				UNICODE,
+				EOL,
 			}	state_;
 
 		public:
@@ -48,6 +49,7 @@ namespace cyng
 			std::pair<state, bool> state_separator(std::uint32_t);
 			std::pair<state, bool> state_unicode(std::uint32_t);
 			std::pair<state, bool> convert_to_unicode();
+			std::pair<state, bool> state_eol(std::uint32_t);
 
 			void build_literal();
 

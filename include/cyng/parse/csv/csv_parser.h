@@ -96,7 +96,7 @@ namespace cyng
 						}
 						else {
 							//
-							//	Decode input stream
+							//	parse input stream
 							//
 							this->put(c);
 						}
@@ -154,6 +154,7 @@ namespace cyng
 			 * this flag helps to detect empty columns
 			 */
 			std::size_t counter_;
+			std::size_t line_;
 		};
 	}
 } 	//	cyng
