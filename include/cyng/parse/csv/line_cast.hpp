@@ -143,7 +143,7 @@ namespace cyng
 
 				using cast_type = convert< size::value - 1, Args...>;
 
-				static R convert(line_t const& line)
+				static R to_tuple(line_t const& line)
 				{
 					//	compile time meets runtime
 					using size = std::integral_constant<std::size_t, sizeof...(Args)>;
@@ -166,7 +166,7 @@ namespace cyng
 			constexpr std::size_t tpl_size = sizeof...(Args);
 			BOOST_ASSERT(line.size() == tpl_size);
 			if (line.size() == tpl_size) {
-				return line_cast_helper<Args...>::convert(line);
+				return line_cast_helper<Args...>::to_tuple(line);
 			}
 
 			return std::tuple<Args...>();
