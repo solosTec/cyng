@@ -43,22 +43,22 @@ namespace cyng {
 		/**
 		 * Default constructor
 		 */
-		constexpr aes_key()
+		constexpr aes_key() noexcept
 			: key_({ { 0 } })
 		{}
 
-		constexpr aes_key(key_type const& key)
+		constexpr aes_key(key_type const& key) noexcept
 			: key_(key)
 		{}
 
-		constexpr aes_key(key_type&& key)
+		constexpr aes_key(key_type&& key) noexcept
 			: key_(std::forward<key_type>(key))
 		{}
 
 		/**
 		 * Copy constructor
 		 */
-		constexpr aes_key(aes_key const& key)
+		constexpr aes_key(aes_key const& key) noexcept
 			: key_(key.key_)
 		{}
 
@@ -69,12 +69,14 @@ namespace cyng {
 			: key_(std::move(key.key_))
 		{}
 
-		constexpr aes_key& operator=(aes_key const& key)
-		{
+		constexpr aes_key& operator=(aes_key const& key) noexcept {
 			key_ = key.key_;
 			return *this;
 		}
 
+		constexpr std::uint8_t const* get_key() const noexcept {
+			return key_.data();
+		}
 	};
 
 	template <std::size_t N>
