@@ -12,6 +12,7 @@
 #include <cyng/parse/csv/line_cast.hpp>
 
 #include <string>
+#include <functional>
 
 namespace cyng {
 	namespace csv {

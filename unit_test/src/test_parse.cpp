@@ -166,6 +166,25 @@ BOOST_AUTO_TEST_CASE(csv)
 	csvp2.read(std::begin(inp_02), std::end(inp_02));
 
 	auto const inp_03 = std::string("\"name-1\", \"name-2\", \"name-3\", 1, 2, 3, true, false, 4.2e3");
+	std::function<void(std::string
+		, std::string
+		, std::string
+		, std::uint32_t
+		, std::uint16_t
+		, std::int32_t
+		, bool
+		, bool
+		, double)> cb = [](std::string s1
+		, std::string
+		, std::string
+		, std::uint32_t
+		, std::uint16_t
+		, std::int32_t
+		, bool
+		, bool
+		, double) -> void {
+			std::cout << s1 << std::endl;
+		};
 	cyng::csv::parse_typed<std::string
 		, std::string
 		, std::string
@@ -174,17 +193,7 @@ BOOST_AUTO_TEST_CASE(csv)
 		, std::int32_t
 		, bool
 		, bool
-		, double>(inp_03, [](std::string s1
-		, std::string
-		, std::string
-		, std::uint32_t
-		, std::uint16_t
-		, std::int32_t
-		, bool
-		, bool
-		, double) {
-			std::cout << s1 << std::endl;
-		}, true);
+		, double>(inp_03, cb, true, ',');
 
 	auto const inp_04 = std::string(",,,,,");
 	cyng::csv::parser csvp4(',', [](cyng::csv::line_t&& vec) {
