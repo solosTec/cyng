@@ -17,7 +17,7 @@ namespace cyng {
 		/**
 		 * calculate next key based on the current key.
 		 */
-		using auto_key_f = std::function<key_t(key_t const&)>;
+		using auto_key_f = std::function<key_t(table*, key_t const&)>;
 
 	public:
 		auto_table() = delete;

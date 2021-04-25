@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE(auto_table)
 	auto const key = cyng::key_generator<std::uint64_t>(2u);
 
 
-	cyng::auto_table tbl(m, key, [](cyng::key_t const& key) {
+	cyng::auto_table tbl(m, key, [](cyng::table* tbl, cyng::key_t const& key) {
 		BOOST_CHECK_EQUAL(key.size(), 1);
 		auto tmp = cyng::value_cast<std::uint64_t>(key.at(0), 0);
 		BOOST_REQUIRE_EQUAL(tmp, 2);

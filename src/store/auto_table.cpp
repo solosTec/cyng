@@ -18,7 +18,7 @@ namespace cyng {
 		//
 		//	calculate next key
 		//
-		current_key_ = next_key_(current_key_);
+		current_key_ = next_key_(this, current_key_);
 
 		return { current_key_, table::insert(current_key_
 			, std::move(data)
