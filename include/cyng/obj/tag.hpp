@@ -396,7 +396,9 @@ namespace std {
 
 	/**
 	 * Partial specialized for alle endpoint types
+	 * Since Boost 1.76 Asio defines it own hash algorithm for std::hash<>().
 	 */
+#if !defined(BOOST_ASIO_HAS_STD_HASH)
 	template<typename T>
 	struct hash<boost::asio::ip::basic_endpoint<T>>
 	{
@@ -410,12 +412,13 @@ namespace std {
 		}
 	};
 
+
 	template<>
 	struct hash<boost::asio::ip::address>
 	{
 		size_t operator()(boost::asio::ip::address const& addr) const noexcept;
 	};
-
+#endif
 }
 
 #endif

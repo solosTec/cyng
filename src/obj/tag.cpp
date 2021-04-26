@@ -24,8 +24,11 @@ namespace std {
 		using D = chrono::system_clock::time_point::duration;
 		return hash<D>()(tp.time_since_epoch());
 	}
+
+#if !defined(BOOST_ASIO_HAS_STD_HASH)
 	size_t hash<boost::asio::ip::address>::operator()(boost::asio::ip::address const& addr) const noexcept {
 		return boost::hash<std::string>()(addr.to_string());
 	}
+#endif
 
 }
