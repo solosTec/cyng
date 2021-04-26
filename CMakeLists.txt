@@ -38,7 +38,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_CXX_EXTENSIONS OFF)
 
         # Docs only available if this is the main app
-    find_package(Doxygen REQUIRED dot)
+    find_package(Doxygen OPTIONAL_COMPONENTS dot)
     if(Doxygen_FOUND)
         add_subdirectory(docs)
     else()
