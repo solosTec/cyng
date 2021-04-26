@@ -3,6 +3,10 @@
 #include <boost/predef.h>
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
+#include <windows.h>
+#include "TCHAR.h"
+#include "pdh.h"
+#pragma comment(lib, "pdh.lib")
 
 #elif defined(BOOST_OS_LINUX_AVAILABLE)
 
@@ -83,9 +87,30 @@ namespace cyng {
 
 #endif
 
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+		void init(PDH_HQUERY& cpu_query, PDH_HCOUNTER* cpu_total)
+		{
+			::PdhOpenQuery(NULL, NULL, &cpu_query);
+			// You can also use L"\\Processor(*)\\% Processor Time" and get individual CPU values with PdhGetFormattedCounterArray()
+			::PdhAddEnglishCounter(cpu_query, "\\Processor(_Total)\\% Processor Time", NULL, cpu_total);
+			::PdhCollectQueryData(cpu_query);
+		}
+#endif
+
 		double get_cpu_load(std::size_t core) {
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			return 0.0;
+
+			static PDH_HQUERY cpu_query{ nullptr };
+			static PDH_HCOUNTER cpu_total{ nullptr };
+			if (cpu_query == nullptr) {
+				init(cpu_query, &cpu_total);
+			}
+
+			PDH_FMT_COUNTERVALUE counterVal;
+
+			::PdhCollectQueryData(cpu_query);
+			::PdhGetFormattedCounterValue(cpu_total, PDH_FMT_DOUBLE, NULL, &counterVal);
+			return counterVal.doubleValue;
 
 #elif defined(BOOST_OS_LINUX_AVAILABLE)
 			auto const r = read_mem_info(core);
