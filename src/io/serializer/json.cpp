@@ -25,14 +25,15 @@ namespace cyng {
 
 		std::size_t serializer <null, JSON>::write(std::ostream& os, null n)
 		{
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 			os << n;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <vector_t, JSON>::write(std::ostream& os, vector_t const& vec)
 		{
-			auto const pos = os.tellp();
+			calc_size const cs(os);
+
 			if (vec.empty()) {
 				os << "null";
 			}
@@ -65,13 +66,14 @@ namespace cyng {
 
 				os << ']';
 			}
-			return os.tellp() - pos;
 
+			return cs;
 		}
 
 		std::size_t serializer <tuple_t, JSON>::write(std::ostream& os, tuple_t const& tpl) {
 
-			auto const pos = os.tellp();
+			calc_size const cs(os);
+
 			if (tpl.empty()) {
 				os << "null";
 			}
@@ -92,12 +94,14 @@ namespace cyng {
 
 				os << '}';
 			}
-			return os.tellp() - pos;
+
+			return cs;
 		}
 
 		std::size_t serializer <param_t, JSON>::write(std::ostream& os, param_t const& param) {
 
-			auto const pos = os.tellp();
+			calc_size const cs(os);
+
 			os
 				<< '"'
 				<< param.first
@@ -119,12 +123,13 @@ namespace cyng {
 				serialize_json(os, param.second);
 			}
 
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <param_map_t, JSON>::write(std::ostream& os, param_map_t const& pm) {
 
-			auto const pos = os.tellp();
+			calc_size const cs(os);
+
 			if (pm.empty()) {
 				os << "null";
 			}
@@ -151,7 +156,8 @@ namespace cyng {
 				}
 				os << '}';
 			}
-			return os.tellp() - pos;
+
+			return cs;
 		}
 
 
@@ -173,47 +179,51 @@ namespace cyng {
 		}
 		std::size_t serializer <std::uint8_t, JSON>::write(std::ostream& os, std::uint8_t v)
 		{
+			calc_size const cs(os);
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
 
 			os
 				<< std::dec
 				<< +v
 				;
-			return os.tellp() - pos;
+
+			return cs;
 		}
 		std::size_t serializer <std::uint16_t, JSON>::write(std::ostream& os, std::uint16_t v)
 		{
+			calc_size const cs(os);
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
 
 			os
 				<< std::dec
 				<< v
 				;
-			return os.tellp() - pos;
+
+			return cs;
 		}
 		std::size_t serializer <std::uint32_t, JSON>::write(std::ostream& os, std::uint32_t v)
 		{
+			calc_size const cs(os);
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
 
 			os
 				<< std::dec
 				<< v
 				;
-			return os.tellp() - pos;
+
+			return cs;
 		}
 		std::size_t serializer <std::uint64_t, JSON>::write(std::ostream& os, std::uint64_t v)
 		{
+			calc_size const cs(os);
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
 
 			os
 				<< std::dec
 				<< v
 				;
-			return os.tellp() - pos;
+
+			return cs;
 		}
 		std::size_t serializer <double, JSON>::write(std::ostream& os, double v)
 		{
@@ -221,7 +231,7 @@ namespace cyng {
 		}
 		std::size_t serializer <std::string, JSON>::write(std::ostream& os, std::string const& str)
 		{
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
 
@@ -287,21 +297,22 @@ namespace cyng {
 
 			os << '"';
 
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <buffer_t, JSON>::write(std::ostream& os, buffer_t const& buffer)
 		{
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
 			os << '"' << buffer << '"';
-			return os.tellp() - pos;
+
+			return cs;
 		}
 
 		std::size_t serializer <std::chrono::system_clock::time_point, JSON>::write(std::ostream& os, std::chrono::system_clock::time_point const& v)	{
 
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 			std::time_t const tt = std::chrono::system_clock::to_time_t(v);
 
 			//
@@ -317,19 +328,20 @@ namespace cyng {
 				os << '"' << std::put_time(&tm, "%FT%T%z") << '"';
 			}
 
-			return os.tellp() - pos;
-
+			return cs;
 		}
 
 		std::size_t serializer <std::filesystem::path, JSON>::write(std::ostream& os, std::filesystem::path const& v)	{
 
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 			os << '"' << v.string() << '"';
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <severity, JSON>::write(std::ostream& os, severity s)	{
-			auto const pos = os.tellp();
+
+			calc_size const cs(os);
+
 			os << '"';
 			switch (s)
 			{
@@ -343,7 +355,8 @@ namespace cyng {
 				break;
 			}
 			os << '"';
-			return os.tellp() - pos;
+
+			return cs;
 		}
 	}
 }

@@ -13,9 +13,9 @@
 namespace cyng {
 	namespace io {
 
-		void serialize_plain(std::ostream& os, object const& obj)
+		std::size_t serialize_plain(std::ostream& os, object const& obj)
 		{
-			serialize<PLAIN>::write(os, obj);
+			return serialize<PLAIN>::write(os, obj);
 		}
 
 		std::string to_plain(object const& obj)
@@ -26,12 +26,12 @@ namespace cyng {
 		}
 
 
-		void serialize_typed(std::ostream& os, object const& obj)	{
-			serialize<TYPED>::write(os, obj);
+		std::size_t serialize_typed(std::ostream& os, object const& obj)	{
+			return serialize<TYPED>::write(os, obj);
 		}
 
-		void serialize_typed(std::ostream& os, vector_t const& vec) {
-			serializer <vector_t, TYPED>::write(os, vec);
+		std::size_t serialize_typed(std::ostream& os, vector_t const& vec) {
+			return serializer <vector_t, TYPED>::write(os, vec);
 		}
 
 		std::string to_typed(object const& obj)
@@ -53,9 +53,9 @@ namespace cyng {
 			return serialize<BINARY>::write(os, obj);
 		}
 
-		void serialize_json(std::ostream& os, object const& obj)
+		std::size_t serialize_json(std::ostream& os, object const& obj)
 		{
-			serialize<JSON>::write(os, obj);
+			return serialize<JSON>::write(os, obj);
 		}
 
 		std::string to_json(object const& obj)
@@ -65,12 +65,12 @@ namespace cyng {
 			return ss.str();
 		}
 
-		void serialize_json(std::ostream& os, param_map_t const& pmap) {
-			serializer <param_map_t, JSON>::write(os, pmap);
+		std::size_t serialize_json(std::ostream& os, param_map_t const& pmap) {
+			return serializer <param_map_t, JSON>::write(os, pmap);
 		}
 
-		void serialize_json(std::ostream& os, tuple_t const& tpl) {
-			serializer <tuple_t, JSON>::write(os, tpl);
+		std::size_t serialize_json(std::ostream& os, tuple_t const& tpl) {
+			return serializer <tuple_t, JSON>::write(os, tpl);
 		}
 
 		std::string to_json(param_map_t const& pmap) {
@@ -96,9 +96,9 @@ namespace cyng {
 			return ss.str();
 		}
 
-		void serialize_xml(std::ostream& os, object const& obj)
+		std::size_t serialize_xml(std::ostream& os, object const& obj)
 		{
-			serialize<XML>::write(os, obj);
+			return serialize<XML>::write(os, obj);
 		}
 
 		std::string to_xml(object const& obj)
@@ -108,9 +108,9 @@ namespace cyng {
 			return ss.str();
 		}
 
-		void serialize_csv(std::ostream& os, object const& obj)
+		std::size_t serialize_csv(std::ostream& os, object const& obj)
 		{
-			serialize<CSV>::write(os, obj);
+			return serialize<CSV>::write(os, obj);
 		}
 
 		std::string to_csv(object const& obj)

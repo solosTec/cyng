@@ -24,9 +24,9 @@ namespace cyng {
 		struct serializer <T, JSON>
 		{
 			static std::size_t write(std::ostream& os, T const& v) {
-				auto const pos = os.tellp();
+				calc_size const cs(os);
 				os << '"' << v << '"';
-				return os.tellp() - pos;
+				return cs;
 			}
 		};
 

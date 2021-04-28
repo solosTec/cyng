@@ -50,6 +50,23 @@ namespace cyng {
 		struct CSV {};
 
 		/**
+		 * RAAI class to get written byte count
+		 */
+		class calc_size
+		{
+		public:
+			calc_size(std::ostream& os);
+			operator std::size_t() const;
+
+		private:
+			std::size_t count() const;
+
+		private:
+			std::streampos const pos_;
+			std::ostream& os_;
+		};
+
+		/**
 		 * generic serializer
 		 */
 		template <typename T, typename TAG>
@@ -57,12 +74,11 @@ namespace cyng {
 		{
 			static std::size_t write(std::ostream& os, T const& v)
 			{
-				auto const pos = os.tellp();
+				calc_size const cs(os);
 				os << v;
-				return os.tellp() - pos;
+				return cs;
 			}
 		};
-
 
 	}
 }

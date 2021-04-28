@@ -22,7 +22,7 @@ namespace cyng {
 		 * Simple serialization to human readable text
 		 * struct PLAIN {};
 		 */
-		void serialize_plain(std::ostream&, object const&);
+		std::size_t serialize_plain(std::ostream&, object const&);
 		std::string to_plain(object const&);
 
 		/**
@@ -30,8 +30,8 @@ namespace cyng {
 		 * with type information
 		 * struct TYPED {};
 		 */
-		void serialize_typed(std::ostream&, object const&);
-		void serialize_typed(std::ostream&, vector_t const&);
+		std::size_t serialize_typed(std::ostream&, object const&);
+		std::size_t serialize_typed(std::ostream&, vector_t const&);
 		std::string to_typed(object const&);
 		std::string to_typed(vector_t const&);
 
@@ -48,10 +48,10 @@ namespace cyng {
 		 * Serialization to JSON.
 		 * struct JSON {};
 		 */
-		void serialize_json(std::ostream&, object const&);
+		std::size_t serialize_json(std::ostream&, object const&);
 		std::string to_json(object const&);
-		void serialize_json(std::ostream&, param_map_t const&);
-		void serialize_json(std::ostream&, tuple_t const&);
+		std::size_t serialize_json(std::ostream&, param_map_t const&);
+		std::size_t serialize_json(std::ostream&, tuple_t const&);
 		std::string to_json(param_map_t const&);
 		std::string to_json(tuple_t const&);
 
@@ -62,16 +62,15 @@ namespace cyng {
 		 * Serialization to XML.
 		 * struct XML {};
 		 */
-		void serialize_xml(std::ostream&, object const&);
+		std::size_t serialize_xml(std::ostream&, object const&);
 		std::string to_xml(object const&);
 
 		/**
 		 * Serialization to CSV.
 		 * struct CSV {};
 		 */
-		void serialize_csv(std::ostream&, object const&);
+		std::size_t serialize_csv(std::ostream&, object const&);
 		std::string to_csv(object const&);
-
 	}
 }
 #endif

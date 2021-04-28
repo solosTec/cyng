@@ -25,6 +25,7 @@ set (io_serializer
     include/cyng/io/serializer/plain.hpp
     include/cyng/io/serializer/typed.hpp
     src/io/serialize.cpp
+    src/io/serializer/io.cpp
     src/io/serializer/binary.cpp
     src/io/serializer/csv.cpp
     src/io/serializer/json.cpp

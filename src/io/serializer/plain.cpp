@@ -15,16 +15,16 @@ namespace cyng {
 		std::size_t serializer <bool, PLAIN>::write(std::ostream& os, bool v)
 		{
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 			os << std::boolalpha << v;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <boost::uuids::uuid, PLAIN>::write(std::ostream& os, boost::uuids::uuid const& v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::hex
@@ -47,80 +47,80 @@ namespace cyng {
 					os << '-';
 				}
 			}
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <std::int8_t, PLAIN>::write(std::ostream& os, std::int8_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::dec
 				<< std::setfill('0')
 				<< +v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <std::int16_t, PLAIN>::write(std::ostream& os, std::int16_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::dec
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <std::int32_t, PLAIN>::write(std::ostream& os, std::int32_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::dec
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <std::int64_t, PLAIN>::write(std::ostream& os, std::int64_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::dec
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <std::uint8_t, PLAIN>::write(std::ostream& os, std::uint8_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::hex
 				<< std::setfill('0')
 				<< +v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 		std::size_t serializer <std::uint16_t, PLAIN>::write(std::ostream& os, std::uint16_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::hex
@@ -128,13 +128,13 @@ namespace cyng {
 				<< std::setw(4)
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 		std::size_t serializer <std::uint32_t, PLAIN>::write(std::ostream& os, std::uint32_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::hex
@@ -142,14 +142,14 @@ namespace cyng {
 				<< std::setw(8)
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <std::uint64_t, PLAIN>::write(std::ostream& os, std::uint64_t v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::hex
@@ -157,21 +157,21 @@ namespace cyng {
 				<< std::setw(16)
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 		std::size_t serializer <double, PLAIN>::write(std::ostream& os, double v)
 		{
 			//	store and reset stream state
 			boost::io::ios_flags_saver  ifs(os);
-			auto const pos = os.tellp();
+			calc_size const cs(os);
 
 			os
 				<< std::setprecision(2)
 				<< std::fixed
 				<< v
 				;
-			return os.tellp() - pos;
+			return cs;
 		}
 
 	}
