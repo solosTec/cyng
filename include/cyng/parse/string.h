@@ -27,21 +27,29 @@ namespace cyng {
 	/**
 	 * convert hex string to UUID
 	 */
+	[[nodiscard]]
 	boost::uuids::uuid to_uuid(std::string const&);
+
+	[[nodiscard]]
+	boost::uuids::uuid to_uuid(std::string const&, boost::uuids::uuid);
 
 	/**
 	 * 2021-03-31T19:36:45+0100	- ISO-8601
 	 */
+	[[nodiscard]]
 	std::chrono::system_clock::time_point to_tp_iso8601(std::string const&);
 
 	/**
 	 * "%Y-%m-%d %H:%M:%S" - SQLite datetime()
 	 */
+	[[nodiscard]]
 	std::chrono::system_clock::time_point to_tp_datetime(std::string const&);
 
+	[[nodiscard]]
 	boost::asio::ip::address to_ip_address(std::string const&);
 
 	template <std::size_t N>
+	[[nodiscard]]
 	auto to_aes_key(std::string const& str) -> aes_key<N> {
 
 		BOOST_ASSERT_MSG(str.size() == N / 4, "invalid AES key format");
@@ -172,7 +180,9 @@ namespace cyng {
 		};
 
 	}
+
 	template <typename T, int BASE = 10>
+	[[nodiscard]]
 	T to_numeric(std::string const& str) {
 		return string_policy<T, BASE>::cast(str);
 	}

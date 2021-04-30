@@ -46,12 +46,17 @@ namespace cyng {
 
 
 	boost::uuids::uuid to_uuid(std::string const& str) {
+
+		return to_uuid(str, boost::uuids::nil_uuid());
+	}
+
+	boost::uuids::uuid to_uuid(std::string const& str, boost::uuids::uuid tag) {
 		
 		try {
 			return boost::uuids::string_generator()(str);
 		}
 		catch (std::exception const&) {}
-		return boost::uuids::nil_uuid();
+		return tag;
 	}
 
 	//	2021-03-31T19:36:45+0100	- ISO-8601

@@ -31,7 +31,7 @@ namespace cyng {
 		};
 
 		/**
-		 * @brief detect parameters of tyüe object and return a clone of this object.
+		 * @brief detect parameters of type object and return a clone of this object.
 		 * 
 		 * @tparam T 
 		 */
