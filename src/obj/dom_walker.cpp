@@ -15,8 +15,8 @@ namespace cyng {
 
 	namespace {
 		walker_state get_state(std::size_t index, std::size_t size) {
-			if (index == 1)	return walker_state::FIRST;
-			else if (index == size)	return walker_state::LAST;
+			if (index == size)	return walker_state::LAST; 
+			else if (index == 1)	return walker_state::FIRST;
 			return walker_state::INDETERMINATE;
 		}
 		void traverse(dom_walker& walker, object const& obj, std::size_t depth, walker_state state, bool is_vector);

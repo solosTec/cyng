@@ -358,4 +358,49 @@ namespace cyng {
 		}
 		return counter;
 	}
+
+	vector_t table::to_vector(bool col_names) const
+	{
+		vector_t vec;
+
+		if (col_names) {
+			vec.reserve(size() + 1);
+
+			//
+			//	generate header entry
+			//
+			tuple_t header;
+			meta_.loop([&header](std::size_t, cyng::column const& col, bool) {
+
+				header.push_back(make_object(col.name_));
+
+				});
+
+			//
+			//	insert header record
+			//
+			vec.push_back(make_object(header));
+		}
+		else {
+			vec.reserve(size());
+		}
+
+		//
+		//	append all records
+		//
+		loop([&](cyng::record&& rec, std::size_t)->bool {
+
+			auto const key = rec.key();
+			auto const data = rec.data();
+			
+			tuple_t tpl(key.begin(), key.end());
+			tpl.insert(tpl.end(), data.begin(), data.end());
+			vec.push_back(make_object(tpl));
+
+			return true;	//	continue
+			});
+
+		return vec;
+	}
+
 }

@@ -193,6 +193,15 @@ namespace cyng {
 		 */
 		std::size_t loop(std::function<bool(record&&, std::size_t)> f) const;
 
+		/**
+		 * Convert the table into a vector. Usefull for
+		 * serialization to CSV.
+		 *
+		 * @param col_names if true the first data tuple contains the
+		 * column names
+		 */
+		vector_t to_vector(bool col_names) const;
+
 	private:
 
 		/**
