@@ -73,10 +73,13 @@ namespace cyng {
         BOOST_ASSERT(closed_);
         BOOST_ASSERT(tsk == nullptr || tsk == task_);
 
-        //
-        //  eventually task will be deleted
-        //
-        delete task_;
+        try {
+            //
+            //  eventually task will be deleted
+            //
+            delete task_;
+        }
+        catch (std::exception const&) {}
         task_ = nullptr;
     }
 

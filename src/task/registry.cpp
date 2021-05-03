@@ -31,13 +31,12 @@ namespace cyng {
 		auto pos = list_.find(id);
 
 		if (pos != list_.end()) {
-			auto* p = pos->second.release();
-			list_.erase(pos);
-
 			//
 			//	channel callback
 			//
-			cb(p);
+			cb(pos->second.get());
+			auto* p = pos->second.release();
+			list_.erase(pos);
 		}
 	}
 

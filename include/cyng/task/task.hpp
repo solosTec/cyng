@@ -139,7 +139,6 @@ namespace cyng {
 			//
 			//	call the last entry
 			//
-			//dispatch(signature_count_, tuple_t{});
 			dispatch(stop_idx_, cyng::make_tuple(eod{}));
 
 			unregister_this(cb);
