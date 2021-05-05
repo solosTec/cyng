@@ -68,21 +68,6 @@ namespace cyng {
         return !closed_.load();
     }
 
-    void channel::destruct(task_interface* tsk)
-    {
-        BOOST_ASSERT(closed_);
-        BOOST_ASSERT(tsk == nullptr || tsk == task_);
-
-        try {
-            //
-            //  eventually task will be deleted
-            //
-            delete task_;
-        }
-        catch (std::exception const&) {}
-        task_ = nullptr;
-    }
-
     bool channel::stop()
     {
         //
@@ -99,10 +84,10 @@ namespace cyng {
             dispatcher_.post([this, sp]() {
 
                 //
-                //  task will remove itself from task list
-                //  and registry will use the specified callback
+                //  Call stop(eod) function and remove the task
+                //  from the registry.
                 //
-                task_->stop(std::bind(&channel::destruct, sp, std::placeholders::_1));
+                task_->stop();
             });
 
             return true;
@@ -127,7 +112,7 @@ namespace cyng {
             timer_.cancel();
             auto sp = this->shared_from_this(); //  extend life time
 
-            task_->stop(std::bind(&channel::destruct, sp, std::placeholders::_1));
+            task_->stop();
 
             return true;
         }

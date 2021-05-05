@@ -27,28 +27,29 @@ namespace cyng {
 		});
 	}
 
-	void registry::remove_sync(std::size_t id, destruct_cb cb) {
+	void registry::remove_sync(std::size_t id) {
 		auto pos = list_.find(id);
 
 		if (pos != list_.end()) {
 			//
-			//	channel callback
+			//	remove from list and delete task
 			//
-			cb(pos->second.get());
-			auto* p = pos->second.release();
-			list_.erase(pos);
+			try {
+				list_.erase(pos);
+			}
+			catch (...) {}
 		}
 	}
 
-	void registry::remove(std::size_t id, destruct_cb cb)
+	void registry::remove(std::size_t id)
 	{
 		if (shutdown_) {
-			remove_sync(id, cb);
+			remove_sync(id/*, cb*/);
 		}
 		else {
-			dispatcher_.post([this, id, cb]() {
+			dispatcher_.post([this, id/*, cb*/]() {
 
-				remove_sync(id, cb);
+				remove_sync(id/*, cb*/);
 				});
 		}
 	}

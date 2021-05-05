@@ -120,9 +120,9 @@ namespace cyng {
 			registry_->insert(this);
 		}
 
-		void unregister_this(destruct_cb cb)
+		void unregister_this(/*destruct_cb cb*/)
 		{
-			registry_->remove(id_, cb);
+			registry_->remove(id_/*, cb*/);
 		}
 
 	protected:
@@ -134,14 +134,14 @@ namespace cyng {
 			invoke_helper<signature_count_>::call(slot, msg, impl_.sigs_);
 
 		}
-		virtual void stop(destruct_cb cb) override
+		virtual void stop() override
 		{
 			//
 			//	call the last entry
 			//
 			dispatch(stop_idx_, cyng::make_tuple(eod{}));
 
-			unregister_this(cb);
+			unregister_this(/*cb*/);
 		}
 
 	private:

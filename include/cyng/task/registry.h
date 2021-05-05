@@ -76,8 +76,8 @@ namespace cyng {
 		/**
 		 * task wants to be removed
 		 */
-		void remove(std::size_t, destruct_cb);
-		void remove_sync(std::size_t id, destruct_cb cb);
+		void remove(std::size_t);
+		void remove_sync(std::size_t id);
 
 		/**
 		 * get all channels

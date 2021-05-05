@@ -26,7 +26,7 @@ namespace cyng {
 
 	protected:
 		virtual void dispatch(std::size_t slot, tuple_t const& msg) = 0;
-		virtual void stop(std::function<void(task_interface*)>) = 0;
+		virtual void stop() = 0;
 
 	};
 

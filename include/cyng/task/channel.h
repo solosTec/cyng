@@ -149,10 +149,6 @@ namespace cyng {
 		}
 
 	private:
-		/**
-		 * callback from registry to manage the lifetime of the task object
-		 */
-		void destruct(task_interface*);
 
 		/**
 		 * stop channel without synchronisation 
