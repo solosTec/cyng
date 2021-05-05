@@ -38,6 +38,14 @@ namespace cyng	{
 		return value_;
 	}
 
+	bool obis::starts_with(buffer_t seq) const {
+		if (seq.size() < size()) {
+			return std::equal(seq.begin(), seq.end(), value_.begin());
+		}
+		return false;
+	}
+
+
 	bool is_private(obis const& o) {
 		return 	(o[obis::VG_MEDIUM] >= 0x80 && o[obis::VG_MEDIUM] <= 0xC7)
 			|| (o[obis::VG_CHANNEL] >= 0x80 && o[obis::VG_CHANNEL] <= 0xC7)
@@ -66,6 +74,13 @@ namespace cyng	{
 		return std::accumulate(std::begin(o.data()), std::end(o.data()), std::string(), [](std::string r, std::uint8_t c) {
 			return r + io::to_hex(c);
 			});
+	}
+
+	bool compare_n(obis const& lhs, obis const& rhs, std::size_t n) {
+		if (n < obis::size()) {
+			return std::equal(lhs.data().begin(), lhs.data().begin() + n, rhs.data().begin());
+		}
+		return false;
 	}
 
 	//	comparison

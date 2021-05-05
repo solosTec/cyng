@@ -156,9 +156,6 @@ namespace cyng {
 		channel_ptr channel_;
 		T	impl_;	//!<	implementation class
 	};
-
-
-
 }
 
 #endif

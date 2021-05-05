@@ -126,6 +126,11 @@ namespace cyng
 		return a.rtti().rtti() == b.rtti().rtti();
 	}
 
+	bool is_null(object const& obj) {
+		if (!obj)	return true;
+		return obj.rtti().tag() == TC_NULL;
+	}
+
 	bool operator==(object const& o1, object const& o2) {
 		return o1.hash() == o2.hash();
 	}

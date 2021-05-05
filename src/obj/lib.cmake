@@ -75,6 +75,7 @@ set (object_algorithm
     include/cyng/obj/algorithm/dom_walker.h
     include/cyng/obj/algorithm/merge.h
     include/cyng/obj/algorithm/add.hpp
+    include/cyng/obj/algorithm/swap_bytes.h
     src/obj/find.cpp
     src/obj/reader.cpp
     src/obj/dom_walker.cpp

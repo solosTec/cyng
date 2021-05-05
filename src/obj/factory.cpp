@@ -99,6 +99,9 @@ namespace cyng {
 #endif
 			return std::move(obj);
 		}
+		object boxing<object const&>::create(object const& obj) {
+			return obj;
+		}
 	}
 
 	vector_t make_vector(vector_t&& vec) {

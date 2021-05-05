@@ -85,6 +85,11 @@ namespace cyng {
 			return value_[vg];
 		}
 
+		/**
+		 * @return true if the obis code starts with the specified buffer sequence
+		 */
+		bool starts_with(buffer_t) const;
+
 	private:
 		data_type	value_;
 
@@ -127,6 +132,12 @@ namespace cyng {
 	bool operator>(obis const&, obis const&) noexcept;
 	bool operator<=(obis const&, obis const&) noexcept;
 	bool operator>=(obis const&, obis const&) noexcept;
+
+
+	/**
+	 * compare first n elements of the obis codes
+	 */
+	bool compare_n(obis const& lhs, obis const& rhs, std::size_t n);
 
 	/**
 	 * Generate an OBIS code

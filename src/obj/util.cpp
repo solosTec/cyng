@@ -8,13 +8,23 @@
 #include <cyng/obj/util.hpp>
 #include <cyng/obj/buffer_cast.hpp>
 
+#include <iterator>
+
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/algorithm/string.hpp>
 
 namespace cyng {
 
 	std::string make_string(buffer_t const& buffer) {
-		return std::string(std::begin(buffer), std::end(buffer));
+		std::string s;
+		s.reserve(buffer.size());
+		std::transform(buffer.begin(), buffer.end(), std::inserter(s, s.end()), [](char c) {
+			return ((c > 31) && (c < 127))
+				? c
+				: '.'
+				;
+			});
+		return s;
 	}
 
 	std::string make_string(buffer_t const& buffer, std::size_t offset) {

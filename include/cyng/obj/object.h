@@ -133,6 +133,12 @@ namespace cyng {
 	}
 
 	/**
+	 * @return true if internal pointer is null or
+	 * it contains the null value.
+	 */
+	bool is_null(object const& obj);
+
+	/**
 	 * compare hash values
 	 */
 	bool operator==(object const&, object const&);
