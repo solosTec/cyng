@@ -12,6 +12,8 @@
 #include <cstddef>
 #include <type_traits>
 #include <algorithm>
+#include <vector>
+
 #include <boost/assert.hpp>
 
 namespace cyng {
@@ -94,6 +96,11 @@ namespace cyng {
 		data_type	value_;
 
 	};
+
+	/**
+	 * definition of an OBIS path
+	 */
+	using obis_path_t = std::vector<obis>;
 
 	/**
 	 *	@return true if OBIS code has no global definition.
