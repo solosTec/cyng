@@ -16,6 +16,7 @@ namespace cyng {
 	registry::registry(boost::asio::io_context& io)
 		: dispatcher_(io)
 		, list_()
+		, locked_()
 		, shutdown_(false)
 	{}
 
@@ -124,7 +125,20 @@ namespace cyng {
 				}
 			}
 
+			//
+			//	remove references
+			//
 			channels.clear();
+
+			//
+			//	clear channel table
+			//
+			list_.clear();
+
+			//
+			//	clear lock table
+			//
+			locked_.clear();
 
 			return true;
 		}
@@ -150,12 +164,25 @@ namespace cyng {
 		return channels.size();
 	}
 
+	void registry::lock(channel_ptr scp) {
+		if (!shutdown_ && scp) {
+			dispatcher_.post([this, scp]() {
+				locked_.emplace(scp->get_id(), scp);
+				});
+		}
+	}
+
+	channel_ptr registry::unlock(std::size_t id) {
+		return (!shutdown_)
+			? find_locked_channel(id, boost::asio::use_future).get()
+			: channel_ptr();
+	}
+
 	std::vector<channel_ptr> get_all_channels(registry::list_t const& reg_list)
 	{
 		//
 		//	shutdown mode
 		//
-		//BOOST_ASSERT(shutdown_);
 
 		std::vector<channel_ptr> vec;
 
