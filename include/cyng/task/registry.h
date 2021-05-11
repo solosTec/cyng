@@ -26,7 +26,7 @@ namespace cyng {
 		template <typename T >
 		friend class task;
 
-		friend class auto_remove;
+		friend struct auto_remove;
 		friend class controller;
 
 		static_assert(BOOST_VERSION >= 107400, "wrong Boost version");
