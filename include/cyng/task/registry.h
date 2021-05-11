@@ -32,8 +32,7 @@ namespace cyng {
 		static_assert(BOOST_VERSION >= 107400, "wrong Boost version");
 
 	public:
-		using list_t = std::map<std::size_t, channel_weak>;
-		using locked_t = std::map<std::size_t, channel_ptr>;
+		using list_t = std::map<std::size_t, channel_ptr>;
 
 	public:
 		registry(boost::asio::io_context& io);
@@ -69,22 +68,6 @@ namespace cyng {
 		 * @return count of found channels
 		 */
 		std::size_t dispatch(std::string channel, std::string slot, tuple_t&& msg);
-
-		/**
-		 * Insert channel into the locked list. 
-		 * By storing a channel into a lock list the reference
-		 * counter will be increased and the channel will not be deleted
-		 * after the variable goes out of scope.
-		 */
-		void lock(channel_ptr);
-
-		/**
-		 * remove channel from locked list
-		 * 
-		 * @return unlocked channel. If no entry was found the 
-		 * shared pointer is empty.
-		 */
-		channel_ptr unlock(std::size_t);
 
 	private:
 		/**
@@ -130,27 +113,6 @@ namespace cyng {
 		}
 
 		template <typename Token>
-		auto find_locked_channel(std::size_t id, Token&& token)
-		{
-			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
-			typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-			result_type result(handler);
-
-			dispatcher_.post([this, handler, id]() mutable {
-				auto pos = locked_.find(id);
-				if (pos != locked_.end()) {
-					handler(boost::system::error_code{}, pos->second);
-				}
-				else {
-					handler(boost::asio::error::not_found, channel_ptr());
-				}
-				});
-
-			return result.get();
-		}
-
-		template <typename Token>
 		auto find_channels(std::string name, Token&& token)
 		{
 			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, std::vector<channel_ptr>)>;
@@ -171,7 +133,6 @@ namespace cyng {
 	private:
 		boost::asio::io_context::strand dispatcher_;
 		list_t	list_;
-		locked_t locked_;
 
 		/**
 		 * The shutdown flag is required to detect a situation

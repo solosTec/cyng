@@ -16,7 +16,6 @@ namespace cyng {
 	registry::registry(boost::asio::io_context& io)
 		: dispatcher_(io)
 		, list_()
-		, locked_()
 		, shutdown_(false)
 	{}
 
@@ -59,7 +58,7 @@ namespace cyng {
 	{
 		auto pos = list_.find(id);
 		return (pos != list_.end())
-			? pos->second.lock()	
+			? pos->second	
 			: channel_ptr()
 			;
 	}
@@ -68,7 +67,7 @@ namespace cyng {
 	{
 		std::vector<channel_ptr> channels;
 		for (auto const& wcp : list_) {
-			auto scp = wcp.second.lock();
+			auto scp = wcp.second;
 			if (scp && boost::algorithm::equals(name, scp->get_name())) {
 				channels.push_back(scp);
 			}
@@ -135,11 +134,6 @@ namespace cyng {
 			//
 			list_.clear();
 
-			//
-			//	clear lock table
-			//
-			locked_.clear();
-
 			return true;
 		}
 		return false;
@@ -164,20 +158,6 @@ namespace cyng {
 		return channels.size();
 	}
 
-	void registry::lock(channel_ptr scp) {
-		if (!shutdown_ && scp) {
-			dispatcher_.post([this, scp]() {
-				locked_.emplace(scp->get_id(), scp);
-				});
-		}
-	}
-
-	channel_ptr registry::unlock(std::size_t id) {
-		return (!shutdown_)
-			? find_locked_channel(id, boost::asio::use_future).get()
-			: channel_ptr();
-	}
-
 	std::vector<channel_ptr> get_all_channels(registry::list_t const& reg_list)
 	{
 		//
@@ -188,7 +168,7 @@ namespace cyng {
 
 		vec.reserve(reg_list.size());
 		std::transform(std::begin(reg_list), std::end(reg_list), std::back_inserter(vec), [](registry::list_t::value_type const& val) {
-			return val.second.lock();
+			return val.second;
 			});
 		return vec;
 	}
