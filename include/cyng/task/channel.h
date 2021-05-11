@@ -63,7 +63,7 @@ namespace cyng {
 	//	forward declarations
 	//
 	class task_interface;
-	class registry;
+	class controller;
 	class channel;
 	template <typename Token>
 	void exec(channel&, Token&&);
@@ -73,18 +73,18 @@ namespace cyng {
 	{
 		template <typename T >
 		friend class task;
-		friend class registry;
+		friend class controller;
 		template <typename Token>
 		friend void exec(channel&, Token&&);
 		friend boost::asio::io_context::strand& expose_dispatcher(channel& cr);
 
 	public:
-		channel(boost::asio::io_context& io, task_interface*, std::string name);
+		channel(boost::asio::io_context& io, std::string name);
 
 		/**
 		 * @return true, if channel is open
 		 */
-		bool is_open() const;
+		bool is_open() const noexcept;
 
 		/**
 		 * Send a message to the specified slot of the task object.
@@ -121,14 +121,14 @@ namespace cyng {
 		std::string const& get_name() const noexcept;
 
 		/**
-		 * forwared to task interface
+		 * forwarded to task interface
 		 */
 		std::size_t get_id() const noexcept;
 
 		template < typename R, typename P >
 		void suspend(std::chrono::duration<R, P> d, std::size_t slot, tuple_t&& msg) {
 
-			if (closed_.load())	return;
+			if (!is_open())	return;
 
 			message m(this->shared_from_this(), slot, std::move(msg));
 			auto sp = this->shared_from_this(); //  extend life time
@@ -136,7 +136,7 @@ namespace cyng {
 			timer_.expires_from_now(d);
 
 			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
-				if (ec != boost::asio::error::operation_aborted && !closed_.load()) {
+				if (ec != boost::asio::error::operation_aborted && is_open()) {
 					task_->dispatch(m.slot_, m.msg_);
 				}
 			}));
@@ -151,9 +151,46 @@ namespace cyng {
 	private:
 
 		/**
-		 * stop channel without synchronisation 
+		 * open channel by providing a task interface
+		 * 
 		 */
-		bool shutdown();
+		template <typename T>
+		bool open(T* tp) {
+			//	mark channel as open
+			if (!is_open()) {
+				task_.reset(tp);
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * stop channel with asio future
+		 */
+		template <typename Token>
+		auto shutdown(Token&& token) {
+
+			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, bool)>;
+			typename result_type::completion_handler_type handler(std::forward<Token>(token));
+
+			result_type result(handler);
+
+			dispatcher_.post([this, handler]() mutable {
+
+				//
+				//  call stop(eod) in task implementation class
+				//
+				auto ptr = task_.release();
+				ptr->stop();
+				handler(boost::system::error_code{}, true);
+			});
+
+			//
+			//	wait
+			//
+			return result.get();
+
+		}
 
 	private:
 		boost::asio::io_context::strand dispatcher_;
@@ -163,8 +200,11 @@ namespace cyng {
 		 */
 		boost::asio::steady_timer timer_;
 
-		std::atomic<bool> closed_;
-		task_interface* task_;
+		/**
+		 * task_ ptr represents the "open" state of the channel.
+		 * A channel is "open" when the task pointer is not null.
+		 */
+		std::unique_ptr< task_interface > task_;
 
 		/**
 		 * Each channel has a non-unique name

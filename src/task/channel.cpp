@@ -12,20 +12,18 @@
 namespace cyng {
 
 
-    channel::channel(boost::asio::io_context& io, task_interface* tsk, std::string name)
+    channel::channel(boost::asio::io_context& io, std::string name)
         : std::enable_shared_from_this<channel>()
         , slot_names()
         , dispatcher_(io)
         , timer_(io)
-        , closed_(false)
-        , task_(tsk)
+        , task_(nullptr)
         , name_(name)
     {}
 
     void channel::dispatch(std::size_t slot, tuple_t&& msg)
     {
-        if (closed_.load())	return;
-        if (!closed_) {
+        if (is_open()) {
 
             //
             //  the context should be active
@@ -63,9 +61,9 @@ namespace cyng {
         dispatch(lookup(slot), std::move(msg));
     }
 
-    bool channel::is_open() const
+    bool channel::is_open() const noexcept
     {
-        return !closed_.load();
+        return task_.operator bool();
     }
 
     bool channel::stop()
@@ -73,23 +71,14 @@ namespace cyng {
         //
         //  mark channel as closed
         //
-        if (!closed_.exchange(true)) {
+        if (is_open()) {
 
             //
             //  cancel timer
             //
             timer_.cancel();
-            auto sp = this->shared_from_this(); //  extend life time
-
-            dispatcher_.post([this, sp]() {
-
-                //
-                //  Call stop(eod) function and remove the task
-                //  from the registry.
-                //
-                task_->stop();
-            });
-
+            //auto sp = this->shared_from_this(); //  extend life time
+            shutdown(boost::asio::use_future);
             return true;
         }
         return false;
@@ -99,27 +88,6 @@ namespace cyng {
         return timer_.cancel() > 0;
     }
 
-    bool channel::shutdown() {
-
-        //
-        //  mark channel as closed
-        //
-        if (!closed_.exchange(true)) {
-
-            //
-            //  cancel timer
-            //
-            timer_.cancel();
-            auto sp = this->shared_from_this(); //  extend life time
-
-            task_->stop();
-
-            return true;
-        }
-        return false;
-
-    }
-
     std::string const& channel::get_name() const noexcept
     {
         return name_;
@@ -127,7 +95,7 @@ namespace cyng {
 
     std::size_t channel::get_id() const noexcept
     {
-        return (!closed_.load())
+        return (is_open())
             ? task_->get_id()
             : 0
             ;

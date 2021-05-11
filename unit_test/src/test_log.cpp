@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(record)
 }
 BOOST_AUTO_TEST_CASE(logger)
 {
-	cyng::controller ctl;
+	cyng::controller ctl(4);
 	cyng::logger logger(ctl.create_channel<cyng::log>());
 
 	logger.start_console_logger();
@@ -43,6 +43,7 @@ BOOST_AUTO_TEST_CASE(logger)
 	CYNG_LOG_ERROR(logger, "dude");
 
 	ctl.get_registry().shutdown();
+	ctl.shutdown();
 	ctl.stop();
 
 }

@@ -15,22 +15,31 @@
 
 namespace cyng {
 
+	//	forward declaration
+	struct auto_remove;
+
+	/**
+	 * channel directory. Helps to find, address and remove task channels
+	 */
 	class registry
 	{
 		template <typename T >
 		friend class task;
 
-		using ptr_t = std::unique_ptr<task_interface>;
-
-		using list_t = std::map<std::size_t, ptr_t>;
+		friend class auto_remove;
+		friend class controller;
 
 		static_assert(BOOST_VERSION >= 107400, "wrong Boost version");
+
+	public:
+		using list_t = std::map<std::size_t, channel_weak>;
 
 	public:
 		registry(boost::asio::io_context& io);
 
 		/**
 		 * lookup for channel by ID
+		 * @return shared pointer of channel object. Could be empty.
 		 */
 		channel_ptr lookup(std::size_t);
 
@@ -61,6 +70,9 @@ namespace cyng {
 		std::size_t dispatch(std::string channel, std::string slot, tuple_t&& msg);
 
 	private:
+		/**
+		 * @return an empty shared pointer if not found
+		 */
 		channel_ptr lookup_sync(std::size_t);
 
 		/**
@@ -71,18 +83,13 @@ namespace cyng {
 		/**
 		 * take ownership of the task
 		 */
-		void insert(task_interface*);
+		void insert(channel_ptr);
 
 		/**
 		 * task wants to be removed
 		 */
 		void remove(std::size_t);
 		void remove_sync(std::size_t id);
-
-		/**
-		 * get all channels
-		 */
-		std::vector<channel_ptr> get_all_channels() const;
 
 		template <typename Token>
 		auto find_channel(std::size_t id, Token&& token)
@@ -135,6 +142,22 @@ namespace cyng {
 		std::atomic<bool> shutdown_;
 	};
 
+	/**
+	 * get all channels
+	 */
+	std::vector<channel_ptr> get_all_channels(registry::list_t const&);
+
+	/**
+	 * Helper class to automatically remove a channel when
+	 * it's lifetime is over.
+	 */
+	struct auto_remove
+	{
+		auto_remove(registry&, std::size_t id);
+		void operator ()(channel* cp);
+		registry& reg_;
+		std::size_t const id_;
+	};
 
 }
 

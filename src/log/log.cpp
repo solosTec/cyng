@@ -32,12 +32,12 @@ namespace cyng {
 		, level_(severity::LEVEL_TRACE)
 		, con_()
 		, rfile_()
-#ifdef APPENDER_SYS_LOG
-		, sys_()
-#endif
-#ifdef APPENDER_EVENT_LOG
-		, event_()
-#endif
+//#ifdef APPENDER_SYS_LOG
+//		, sys_()
+//#endif
+//#ifdef APPENDER_EVENT_LOG
+//		, event_()
+//#endif
 	{}
 
 	log::~log()
@@ -65,10 +65,10 @@ namespace cyng {
 		//	write to event log
 		//
 #ifdef APPENDER_EVENT_LOG
-		if (event_) {
-			event_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop event logger");
-			event_.reset();
-		}
+		//if (event_) {
+		//	event_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop event logger");
+		//	event_.reset();
+		//}
 #endif
 
 		//
@@ -104,7 +104,7 @@ namespace cyng {
 			//	write to event log
 			//
 #ifdef APPENDER_EVENT_LOG
-			if (event_)	event_->write(ts, lev, tip, msg);
+			//if (event_)	event_->write(ts, lev, tip, msg);
 #endif
 
 			//
@@ -135,7 +135,7 @@ namespace cyng {
 	}
 	void log::start_event_log() {
 #ifdef APPENDER_EVENT_LOG
-		event_.reset(new logging::eventlog());
+		//event_.reset(new logging::eventlog());
 #endif
 	}
 

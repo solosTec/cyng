@@ -19,11 +19,11 @@ namespace cyng {
 		, shutdown_(false)
 	{}
 
-	void registry::insert(task_interface* p)
+	void registry::insert(channel_ptr chp)
 	{
 		if (shutdown_)	return;
-		dispatcher_.post([this, p]() {
-			list_.emplace(p->get_id(), p);
+		dispatcher_.post([this, chp]() {
+			list_.emplace(chp->get_id(), chp);
 		});
 	}
 
@@ -43,22 +43,22 @@ namespace cyng {
 
 	void registry::remove(std::size_t id)
 	{
-		if (shutdown_) {
-			remove_sync(id/*, cb*/);
-		}
-		else {
-			dispatcher_.post([this, id/*, cb*/]() {
+		if (!shutdown_) {
+			dispatcher_.post([this, id]() {
 
-				remove_sync(id/*, cb*/);
-				});
+				remove_sync(id);
+			});
 		}
+		//else {
+		//	remove_sync(id);
+		//}
 	}
 
 	channel_ptr registry::lookup_sync(std::size_t id)
 	{
 		auto pos = list_.find(id);
 		return (pos != list_.end())
-			? pos->second->get_channel()
+			? pos->second.lock()	
 			: channel_ptr()
 			;
 	}
@@ -66,10 +66,10 @@ namespace cyng {
 	std::vector<channel_ptr> registry::lookup_sync(std::string name)
 	{
 		std::vector<channel_ptr> channels;
-		for (auto const& ch : list_) {
-			auto sp = ch.second->get_channel();
-			if (sp && boost::algorithm::equals(name, sp->get_name())) {
-				channels.push_back(sp);
+		for (auto const& wcp : list_) {
+			auto scp = wcp.second.lock();
+			if (scp && boost::algorithm::equals(name, scp->get_name())) {
+				channels.push_back(scp);
 			}
 		}
 		return channels;
@@ -98,22 +98,6 @@ namespace cyng {
 		return std::vector<channel_ptr>();
 	}
 
-	std::vector<channel_ptr> registry::get_all_channels() const
-	{
-		//
-		//	shutdown mode
-		//
-		BOOST_ASSERT(shutdown_);
-
-		std::vector<channel_ptr> vec;
-
-		vec.reserve(list_.size());
-		std::transform(std::begin(list_), std::end(list_), std::back_inserter(vec), [](list_t::value_type const& val) {
-			return val.second->get_channel();
-			});
-		return vec;
-	}
-
 	bool registry::shutdown()
 	{
 		if (!shutdown_.exchange(true))	{
@@ -125,14 +109,22 @@ namespace cyng {
 			//
 			//	get all channels
 			//
-			auto channels = get_all_channels();
+			auto channels = get_all_channels(list_);
 
 			//
 			//	stop all channels
 			//
 			for (auto ptr : channels) {
-				ptr->shutdown();
+				if (ptr) {
+#ifdef _DEBUG
+					auto const name = ptr->get_name();
+					auto const id = ptr->get_id();
+#endif
+					ptr->stop();
+				}
 			}
+
+			channels.clear();
 
 			return true;
 		}
@@ -156,6 +148,35 @@ namespace cyng {
 			chp->dispatch(slot, clone(msg));
 		}
 		return channels.size();
+	}
+
+	std::vector<channel_ptr> get_all_channels(registry::list_t const& reg_list)
+	{
+		//
+		//	shutdown mode
+		//
+		//BOOST_ASSERT(shutdown_);
+
+		std::vector<channel_ptr> vec;
+
+		vec.reserve(reg_list.size());
+		std::transform(std::begin(reg_list), std::end(reg_list), std::back_inserter(vec), [](registry::list_t::value_type const& val) {
+			return val.second.lock();
+			});
+		return vec;
+	}
+
+	auto_remove::auto_remove(registry& reg, std::size_t id)
+		: reg_(reg)
+		, id_(id)
+	{}
+
+	void auto_remove::operator ()(channel* cp) 	{
+#ifdef _DEBUG
+		if (cp->is_open())	BOOST_ASSERT(cp->get_id() == id_);
+#endif
+		reg_.remove(id_);
+		delete cp;
 	}
 
 }

@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_SUITE(task_suite)
 
 BOOST_AUTO_TEST_CASE(controller)
 {
-	cyng::controller ctl;
+	cyng::controller ctl(2);
 	auto cp = ctl.create_channel<cyng::demo_task>();
 	BOOST_REQUIRE(cp); 
 	if (cp) {
@@ -25,6 +25,13 @@ BOOST_AUTO_TEST_CASE(controller)
 		cp->dispatch(3, cyng::make_tuple(23));
 		BOOST_CHECK(cp->stop());
 	}
+
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	std::cerr << "use_count: " << cp.use_count() << std::endl;
+	cp.reset();
+	std::cerr << "use_count: " << cp.use_count() << std::endl;
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	ctl.shutdown();
 	ctl.stop();
 }
 
@@ -42,8 +49,8 @@ BOOST_AUTO_TEST_CASE(scheduler)
 
 BOOST_AUTO_TEST_CASE(named)
 {
-	cyng::controller ctl;
-	ctl.create_named_channel<cyng::demo_task>("dude");
+	cyng::controller ctl(4);
+	auto channel = ctl.create_named_channel<cyng::demo_task>("dude");
 	auto channels = ctl.get_registry().lookup("dude");
 	BOOST_REQUIRE(!channels.empty());
 	if (!channels.empty()) {
@@ -51,13 +58,14 @@ BOOST_AUTO_TEST_CASE(named)
 		BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
 		BOOST_CHECK(channels.front()->stop());
 	}
+	ctl.shutdown();
 	ctl.stop();
 }
 
 BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 {
 	cyng::controller ctl;
-	ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
+	auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
 	auto channels = ctl.get_registry().lookup("dude");
 	BOOST_REQUIRE(!channels.empty());
 	if (!channels.empty()) {
@@ -71,6 +79,7 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		BOOST_CHECK(channels.front()->stop());
 	}
+	ctl.shutdown();
 	ctl.stop();
 }
 

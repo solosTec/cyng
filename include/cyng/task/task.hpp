@@ -4,10 +4,10 @@
  * Copyright (c) 2021 Sylko Olzscher 
  * 
  */ 
-#ifndef CYNG_SCRIPT_TASK_HPP
-#define CYNG_SCRIPT_TASK_HPP
+#ifndef CYNG_TASK_HPP
+#define CYNG_TASK_HPP
 
-#include <cyng/task/channel.h>
+//#include <cyng/task/channel.h>
 #include <cyng/task/registry.h>
 #include <cyng/task/task_interface.h>
 #include <cyng/obj/object.h>
@@ -77,62 +77,35 @@ namespace cyng {
 
 	public:
 		template < typename ...Args >
-		task(traits::no_ref, boost::asio::io_context& ctx, registry* reg, std::size_t id, std::string name, Args &&... args)
+		task(traits::no_ref, channel_ptr scp, registry* reg, std::size_t id, Args &&... args)
 			: registry_(reg)
 			, id_(id)
-			, channel_(std::make_shared<channel>(ctx, this, name))
 			, impl_(std::forward<Args>(args)...)
 		{ 
-			register_this();
+			boost::ignore_unused(scp);
 		}
 
 		template < typename ...Args >
-		task(traits::weak_ref, boost::asio::io_context& ctx, registry* reg, std::size_t id, std::string name, Args &&... args)
+		task(traits::weak_ref, channel_ptr scp, registry* reg, std::size_t id, Args &&... args)
 			: registry_(reg)
 			, id_(id)
-			, channel_(std::make_shared<channel>(ctx, this, name))
-			, impl_(channel_->weak_from_this(), std::forward<Args>(args)...)
-		{
-			register_this();
-		}
+			, impl_(scp, std::forward<Args>(args)...)
+		{}
 
 		virtual ~task()
-		{
-			BOOST_ASSERT(!channel_->is_open());
-			//
-			//	remove from registry?
-			//
-		}
+		{}
 
 		virtual std::size_t get_id() const noexcept override 
 		{
 			return id_;
 		}
 
-		virtual channel_ptr get_channel() const noexcept override
-		{
-			return channel_->shared_from_this();
-		}
-
-	private:
-		void register_this()
-		{
-			registry_->insert(this);
-		}
-
-		void unregister_this(/*destruct_cb cb*/)
-		{
-			registry_->remove(id_/*, cb*/);
-		}
-
 	protected:
 		virtual void dispatch(std::size_t slot, tuple_t const& msg) override
 		{
-			//invoke(slot, msg, seq_t{});
 			BOOST_ASSERT(slot <= signature_count_);
 			if (slot > signature_count_)	return;
 			invoke_helper<signature_count_>::call(slot, msg, impl_.sigs_);
-
 		}
 		virtual void stop() override
 		{
@@ -141,19 +114,23 @@ namespace cyng {
 			//
 			dispatch(stop_idx_, cyng::make_tuple(eod{}));
 
-			unregister_this(/*cb*/);
+			//
+			//	delete this task
+			//
+			try {
+				std::cerr << "DELETE THIS: " << this->get_id() << std::endl;
+				delete this;
+			}
+			catch (...) {}
+
+			//
+			//	after this: undefined behaviour
+			//
 		}
 
 	private:
 		registry* registry_;
 		std::size_t const id_;
-
-		//
-		//	Ordering is important.
-		//	First the channel have to be initialized 
-		//	to get used by the implementation class
-		//
-		channel_ptr channel_;
 		T	impl_;	//!<	implementation class
 	};
 }

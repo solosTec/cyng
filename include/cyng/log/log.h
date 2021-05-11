@@ -71,12 +71,12 @@ namespace cyng {
 		severity level_;
 		std::unique_ptr< logging::console > con_;
 		std::unique_ptr < logging::rolling_file > rfile_;
-#ifdef APPENDER_SYS_LOG
-		std::unique_ptr < logging::sys_log > sys_;
-#endif
-#ifdef APPENDER_EVENT_LOG
-		std::unique_ptr < logging::eventlog > event_;
-#endif
+//#ifdef APPENDER_SYS_LOG
+//		std::unique_ptr < logging::sys_log > sys_;
+//#endif
+//#ifdef APPENDER_EVENT_LOG
+//		std::unique_ptr < logging::eventlog > event_;
+//#endif
 	};
 
 }

@@ -22,10 +22,14 @@ namespace cyng {
 	public:
 		virtual ~task_interface() {}
 		virtual std::size_t get_id() const noexcept = 0;
-		virtual std::shared_ptr<channel> get_channel() const noexcept = 0;
+		//virtual std::shared_ptr<channel> get_channel() const noexcept = 0;
 
 	protected:
 		virtual void dispatch(std::size_t slot, tuple_t const& msg) = 0;
+
+		/**
+		 * @param shutdown id true channel is in shutdown mode
+		 */
 		virtual void stop() = 0;
 
 	};

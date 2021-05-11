@@ -17,31 +17,43 @@ namespace cyng {
 	{}
 
 	void logger::push(logging::record const& rec) {
-		channel_->dispatch(0, cyng::make_tuple(rec.tp_, rec.level_, rec.tid(), rec.msg()));
+		if (channel_ && channel_->is_open()) {
+			channel_->dispatch(0, cyng::make_tuple(rec.tp_, rec.level_, rec.tid(), rec.msg()));
+		}
 	}
 
 	void logger::stop() {
-		channel_->stop();
+		if (channel_)	channel_->stop();
 	}
 
 	void logger::set_level(severity lev) {
-		channel_->dispatch(5, cyng::make_tuple(lev));
+		if (channel_ && channel_->is_open()) {
+			channel_->dispatch(5, cyng::make_tuple(lev));
+		}
 	}
 
 	void logger::start_console_logger() {
-		channel_->dispatch(1, cyng::make_tuple());
+		if (channel_ && channel_->is_open()) {
+			channel_->dispatch(1, cyng::make_tuple());
+		}
 	}
 
 	void logger::start_file_logger(std::filesystem::path p, std::uint64_t size) {
-		channel_->dispatch(2, cyng::make_tuple(p, size));
+		if (channel_ && channel_->is_open()) {
+			channel_->dispatch(2, cyng::make_tuple(p, size));
+		}
 	}
 
 	void logger::start_syslog(std::string ident, bool console) {
-		channel_->dispatch(3, cyng::make_tuple(ident, console));
+		if (channel_ && channel_->is_open()) {
+			channel_->dispatch(3, cyng::make_tuple(ident, console));
+		}
 	}
 
 	void logger::start_eventlog() {
-		channel_->dispatch(4, cyng::make_tuple());
+		if (channel_ && channel_->is_open()) {
+			channel_->dispatch(4, cyng::make_tuple());
+		}
 	}
 
 }
