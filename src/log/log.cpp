@@ -75,10 +75,10 @@ namespace cyng {
 		//	write to sys log
 		//
 #ifdef APPENDER_SYS_LOG
-		if (sys_) {
-			sys_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop sys logger");
-			sys_.reset();
-		}
+		//if (sys_) {
+		//	sys_->write(std::chrono::system_clock::now(), severity::LEVEL_INFO, 0, "stop sys logger");
+		//	sys_.reset();
+		//}
 #endif
 
 	}
