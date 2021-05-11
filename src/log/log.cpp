@@ -111,7 +111,7 @@ namespace cyng {
 			//	write to sys log
 			//
 #ifdef APPENDER_SYS_LOG
-			if (sys_)	sys_->write(ts, lev, tip, msg);
+			//if (sys_)	sys_->write(ts, lev, tip, msg);
 #endif
 
 		}
@@ -129,7 +129,7 @@ namespace cyng {
 	void log::start_sys_log(std::string ident, bool console) {
 
 #ifdef APPENDER_SYS_LOG
-		sys_.reset(new logging::sys_log(ident, console));
+		//sys_.reset(new logging::sys_log(ident, console));
 #endif
 
 	}
