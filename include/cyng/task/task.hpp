@@ -7,7 +7,6 @@
 #ifndef CYNG_TASK_HPP
 #define CYNG_TASK_HPP
 
-//#include <cyng/task/channel.h>
 #include <cyng/task/registry.h>
 #include <cyng/task/task_interface.h>
 #include <cyng/obj/object.h>
@@ -15,6 +14,8 @@
 #include <cyng/meta.hpp>
 #include <cyng/obj/intrinsics/eod.h>
 #include <cyng/obj/util.hpp>
+
+#include<boost/core/ignore_unused.hpp>
 
 namespace cyng {
 
@@ -118,7 +119,6 @@ namespace cyng {
 			//	delete this task
 			//
 			try {
-				std::cerr << "DELETE THIS: " << this->get_id() << std::endl;
 				delete this;
 			}
 			catch (...) {}
