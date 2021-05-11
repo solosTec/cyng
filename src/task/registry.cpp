@@ -107,27 +107,17 @@ namespace cyng {
 			//
 
 			//
-			//	get all channels
-			//
-			auto channels = get_all_channels(list_);
-
-			//
 			//	stop all channels
 			//
-			for (auto ptr : channels) {
-				if (ptr) {
+			for (auto entry : list_) {
+				if (entry.second) {
 #ifdef _DEBUG
-					auto const name = ptr->get_name();
-					auto const id = ptr->get_id();
+					auto const name = entry.second->get_name();
+					auto const id = entry.second->get_id();
 #endif
-					ptr->stop();
+					entry.second->stop();
 				}
 			}
-
-			//
-			//	remove references
-			//
-			channels.clear();
 
 			//
 			//	clear channel table
@@ -158,20 +148,20 @@ namespace cyng {
 		return channels.size();
 	}
 
-	std::vector<channel_ptr> get_all_channels(registry::list_t const& reg_list)
-	{
-		//
-		//	shutdown mode
-		//
+	//std::vector<channel_ptr> get_all_channels(registry::list_t const& reg_list)
+	//{
+	//	//
+	//	//	shutdown mode
+	//	//
 
-		std::vector<channel_ptr> vec;
+	//	std::vector<channel_ptr> vec;
 
-		vec.reserve(reg_list.size());
-		std::transform(std::begin(reg_list), std::end(reg_list), std::back_inserter(vec), [](registry::list_t::value_type const& val) {
-			return val.second;
-			});
-		return vec;
-	}
+	//	vec.reserve(reg_list.size());
+	//	std::transform(std::begin(reg_list), std::end(reg_list), std::back_inserter(vec), [](registry::list_t::value_type const& val) {
+	//		return val.second;
+	//		});
+	//	return vec;
+	//}
 
 	auto_remove::auto_remove(registry& reg, std::size_t id)
 		: reg_(reg)

@@ -143,11 +143,6 @@ namespace cyng {
 	};
 
 	/**
-	 * get all channels
-	 */
-	std::vector<channel_ptr> get_all_channels(registry::list_t const&);
-
-	/**
 	 * Helper class to automatically remove a channel when
 	 * it's lifetime is over.
 	 */
