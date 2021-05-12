@@ -37,7 +37,7 @@ namespace cyng {
             auto sp = this->shared_from_this(); //  extend life time
 
             boost::asio::post(dispatcher_, [this, sp, m]()->void {
-                task_->dispatch(m.slot_, m.msg_);
+                if (is_open())  task_->dispatch(m.slot_, m.msg_);
              });
         }
     }
@@ -77,9 +77,9 @@ namespace cyng {
             //  cancel timer
             //
             timer_.cancel();
-            //auto sp = this->shared_from_this(); //  extend life time
-            shutdown(boost::asio::use_future);
-            return true;
+
+            auto r = shutdown(boost::asio::use_future);
+            return r.get();
         }
         return false;
     }

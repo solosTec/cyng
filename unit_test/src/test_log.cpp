@@ -32,15 +32,11 @@ BOOST_AUTO_TEST_CASE(logger)
 	rec << ", world";
 	logger.push(*rec);
 
-	//{
-	//	using cyng::operator<<;
-	//	auto __msg = cyng::logging::record::create(cyng::severity::LEVEL_INFO);
-	//	__msg << 42;
-	//	logger.push(*__msg);
-	//}
 
 	CYNG_LOG(logger, cyng::severity::LEVEL_INFO, 2);
 	CYNG_LOG_ERROR(logger, "dude");
+
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	ctl.get_registry().shutdown();
 	ctl.shutdown();

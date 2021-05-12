@@ -175,12 +175,17 @@ namespace cyng {
 
 			result_type result(handler);
 
-			dispatcher_.post([this, handler]() mutable {
+			//
+			//	release pointer so that the task object can control its own life time
+			//
+			auto ptr = task_.release();
+			BOOST_ASSERT(ptr != nullptr);
+
+			dispatcher_.post([this, handler, ptr]() mutable {
 
 				//
 				//  call stop(eod) in task implementation class
 				//
-				auto ptr = task_.release();
 				ptr->stop();
 				handler(boost::system::error_code{}, true);
 			});

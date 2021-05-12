@@ -47,18 +47,16 @@ namespace cyng {
 			dispatcher_.post([this, id]() {
 
 				remove_sync(id);
+
 			});
 		}
-		//else {
-		//	remove_sync(id);
-		//}
 	}
 
 	channel_ptr registry::lookup_sync(std::size_t id)
 	{
 		auto pos = list_.find(id);
 		return (pos != list_.end())
-			? pos->second	
+			? pos->second.lock()
 			: channel_ptr()
 			;
 	}
@@ -67,7 +65,7 @@ namespace cyng {
 	{
 		std::vector<channel_ptr> channels;
 		for (auto const& wcp : list_) {
-			auto scp = wcp.second;
+			auto scp = wcp.second.lock();
 			if (scp && boost::algorithm::equals(name, scp->get_name())) {
 				channels.push_back(scp);
 			}
@@ -107,15 +105,16 @@ namespace cyng {
 			//
 
 			//
-			//	stop all channels
+			//	stop all channels (reverse)
 			//
-			for (auto entry : list_) {
-				if (entry.second) {
+			for (auto pos = list_.rbegin(); pos != list_.rend(); pos++) {
+				auto scp = pos->second.lock();
+				if (scp) {
 #ifdef _DEBUG
-					auto const name = entry.second->get_name();
-					auto const id = entry.second->get_id();
+					auto const name = scp->get_name();
+					auto const id = scp->get_id();
 #endif
-					entry.second->stop();
+					scp->stop();
 				}
 			}
 
@@ -169,9 +168,8 @@ namespace cyng {
 	{}
 
 	void auto_remove::operator ()(channel* cp) 	{
-#ifdef _DEBUG
-		if (cp->is_open())	BOOST_ASSERT(cp->get_id() == id_);
-#endif
+
+		BOOST_ASSERT_MSG(!cp->is_open(), "channel still open");
 		reg_.remove(id_);
 		delete cp;
 	}

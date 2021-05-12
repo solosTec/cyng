@@ -32,7 +32,7 @@ namespace cyng {
 		static_assert(BOOST_VERSION >= 107400, "wrong Boost version");
 
 	public:
-		using list_t = std::map<std::size_t, channel_ptr>;
+		using list_t = std::map<std::size_t, channel_weak>;
 
 	public:
 		registry(boost::asio::io_context& io);
