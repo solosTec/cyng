@@ -42,23 +42,16 @@ namespace cyng {
         }
     }
 
+    void channel::dispatch(std::size_t slot) {
+        dispatch(slot, make_tuple());
+    }
+
     void channel::dispatch(std::string slot, tuple_t&& msg) {
-#ifdef _DEBUG_TASK
-        //  search for a bug in "db.req.update"
-        if (boost::algorithm::equals(slot, "db.req.update")) {
-            std::cout
-                << std::endl
-                << std::endl
-                << slot
-                << ": "
-                << msg
-                << std::endl
-                << std::endl
-                ;
-        }
-        
-#endif
         dispatch(lookup(slot), std::move(msg));
+    }
+
+    void channel::dispatch(std::string slot) {
+        dispatch(lookup(slot), make_tuple());
     }
 
     bool channel::is_open() const noexcept

@@ -14,6 +14,7 @@
 #include <atomic>
 
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/util.hpp>
 #include <cyng/task/task_interface.h>
 
 namespace cyng {
@@ -94,11 +95,22 @@ namespace cyng {
 		 * @param msg object list that will be casted to the required function signature.
 		 */
 		void dispatch(std::size_t slot, tuple_t&& msg);
+		void dispatch(std::size_t slot);
+		template< typename ...Args>
+		void dispatch(std::size_t slot, Args&& ...args) {
+			dispatch(slot, cyng::make_tuple(std::forward<Args...>(args...)));
+		}
 
 		/**
 		 * Takes the slot from the named slot table
 		 */
 		void dispatch(std::string slot, tuple_t&& msg);
+		void dispatch(std::string slot);
+
+		template< typename ...Args>
+		void dispatch(std::string slot, Args&& ...args) {
+			dispatch(slot, cyng::make_tuple(std::forward<Args...>(args...)));
+		}
 
 		/**
 		 * Close this communication channel

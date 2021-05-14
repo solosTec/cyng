@@ -15,6 +15,10 @@
 
 namespace cyng {
 
+	tuple_t make_tuple() {
+		return tuple_t{};
+	}
+
 	std::string make_string(buffer_t const& buffer) {
 		std::string s;
 		s.reserve(buffer.size());
