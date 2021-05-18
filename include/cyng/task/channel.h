@@ -98,7 +98,7 @@ namespace cyng {
 		void dispatch(std::size_t slot);
 		template< typename ...Args>
 		void dispatch(std::size_t slot, Args&& ...args) {
-			dispatch(slot, cyng::make_tuple(std::forward<Args...>(args...)));
+			dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
 		/**
@@ -109,7 +109,7 @@ namespace cyng {
 
 		template< typename ...Args>
 		void dispatch(std::string slot, Args&& ...args) {
-			dispatch(slot, cyng::make_tuple(std::forward<Args...>(args...)));
+			dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
 		/**

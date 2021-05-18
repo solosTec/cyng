@@ -176,6 +176,5 @@ namespace cyng {
 			}
 			return cs;
 		}
-
 	}
 }

@@ -451,6 +451,14 @@ BOOST_AUTO_TEST_CASE(parser)
 	p.read(std::begin(inp), std::end(inp));
 
 	//
+	//	test obis path
+	//
+	obj = cyng::make_object(cyng::obis_path_t{ cyng::obis(0x01, 0x00, 0x00, 0x00, 0x09, 0xff), cyng::obis(0x01, 0x00, 0x00, 0x00, 0x09, 0x01) });
+	cmp = cyng::io::to_typed(obj);	//	
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
+	//
 	//	test edis
 	//
 	obj = cyng::make_object(cyng::edis(1, 8, 0));

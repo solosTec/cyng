@@ -63,6 +63,7 @@ namespace cyng {
 	std::ostream& operator<<(std::ostream& os, pid const&);
 
 	std::ostream& operator<<(std::ostream& os, obis const&);
+	std::ostream& operator<<(std::ostream& os, obis_path_t const&);
 	std::ostream& operator<<(std::ostream& os, edis const&);
 
 	template <std::size_t N>

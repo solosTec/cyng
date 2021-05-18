@@ -119,15 +119,18 @@ namespace std {
 	{
 		return v.to_uint64();
 	}
-	//bool equal_to<cyng::obis>::operator()(cyng::obis const& c1, cyng::obis const& c2) const noexcept
-	//{
-	//	return c1.equal(c2);
-	//}
-	//bool less<cyng::obis>::operator()(cyng::obis const& c1, cyng::obis const& c2) const noexcept
-	//{
-	//	return c1.less(c2);
-	//}
+	size_t hash<cyng::obis_path_t>::operator()(cyng::obis_path_t const& v) const noexcept
+	{
+		std::size_t h{ 0 };
+		for (auto const& o : v) {
 
+			//
+			//	combine all values
+			//
+			h ^= o.to_uint64() << 1;
+		}
+		return h;
+	}
 }
 
 

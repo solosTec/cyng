@@ -5,7 +5,10 @@
  *
  */
 #include <cyng/io/serializer/plain.hpp>
+#include <cyng/io/ostream.h>
+
 #include <boost/io/ios_state.hpp>
+
 #include <iomanip>
 #include <algorithm>
 
@@ -173,6 +176,22 @@ namespace cyng {
 				;
 			return cs;
 		}
+		
+		//std::size_t serializer <obis_path_t, PLAIN>::write(std::ostream& os, obis_path_t const& v) 
+		//{
+		//	calc_size const cs(os);
+		//	bool init = false;
+		//	for (auto const& o : v) {
+		//		if (!init) {
+		//			init = true;
+		//		}
+		//		else {
+		//			os << ":";
+		//		}
+		//		os << o;
+		//	}
+		//	return cs;
+		//}
 
 	}
 }

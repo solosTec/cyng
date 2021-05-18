@@ -194,6 +194,20 @@ namespace cyng {
 		return os << to_str(o);
 	}
 
+	std::ostream& operator<<(std::ostream& os, obis_path_t const& v) {
+		bool init = false;
+		for (auto const& o : v) {
+			if (!init) {
+				init = true;
+			}
+			else {
+				os << ":";
+			}
+			os << o;
+		}
+		return os;
+	}
+
 	std::ostream& operator<<(std::ostream& os, edis const& e) {
 		boost::io::ios_flags_saver  ifs(os);
 		os

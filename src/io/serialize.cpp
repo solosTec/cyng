@@ -98,7 +98,8 @@ namespace cyng {
 
 		std::size_t serialize_xml(std::ostream& os, object const& obj)
 		{
-			return serialize<XML>::write(os, obj);
+			return 0;
+			//return serialize<XML>::write(os, obj);
 		}
 
 		std::string to_xml(object const& obj)

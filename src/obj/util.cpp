@@ -15,10 +15,6 @@
 
 namespace cyng {
 
-	tuple_t make_tuple() {
-		return tuple_t{};
-	}
-
 	std::string make_string(buffer_t const& buffer) {
 		std::string s;
 		s.reserve(buffer.size());
@@ -77,16 +73,32 @@ namespace cyng {
 	}
 
 	obis make_obis(buffer_t const& buffer) {
-		if (buffer.size() >= obis::size()) {
+		return make_obis(buffer, 0);
+	}
+
+	obis make_obis(buffer_t const& buffer, std::size_t offset) {
+		if (buffer.size() + offset >= obis::size()) {
 			return obis(
-				buffer.at(0),
-				buffer.at(1),
-				buffer.at(2),
-				buffer.at(3),
-				buffer.at(4),
-				buffer.at(5));
+				buffer.at(offset),
+				buffer.at(offset + 1),
+				buffer.at(offset + 2),
+				buffer.at(offset + 3),
+				buffer.at(offset + 4),
+				buffer.at(offset + 5));
 		}
 		return obis{};
+
+	}
+
+	obis_path_t make_obis_path(buffer_t const& buffer) {
+		BOOST_ASSERT((buffer.size() % obis::size()) == 0);
+		auto const size = buffer.size() / obis::size();
+		obis_path_t path;
+		path.reserve(size);
+		for (std::size_t idx = 0; idx < size; ++idx) {
+			path.push_back(make_obis(buffer, idx * obis::size()));
+		}
+		return path;
 	}
 
 	edis make_edis(buffer_t const& buffer) {

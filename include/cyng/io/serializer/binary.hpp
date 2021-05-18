@@ -265,6 +265,12 @@ namespace cyng {
 		};
 
 		template <>
+		struct serializer <obis_path_t, BINARY>
+		{
+			static std::size_t write(std::ostream& os, obis_path_t const&);
+		};
+
+		template <>
 		struct serializer <edis, BINARY>
 		{
 			static std::size_t write(std::ostream& os, edis const&);

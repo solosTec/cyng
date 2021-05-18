@@ -31,12 +31,6 @@ namespace cyng {
 	}
 
 	/**
-	 * Create an empty tuple_t object
-	 */
-	[[nodiscard]]
-	tuple_t make_tuple();
-
-	/**
 	 * Convert all elements of an initializer list into a vector of objects.
 	 */
 	template < typename T >
@@ -109,6 +103,11 @@ namespace cyng {
 
 	[[nodiscard]]
 	obis make_obis(buffer_t const&);
+	[[nodiscard]]
+	obis make_obis(buffer_t const&, std::size_t offset);
+
+	[[nodiscard]]
+	obis_path_t make_obis_path(buffer_t const&);
 
 	[[nodiscard]]
 	edis make_edis(buffer_t const&);

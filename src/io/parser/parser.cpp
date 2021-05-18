@@ -189,6 +189,9 @@ namespace cyng {
 			case TC_OBIS:
 				BOOST_ASSERT(buffer_.size() == obis::size());
 				return make_object(make_obis(buffer_));
+			case TC_OBISPATH:
+				BOOST_ASSERT((buffer_.size() % obis::size()) == 0);
+				return make_object(make_obis_path(buffer_));
 			case TC_EDIS:
 				BOOST_ASSERT(buffer_.size() == edis::size());
 				return make_object(make_edis(buffer_));

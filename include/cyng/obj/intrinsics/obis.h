@@ -189,6 +189,11 @@ namespace std {
 	public:
 		size_t operator()(cyng::obis const&) const noexcept;
 	};
+	template <>
+	class hash<cyng::obis_path_t> {
+	public:
+		size_t operator()(cyng::obis_path_t const&) const noexcept;
+	};
 }
 
 #endif 

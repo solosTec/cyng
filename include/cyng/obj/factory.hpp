@@ -184,6 +184,9 @@ namespace cyng {
 			}
 		};
 
+		//
+		//	special case buffers
+		//
 		template <>
 		struct boxing<buffer_t>
 		{
@@ -191,7 +194,6 @@ namespace cyng {
 			using wrapper_t = wrapper<value_t>;
 			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
 
-			//static ptr_t create(buffer_t const& val);
 			static ptr_t create(buffer_t val);
 
 			/**
@@ -225,6 +227,46 @@ namespace cyng {
 			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
 
 			static ptr_t create(buffer_t&& val);
+		};
+
+		//
+		//	special case obis paths
+		//
+		template <>
+		struct boxing<obis_path_t>
+		{
+			using value_t = obis_path_t;
+			using wrapper_t = wrapper<value_t>;
+			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
+
+			static ptr_t create(obis_path_t val);
+		};
+		template <>
+		struct boxing<obis_path_t&>
+		{
+			using value_t = obis_path_t;
+			using wrapper_t = wrapper<value_t>;
+			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
+
+			static ptr_t create(obis_path_t& val);
+		};
+		template <>
+		struct boxing<obis_path_t const&>
+		{
+			using value_t = obis_path_t;
+			using wrapper_t = wrapper<value_t>;
+			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
+
+			static ptr_t create(obis_path_t const& val);
+		};
+		template <>
+		struct boxing<obis_path_t&&>
+		{
+			using value_t = obis_path_t;
+			using wrapper_t = wrapper<value_t>;
+			using ptr_t = std::unique_ptr<wrapper_t, tracker>;
+
+			static ptr_t create(obis_path_t&& val);
 		};
 
 		/**

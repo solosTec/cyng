@@ -93,6 +93,7 @@ namespace cyng {
 
 					case TC_PID:		return write_impl<traits::reverse_type<TC_PID>::type>(os, obj);
 					case TC_OBIS:		return write_impl<traits::reverse_type<TC_OBIS>::type>(os, obj);
+					case TC_OBISPATH:	return write_impl<traits::reverse_type<TC_OBISPATH>::type>(os, obj);
 					case TC_EDIS:		return write_impl<traits::reverse_type<TC_EDIS>::type>(os, obj);
 
 					case TC_DIGEST_MD5:		return write_impl<traits::reverse_type<TC_DIGEST_MD5>::type>(os, obj);

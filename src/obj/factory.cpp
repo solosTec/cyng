@@ -65,6 +65,9 @@ namespace cyng {
 			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(value_t(p)), object::tracker_);
 		}
 
+		//
+		//	special case buffer
+		//
 		boxing<buffer_t>::ptr_t boxing<buffer_t>::create(buffer_t val) {
 			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
 		}
@@ -82,6 +85,26 @@ namespace cyng {
 		}
 
 		boxing<buffer_t>::ptr_t boxing<buffer_t&&>::create(buffer_t&& val) {
+			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
+		}
+
+		//
+		//	special case obis paths
+		//
+		boxing<obis_path_t>::ptr_t boxing<obis_path_t>::create(obis_path_t val) {
+			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
+		}
+
+		boxing<obis_path_t>::ptr_t boxing<obis_path_t&>::create(obis_path_t& val) {
+			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
+		}
+
+
+		boxing<obis_path_t>::ptr_t boxing<obis_path_t const&>::create(obis_path_t const& val) {
+			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(val), object::tracker_);
+		}
+
+		boxing<obis_path_t>::ptr_t boxing<obis_path_t&&>::create(obis_path_t&& val) {
 			return std::unique_ptr<wrapper_t, tracker>(new wrapper_t(std::move(val)), object::tracker_);
 		}
 

@@ -202,6 +202,21 @@ namespace cyng {
 			return obis::size() + sizeof(std::uint16_t) + ll;
 		}
 
+		std::size_t serializer <obis_path_t, BINARY>::write(std::ostream& os, obis_path_t const& v)
+		{
+
+			//
+			//	type - length - value
+			//	length is the size of the vector
+			//
+			serialize_type_tag<obis_path_t>(os);
+			auto const ll = serialize_length(os, v.size() * obis::size());
+			for (auto const& o : v) {
+				write_binary(os, o.data());
+			}
+			return v.size() * obis::size() + sizeof(std::uint16_t) + ll;
+		}
+		
 		std::size_t serializer <edis, BINARY>::write(std::ostream& os, edis const& v)
 		{
 			static_assert(sizeof(edis::data_type) == edis::size(), "invalid assumption");
