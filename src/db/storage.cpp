@@ -219,8 +219,12 @@ namespace cyng
 
 		case TC_UUID:			
 		{
-			boost::uuids::string_generator sgen;			
-			return make_object(sgen(val));
+			try {
+				boost::uuids::string_generator sgen;
+				return make_object(sgen(val));
+			}
+			catch(std::exception const&) {}
+			return make_object(val);
 		}
 
 		case TC_IP_TCP_ENDPOINT:

@@ -82,7 +82,6 @@ namespace cyng {
 			mac64,
 			pid,
 			obis,
-			obis_path_t,
 			edis,
 
 			crypto::digest_md5,
@@ -112,6 +111,8 @@ namespace cyng {
 			boost::asio::ip::tcp::endpoint,
 			boost::asio::ip::udp::endpoint,
 			boost::asio::ip::icmp::endpoint,
+
+			obis_path_t,
 
 			eod	//	last entry
 
@@ -169,7 +170,6 @@ namespace cyng {
 			"mac64",
 			"pid",
 			"obis",
-			"obis:path",
 			"edis",
 
 			"crypto:MD5",
@@ -200,6 +200,7 @@ namespace cyng {
 			"ip:udp:ep",	//	boost::asio::ip::udp::endpoint
 			"ip:icmp:ep",	//	boost::asio::ip::icmp::endpoint
 
+			"obis:path",
 			"eod"	//	end-of-data
 		};
 
@@ -317,7 +318,6 @@ namespace cyng {
 		TC_MAC64 = type_tag_traits<mac64>(),
 		TC_PID = type_tag_traits<pid>(),
 		TC_OBIS = type_tag_traits<obis>(),
-		TC_OBISPATH = type_tag_traits<obis_path_t>(),
 		TC_EDIS = type_tag_traits<edis>(),
 
 		TC_DIGEST_MD5 = type_tag_traits<crypto::digest_md5>(),
@@ -347,6 +347,8 @@ namespace cyng {
 		TC_IP_TCP_ENDPOINT = type_tag_traits<boost::asio::ip::tcp::endpoint>(),
 		TC_IP_UDP_ENDPOINT = type_tag_traits<boost::asio::ip::udp::endpoint>(),
 		TC_IP_ICMP_ENDPOINT = type_tag_traits<boost::asio::ip::icmp::endpoint>(),
+
+		TC_OBISPATH = type_tag_traits<obis_path_t>(),
 
 		TC_EOD = type_tag_traits<eod>()
 
