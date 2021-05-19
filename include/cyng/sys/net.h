@@ -39,6 +39,10 @@ namespace cyng {
 		 * @return list of all available nics
 		 */
 		std::vector<std::string> get_nic_names();
+
+		/**
+		 * on linux the same as get_nic_names()
+		 */
 		std::vector<std::string> get_nic_prefix();
 
 		/**

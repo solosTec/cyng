@@ -147,21 +147,6 @@ namespace cyng {
 		return channels.size();
 	}
 
-	//std::vector<channel_ptr> get_all_channels(registry::list_t const& reg_list)
-	//{
-	//	//
-	//	//	shutdown mode
-	//	//
-
-	//	std::vector<channel_ptr> vec;
-
-	//	vec.reserve(reg_list.size());
-	//	std::transform(std::begin(reg_list), std::end(reg_list), std::back_inserter(vec), [](registry::list_t::value_type const& val) {
-	//		return val.second;
-	//		});
-	//	return vec;
-	//}
-
 	auto_remove::auto_remove(registry& reg, std::size_t id)
 		: reg_(reg)
 		, id_(id)
