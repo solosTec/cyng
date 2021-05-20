@@ -5,7 +5,7 @@
  *
  */
 #ifndef CYNG_SYS_CPU_H
-#define CYNG_SYS_MEMORY_H
+#define CYNG_SYS_CPU_H
 
 #include <cstdint>
 #include <cstddef>
