@@ -43,6 +43,13 @@ namespace cyng {
 		 */
 		void stop();
 
+		/**
+		 * clear() and unlock stash. 
+		 * After calling clear() it's required to reset() the stash
+		 * to use it again.
+		 */
+		void reset();
+
 		void lock(channel_ptr scp);
 		channel_ptr unlock(std::size_t id);
 

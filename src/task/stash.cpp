@@ -36,7 +36,11 @@ namespace cyng {
 				scp->stop();
 			}
 		}
+	}
 
+	void stash::reset() {
+		clear();
+		shutdown_.exchange(false);
 	}
 
 	void stash::lock(channel_ptr scp) {
