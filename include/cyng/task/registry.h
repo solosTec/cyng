@@ -65,9 +65,26 @@ namespace cyng {
 		 * collect all channels with the specified name and dispatch the data
 		 * to the names slot.
 		 *
-		 * @return count of found channels
+		 * @return Number of channels found
 		 */
 		std::size_t dispatch(std::string channel, std::string slot, tuple_t&& msg);
+
+		/**
+		 * convinience function to dispatch(std::string channel, std::string slot, tuple_t&& msg);
+		 */
+		template< typename ...Args>
+		std::size_t dispatch(std::string channel, std::string slot, Args&& ...args) {
+			return dispatch(channel, slot, cyng::make_tuple(std::forward<Args>(args)...));
+		}
+
+		/**
+		 * Dispatch a message to all channels with the specified name
+		 * but exclude the channel with a specific id.
+		 * 
+		 * @return Number of channels found
+		 */
+		std::size_t dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg);
+
 
 	private:
 		/**

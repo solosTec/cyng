@@ -147,6 +147,28 @@ namespace cyng {
 		return channels.size();
 	}
 
+	std::size_t registry::dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg) {
+
+		std::size_t count{ 0 };
+		auto channels = lookup(channel);
+		for (auto& chp : channels) {
+
+			//
+			//	exclude 
+			// 
+			if (chp->get_id() != id) {
+
+				//
+				//	since every dispatch call expects it's own copy
+				//	of the data, we have to clone it.
+				chp->dispatch(slot, clone(msg));
+				++count;
+			}
+		}
+		return count;
+
+	}
+
 	auto_remove::auto_remove(registry& reg, std::size_t id)
 		: reg_(reg)
 		, id_(id)
