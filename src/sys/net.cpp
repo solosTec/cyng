@@ -243,9 +243,9 @@ namespace cyng
 
 			boost::asio::ip::address result;
 			read_ipv6_info([&result, nic, sc](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
-				std::cout << address << " - " << name << " - " << scope << std::endl;
+				//std::cout << address << " - " << name << " - " << scope << std::endl;
 				if (boost::algorithm::equals(name, nic) && sc == scope) {
-					std::cout << to_ipv6(address, scope) << std::endl;
+					//std::cout << to_ipv6(address, scope) << std::endl;
 					result = to_ipv6(address, scope);
 					return false;
 				}

@@ -169,6 +169,13 @@ namespace cyng {
 
 	}
 
+	std::size_t registry::dispatch_exclude(channel_ptr channel, std::string slot, tuple_t&& msg) {
+		if (channel) {
+			return dispatch_exclude(channel->get_id(), channel->get_name(), slot, std::move(msg));
+		}
+		return 0;
+	}
+
 	auto_remove::auto_remove(registry& reg, std::size_t id)
 		: reg_(reg)
 		, id_(id)

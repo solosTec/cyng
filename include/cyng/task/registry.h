@@ -84,6 +84,7 @@ namespace cyng {
 		 * @return Number of channels found
 		 */
 		std::size_t dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg);
+		std::size_t dispatch_exclude(channel_ptr, std::string slot, tuple_t&& msg);
 
 
 	private:
