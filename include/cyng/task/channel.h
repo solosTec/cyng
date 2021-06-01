@@ -180,7 +180,7 @@ namespace cyng {
 		 * stop channel with asio future
 		 */
 		template <typename Token>
-		auto shutdown(Token&& token) {
+		auto shutdown(task_interface* ptr, Token&& token) {
 
 			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, bool)>;
 			typename result_type::completion_handler_type handler(std::forward<Token>(token));
@@ -190,7 +190,6 @@ namespace cyng {
 			//
 			//	release pointer so that the task object can control its own life time
 			//
-			auto ptr = task_.release();
 			BOOST_ASSERT(ptr != nullptr);
 
 			dispatcher_.post([this, handler, ptr]() mutable {

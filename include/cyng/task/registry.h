@@ -62,19 +62,24 @@ namespace cyng {
 		bool reset();
 
 		/**
+		 * dispatch a message to a list of tasks
+		 */
+		void dispatch(std::vector<std::size_t> tasks, std::string slot, tuple_t&& msg);
+
+		/**
 		 * collect all channels with the specified name and dispatch the data
 		 * to the names slot.
 		 *
 		 * @return Number of channels found
 		 */
-		std::size_t dispatch(std::string channel, std::string slot, tuple_t&& msg);
+		void dispatch(std::string channel, std::string slot, tuple_t&& msg);
 
 		/**
 		 * convinience function to dispatch(std::string channel, std::string slot, tuple_t&& msg);
 		 */
 		template< typename ...Args>
-		std::size_t dispatch(std::string channel, std::string slot, Args&& ...args) {
-			return dispatch(channel, slot, cyng::make_tuple(std::forward<Args>(args)...));
+		void dispatch(std::string channel, std::string slot, Args&& ...args) {
+			dispatch(channel, slot, cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
 		/**

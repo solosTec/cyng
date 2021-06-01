@@ -46,14 +46,17 @@ namespace cyng {
 	void stash::lock(channel_ptr scp) {
 		if (!shutdown_ && scp) {
 			dispatcher_.post([this, scp]() {
-				list_.emplace(scp->get_id(), scp);
+				if (!shutdown_)	list_.emplace(scp->get_id(), scp);
 				});
 		}
 	}
 
-	channel_ptr stash::unlock(std::size_t id) {
-		return (!shutdown_)
-			? find_channel(id, boost::asio::use_future).get()
-			: channel_ptr();
+	void stash::unlock(std::size_t id) {
+		if (!shutdown_ && (id != 0u)) {
+			dispatcher_.post([this, id]() {
+				if (!shutdown_)	list_.erase(id);
+				});
+
+		}
 	}
 }

@@ -23,7 +23,9 @@ namespace cyng {
 	{
 		if (shutdown_)	return;
 		dispatcher_.post([this, chp]() {
-			list_.emplace(chp->get_id(), chp);
+			auto const id = chp->get_id();
+			BOOST_ASSERT(id != 0u);
+			list_.emplace(id, chp);
 		});
 	}
 
@@ -137,14 +139,44 @@ namespace cyng {
 		return (shutdown_.exchange(false) && list_.empty());
 	}
 
-	std::size_t registry::dispatch(std::string channel, std::string slot, tuple_t&& msg) {
-		auto channels = lookup(channel);
-		for (auto& chp : channels) {
-			//	since every dispatch call expects it's own copy
-			//	of the data, we have to clone it.
-			chp->dispatch(slot, clone(msg));
+	void registry::dispatch(std::vector<std::size_t> tasks, std::string slot, tuple_t&& msg) {
+		if (!shutdown_) {
+			dispatcher_.post([this, tasks, slot, msg]() {
+
+				for (auto const id : tasks) {
+					auto const pos = list_.find(id);
+					if (pos != list_.end()) {
+						auto sp = pos->second.lock();
+						if (sp) {
+							sp->dispatch(slot, clone(msg));
+						}
+					}
+				}
+			});
 		}
-		return channels.size();
+	}
+
+	void registry::dispatch(std::string channel, std::string slot, tuple_t&& msg) {
+
+		dispatcher_.post([this, channel, slot, msg]() mutable {
+
+			auto channels = lookup_sync(channel);
+			for (auto& chp : channels) {
+					//	since every dispatch call expects it's own copy
+					//	of the data, we have to clone it.
+					chp->dispatch(slot, clone(msg));
+				}
+			});
+
+
+		//return 0u;
+		//auto channels = lookup(channel);
+		//for (auto& chp : channels) {
+		//	//	since every dispatch call expects it's own copy
+		//	//	of the data, we have to clone it.
+		//	chp->dispatch(slot, clone(msg));
+		//}
+		//return channels.size();
 	}
 
 	std::size_t registry::dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg) {

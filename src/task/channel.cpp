@@ -29,6 +29,8 @@ namespace cyng {
             //  the context should be active
             //
             BOOST_ASSERT(!dispatcher_.context().stopped());
+            BOOST_ASSERT_MSG(slot != std::numeric_limits<std::size_t>::max(), "unknown slot name");
+
 
             //
             //	thread safe access to task
@@ -63,18 +65,20 @@ namespace cyng {
     {
         //
         //  mark channel as closed
+        //	release pointer so that the task object can control its own life time
         //
-        if (is_open()) {
+        auto ptr = task_.release();
 
-            //
-            //  cancel timer
-            //
-            timer_.cancel();
+        if (nullptr == ptr) return false;
+        BOOST_ASSERT(!task_);
 
-            auto r = shutdown(boost::asio::use_future);
-            return r.get();
-        }
-        return false;
+        //
+        //  cancel timer
+        //
+        timer_.cancel();
+
+        auto r = shutdown(ptr, boost::asio::use_future);
+        return r.get();
     }
 
     bool channel::cancel_timer() {

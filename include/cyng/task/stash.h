@@ -50,8 +50,15 @@ namespace cyng {
 		 */
 		void reset();
 
+		/**
+		 * add reference to channel list
+		 */
 		void lock(channel_ptr scp);
-		channel_ptr unlock(std::size_t id);
+
+		/**
+		 * remove reference from channel list
+		 */
+		void unlock(std::size_t id);
 
 	private:
 		template <typename Token>
