@@ -204,13 +204,21 @@ namespace cyng
 					BOOST_ASSERT(pAdapterInfo->IfIndex == pAdapterInfo->Ipv6IfIndex);
 					if (pAdapterInfo->FirstPrefix) {
 						auto pPrefix = pAdapterInfo->FirstPrefix;
-						int i = 0;
-						for (; pPrefix != NULL; i++) {
-							//boost::asio::ip::address_v4 addr(pPrefix->Address.lpSockaddr);
+						int iv4 = 0, iv6 = 0;
+						for (; pPrefix != NULL; ) {
+							if (pPrefix->Address.lpSockaddr->sa_family == AF_INET) {
+								//boost::asio::ip::address_v4 addr(pPrefix->Address.lpSockaddr);
+								++iv4;
+							}
+							else if (pPrefix->Address.lpSockaddr->sa_family == AF_INET6){
+
+								//boost::asio::ip::address_v6 addr(&pPrefix->Address.lpSockaddr->sa_data);
+								++iv6;
+							}
 							
 							pPrefix = pPrefix->Next;
 						}
-						printf("\tNumber of IP Adapter Prefix entries: %d\n", i);
+						printf("\tNumber of IP Adapter Prefix entries: %d x IPv4, %d x IPv6\n", iv4, iv6);
 					}
 #endif
 					//prefix.push_back(std::to_string(pAdapterInfo->IfIndex));

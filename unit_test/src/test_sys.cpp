@@ -64,6 +64,8 @@ BOOST_AUTO_TEST_CASE(net)
 	//cyng::sys::get_address("Ethernet");
 	//std::cout << cyng::sys::get_address("ens33");
 
+	auto const addr = cyng::sys::get_address_IPv6("Ethernet");
+
 #if defined(BOOST_OS_LINUX_AVAILABLE)
 	cyng::sys::read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
 		std::cout << address << " - " << name << " - " << scope << std::endl;

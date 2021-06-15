@@ -145,14 +145,32 @@ namespace cyng {
 			message m(this->shared_from_this(), slot, std::move(msg));
 			auto sp = this->shared_from_this(); //  extend life time
 
-			timer_.expires_from_now(d);
+			//	formerly: expires_from_now()
+			//	Since boost 1.66.0
+			timer_.expires_after(d);
 
 			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
 				if (ec != boost::asio::error::operation_aborted && is_open()) {
 					task_->dispatch(m.slot_, m.msg_);
 				}
 			}));
+		}
 
+		template < typename C, typename D >
+		void suspend(std::chrono::time_point<C, D> tp, std::size_t slot, tuple_t&& msg) {
+
+			if (!is_open())	return;
+
+			message m(this->shared_from_this(), slot, std::move(msg));
+			auto sp = this->shared_from_this(); //  extend life time
+
+			timer_.expires_at(tp);
+
+			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
+				if (ec != boost::asio::error::operation_aborted && is_open()) {
+					task_->dispatch(m.slot_, m.msg_);
+				}
+				}));
 		}
 
 		template < typename R, typename P >

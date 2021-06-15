@@ -98,6 +98,8 @@ namespace cyng {
             ;
     }
 
+
+
     boost::asio::io_context::strand& expose_dispatcher(channel& cr) {
         return cr.dispatcher_;
     }
