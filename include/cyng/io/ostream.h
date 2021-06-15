@@ -162,6 +162,7 @@ namespace cyng {
 	 * All elements of fixed with and padded with zeros (0) if required
 	 */
 	std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const&);
+	std::ostream& operator<<(std::ostream& os, std::chrono::steady_clock::time_point const&);
 
 	std::ostream& operator<<(std::ostream& os, boost::uuids::uuid const&);
 

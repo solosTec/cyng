@@ -137,6 +137,9 @@ namespace cyng {
 		 */
 		std::size_t get_id() const noexcept;
 
+		/**
+		 * time-delayed execution  
+		 */
 		template < typename R, typename P >
 		void suspend(std::chrono::duration<R, P> d, std::size_t slot, tuple_t&& msg) {
 
@@ -156,15 +159,27 @@ namespace cyng {
 			}));
 		}
 
+		template < typename R, typename P >
+		void suspend(std::chrono::duration<R, P> d, std::string slot, tuple_t&& msg) {
+			suspend(d, lookup(slot), std::move(msg));
+		}
+
+		template< typename R, typename P, typename ...Args>
+		void suspend(std::chrono::duration<R, P> d, std::string slot, Args&& ...args) {
+			suspend(d, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
+		}
+
+
 		template < typename C, typename D >
 		void suspend(std::chrono::time_point<C, D> tp, std::size_t slot, tuple_t&& msg) {
 
 			if (!is_open())	return;
 
 			message m(this->shared_from_this(), slot, std::move(msg));
-			auto sp = this->shared_from_this(); //  extend life time
+			auto sp = this->shared_from_this(); //  extend life time@
 
 			timer_.expires_at(tp);
+			//timer_.expires_at(std::chrono::time_point_cast<std::chrono::time_point<std::chrono::steady_clock, std::chrono::nanoseconds>>(tp));
 
 			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
 				if (ec != boost::asio::error::operation_aborted && is_open()) {
@@ -173,9 +188,14 @@ namespace cyng {
 				}));
 		}
 
-		template < typename R, typename P >
-		void suspend(std::chrono::duration<R, P> d, std::string slot, tuple_t&& msg) {
-			suspend(d, lookup(slot), std::move(msg));
+		template < typename C, typename D >
+		void suspend(std::chrono::time_point<C, D> tp, std::string slot, tuple_t&& msg) {
+			suspend(tp, lookup(slot), std::move(msg));
+		}
+
+		template< typename C, typename D, typename ...Args>
+		void suspend(std::chrono::time_point<C, D> tp, std::string slot, Args&& ...args) {
+			suspend(tp, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
 	private:

@@ -27,10 +27,12 @@ target_compile_definitions(unit_test
 
 #
 # -Wno-psabi for gcc > 7.1
+# add_compile_options(/utf-8)
 #
 target_compile_options(unit_test 
     PRIVATE 
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
+        $<$<CXX_COMPILER_ID:MSVC>:/utf-8>
 )
 
 target_include_directories(unit_test

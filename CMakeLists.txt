@@ -149,16 +149,20 @@ FetchContent_Declare(
   GIT_TAG v1.11)
 FetchContent_MakeAvailable(pugixml)
 # Adds pugixml
+# use ${pugixml_SOURCE_DIR}/src
+message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
+
 
 # chrono library
 #
 FetchContent_Declare(
   date_src 
   GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-  GIT_TAG v3.0.0)
+  GIT_TAG v3.0.1)
 FetchContent_MakeAvailable(date_src)
 # Adds date 
-
+# use ${date_SOURCE_DIR}/include
+message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 
 
 #
@@ -331,6 +335,7 @@ target_include_directories(cyng_io
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
