@@ -16,9 +16,12 @@ namespace cyng {
 
 	buffer_t hex_to_buffer(std::string const& str) {
 
-		BOOST_ASSERT(str.size() % 2 == 0);
+		auto const size = str.size();
+		BOOST_ASSERT(size % 2 == 0);
 		buffer_t r;
-		if (str.size() % 2 != 0)	return r;
+		if ((size % 2) != 0)	return r;
+
+		if (size > 0)	r.reserve(size / 2);
 
 		for (auto pos = str.begin(); pos != str.end(); pos += 2) {
 			r.push_back(hex_to_u8(*pos, *(pos + 1)));
