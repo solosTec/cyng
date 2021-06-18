@@ -41,8 +41,17 @@ set (io_parser
     src/io/parser/utf-8.cpp
 )
 
+set (io_iso
+    include/cyng/io/iso_639_1.h
+    include/cyng/io/iso_3166_1.h
+    src/io/iso_639_1.cpp
+    src/io/iso_3166_1.cpp
+)
+
+
 source_group("serializer" FILES ${io_serializer})
 source_group("parser" FILES ${io_parser})
+source_group("iso" FILES ${io_iso})
 
 
 # define the docscript lib
@@ -51,5 +60,6 @@ set (io_lib
   ${io_h}
   ${io_serializer}
   ${io_parser}
+  ${io_iso}
 )
 
