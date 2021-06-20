@@ -9,6 +9,8 @@
 #include <cyng/io/ostream.h>
 #endif
 
+#include <boost/assert.hpp>
+
 namespace cyng {
 
 
@@ -61,7 +63,7 @@ namespace cyng {
         return task_.operator bool();
     }
 
-    bool channel::stop()
+    void channel::stop()
     {
         //
         //  mark channel as closed
@@ -69,16 +71,20 @@ namespace cyng {
         //
         auto ptr = task_.release();
 
-        if (nullptr == ptr) return false;
+        if (nullptr == ptr) return;
         BOOST_ASSERT(!task_);
 
         //
         //  cancel timer
         //
         timer_.cancel();
+        dispatcher_.post([this, ptr]() mutable {
 
-        auto r = shutdown(ptr, boost::asio::use_future);
-        return r.get();
+            //
+            //  call stop(eod) in task implementation class
+            //
+            ptr->stop();
+        });
     }
 
     bool channel::cancel_timer() {

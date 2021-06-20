@@ -125,7 +125,7 @@ namespace cyng {
 		 * Close this communication channel
 		 * @return true if channel was closed, false if channel was already closed
 		 */
-		bool stop();
+		void stop();
 
 		/*
 		 * cancel timer
@@ -201,38 +201,6 @@ namespace cyng {
 				return true;
 			}
 			return false;
-		}
-
-		/**
-		 * stop channel with asio future
-		 */
-		template <typename Token>
-		auto shutdown(task_interface* ptr, Token&& token) {
-
-			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, bool)>;
-			typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-			result_type result(handler);
-
-			//
-			//	release pointer so that the task object can control its own life time
-			//
-			BOOST_ASSERT(ptr != nullptr);
-
-			dispatcher_.post([this, handler, ptr]() mutable {
-
-				//
-				//  call stop(eod) in task implementation class
-				//
-				ptr->stop();
-				handler(boost::system::error_code{}, true);
-			});
-
-			//
-			//	wait
-			//
-			return result.get();
-
 		}
 
 	private:

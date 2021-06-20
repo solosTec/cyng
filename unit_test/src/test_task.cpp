@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(controller)
 		cp->dispatch(1, cyng::make_tuple(2));
 		cp->dispatch(2, cyng::make_tuple(2, "dude", 3.f));
 		cp->dispatch(3, cyng::make_tuple(23));
-		BOOST_CHECK(cp->stop());
+		cp->stop();
 	}
 
 	std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(named)
 	if (!channels.empty()) {
 		BOOST_REQUIRE_EQUAL(channels.size(), 1);
 		BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
-		BOOST_CHECK(channels.front()->stop());
+		channels.front()->stop();
 	}
 	ctl.shutdown();
 	ctl.stop();
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		std::this_thread::sleep_for(std::chrono::seconds(2));
-		BOOST_CHECK(channels.front()->stop());
+		channels.front()->stop();
 	}
 	ctl.shutdown();
 	ctl.stop();

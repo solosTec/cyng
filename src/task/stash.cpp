@@ -59,4 +59,9 @@ namespace cyng {
 
 		}
 	}
+
+	std::size_t stash::size() const {
+		return list_.size();
+	}
+
 }

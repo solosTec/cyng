@@ -60,6 +60,11 @@ namespace cyng {
 		 */
 		void unlock(std::size_t id);
 
+		/**
+		 * not thtread safe
+		 */
+		std::size_t size() const;
+
 	private:
 		template <typename Token>
 		auto find_channel(std::size_t id, Token&& token)
