@@ -65,6 +65,9 @@ namespace cyng {
 
     void channel::stop()
     {
+        //  extend life time
+        auto sp = this->shared_from_this(); 
+
         //
         //  mark channel as closed
         //	release pointer so that the task object can control its own life time
@@ -72,13 +75,13 @@ namespace cyng {
         auto ptr = task_.release();
 
         if (nullptr == ptr) return;
-        BOOST_ASSERT(!task_);
+        BOOST_ASSERT(!is_open());
 
         //
         //  cancel timer
         //
         timer_.cancel();
-        dispatcher_.post([this, ptr]() mutable {
+        dispatcher_.post([this, ptr, sp]() mutable {
 
             //
             //  call stop(eod) in task implementation class
