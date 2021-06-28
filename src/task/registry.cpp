@@ -167,16 +167,6 @@ namespace cyng {
 					chp->dispatch(slot, clone(msg));
 				}
 			});
-
-
-		//return 0u;
-		//auto channels = lookup(channel);
-		//for (auto& chp : channels) {
-		//	//	since every dispatch call expects it's own copy
-		//	//	of the data, we have to clone it.
-		//	chp->dispatch(slot, clone(msg));
-		//}
-		//return channels.size();
 	}
 
 	std::size_t registry::dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg) {
