@@ -27,8 +27,8 @@ namespace cyng {
 		using data_type = std::array< value_type, SIZE::value >;
 
 		enum value_group {
-			VG_MEDIUM = 0,		//	A
-			VG_CHANNEL = 1,		//	B
+			VG_MEDIUM = 0,		//	A - 0 .. 15
+			VG_CHANNEL = 1,		//	B - channel 0 .. 255
 			VG_INDICATOR = 2,	//	C - metric (physcial value)
 			VG_MODE = 3,		//	D - measurement mode
 			VG_QUANTITY = 4,	//	E - tariff
@@ -70,7 +70,9 @@ namespace cyng {
 			, std::uint8_t e
 			, std::uint8_t f)
 			: value_{ a, b, c, d, e, f }
-		{}
+		{
+			//BOOST_ASSERT(a < 16);
+		}
 
 		obis(obis const&) = default;
 

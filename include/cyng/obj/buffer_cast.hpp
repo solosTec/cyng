@@ -153,7 +153,7 @@ namespace cyng {
 		static_assert(N + OFFSET <= sizeof(T), "type size exceeded");
 		static_assert(std::is_trivial<T>::value, "trivial data type required");
 
-		using length_t = std::integral_constant<std::size_t, N - OFFSET>;
+		using length_t = std::integral_constant<std::size_t, N>;
 
 		buffer_t vec;
 		vec.resize(length_t::value);
@@ -175,6 +175,7 @@ namespace cyng {
 	buffer_t to_buffer(T n) {
 
 		auto buffer = to_buffer_be<T, N, OFFSET>(n);
+
 		//
 		//	convert to network byte ordering
 		//
