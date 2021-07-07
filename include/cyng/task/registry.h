@@ -41,7 +41,7 @@ namespace cyng {
 		 * lookup for channel by ID
 		 * @return shared pointer of channel object. Could be empty.
 		 */
-		channel_ptr lookup(std::size_t);
+		//channel_ptr lookup(std::size_t);
 
 		/**
 		 * lookup for channel by name
@@ -72,7 +72,8 @@ namespace cyng {
 		 *
 		 * @return Number of channels found
 		 */
-		void dispatch(std::string channel, std::string slot, tuple_t&& msg);
+		void dispatch(std::string channel, std::string slot, tuple_t msg);
+		void dispatch(std::size_t channel, std::string slot, tuple_t msg);
 
 		/**
 		 * convinience function to dispatch(std::string channel, std::string slot, tuple_t&& msg);
@@ -114,26 +115,26 @@ namespace cyng {
 		void remove(std::size_t);
 		void remove_sync(std::size_t id);
 
-		template <typename Token>
-		auto find_channel(std::size_t id, Token&& token)
-		{
-			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
-			typename result_type::completion_handler_type handler(std::forward<Token>(token));
+		//template <typename Token>
+		//auto find_channel(std::size_t id, Token&& token)
+		//{
+		//	using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
+		//	typename result_type::completion_handler_type handler(std::forward<Token>(token));
 
-			result_type result(handler);
+		//	result_type result(handler);
 
-			dispatcher_.post([this, handler, id]() mutable {
-				channel_ptr ptr = lookup_sync(id);
+		//	dispatcher_.post([this, handler, id]() mutable {
+		//		channel_ptr ptr = lookup_sync(id);
 
-				if (ptr)
-					handler(boost::system::error_code{}, ptr);
-				else
-					handler(boost::asio::error::not_found, ptr);
+		//		if (ptr)
+		//			handler(boost::system::error_code{}, ptr);
+		//		else
+		//			handler(boost::asio::error::not_found, ptr);
 
-				});
+		//		});
 
-			return result.get();
-		}
+		//	return result.get();
+		//}
 
 		template <typename Token>
 		auto find_channels(std::string name, Token&& token)

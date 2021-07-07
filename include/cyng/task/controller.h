@@ -121,7 +121,8 @@ namespace cyng {
 			//
 			//	make sure registry is updated
 			//
-			return get_registry().lookup(id);
+			//return get_registry().lookup(id);
+			return spc;
 		}
 
 		/**

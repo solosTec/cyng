@@ -75,17 +75,17 @@ namespace cyng {
 		return channels;
 	}
 
-	channel_ptr registry::lookup(std::size_t id)
-	{
- 		// static_assert(BOOST_ASIO_HAS_STD_FUTURE == 1, "asio future not supported");
-		if (!shutdown_) {
+	//channel_ptr registry::lookup(std::size_t id)
+	//{
+ //		// static_assert(BOOST_ASIO_HAS_STD_FUTURE == 1, "asio future not supported");
+	//	if (!shutdown_) {
 
-			auto answer = find_channel(id, boost::asio::use_future);
-			return answer.get();
-		}
+	//		auto answer = find_channel(id, boost::asio::use_future);
+	//		return answer.get();
+	//	}
 
-		return channel_ptr();
-	}
+	//	return channel_ptr();
+	//}
 
 	std::vector<channel_ptr> registry::lookup(std::string name)
 	{
@@ -156,7 +156,7 @@ namespace cyng {
 		}
 	}
 
-	void registry::dispatch(std::string channel, std::string slot, tuple_t&& msg) {
+	void registry::dispatch(std::string channel, std::string slot, tuple_t msg) {
 
 		dispatcher_.post([this, channel, slot, msg]() mutable {
 
@@ -167,6 +167,20 @@ namespace cyng {
 					chp->dispatch(slot, clone(msg));
 				}
 			});
+	}
+
+	void registry::dispatch(std::size_t channel, std::string slot, tuple_t msg) {
+		dispatcher_.post([this, channel, slot, msg]() mutable {
+
+			auto pos = list_.find(channel);
+			if (pos != list_.end()) {
+				auto sp = pos->second.lock();
+				if (sp) {
+					sp->dispatch(slot, msg);
+				}
+			}
+			});
+
 	}
 
 	std::size_t registry::dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg) {
