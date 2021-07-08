@@ -48,7 +48,7 @@ namespace cyng
 		void parser::next_code_point(std::uint32_t tok)
 		{
 #ifdef _DEBUG_PARSE
-			std::cerr << tok << std::endl;
+			std::cerr << tok << '(' << char(tok) << ')' << std::endl;
 #endif
 			//
 			//	tokenizer is allowed to reject input
