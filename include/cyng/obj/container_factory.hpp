@@ -22,6 +22,7 @@ namespace cyng {
 		return make_object(cyng::make_tuple(std::forward<Args>(args)...));
 	}
 
+
 	template < typename T >
 	[[nodiscard]]
 	object vector_factory(std::vector< T > const& data) {

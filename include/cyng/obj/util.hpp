@@ -10,6 +10,8 @@
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/buffer_cast.hpp>
 
+#include <algorithm>
+
 #include <boost/assert.hpp>
 
 #ifdef _DEBUG
@@ -28,6 +30,19 @@ namespace cyng {
 	[[nodiscard]]
 	tuple_t make_tuple(Args&&... args) {
 		return { make_object<Args>(std::forward<Args>(args))... };
+	}
+
+	/**
+	 * Takes an initializer_list and produce a tuple_t object
+	 */
+	template < typename T >
+	[[nodiscard]]
+	tuple_t make_tuple(std::initializer_list<T> list) {
+		tuple_t tpl;
+		std::transform(list.begin(), list.end(), std::back_inserter(tpl), [](T const& value) {
+			return cyng::make_object(value);
+			});
+		return tpl;
 	}
 
 	/**
