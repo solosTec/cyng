@@ -88,6 +88,8 @@ namespace cyng {
             //
             ptr->stop();
         });
+
+        ptr = nullptr;
     }
 
     bool channel::cancel_timer() {
