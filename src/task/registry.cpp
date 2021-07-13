@@ -176,7 +176,7 @@ namespace cyng {
 			if (pos != list_.end()) {
 				auto sp = pos->second.lock();
 				if (sp) {
-					sp->dispatch(slot, msg);
+					sp->dispatch(slot, std::move(msg));
 				}
 			}
 			});

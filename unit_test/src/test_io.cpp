@@ -378,9 +378,17 @@ BOOST_AUTO_TEST_CASE(parser)
 	p.read(std::begin(inp), std::end(inp));
 
 	//
-	//	test tcp/ip endpoint
+	//	test tcp/ip endpoint IPv4
 	//
 	obj = cyng::make_object(boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("1.2.3.4"), 1024u));
+	cmp = cyng::io::to_typed(obj);	//	
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
+	//
+	//	test tcp/ip endpoint IPv6
+	//
+	obj = cyng::make_object(boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("[2001:171b:226b:a7d0:225:18ff:fea4:9982]"), 7001u));
 	cmp = cyng::io::to_typed(obj);	//	
 	inp = convert(obj);
 	p.read(std::begin(inp), std::end(inp));
