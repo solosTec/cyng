@@ -202,16 +202,32 @@ BOOST_AUTO_TEST_CASE(csv)
 	csvp4.read(std::begin(inp_04), std::end(inp_04));
 }
 
-//void read_ipv6_info(std::function<void(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
-//	std::ifstream ifs("D:\\reboot\\cyng\\build\\if_inet6.txt");
-//	ifs >> std::setbase(16);
-//	std::string address, name;
-//	std::uint64_t index, len, scope, flag;
-//	while (ifs) {
-//		ifs >> address >> index >> len >> scope >> flag >> name;
-//		cb(address, name, index, len, scope, flag);
-//	}
-//}
+BOOST_AUTO_TEST_CASE(csv_header)
+{
+	cyng::csv::parser_named parser([](std::map<std::string, std::string> const& r, std::size_t line) {
+		//std::cout << '#' << line << " - " << r.size() << std::endl;
+		if (line == 5) {
+			auto pos = r.find("Meter_ID");
+			BOOST_CHECK(pos != r.end());
+			BOOST_REQUIRE_EQUAL(pos->second, "MA0000000000000000000000003496233");
+			pos = r.find("Server ID");
+			BOOST_CHECK(pos != r.end());
+			BOOST_REQUIRE_EQUAL(pos->second, "33624903");
+		}
+		}, ',');
+
+	auto const inp = std::string(R"(
+Meter_ID,Ift_Type,GWY_IP,Ports,Manufacturer,Meter_Type,Protocol,Area,Name,In_enDS,Key,AMR Address,Comments,Meter ID,Server ID
+MA0000000000000000000000003496219,RS485,10.132.28.150,6000,Elster,Elster AS 1440,IEC 62056,Lot Yakut,C1 House 101,Yes,,,,3496219,19624903
+MA0000000000000000000000003496225,RS485,10.132.28.151,6000,Elster,Elster AS 1440,IEC 62056,Lot Yakut,C1 House 94,Yes,,,,3496225,25624903
+MA0000000000000000000000003496230,RS485,10.132.28.152,6000,Elster,Elster AS 1440,IEC 62056,Lot Yakut,C1 House 94/B9,Yes,,,,3496230,30624903
+MA0000000000000000000000003496234,RS485,10.132.28.153,6000,Elster,Elster AS 1440,IEC 62056,Lot Yakut,C1 House 92,Yes,,,,3496234,34624903
+MA0000000000000000000000003496233,RS485,10.132.28.154,6000,Elster,Elster AS 1440,IEC 62056,Lot Yakut,C1 House 89 ,Yes,,,,3496233,33624903
+		)");
+
+	parser.read(std::begin(inp), std::end(inp));
+
+}
 
 BOOST_AUTO_TEST_CASE(ipv6)
 {

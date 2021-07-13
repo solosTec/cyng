@@ -31,6 +31,28 @@ namespace cyng {
 			csvp.read(std::begin(inp), std::end(inp));
 
 		}
+
+		/**
+		 * Takes the first line as column names and produce with the following lines maps
+		 */
+		class parser_named
+		{
+		public:
+			using cb_f = std::function<void(std::map<std::string, std::string> const&, std::size_t)>;
+		public:
+			parser_named(cb_f cb, char sep = ',');
+
+			template < typename I >
+			auto read(I start, I end) -> typename std::iterator_traits<I>::difference_type {
+				return parser_.read(start, end);
+			}
+		private:
+			cb_f cb_;
+			line_t header_;
+			std::size_t counter_;
+			parser parser_;	//!< csv parser
+		};
+
 	}
 }
 #endif
