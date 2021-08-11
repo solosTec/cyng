@@ -1,5 +1,7 @@
 #include <cyng/store/table.h>
 
+#include  <mutex>
+
 #include <boost/uuid/nil_generator.hpp>
 
 namespace cyng {
