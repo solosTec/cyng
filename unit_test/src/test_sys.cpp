@@ -44,6 +44,10 @@ BOOST_AUTO_TEST_CASE(meminfo)
 
 	// std::cout << cyng::sys::get_total_ram() << std::endl;
 	// std::cout << cyng::sys::get_used_ram() << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(cpu)
+{
 
 	for(int i = 0; i < 100; ++i) {
 		std::cout << cyng::sys::get_cpu_load(0) << std::endl;

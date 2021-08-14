@@ -122,7 +122,7 @@ namespace cyng {
 				if (std::filesystem::is_directory(adapter))
 				{
 					auto const name = adapter.stem();
-                    vec.push_back(get_mac48(name.string());
+                    vec.push_back(get_mac48(name.string()));
 				}
 			});
 

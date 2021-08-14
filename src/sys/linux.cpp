@@ -14,7 +14,7 @@
 #include <cstddef>
 #include <boost/predef.h>
 #if defined(BOOST_OS_LINUX_AVAILABLE)
-#include <cyng/sys/linux.h>
+#include <cyng/sys/linux.hpp>
 
 namespace cyng {
 	namespace sys
