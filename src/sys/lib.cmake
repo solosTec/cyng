@@ -28,16 +28,30 @@ set (sys_h
     include/cyng/sys/filesystem.h
     include/cyng/sys/dns.h
     include/cyng/sys/ntp.h
-    include/cyng/sys/linux.hpp
-    include/cyng/sys/windows.hpp
     include/cyng/sys/info.h
     include/cyng/sys/cpu.h
     include/cyng/sys/net.h
 )
 
+if(WIN32)
+    set(sys_platform
+    include/cyng/sys/windows.h
+    src/sys/windows.cpp
+    )
+else()
+    set(sys_platform
+    include/cyng/sys/linux.h
+    src/sys/linux.cpp
+    )
+endif()
+
+source_group("platform" FILES ${sys_platform})
+
+
 # define the docscript lib
 set (sys_lib
   ${sys_cpp}
   ${sys_h}
+  ${sys_platform}
 )
 

@@ -3,7 +3,7 @@
 #include <boost/predef.h>
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
-#include <cyng/sys/windows.hpp>
+#include <cyng/sys/windows.h>
 #include <psapi.h>
 
 #include <string> 

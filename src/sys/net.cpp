@@ -18,28 +18,26 @@
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
-#include <winsock2.h>
-#include <iphlpapi.h>
-#pragma comment(lib, "IPHLPAPI.lib")
-//#include <cyng/scm/win_registry.h>
+#include <cyng/sys/windows.h>
 
 #elif defined(BOOST_OS_LINUX_AVAILABLE)
 
 #include <filesystem>
 #include <fstream>
+#include <cyng/sys/linux.h>
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <ifaddrs.h>
 
-#include <boost/algorithm/string.hpp>
 
 #else
 #warning unknow OS
 #endif
 
 #include <boost/asio.hpp>
+#include <boost/algorithm/string.hpp>
 
 namespace cyng 
 {
@@ -63,12 +61,183 @@ namespace cyng
 
 		}
 
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+
+
+		namespace {	//	static linkage
+
+			void read_ipv6_info(ip_address_cb cb) {
+
+				//
+				//	read IPv6 adapter info
+				//
+				auto pAdapterInfo = get_adapter_adresses(AF_INET6);
+
+				//
+				//	exit loop if callback function returns false
+				//
+				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
+					//
+					//	next address
+					//
+					pAdapterInfo = pAdapterInfo->Next;
+				}
+
+				//
+				//	free memory
+				//
+				free(pAdapterInfo);
+
+			}
+
+			/**
+			 * Generic method to iterate over all IPv4 addresses of the system.
+			 * This function modelled after the example at https://docs.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-ip_adapter_addresses_lh
+			 */
+			void read_ipv4_info(ip_address_cb cb) {
+
+				//
+				//	read IPv4 adapter info
+				//
+				auto pAdapterInfo = get_adapter_adresses(AF_INET);
+
+				//
+				//	exit loop if callback function returns false
+				//
+				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
+					//
+					//	next address
+					//
+					pAdapterInfo = pAdapterInfo->Next;
+				}
+
+				//
+				//	free memory
+				//
+				free(pAdapterInfo);
+			}
+		}
+#endif
+
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+		std::vector<ipv_cfg> get_ipv4_configuration_windows() {
+			std::vector<ipv_cfg> r;
+			read_ipv4_info([&r](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
+
+				//
+				//	skip loopback 
+				//
+				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
+					if (address.FirstUnicastAddress != nullptr) {
+						auto pUniscastAddress = address.FirstUnicastAddress;
+						for (; pUniscastAddress != NULL; ) {
+							if (pUniscastAddress->Address.lpSockaddr->sa_family == AF_INET) {
+
+								sockaddr_in* p = (sockaddr_in*)pUniscastAddress->Address.lpSockaddr;
+								boost::asio::ip::address_v4::bytes_type bytes = { 0 };
+								bytes.at(0) = p->sin_addr.S_un.S_un_b.s_b1;
+								bytes.at(1) = p->sin_addr.S_un.S_un_b.s_b2;
+								bytes.at(2) = p->sin_addr.S_un.S_un_b.s_b3;
+								bytes.at(3) = p->sin_addr.S_un.S_un_b.s_b4;
+								r.emplace_back(boost::asio::ip::make_address_v4(bytes), address.IfIndex, name);
+								//r.emplace_back(boost::asio::ip::make_address_v4(p->sin_addr.S_un.S_addr), address.IfIndex, name);
+							}
+
+							pUniscastAddress = pUniscastAddress->Next;
+						}
+					}
+				}
+				return true;	//	read more
+				});
+
+			return r;
+
+		}
+
+		std::vector<ipv_cfg> get_ipv6_configuration_windows() {
+			std::vector<ipv_cfg> r;
+			read_ipv6_info([&r](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
+
+				//
+				//	skip loopback 
+				//
+				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
+					if (address.FirstUnicastAddress != nullptr) {
+						auto pUnicastAddress = address.FirstUnicastAddress;
+						for (; pUnicastAddress != NULL; ) {
+							if (pUnicastAddress->Address.lpSockaddr->sa_family == AF_INET6) {
+
+								sockaddr_in6* p6 = (sockaddr_in6*)pUnicastAddress->Address.lpSockaddr;
+								boost::asio::ip::address_v6::bytes_type bytes = { 0 };
+								for (std::size_t pos = 0; pos < bytes.size(); ++pos) {
+									bytes.at(pos) = static_cast<unsigned char>(p6->sin6_addr.u.Byte[pos]);
+								}
+
+								r.emplace_back(boost::asio::ip::make_address_v6(bytes), address.Ipv6IfIndex, name);
+							}
+
+							pUnicastAddress = pUnicastAddress->Next;
+						}
+					}
+				}
+				return true;
+				});
+
+			return r;
+
+		}
+#endif
+
+#if defined(BOOST_OS_LINUX_AVAILABLE)
+		std::vector<ipv_cfg> get_ipv4_configuration_posix() {
+			std::vector<ipv_cfg> r;
+			//	ToDo: use getifaddrs()
+			return r;
+		}
+		std::vector<ipv_cfg> get_ipv6_configuration_posix() {
+			std::vector<ipv_cfg> r;
+			read_ipv6_info([&r](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
+				//std::cout << address << " - " << name << std::endl;
+				r.emplace_back(to_ipv6(address, scope), index, name);
+				return true;
+				});
+			return r;
+		}
+#endif
+
+		std::vector<ipv_cfg> get_ipv4_configuration() {
+
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+			return get_ipv4_configuration_windows();
+#elif defined(BOOST_OS_LINUX_AVAILABLE)
+			return get_ipv4_configuration_posix();
+#else
+			static_assert(false, "platform not supported");
+#endif
+			std::vector<ipv_cfg> r;
+			return r;
+
+		}
+
+		std::vector<ipv_cfg> get_ipv6_configuration() {
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+			return get_ipv6_configuration_windows();
+#elif defined(BOOST_OS_LINUX_AVAILABLE)
+			return get_ipv6_configuration_posix();
+#else
+			static_assert(false, "platform not supported");
+#endif
+			std::vector<ipv_cfg> r;
+			return r;
+		}
+
 		std::vector<std::string> get_nic_names() {
 			std::vector<std::string> nics;
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 			// Allocate information for up to 128 NICs
-			IP_ADAPTER_ADDRESSES AdapterInfo[128];
+			constexpr std::size_t nic_count = 128;
+			IP_ADAPTER_ADDRESSES AdapterInfo[nic_count];
 
 			// Save memory size of buffer
 			DWORD dwBufLen = sizeof(AdapterInfo);
@@ -80,10 +249,20 @@ namespace cyng
 
 
 			if (dwStatus == NO_ERROR) {
+				std::size_t counter{ 0 };
+
 				// Contains pointer to current adapter info
 				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
 
 				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
+
+					//
+					//	update counter
+					//
+					++counter;
+					if (counter > nic_count) {
+						break;
+					}
 
 #ifdef _DEBUG_SYS
 					std::wcout << pAdapterInfo->FriendlyName << '%' << pAdapterInfo->IfIndex << std::endl;
@@ -124,7 +303,8 @@ namespace cyng
 			std::vector<std::string> prefix;
 
 			// Allocate information for up to 128 NICs
-			IP_ADAPTER_ADDRESSES AdapterInfo[128];
+			constexpr std::size_t nic_count = 128;
+			IP_ADAPTER_ADDRESSES AdapterInfo[nic_count];
 
 			// Save memory size of buffer
 			DWORD dwBufLen = sizeof(AdapterInfo);
@@ -136,10 +316,21 @@ namespace cyng
 
 
 			if (dwStatus == NO_ERROR) {
+				std::size_t counter{ 0 };
+
 				// Contains pointer to current adapter info
 				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
 
 				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
+
+
+					//
+					//	update counter
+					//
+					++counter;
+					if (counter > nic_count) {
+						break;
+					}
 
 #ifdef _DEBUG_SYS
 					std::wcout << pAdapterInfo->FriendlyName << '%' << pAdapterInfo->IfIndex << std::endl;
@@ -263,6 +454,56 @@ namespace cyng
 
 		}
 #endif
+
+		ipv_cfg::ipv_cfg(boost::asio::ip::address address, std::uint32_t index, std::string device)
+			: address_(address)
+			, index_(index)
+			, device_(device)
+		{}
+
+		std::ostream& operator<<(std::ostream& os, const ipv_cfg& data) {
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+			os << '[' << data.device_ << ']' << ' ' << data.address_ << '%' << data.index_;
+#else
+			os << '[' << data.index_ << ']' << ' ' << data.address_ << '%' << data.device_;
+#endif
+			return os;
+		}
+
+		filter_by_name::filter_by_name(std::string device)
+			: device_(device)
+		{}
+		bool filter_by_name::operator()(ipv_cfg const& cfg) const {
+			return boost::algorithm::equals(cfg.device_, device_);
+		}
+
+		filter_by_index::filter_by_index(std::uint32_t index)
+			: index_(index)
+		{}
+		bool filter_by_index::operator()(ipv_cfg const& cfg) const {
+			return cfg.index_ == index_;
+		}
+
+		filter_by_address::filter_by_address(boost::asio::ip::address address)
+			: address_(address)
+		{}
+		bool filter_by_address::operator()(ipv_cfg const& cfg) const {
+			return cfg.address_ == address_;
+		}
+
+		std::vector<ipv_cfg> merge(std::vector<ipv_cfg> const& a, std::vector<ipv_cfg> const& b) {
+
+			std::vector<ipv_cfg> r;
+			for (auto const& cfg : a) {
+				r.push_back(cfg);
+				//
+				//	add all entries of b with the same index
+				//
+				auto const cfg_filtered = cyng::sys::filter(b, cyng::sys::filter_by_index(cfg.index_));
+				r.insert(r.end(), cfg_filtered.begin(), cfg_filtered.end());
+			}
+			return r;
+		}
 
 	}
 }

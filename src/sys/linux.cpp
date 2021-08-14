@@ -11,19 +11,17 @@
  * Some Windows specific tools to get system information
  */
 
-#include <string>
 #include <cstddef>
 #include <boost/predef.h>
-#include <Windows.h>
+#if defined(BOOST_OS_LINUX_AVAILABLE)
+#include <cyng/sys/linux.h>
 
 namespace cyng {
 	namespace sys
 	{
 
-#if defined(BOOST_OS_WINDOWS_AVAILABLE)
-#endif
-
 	}
 }
+#endif
 #endif
 

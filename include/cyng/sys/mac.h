@@ -14,9 +14,15 @@ namespace cyng {
 	namespace sys
 	{
 		/**
-		 * @return list of MAC adresses 
+		 * @return list of all MACs available on the system
 		 */
 		std::vector<mac48> get_mac48_adresses();
+
+
+		/**
+		 * @return MAC of a specific device
+		 */
+		mac48 get_mac48_adress(std::string device);
 	}
 }
 #endif

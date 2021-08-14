@@ -56,11 +56,27 @@ BOOST_AUTO_TEST_CASE(net)
 	//	138.201.95.180
 	//std::cout << cyng::sys::resolve_address("segw.ch") << std::endl;
 	BOOST_CHECK_EQUAL(cyng::sys::resolve_address("segw.ch").to_string(), "138.201.95.180");
+
+	auto const cfgv4 = cyng::sys::get_ipv4_configuration();
+	for (auto const c : cfgv4) {
+		std::cout << c << std::endl;
+	}
+
+	auto const cfg_filtered = cyng::sys::filter(cfgv4, cyng::sys::filter_by_name("Ethernet"));
+	for (auto const c : cfg_filtered) {
+		std::cout << c << std::endl;
+	}
+
+	auto const cfgv6 = cyng::sys::get_ipv6_configuration();
+	for (auto const c : cfgv6) {
+		std::cout << c << std::endl;
+	}
+
 	//cyng::sys::get_nic_names();
-	//auto const pres = cyng::sys::get_nic_prefix();
-	//for (auto const p : pres) {
-	//	std::cout << p << std::endl;
-	//}
+	auto const pres = cyng::sys::get_nic_prefix();
+	for (auto const p : pres) {
+		std::cout << p << std::endl;
+	}
 	//cyng::sys::get_address("Ethernet");
 	//std::cout << cyng::sys::get_address("ens33");
 
