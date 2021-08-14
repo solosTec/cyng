@@ -40,7 +40,7 @@ if(WIN32)
     )
 else()
     set(sys_platform
-    include/cyng/sys/linux.h
+    include/cyng/sys/linux.hpp
     src/sys/linux.cpp
     )
 endif()

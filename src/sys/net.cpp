@@ -7,6 +7,7 @@
 
 #include <cyng/sys/net.h>
 #include <cyng/parse/net.h>
+#include <cyng/obj/algorithm/swap_bytes.h>
 
 #include <iostream>
 #include <iomanip>
@@ -24,13 +25,13 @@
 
 #include <filesystem>
 #include <fstream>
-#include <cyng/sys/linux.h>
+#include <cyng/sys/linux.hpp>
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <net/if.h>
 #include <ifaddrs.h>
-
 
 #else
 #warning unknow OS
@@ -215,7 +216,26 @@ namespace cyng
 #if defined(BOOST_OS_LINUX_AVAILABLE)
 		std::vector<ipv_cfg> get_ipv4_configuration_posix() {
 			std::vector<ipv_cfg> r;
-			//	ToDo: use getifaddrs()
+			//	use getifaddrs()
+			struct ifaddrs *interfaces = NULL;
+			auto const success = getifaddrs(&interfaces);
+			if (success == 0) {
+
+				auto temp_addr = interfaces;
+				while(temp_addr != NULL) {
+					if(temp_addr->ifa_addr->sa_family == AF_INET) { 
+						boost::asio::ip::address_v4::bytes_type bytes = { 0 };
+						sockaddr_in* p = (sockaddr_in*) temp_addr->ifa_addr;		
+						auto const addr = boost::asio::ip::make_address_v4(swap_bytes(p->sin_addr.s_addr));
+						r.emplace_back(addr, if_nametoindex(temp_addr->ifa_name), temp_addr->ifa_name);
+					}
+					//
+					//	next entry
+					//
+					temp_addr = temp_addr->ifa_next;
+				}
+			}
+			freeifaddrs(interfaces); 
 			return r;
 		}
 		std::vector<ipv_cfg> get_ipv6_configuration_posix() {
