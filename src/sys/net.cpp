@@ -116,6 +116,30 @@ namespace cyng
 				//
 				free(pAdapterInfo);
 			}
+
+
+			void read_unspec_info(ip_address_cb cb) {
+				//
+				//	read adapter info
+				//
+				auto pAdapterInfo = get_adapter_adresses(AF_UNSPEC);
+
+				//
+				//	exit loop if callback function returns false
+				//
+				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
+					//
+					//	next address
+					//
+					pAdapterInfo = pAdapterInfo->Next;
+				}
+
+				//
+				//	free memory
+				//
+				free(pAdapterInfo);
+			}
+
 		}
 #endif
 
@@ -235,52 +259,13 @@ namespace cyng
 			std::vector<std::string> nics;
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			// Allocate information for up to 128 NICs
-			constexpr std::size_t nic_count = 128;
-			IP_ADAPTER_ADDRESSES AdapterInfo[nic_count];
-
-			// Save memory size of buffer
-			DWORD dwBufLen = sizeof(AdapterInfo);
-
-			// Arguments for GetAdapterAddresses:
-			DWORD dwStatus = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, AdapterInfo, &dwBufLen);
-			// [out] buffer to receive data
-			// [in] size of receive data buffer
-
-
-			if (dwStatus == NO_ERROR) {
-				std::size_t counter{ 0 };
-
-				// Contains pointer to current adapter info
-				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
-
-				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
-
-					//
-					//	update counter
-					//
-					++counter;
-					if (counter > nic_count) {
-						break;
-					}
-
-#ifdef _DEBUG_SYS
-					std::wcout << pAdapterInfo->FriendlyName << '%' << pAdapterInfo->IfIndex << std::endl;
-#endif
-					int const size = WideCharToMultiByte(CP_UTF8, 0, pAdapterInfo->FriendlyName, -1, NULL, 0, NULL, NULL);
-
-					std::vector<char> utf8(size);
-					int const converted = WideCharToMultiByte(CP_UTF8, 0, pAdapterInfo->FriendlyName,
-						-1, &utf8[0], utf8.size(), NULL,
-						NULL);
-					if (converted != 0) {
-						nics.push_back(std::string(utf8.begin(), utf8.end()));
-					}
-
-					// Progress through linked list
-					pAdapterInfo = pAdapterInfo->Next;
-				};
-			}
+			read_unspec_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
+				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
+					nics.push_back(name);
+				}
+				return true;
+				}
+			);
 
 #else
 			for (auto const& p : std::filesystem::directory_iterator("/sys/class/net")) {
