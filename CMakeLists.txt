@@ -318,6 +318,11 @@ target_compile_definitions(cyng_task
         $<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:GNU>>:BOOST_ASIO_HAS_STD_FUTURE>       
 )
 
+target_compile_options(cyng_task 
+    PRIVATE 
+        $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
+)
+
 target_link_libraries(cyng_task 
     PRIVATE 
         Boost::boost 
@@ -403,6 +408,12 @@ target_compile_definitions(cyng_sys
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_SYS>
         $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
+)
+
+# -Wno-psabi if gcc 8.x
+target_compile_options(cyng_sys 
+    PRIVATE 
+        $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
 )
 
 #
