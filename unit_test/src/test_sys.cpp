@@ -87,14 +87,14 @@ BOOST_AUTO_TEST_CASE(net)
 	auto const addr = cyng::sys::get_address_IPv6("Ethernet");
 
 #if defined(BOOST_OS_LINUX_AVAILABLE)
-	cyng::sys::read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
-		std::cout << address << " - " << name << " - " << scope << std::endl;
-		if (boost::algorithm::equals(name, "ens33") && 0x020 == scope) {
-			std::cout << cyng::to_ipv6(address, 0) << "%" << name << std::endl;
-			return false;
-		}
-		return true;
-		});
+	// cyng::sys::read_ipv6_info([](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
+	// 	std::cout << address << " - " << name << " - " << scope << std::endl;
+	// 	if (boost::algorithm::equals(name, "ens33") && 0x020 == scope) {
+	// 		std::cout << cyng::to_ipv6(address, 0) << "%" << name << std::endl;
+	// 		return false;
+	// 	}
+	// 	return true;
+	// 	});
 #endif
 }
 
