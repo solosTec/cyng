@@ -72,22 +72,23 @@ namespace cyng
 				//
 				//	read IPv6 adapter info
 				//
-				auto pAdapterInfo = get_adapter_adresses(AF_INET6);
+				auto p_begin = get_adapter_adresses(AF_INET6);
 
 				//
 				//	exit loop if callback function returns false
 				//
-				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
+				auto pos = p_begin;
+				while ((pos != nullptr) && cb(*pos, convert_to_utf8(pos->FriendlyName))) {
 					//
 					//	next address
 					//
-					pAdapterInfo = pAdapterInfo->Next;
+					pos = pos->Next;
 				}
 
 				//
 				//	free memory
 				//
-				free(pAdapterInfo);
+				free(p_begin);
 
 			}
 
@@ -100,45 +101,33 @@ namespace cyng
 				//
 				//	read IPv4 adapter info
 				//
-				auto pAdapterInfo = get_adapter_adresses(AF_INET);
+				auto p_begin = get_adapter_adresses(AF_INET);
 
 				//
 				//	exit loop if callback function returns false
 				//
-				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
+				auto pos = p_begin;
+				while ((pos != nullptr) && cb(*pos, convert_to_utf8(pos->FriendlyName))) {
 					//
 					//	next address
 					//
-					pAdapterInfo = pAdapterInfo->Next;
+					pos = pos->Next;
 				}
 
 				//
 				//	free memory
 				//
-				free(pAdapterInfo);
+				free(p_begin);
 			}
 
 
-			void read_unspec_info(ip_address_cb cb) {
+			void read_ip_info(ip_address_cb cb) {
 				//
 				//	read adapter info
 				//
-				auto pAdapterInfo = get_adapter_adresses(AF_UNSPEC);
+				read_ipv4_info(cb);
+				read_ipv6_info(cb);
 
-				//
-				//	exit loop if callback function returns false
-				//
-				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
-					//
-					//	next address
-					//
-					pAdapterInfo = pAdapterInfo->Next;
-				}
-
-				//
-				//	free memory
-				//
-				free(pAdapterInfo);
 			}
 
 		}
@@ -279,7 +268,7 @@ namespace cyng
 			std::vector<std::string> nics;
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			read_unspec_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
+			read_ip_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
 				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
 					nics.push_back(name);
 				}

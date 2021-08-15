@@ -111,6 +111,7 @@ namespace cyng {
 		/**
 		 * on linux the same as get_nic_names()
 		 */
+		[[deprecated("Use get_nic_names() instead.")]]
 		std::vector<std::string> get_nic_prefix();
 
 		/**
@@ -123,11 +124,13 @@ namespace cyng {
 		 *
 		 * @return IPv4 and IPv6 address of specified nic
 		 */
+		[[deprecated("Use get_ipv6_configuration() instead.")]]
 		boost::asio::ip::address get_address_IPv6(std::string nic);
 
 #if defined(BOOST_OS_LINUX_AVAILABLE)
+		[[deprecated("Use get_ipv6_configuration() instead.")]]
 		boost::asio::ip::address get_address_IPv6(std::string nic, ipv6_scope);
-		void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)>);
+		//void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)>);
 #endif
 
 	}

@@ -14,6 +14,7 @@
 #endif
 
 #include <iostream>
+#include <set>
 #include <boost/algorithm/string.hpp>
 
 namespace cyng {
@@ -26,22 +27,23 @@ namespace cyng {
 				//
 				//	read adapter info
 				//
-				auto pAdapterInfo = get_adapter_adresses(AF_UNSPEC);
+				auto p_begin = get_adapter_adresses(AF_UNSPEC);
 
 				//
 				//	exit loop if callback function returns false
 				//
-				while ((pAdapterInfo != nullptr) && cb(*pAdapterInfo, convert_to_utf8(pAdapterInfo->FriendlyName))) {
+				auto pos = p_begin;
+				while ((pos != nullptr) && cb(*pos, convert_to_utf8(pos->FriendlyName))) {
 					//
 					//	next address
 					//
-					pAdapterInfo = pAdapterInfo->Next;
+					pos = pos->Next;
 				}
 
 				//
 				//	free memory
 				//
-				free(pAdapterInfo);
+				free(p_begin);
 			}
 		}
 
@@ -67,9 +69,10 @@ namespace cyng {
 
 		void get_mac48_adresses(std::vector<mac48>& vec)	{
 
+			std::set< mac48> r;
 			read_unspec_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
 				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
-					vec.push_back(mac48(address.PhysicalAddress[0]
+					r.emplace(mac48(address.PhysicalAddress[0]
 						, address.PhysicalAddress[1]
 						, address.PhysicalAddress[2]
 						, address.PhysicalAddress[3]
@@ -79,7 +82,7 @@ namespace cyng {
 				return true;
 				}
 			);
-
+			vec.assign(r.begin(), r.end());
 		}
 #else
         mac48 get_mac48(std::string const& name)	{
