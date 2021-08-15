@@ -62,8 +62,22 @@ namespace cyng
 
 		}
 
-#if defined(BOOST_OS_WINDOWS_AVAILABLE)
+#if defined(BOOST_OS_LINUX_AVAILABLE)
+		namespace {	//	static linkage
+			void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
+				std::ifstream ifs("/proc/net/if_inet6");
+				ifs >> std::setbase(16);
+				std::string address, name;
+				std::uint64_t index, len, scope, flag;
+				while (ifs) {
+					ifs >> address >> index >> len >> scope >> flag >> name;
+					if (!cb(address, name, index, len, scope, flag))	break;
+				}
+			}
+		}
+#endif
 
+#if defined(BOOST_OS_WINDOWS_AVAILABLE)
 
 		namespace {	//	static linkage
 
@@ -345,20 +359,6 @@ namespace cyng
 
 
 		}
-
-#if defined(BOOST_OS_LINUX_AVAILABLE)
-		void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
-			std::ifstream ifs("/proc/net/if_inet6");
-			ifs >> std::setbase(16);
-			std::string address, name;
-			std::uint64_t index, len, scope, flag;
-			while (ifs) {
-				ifs >> address >> index >> len >> scope >> flag >> name;
-				if (!cb(address, name, index, len, scope, flag))	break;
-			}
-		}
-
-#endif
 
 		boost::asio::ip::address get_address_IPv6(std::string nic) {
 
