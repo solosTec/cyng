@@ -227,10 +227,13 @@ namespace cyng
 				auto temp_addr = interfaces;
 				while(temp_addr != NULL) {
 					if(temp_addr->ifa_addr->sa_family == AF_INET) { 
-						boost::asio::ip::address_v4::bytes_type bytes = { 0 };
-						sockaddr_in* p = (sockaddr_in*) temp_addr->ifa_addr;		
-						auto const addr = boost::asio::ip::make_address_v4(swap_bytes(p->sin_addr.s_addr));
-						r.emplace_back(addr, if_nametoindex(temp_addr->ifa_name), temp_addr->ifa_name);
+						bool const is_loopback = (0 != (temp_addr->ifa_flags & IFF_LOOPBACK)); 
+						if (!is_loopback) {
+							boost::asio::ip::address_v4::bytes_type bytes = { 0 };
+							sockaddr_in* p = (sockaddr_in*) temp_addr->ifa_addr;		
+							auto const addr = boost::asio::ip::make_address_v4(swap_bytes(p->sin_addr.s_addr));
+							r.emplace_back(addr, if_nametoindex(temp_addr->ifa_name), temp_addr->ifa_name);
+						}
 					}
 					//
 					//	next entry
@@ -245,7 +248,9 @@ namespace cyng
 			std::vector<ipv_cfg> r;
 			read_ipv6_info([&r](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
 				//std::cout << address << " - " << name << std::endl;
-				r.emplace_back(to_ipv6(address, scope), index, name);
+				if (scope != LOOPBACK) {
+					r.emplace_back(to_ipv6(address, name), index, name);
+				}
 				return true;
 				});
 			return r;

@@ -10,14 +10,24 @@
 
 #include <string>
 #include <boost/asio/ip/address.hpp>
-
+#include <boost/predef.h>
 
 namespace cyng {
 	
 	/**
 	 * Convert a hex string like "2a001e8000640006022518fffef11fd1" into a IPv6 address
 	 */
-	boost::asio::ip::address to_ipv6(std::string, unsigned long scope_id = 0);
+	boost::asio::ip::address to_ipv6(std::string hex_str, unsigned long scope_id = 0);
+
+#if defined(BOOST_OS_LINUX_AVAILABLE)
+	/**
+	 * Convert a hex string like "2a001e8000640006022518fffef11fd1" into a IPv6 address
+	 * that is bound to an interface.
+	 * format: ipv6%device 
+	 * This is NOT standard and only supported on linux/UNIX systems
+	 */
+	boost::asio::ip::address to_ipv6(std::string hex_str, std::string device);
+#endif
 
 }
 #endif
