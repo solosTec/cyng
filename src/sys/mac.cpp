@@ -72,12 +72,15 @@ namespace cyng {
 			std::set< mac48> r;
 			read_unspec_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
 				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
-					r.emplace(mac48(address.PhysicalAddress[0]
+					mac48 mac(address.PhysicalAddress[0]
 						, address.PhysicalAddress[1]
 						, address.PhysicalAddress[2]
 						, address.PhysicalAddress[3]
 						, address.PhysicalAddress[4]
-						, address.PhysicalAddress[5]));
+						, address.PhysicalAddress[5]);
+					if (!is_nil(mac)) {
+						r.emplace(mac);
+					}
 				}
 				return true;
 				}
