@@ -67,11 +67,18 @@ namespace cyng
 			void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
 				std::ifstream ifs("/proc/net/if_inet6");
 				ifs >> std::setbase(16);
-				std::string address, name;
+				std::string address, name, prev_address;
 				std::uint64_t index, len, scope, flag;
 				while (ifs) {
 					ifs >> address >> index >> len >> scope >> flag >> name;
-					if (!cb(address, name, index, len, scope, flag))	break;
+					// std::cout << "\t***" << address << " - " << name << std::endl;
+					//
+					//	this fixes a strange bug in OpenSUSE: the last line will be read twice
+					//
+					if (!boost::algorithm::equals(address, prev_address)) {
+						if (!cb(address, name, index, len, scope, flag))	break;
+					}
+					prev_address = address;
 				}
 			}
 		}
@@ -247,7 +254,7 @@ namespace cyng
 		std::vector<ipv_cfg> get_ipv6_configuration_posix() {
 			std::vector<ipv_cfg> r;
 			read_ipv6_info([&r](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
-				//std::cout << address << " - " << name << std::endl;
+				// std::cout << "\t***" << address << " - " << name << std::endl;
 				if (scope != LOOPBACK) {
 					r.emplace_back(to_ipv6(address, name), index, name);
 				}
@@ -424,8 +431,8 @@ namespace cyng
 			read_ipv6_info([&result, nic](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
 				//std::cout << address << " - " << name << std::endl;
 				if (boost::algorithm::equals(name, nic))	{
-				//	std::cout << to_ipv6(address, scope) << std::endl;
-					result = to_ipv6(address, scope);
+				//	std::cout << to_ipv6(address, index) << std::endl;
+					result = to_ipv6(address, index);
 					return false;
 				}
 				return true;
@@ -464,7 +471,7 @@ namespace cyng
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 			os << '[' << data.device_ << ']' << ' ' << data.address_ << '%' << data.index_;
 #else
-			os << '[' << data.index_ << ']' << ' ' << data.address_ << '%' << data.device_;
+			os << '[' << data.index_ << ']' << ' ' << data.address_;
 #endif
 			return os;
 		}
