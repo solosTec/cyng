@@ -67,18 +67,11 @@ namespace cyng
 			void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
 				std::ifstream ifs("/proc/net/if_inet6");
 				ifs >> std::setbase(16);
-				std::string address, name, prev_address;
+				std::string address, name, line;
 				std::uint64_t index, len, scope, flag;
-				while (ifs) {
-					ifs >> address >> index >> len >> scope >> flag >> name;
-					// std::cout << "\t***" << address << " - " << name << std::endl;
-					//
-					//	this fixes a strange bug in OpenSUSE: the last line will be read twice
-					//
-					if (!boost::algorithm::equals(address, prev_address)) {
-						if (!cb(address, name, index, len, scope, flag))	break;
-					}
-					prev_address = address;
+				while (std::getline(ifs, line)) {
+					std::istringstream(line) >> address >> index >> len >> scope >> flag >> name;
+					if (!cb(address, name, index, len, scope, flag))	break;
 				}
 			}
 		}

@@ -79,7 +79,7 @@ namespace cyng {
 			 */
 			std::array<std::uint64_t, 10> read_cpu_stat(std::size_t core) {
 				std::ifstream ifs("/proc/stat");
-				BOOST_ASSERT(ids.is_open());
+				BOOST_ASSERT(ifs.is_open());
 
 				std::size_t counter{ 0 };
 				std::array<std::uint64_t, 10> r{ 0 };
