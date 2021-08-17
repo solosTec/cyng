@@ -74,6 +74,16 @@ namespace cyng
 					if (!cb(address, name, index, len, scope, flag))	break;
 				}
 			}
+
+			void get_nic_names_linux(std::vector<std::string>& nics) {
+				for (auto const& p : std::filesystem::directory_iterator("/sys/class/net")) {
+					//	skip loopback
+					auto const device = p.path().filename();
+					if (!boost::algorithm::equals(device, "lo")) {
+						nics.push_back(p.path().filename());
+					}
+				}
+			}
 		}
 #endif
 
@@ -144,6 +154,16 @@ namespace cyng
 
 			}
 
+			void get_nic_names_windows(std::vector<std::string>& nics) {
+				read_ip_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
+					if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
+						nics.push_back(name);
+					}
+					return true;
+					}
+				);
+
+			}
 		}
 #endif
 
@@ -258,111 +278,53 @@ namespace cyng
 #endif
 
 		std::vector<ipv_cfg> get_ipv4_configuration() {
-
+			//
+			//	https://en.wikipedia.org/wiki/Memoization
+			//
+			static std::vector<ipv_cfg> r;
+			if (r.empty()) {
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			return get_ipv4_configuration_windows();
+				r = get_ipv4_configuration_windows();
 #elif defined(BOOST_OS_LINUX_AVAILABLE)
-			return get_ipv4_configuration_posix();
+				r = get_ipv4_configuration_posix();
 #else
-			static_assert(false, "platform not supported");
+				static_assert(false, "platform not supported");
 #endif
-			std::vector<ipv_cfg> r;
+			}
 			return r;
 
 		}
 
+
 		std::vector<ipv_cfg> get_ipv6_configuration() {
+			//
+			//	https://en.wikipedia.org/wiki/Memoization
+			//
+			static std::vector<ipv_cfg> r;
+			if (r.empty()) {
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			return get_ipv6_configuration_windows();
+				r = get_ipv6_configuration_windows();
 #elif defined(BOOST_OS_LINUX_AVAILABLE)
-			return get_ipv6_configuration_posix();
+				r = get_ipv6_configuration_posix();
 #else
-			static_assert(false, "platform not supported");
+				static_assert(false, "platform not supported");
 #endif
-			std::vector<ipv_cfg> r;
+			}
 			return r;
 		}
 
 		std::vector<std::string> get_nic_names() {
-			std::vector<std::string> nics;
+			static std::vector<std::string> nics;
+			if (nics.empty()) {
 
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			read_ip_info([&](IP_ADAPTER_ADDRESSES const& address, std::string name)->bool {
-				if (address.IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
-					nics.push_back(name);
-				}
-				return true;
-				}
-			);
-
+				get_nic_names_windows(nics);
 #else
-			for (auto const& p : std::filesystem::directory_iterator("/sys/class/net")) {
-#ifdef _DEBUG_SYS
-				std::cout << p.path() << std::endl;
-#endif 
-				nics.push_back(p.path().filename());
+				get_nic_names_linux(nics);
+#endif
 
 			}
-#endif
 			return nics;
-		}
-
-
-		std::vector<std::string> get_nic_prefix() {
-
-
-#if defined(BOOST_OS_WINDOWS_AVAILABLE)
-
-			std::vector<std::string> prefix;
-
-			// Allocate information for up to 128 NICs
-			constexpr std::size_t nic_count = 128;
-			IP_ADAPTER_ADDRESSES AdapterInfo[nic_count];
-
-			// Save memory size of buffer
-			DWORD dwBufLen = sizeof(AdapterInfo);
-
-			// Arguments for GetAdapterAddresses:
-			DWORD dwStatus = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, AdapterInfo, &dwBufLen);
-			// [out] buffer to receive data
-			// [in] size of receive data buffer
-
-
-			if (dwStatus == NO_ERROR) {
-				std::size_t counter{ 0 };
-
-				// Contains pointer to current adapter info
-				PIP_ADAPTER_ADDRESSES pAdapterInfo = AdapterInfo;
-
-				while ((pAdapterInfo != nullptr) && (pAdapterInfo->IfType != IF_TYPE_SOFTWARE_LOOPBACK)) {
-
-
-					//
-					//	update counter
-					//
-					++counter;
-					if (counter > nic_count) {
-						break;
-					}
-
-#ifdef _DEBUG_SYS
-					std::wcout << pAdapterInfo->FriendlyName << '%' << pAdapterInfo->IfIndex << std::endl;
-					BOOST_ASSERT(pAdapterInfo->IfIndex == pAdapterInfo->Ipv6IfIndex);
-#endif
-					prefix.push_back(std::to_string(pAdapterInfo->IfIndex));
-
-					// Progress through linked list
-					pAdapterInfo = pAdapterInfo->Next;
-				};
-			}
-
-			return prefix;
-
-#else
-			return get_nic_names();
-#endif
-
-
 		}
 
 		boost::asio::ip::address get_address_IPv6(std::string nic) {

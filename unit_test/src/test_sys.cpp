@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(net)
 	}
 
 	//cyng::sys::get_nic_names();
-	auto const pres = cyng::sys::get_nic_prefix();
+	auto const pres = cyng::sys::get_nic_names();
 	for (auto const p : pres) {
 		std::cout << p << std::endl;
 	}

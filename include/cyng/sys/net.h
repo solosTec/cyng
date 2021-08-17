@@ -92,6 +92,8 @@ namespace cyng {
 		 * on this system.
 		 * In linux systems this data are gathered by using the getifaddrs() function.
 		 * On windows this happens by calling the GetAdaptersAddresses() function.
+		 * 
+		 * Results are "memoized".
 		 */
 		std::vector<ipv_cfg> get_ipv4_configuration();
 
@@ -100,19 +102,17 @@ namespace cyng {
 		 * on this system.
 		 * In linux systems this data are gathered by reding the "/proc/net/if_inet6" file.
 		 * On windows this happens by calling the GetAdaptersAddresses() function.
+		 * 
+		 * Results are "memoized".
 		 */
 		std::vector<ipv_cfg> get_ipv6_configuration();
 
 		/**
 		 * @return list of all available nics
+		 * 
+		 * Results are "memoized".
 		 */
 		std::vector<std::string> get_nic_names();
-
-		/**
-		 * on linux the same as get_nic_names()
-		 */
-		[[deprecated("Use get_nic_names() instead.")]]
-		std::vector<std::string> get_nic_prefix();
 
 		/**
 		 * @brief Implementation on windows is incomplete. Use get_ipv6_configuration() instead.
