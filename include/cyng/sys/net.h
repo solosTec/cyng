@@ -21,7 +21,7 @@ namespace cyng {
 	namespace sys
 	{
 
-		enum ipv6_scope {
+		enum ipv6_scope : std::uint32_t {
 			LOOPBACK = 0x0010U,
 			LINKLOCAL =	0x0020U,
 			SITELOCAL =	0x0040U,

@@ -66,11 +66,11 @@ namespace cyng
 		namespace {	//	static linkage
 			void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)> cb) {
 				std::ifstream ifs("/proc/net/if_inet6");
-				ifs >> std::setbase(16);
 				std::string address, name, line;
 				std::uint64_t index, len, scope, flag;
 				while (std::getline(ifs, line)) {
-					std::istringstream(line) >> address >> index >> len >> scope >> flag >> name;
+					//ifs >> std::setbase(16);
+					std::istringstream(line) >> address >> std::hex >> index >> len >> scope >> flag >> name;
 					if (!cb(address, name, index, len, scope, flag))	break;
 				}
 			}
@@ -249,7 +249,7 @@ namespace cyng
 			read_ipv6_info([&r](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
 				// std::cout << "\t***" << address << " - " << name << std::endl;
 				if (scope != LOOPBACK) {
-					r.emplace_back(to_ipv6(address, name), index, name);
+					r.emplace_back(to_ipv6(address), index, name);
 				}
 				return true;
 				});
@@ -424,8 +424,8 @@ namespace cyng
 			read_ipv6_info([&result, nic](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
 				//std::cout << address << " - " << name << std::endl;
 				if (boost::algorithm::equals(name, nic))	{
-				//	std::cout << to_ipv6(address, index) << std::endl;
-					result = to_ipv6(address, index);
+					//	std::cout << to_ipv6(address, name) << std::endl;
+					result = to_ipv6(address);
 					return false;
 				}
 				return true;
@@ -443,8 +443,8 @@ namespace cyng
 			read_ipv6_info([&result, nic, sc](std::string address, std::string name, std::uint64_t index, std::uint64_t len, std::uint64_t scope, std::uint64_t flag) -> bool {
 				//std::cout << address << " - " << name << " - " << scope << std::endl;
 				if (boost::algorithm::equals(name, nic) && sc == scope) {
-					//std::cout << to_ipv6(address, scope) << std::endl;
-					result = to_ipv6(address, scope);
+					//std::cout << to_ipv6(address) << std::endl;
+					result = to_ipv6(address);
 					return false;
 				}
 				return true;
@@ -464,7 +464,7 @@ namespace cyng
 #if defined(BOOST_OS_WINDOWS_AVAILABLE)
 			os << '[' << data.device_ << ']' << ' ' << data.address_ << '%' << data.index_;
 #else
-			os << '[' << data.index_ << ']' << ' ' << data.address_;
+			os << '[' << data.index_ << ']' << ' ' << data.address_ << '%' << data.device_;
 #endif
 			return os;
 		}

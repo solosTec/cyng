@@ -14,8 +14,7 @@
 
 namespace cyng {
 
-	boost::asio::ip::address to_ipv6(std::string inp, unsigned long scope_id) {
-
+	boost::asio::ip::address to_ipv6(std::string inp) {
 		boost::asio::ip::address_v6::bytes_type bytes;
 		//boost::asio::detail::array<unsigned char, 16>
 		BOOST_ASSERT_MSG(inp.size() == 32, "wrong input size");
@@ -25,11 +24,12 @@ namespace cyng {
 			for (auto& e : bytes) {
 				e = *pos++;
 			}
-			return boost::asio::ip::make_address_v6(bytes, scope_id);
+			return boost::asio::ip::make_address_v6(bytes);
 		}
-		//std::cout << boost::asio::ip::make_address_v6(t, 0) << std::endl;
 		return boost::asio::ip::address_v6();
+
 	}
+
 
 #if defined(BOOST_OS_LINUX_AVAILABLE)
 	boost::asio::ip::address to_ipv6(std::string hex_str, std::string device) {
@@ -38,6 +38,7 @@ namespace cyng {
 		//	fe80000000000000f45607fffe46e821
 		//	fe80::f456:7ff:fe46:e821
 		//boost::asio::detail::array<unsigned char, 16>
+		BOOST_ASSERT(!device.empty());
 		auto const tmp = to_ipv6(hex_str, 0).to_string();
 		auto const str = tmp + "%" + device;
 		// std::cerr << std::endl << "***\t" << str << std::endl;
