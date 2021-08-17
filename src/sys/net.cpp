@@ -78,7 +78,7 @@ namespace cyng
 			void get_nic_names_linux(std::vector<std::string>& nics) {
 				for (auto const& p : std::filesystem::directory_iterator("/sys/class/net")) {
 					//	skip loopback
-					auto const device = p.path().filename();
+					auto const device = p.path().filename().string();
 					if (!boost::algorithm::equals(device, "lo")) {
 						nics.push_back(p.path().filename());
 					}
