@@ -133,6 +133,12 @@ namespace cyng {
 		//void read_ipv6_info(std::function<bool(std::string, std::string, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t)>);
 #endif
 
+		/**
+		 *	helper to build a link local address.
+		 *	Works only for IPv6 addresses
+		 */
+		boost::asio::ip::address make_link_local_address(boost::asio::ip::address, std::uint32_t index);
+
 	}
 }
 #endif

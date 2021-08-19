@@ -416,6 +416,25 @@ namespace cyng
 		}
 #endif
 
+		boost::asio::ip::address make_link_local_address(boost::asio::ip::address addr, std::uint32_t index) {
+			if (addr.is_v6()) {
+				auto const tmp = addr.to_v6().to_string();
+				auto const pos = tmp.find('%');
+				boost::system::error_code ec;
+				if (pos != std::string::npos) {
+					//	remove "%..."
+					auto const str = tmp.substr(0, pos) + "%" + std::to_string(index);
+					return boost::asio::ip::make_address_v6(str, ec);
+				}
+				else {
+					auto const str = tmp + "%" + std::to_string(index);
+					return boost::asio::ip::make_address_v6(str, ec);
+				}
+			}
+			return addr;
+		}
+
+
 		ipv_cfg::ipv_cfg(boost::asio::ip::address address, std::uint32_t index, std::string device)
 			: address_(address)
 			, index_(index)
