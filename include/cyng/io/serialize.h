@@ -32,8 +32,10 @@ namespace cyng {
 		 */
 		std::size_t serialize_typed(std::ostream&, object const&);
 		std::size_t serialize_typed(std::ostream&, vector_t const&);
+		std::size_t serialize_typed(std::ostream&, tuple_t const&);
 		std::string to_typed(object const&);
 		std::string to_typed(vector_t const&);
+		std::string to_typed(tuple_t const&);
 
 		/**
 		 * Serialization to an internal binary

@@ -34,6 +34,10 @@ namespace cyng {
 			return serializer <vector_t, TYPED>::write(os, vec);
 		}
 
+		std::size_t serialize_typed(std::ostream& os, tuple_t const& tpl) {
+			return serializer <tuple_t, TYPED>::write(os, tpl);
+		}
+
 		std::string to_typed(object const& obj)
 		{
 			std::stringstream ss;
@@ -47,6 +51,11 @@ namespace cyng {
 			return ss.str();
 		}
 
+		std::string to_typed(tuple_t const& tpl) {
+			std::stringstream ss;
+			serialize_typed(ss, tpl);
+			return ss.str();
+		}
 
 		std::size_t serialize_binary(std::ostream& os, object const& obj)
 		{
