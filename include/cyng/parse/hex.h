@@ -48,6 +48,12 @@ namespace cyng {
 
 	std::uint16_t hex_to_u16(char ch1, char c2, char c3, char c4);
 	std::uint16_t hex_to_u16(std::string s);
+
+	/**
+	 * @return true if all characters are hexadecimal 
+	 */
+	bool is_hex(std::string const s);
+
 }
 #endif
 
