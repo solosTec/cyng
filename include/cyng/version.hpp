@@ -6,4 +6,4 @@
 //  cyng_VERSION / 100000 is the major version
 //
 
-#define cyng_VERSION 9000
+#define cyng_VERSION 9003
