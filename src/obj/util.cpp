@@ -111,6 +111,30 @@ namespace cyng {
 		return edis{};
 	}
 
+	color_8 make_color8(buffer_t const& buffer) {
+		if (buffer.size() >= sizeof(color_8::rgb_type)) {
+			return color_8(
+				buffer.at(0),
+				buffer.at(1),
+				buffer.at(2),
+				buffer.at(3));
+
+		}
+		return color_8{};
+	}
+	color_16 make_color16(buffer_t const& buffer) {
+		if (buffer.size() >= sizeof(color_16::rgb_type)) {
+
+			auto const r = to_numeric<std::uint16_t>(buffer);
+			auto const g = to_numeric<std::uint16_t>(buffer, sizeof(16));
+			auto const b = to_numeric<std::uint16_t>(buffer, sizeof(16) * 2);
+			auto const o = to_numeric<std::uint16_t>(buffer, sizeof(16) * 3);
+
+			return color_16(r, g, b, o);
+		}
+		return color_16{};
+	}
+
 	boost::uuids::uuid make_uuid(buffer_t const& buffer) {
 
 		boost::uuids::uuid tag = boost::uuids::nil_uuid();

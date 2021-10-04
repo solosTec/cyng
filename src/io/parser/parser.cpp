@@ -195,6 +195,12 @@ namespace cyng {
 			case TC_EDIS:
 				BOOST_ASSERT(buffer_.size() == edis::size());
 				return make_object(make_edis(buffer_));
+			case TC_COLOR_8:
+				BOOST_ASSERT(buffer_.size() == sizeof(color_8::rgb_type));
+				return make_object(make_color8(buffer_));
+			case TC_COLOR_16:
+				BOOST_ASSERT(buffer_.size() == sizeof(color_16::rgb_type));
+				return make_object(make_color16(buffer_));
 
 			case TC_DIGEST_MD5:	
 				BOOST_ASSERT(buffer_.size() == crypto::digest_md5::size());

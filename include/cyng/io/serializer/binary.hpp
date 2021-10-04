@@ -354,6 +354,21 @@ namespace cyng {
 			}
 		};
 
+		template <typename T>
+		struct serializer <color<T>, BINARY>
+		{
+			static std::size_t write(std::ostream& os, color<T> const& col) {
+				serialize_type_tag<color<T>>(os);
+				auto const ll = serialize_length(os, sizeof(typename color<T>::rgb_type));
+				std::size_t size{ sizeof(std::uint16_t) + ll };
+				size += write_binary(os, col.red());
+				size += write_binary(os, col.green());
+				size += write_binary(os, col.blue());
+				size += write_binary(os, col.opacity());
+				return size;
+			}
+		};
+
 	}
 }
 #endif

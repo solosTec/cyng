@@ -211,10 +211,11 @@ namespace cyng {
 			//
 			serialize_type_tag<obis_path_t>(os);
 			auto const ll = serialize_length(os, v.size() * obis::size());
+			std::size_t size{ sizeof(std::uint16_t) + ll };
 			for (auto const& o : v) {
-				write_binary(os, o.data());
+				size += write_binary(os, o.data());
 			}
-			return v.size() * obis::size() + sizeof(std::uint16_t) + ll;
+			return size;
 		}
 		
 		std::size_t serializer <edis, BINARY>::write(std::ostream& os, edis const& v)

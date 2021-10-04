@@ -127,6 +127,11 @@ namespace cyng {
 	[[nodiscard]]
 	edis make_edis(buffer_t const&);
 
+	[[nodiscard]]
+	color_8 make_color8(buffer_t const&);
+	[[nodiscard]]
+	color_16 make_color16(buffer_t const&);
+
 	template <std::size_t N>
 	[[nodiscard]]
 	auto make_digest(buffer_t const& buffer) -> digest<N> {

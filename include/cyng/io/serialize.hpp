@@ -95,6 +95,8 @@ namespace cyng {
 					case TC_OBIS:		return write_impl<traits::reverse_type<TC_OBIS>::type>(os, obj);
 					case TC_OBISPATH:	return write_impl<traits::reverse_type<TC_OBISPATH>::type>(os, obj);
 					case TC_EDIS:		return write_impl<traits::reverse_type<TC_EDIS>::type>(os, obj);
+					case TC_COLOR_8:	return write_impl<traits::reverse_type<TC_COLOR_8>::type>(os, obj);
+					case TC_COLOR_16:	return write_impl<traits::reverse_type<TC_COLOR_16>::type>(os, obj);
 
 					case TC_DIGEST_MD5:		return write_impl<traits::reverse_type<TC_DIGEST_MD5>::type>(os, obj);
 					case TC_DIGEST_SHA1:	return write_impl<traits::reverse_type<TC_DIGEST_SHA1>::type>(os, obj);

@@ -8,6 +8,8 @@
 #define CYNG_IO_PLAIN_HPP
 
 #include <cyng/io/io.h>
+#include <cyng/obj/intrinsics/color.hpp>
+
 #include <boost/uuid/uuid.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -104,6 +106,13 @@ namespace cyng {
 			}
 		};
 
+		//template <typename T>
+		//struct serializer <color<T>, PLAIN>
+		//{
+		//	static std::size_t write(std::ostream& os, color<T> const& col) {
+		//		return 0;
+		//	}
+		//};
 	}
 }
 #endif

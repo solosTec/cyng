@@ -46,6 +46,7 @@ set (object_intrinscis
     include/cyng/obj/intrinsics/op.h
     include/cyng/obj/intrinsics/severity.h
     include/cyng/obj/intrinsics/version.h
+    include/cyng/obj/intrinsics/color.hpp
 )
 
 set (object_core 

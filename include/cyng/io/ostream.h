@@ -31,6 +31,7 @@
 #include <cyng/obj/intrinsics/pid.h>
 #include <cyng/obj/intrinsics/obis.h>
 #include <cyng/obj/intrinsics/edis.h>
+#include <cyng/obj/intrinsics/color.hpp>
 #include <cyng/obj/intrinsics/digest.hpp>
 #include <cyng/obj/intrinsics/aes_key.hpp>
 #include <cyng/obj/intrinsics/container.h>
@@ -184,6 +185,28 @@ namespace cyng {
 	 */
 	std::ostream& operator<<(std::ostream& os, param_map_t const&);
 	std::ostream& operator<<(std::ostream& os, param_t const&);
+
+	template <typename T>
+	std::ostream& operator<<(std::ostream& os, color<T> const& v)
+	{
+		boost::io::ios_flags_saver  ifs(os);
+
+		os
+			<< "rgb("
+			<< std::setfill('0')
+			<< std::hex
+			<< std::setw(2)
+			<< +v.red()
+			<< ' '
+			<< std::setw(2)
+			<< +v.green()
+			<< ' '
+			<< std::setw(2)
+			<< +v.blue()
+			<< ')'
+			;
+		return os;
+	}
 
 	/**
 	 * object serialization

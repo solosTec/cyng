@@ -36,6 +36,7 @@
 #include <cyng/obj/intrinsics/obis.h>
 #include <cyng/obj/intrinsics/edis.h>
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/intrinsics/color.hpp>
 
 #include <cyng/meta.hpp>
 
@@ -83,6 +84,8 @@ namespace cyng {
 			pid,
 			obis,
 			edis,
+			color_8,
+			color_16,
 
 			crypto::digest_md5,
 			crypto::digest_sha1,
@@ -171,6 +174,8 @@ namespace cyng {
 			"pid",
 			"obis",
 			"edis",
+			"color:8",
+			"color:16",
 
 			"crypto:MD5",
 			"crypto:SHA1",
@@ -319,6 +324,8 @@ namespace cyng {
 		TC_PID = type_tag_traits<pid>(),
 		TC_OBIS = type_tag_traits<obis>(),
 		TC_EDIS = type_tag_traits<edis>(),
+		TC_COLOR_8 = type_tag_traits<color_8>(),
+		TC_COLOR_16 = type_tag_traits<color_16>(),
 
 		TC_DIGEST_MD5 = type_tag_traits<crypto::digest_md5>(),
 		TC_DIGEST_SHA1 = type_tag_traits<crypto::digest_sha1>(),
