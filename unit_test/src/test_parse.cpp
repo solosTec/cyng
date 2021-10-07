@@ -14,6 +14,7 @@
 #include <cyng/parse/csv/csv_parser.h>
 #include <cyng/parse/csv/line_cast.hpp>
 #include <cyng/parse/csv.h>
+#include <cyng/parse/timestamp.h>
 
 #include <cyng/obj/tag.hpp>
 #include <cyng/obj/util.hpp>
@@ -257,6 +258,32 @@ BOOST_AUTO_TEST_CASE(ipv6)
 
 	//	std::cout << cyng::to_ipv6(address, scope) << std::endl;;
 	//	});
+}
+
+BOOST_AUTO_TEST_CASE(chrono)
+{
+	std::time_t t_c;
+
+	//	YYYY-MM-DD[THH:MM:SS[Z|+[hh:mm]]]
+	auto const tp1 = cyng::to_timestamp("2000-04-20");
+	t_c = std::chrono::system_clock::to_time_t(tp1);
+	std::cout << std::put_time(std::localtime(&t_c), "%F %T.\n") << std::flush;
+
+	auto const tp2 = cyng::to_timestamp("2000-04-20T06:04:01");
+	t_c = std::chrono::system_clock::to_time_t(tp2);
+	std::cout << std::put_time(std::localtime(&t_c), "%F %T.\n") << std::flush;
+
+	auto const tp3 = cyng::to_timestamp("2000-04-20T06:04:01Z");	//	UTC
+	t_c = std::chrono::system_clock::to_time_t(tp3);
+	std::cout << std::put_time(std::localtime(&t_c), "%F %T.\n") << std::flush;
+
+	auto const tp4 = cyng::to_timestamp("2000-04-20T06:04:01+02:00");	//	Cairo 
+	t_c = std::chrono::system_clock::to_time_t(tp4);
+	std::cout << std::put_time(std::localtime(&t_c), "%F %T.\n") << std::flush;
+
+	auto const tp5 = cyng::to_timestamp("2000-04-20T06:04:01-05:00");	//	 New York on standard time 
+	t_c = std::chrono::system_clock::to_time_t(tp5);
+	std::cout << std::put_time(std::localtime(&t_c), "%F %T.\n") << std::flush;
 }
 
 BOOST_AUTO_TEST_SUITE_END()
