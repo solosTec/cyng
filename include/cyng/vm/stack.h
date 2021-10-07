@@ -9,6 +9,7 @@
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/value_cast.hpp>
+#include <cyng/obj/factory.hpp>
 
 #include <boost/assert.hpp>
 
@@ -87,6 +88,11 @@ namespace cyng {
 		 */
 		void make_deque();
 
+		/** @brief push all elements of a container onto stack
+		 *
+		 */
+		void explode();
+
 		/** @brief swap two top elements
 		 *
 		 */
@@ -127,6 +133,15 @@ namespace cyng {
 			T value = top_value(def);
 			pop();
 			return value;
+		}
+
+		template <typename T>
+		void disassemble() {
+			auto const c = value_cast<T>(s_.back(), T());
+			for (auto const& obj : c) {
+				push(obj);
+			}
+			push(make_object(c.size()));
 		}
 
 	private:

@@ -1,5 +1,4 @@
 #include <cyng/vm/stack.h>
-#include <cyng/obj/factory.hpp>
 
 #include <algorithm>
 
@@ -157,6 +156,30 @@ namespace cyng {
 			pop();
 		}
 		push(make_object(std::move(deq)));
+	}
+
+	void stack::explode()
+	{
+		BOOST_ASSERT_MSG(!s_.empty(), "not enough parameters (explode)");
+		switch (top().rtti().tag()) {
+		case TC_TUPLE:
+			disassemble<traits::reverse_type<TC_TUPLE>::type>();
+			break;
+		case TC_VECTOR:
+			disassemble<traits::reverse_type<TC_VECTOR>::type>();
+			break;
+		case TC_DEQUE:
+			disassemble<traits::reverse_type<TC_DEQUE>::type>();
+			break;
+
+		//case TC_ATTR_MAP:
+		//case TC_ATTR:
+		//case TC_PARAM_MAP:
+		//case TC_PARAM:
+		default:
+			BOOST_ASSERT_MSG(false, "not a container class (explode)");
+			break;
+		}
 	}
 
 	std::size_t stack::saved_bp() const

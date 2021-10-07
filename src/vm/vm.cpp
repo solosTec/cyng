@@ -107,6 +107,10 @@ namespace cyng {
 			ctx_.make_deque();
 			break;
 
+		case op::EXPLODE:
+			ctx_.explode();
+			break;
+
 		case op::ASSERT_TYPE:
 			ctx_.assert_type();
 			break;

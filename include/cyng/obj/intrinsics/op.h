@@ -59,8 +59,11 @@ namespace cyng {
 		MAKE_ATTR_MAP,		//!< 	build an attribute map
 		MAKE_PARAM_MAP,		//!< 	build a parameter map
 		MAKE_TUPLE,			//!< 	build a tuple (std::list<object>)
-		MAKE_VECTOR,			//!< 	build a vector (std::vector<object>)
+		MAKE_VECTOR,		//!< 	build a vector (std::vector<object>)
 		MAKE_DEQUE,			//!< 	build a deque (std::deque<object>)
+
+		//	deassembly
+		EXPLODE,			//!<	push all elements of a container onto stack
 
 		//	debugging
 		//DUMP_DATA,		//!< 	dump all elements from data stack to standard output
@@ -73,7 +76,6 @@ namespace cyng {
 		TSTERR,			//!< 	test error register and set cmp/jump register (true if no error occured)
 		RESERR,			//!< 	reset error register
 
-		//FORWARD,		//!<	forward instructions to an embedded VM
 		//REMOVE,			//!<	remove an embedded VM
 		TIDY,			//!<	free unused memory 
 
