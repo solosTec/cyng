@@ -107,8 +107,8 @@ namespace cyng {
 			ctx_.make_deque();
 			break;
 
-		case op::EXPLODE:
-			ctx_.explode();
+		case op::SPLIT:
+			ctx_.split();
 			break;
 
 		case op::ASSERT_TYPE:

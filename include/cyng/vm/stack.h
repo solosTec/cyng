@@ -91,7 +91,7 @@ namespace cyng {
 		/** @brief push all elements of a container onto stack
 		 *
 		 */
-		void explode();
+		void split();
 
 		/** @brief swap two top elements
 		 *

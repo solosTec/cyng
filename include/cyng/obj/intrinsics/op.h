@@ -63,7 +63,7 @@ namespace cyng {
 		MAKE_DEQUE,			//!< 	build a deque (std::deque<object>)
 
 		//	deassembly
-		EXPLODE,			//!<	push all elements of a container onto stack
+		SPLIT,				//!<	push all elements of a container onto stack
 
 		//	debugging
 		//DUMP_DATA,		//!< 	dump all elements from data stack to standard output

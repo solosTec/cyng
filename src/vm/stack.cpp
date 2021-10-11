@@ -158,9 +158,9 @@ namespace cyng {
 		push(make_object(std::move(deq)));
 	}
 
-	void stack::explode()
+	void stack::split()
 	{
-		BOOST_ASSERT_MSG(!s_.empty(), "not enough parameters (explode)");
+		BOOST_ASSERT_MSG(!s_.empty(), "not enough parameters (split)");
 		switch (top().rtti().tag()) {
 		case TC_TUPLE:
 			disassemble<traits::reverse_type<TC_TUPLE>::type>();
