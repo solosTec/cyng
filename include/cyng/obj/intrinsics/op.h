@@ -40,6 +40,7 @@ namespace cyng {
 
 		ESBA = 0xF9,	//!< 	establish base address, mem[--sp] = bp; bp = sp;
 		REBA = 0xFA,	//!< 	restore base address, sp = bp; bp = mem[sp++];
+		FRM,			//!<	push current frame size to stack
 
 		ADD = 0xF1,	//!< 	add, temp = mem[sp++]; mem[sp] = mem[sp] + temp; cy = carry
 		SUB = 0xF2,	//!< 	subtract, temp = mem[sp++]; mem[sp] = mem[sp] - temp

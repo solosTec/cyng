@@ -67,6 +67,17 @@ namespace cyng {
 		case op::CALL: 	os << "CALL";	break;
 		case op::RET: 	os << "RET";	break;
 
+		case op::JA:	os << "JA";	break;
+		case op::JE:	os << "JE";	break;
+		case op::JNE:	os << "JNE";	break;
+
+		case op::ESBA:	os << "ESBA";	break;
+		case op::REBA:	os << "REBA";	break;
+		case op::FRM:	os << "FRM";	break;
+
+		case op::ADD:	os << "ADD";	break;
+		case op::SUB:	os << "SUB";	break;
+
 		case op::INVOKE:	os << "INVOKE";	break;
 		case op::INVOKE_R:	os << "INVOKE_R";	break;
 		case op::FORWARD:	os << "FORWARD";	break;
@@ -84,6 +95,8 @@ namespace cyng {
 		case op::MAKE_TUPLE: 		os << "MAKE_TUPLE";	break;
 		case op::MAKE_VECTOR: 		os << "MAKE_VECTOR";	break;
 		case op::MAKE_DEQUE: 		os << "MAKE_DEQUE";	break;
+
+		case op::SPLIT:	os << "SPLIT";	break;
 
 		case op::TIDY:	os << "TIDY";	break;
 

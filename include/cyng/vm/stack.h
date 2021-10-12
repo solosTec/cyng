@@ -88,6 +88,8 @@ namespace cyng {
 		 */
 		void make_deque();
 
+		void frm();
+
 		/** @brief push all elements of a container onto stack
 		 *
 		 */

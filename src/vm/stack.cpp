@@ -158,6 +158,12 @@ namespace cyng {
 		push(make_object(std::move(deq)));
 	}
 
+	void stack::frm() {
+		BOOST_ASSERT_MSG(bp_ > saved_bp(), "invalid frame");
+		auto const size = bp_ - saved_bp();
+		push(make_object(std::move(size)));
+	}
+
 	void stack::split()
 	{
 		BOOST_ASSERT_MSG(!s_.empty(), "not enough parameters (split)");

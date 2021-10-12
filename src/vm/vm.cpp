@@ -118,6 +118,17 @@ namespace cyng {
 			ctx_.assert_value();
 			break;
 
+
+		case op::ESBA:
+			ctx_.esba();
+			break;
+		case op::REBA:
+			ctx_.reba();
+			break;
+		case op::FRM:
+			ctx_.frm();
+			break;
+
 		default:
 			BOOST_ASSERT_MSG(false, "unknown op code");
 			break;
