@@ -85,45 +85,19 @@ class session
 {
 public:
 	session() {}
-	inline void foo(int) {}
+	inline std::uint64_t foo(std::string s) {
+		return s.size();
+	}
 };
 
 //	--------------------------------------------------------------+
-using tpl1 = std::tuple<int, float>;
+//using tpl1 = std::tuple<int, float>;
 //using tpl2 = std::tuple<int>;
-using tpl2 = std::tuple < std::function<void(int)>>;
-
-class demo
-{
-	using signatures_t = cyng::tmp::tuple_cat_t<
-		tpl1,
-		tpl2
-	>;
-
-public:
-	demo() 
-		: sig_()
-	{}
-	inline void foo(int) {}
-
-	signatures_t sig_;
-};
-//	--------------------------------------------------------------+
+//using tpl2 = std::tuple < std::function<void(int)>>;
 
 
 BOOST_AUTO_TEST_CASE(library)
 {
-	//	--------------------------------------------------------------+
-	//using tpl1 = std::tuple<int, float>;
-	//using tpl2 = std::tuple<int>;
-
-	//cyng::tuple_cat_t<
-	//	tpl1,
-	//	tpl2
-	//> test1{ 2, 3.0f, 4 };
-
-	demo d;
-
 	//	--------------------------------------------------------------+
 
 	cyng::controller ctl;
@@ -131,8 +105,9 @@ BOOST_AUTO_TEST_CASE(library)
 
 	session s;
 	//std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);	//	ok
-	std::function<void(int)> f = [&s](int i) {	//	ok
-		s.foo(i);
+	std::function<std::uint64_t(std::string)> f = [&s](std::string str) -> std::uint64_t {	//	ok
+		std::cout << str << std::endl;
+		return s.foo(str);
 	};
 
 	auto vm = fabric.create_proxy(f);	//	ok
@@ -140,7 +115,17 @@ BOOST_AUTO_TEST_CASE(library)
 
 	//auto vm = fabric.create_proxy(std::bind(&session::foo, &s, std::placeholders::_1));	//	not ok
 
+	vm.set_channel_name("foo", 0);
+	vm.execute(
+		cyng::make_object("a string"),
+		cyng::make_object<std::size_t>(1),
+		cyng::make_object("foo"),
+		cyng::op::RESOLVE,
+		cyng::op::INVOKE_R
+	);
 	vm.load(make_object(cyng::op::TIDY));
+
+	vm.run();
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));
 	vm.stop();

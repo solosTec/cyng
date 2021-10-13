@@ -118,6 +118,7 @@ namespace cyng {
 		 */
 		void ident();
 		void forward();
+		void resolve();
 
 	protected:
 		channel_weak channel_;
@@ -222,7 +223,11 @@ namespace cyng {
 		virtual void invoke_r() override {
 
 			auto [slot, msg] = ctx_.invoke_r();
-			invoke_r_helper<sizeof...(Fns)>::call(offset + slot, msg, sigs_, ctx_);
+#ifdef _DEBUG_TEST
+			std::cout << "function count: " << offset + func_count << std::endl;
+#endif
+			//invoke_r_helper<offset + func_count - 1>::call(offset + slot, msg, sigs_, ctx_);
+			invoke_r_helper<offset + func_count - 1>::call(slot, msg, sigs_, ctx_);
 		}
 
 	private:

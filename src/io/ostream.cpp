@@ -73,6 +73,7 @@ namespace cyng {
 
 		case op::ESBA:	os << "ESBA";	break;
 		case op::REBA:	os << "REBA";	break;
+		case op::PULL:	os << "PULL";	break;
 		case op::FRM:	os << "FRM";	break;
 
 		case op::ADD:	os << "ADD";	break;
@@ -81,6 +82,7 @@ namespace cyng {
 		case op::INVOKE:	os << "INVOKE";	break;
 		case op::INVOKE_R:	os << "INVOKE_R";	break;
 		case op::FORWARD:	os << "FORWARD";	break;
+		case op::RESOLVE:	os << "RESOLVE";	break;
 
 		case op::IDENT:		os << "IDENT";	break;
 		case op::NOW: 		os << "NOW";	break;

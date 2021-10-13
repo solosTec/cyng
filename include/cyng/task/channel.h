@@ -46,7 +46,7 @@ namespace cyng {
 		 */
 		bool set_channel_name(std::string, std::size_t);
 
-	protected:
+	//protected:
 		/**
 		 * @return std::numeric_limits<std::size_t>::max() if slot was not found
 		 */

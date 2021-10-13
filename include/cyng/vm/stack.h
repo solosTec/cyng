@@ -53,6 +53,11 @@ namespace cyng {
 		 */
 		void reba();
 
+		/** @brief restore base address but keep the content on the stack
+		 *
+		 */
+		void pull();
+
 		/** @brief build an attribute
 		 *
 		 */
@@ -118,6 +123,14 @@ namespace cyng {
 
 		boost::uuids::uuid forward();
 
+		template <typename T>
+		T pop_value(T def = T())
+		{
+			T value = top_value(def);
+			pop();
+			return value;
+		}
+
 	private:
 		std::size_t saved_bp() const;
 
@@ -127,14 +140,6 @@ namespace cyng {
 			BOOST_ASSERT(!s_.empty());
 			BOOST_ASSERT_MSG(is_same_type<T>(s_.back()), "wrong type");
 			return value_cast<T>(s_.back(), def);
-		}
-
-		template <typename T>
-		T pop_value(T def = T())
-		{
-			T value = top_value(def);
-			pop();
-			return value;
 		}
 
 		template <typename T>

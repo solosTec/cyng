@@ -40,6 +40,7 @@ namespace cyng {
 
 		ESBA = 0xF9,	//!< 	establish base address, mem[--sp] = bp; bp = sp;
 		REBA = 0xFA,	//!< 	restore base address, sp = bp; bp = mem[sp++];
+		PULL,			//!<	restore base address but keep the content above
 		FRM,			//!<	push current frame size to stack
 
 		ADD = 0xF1,	//!< 	add, temp = mem[sp++]; mem[sp] = mem[sp] + temp; cy = carry
@@ -48,6 +49,7 @@ namespace cyng {
 		INVOKE = 0x100,		//!< 	call a library function
 		INVOKE_R,			//!< 	call a library function
 		FORWARD,			//!<	forward function call to other VM
+		RESOLVE,			//!<	substitute function name by id
 
 		IDENT,			//!< 	push VM tag onto stack (if available)
 		NOW,			//!<	push current timestamp on stack

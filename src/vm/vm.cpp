@@ -83,6 +83,9 @@ namespace cyng {
 		case op::FORWARD:
 			forward();
 			break;
+		case op::RESOLVE:
+			resolve();
+			break;
 
 			//	assembly
 		case op::MAKE_ATTR:		
@@ -125,6 +128,9 @@ namespace cyng {
 		case op::REBA:
 			ctx_.reba();
 			break;
+		case op::PULL:
+			ctx_.pull();
+			break;
 		case op::FRM:
 			ctx_.frm();
 			break;
@@ -158,6 +164,14 @@ namespace cyng {
 #ifdef _DEBUG
 		else std::cerr << "***warning: channel " << tag << " not found" << std::endl;
 #endif
+	}
+
+	void vm_base::resolve() {
+		auto const name = ctx_.pop_value(std::string());
+		auto sp = channel_.lock();
+		if (sp) {
+			ctx_.push(cyng::make_object(sp->lookup(name)));
+		}
 	}
 
 

@@ -1,6 +1,7 @@
 #include <cyng/vm/stack.h>
 
 #include <algorithm>
+#include <iterator>
 
 #include <boost/uuid/nil_generator.hpp>
 #ifdef _DEBUG
@@ -49,12 +50,21 @@ namespace cyng {
 
 	void stack::reba()
 	{
-		auto const bp = bp_;
 		bp_ = saved_bp();
 		BOOST_ASSERT(s_.size() > bp_);
 
 		//	Restore old stack size:
 		s_.resize(bp_);	//	pop_back
+	}
+
+	void stack::pull() {
+
+		auto const bp = bp_;
+		bp_ = saved_bp();
+		BOOST_ASSERT(s_.size() > bp_);
+
+		auto const pos = s_.begin() + bp;
+		s_.erase(pos);
 	}
 
 	void stack::make_attr()
@@ -159,9 +169,9 @@ namespace cyng {
 	}
 
 	void stack::frm() {
-		BOOST_ASSERT_MSG(bp_ > saved_bp(), "invalid frame");
-		auto const size = bp_ - saved_bp();
-		push(make_object(std::move(size)));
+		BOOST_ASSERT_MSG(s_.size() > bp_, "invalid frame");
+		auto const size = s_.size() - bp_;
+		push(make_object(size - 1ul));
 	}
 
 	void stack::split()

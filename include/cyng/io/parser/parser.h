@@ -15,8 +15,7 @@
 
 #include <functional>
 #include <algorithm>
-//#include <bit>
-//#include <cyng.h>	//	cyng_BIG_ENDIAN
+#include <iterator>
 
 namespace cyng {
 	namespace io {
@@ -63,7 +62,7 @@ namespace cyng {
 				std::for_each(start, end, [this](value_type c) {
 						this->put(c);
 					});
-				return end - start;
+				return std::distance(start, end);
 			}
 
 		private:
