@@ -14,10 +14,10 @@ namespace cyng {
 
 	/**
 	 * Expect an string with hexadecimal characters and
-	 * an even numbered length.
+	 * even length.
 	 */
 	buffer_t hex_to_buffer(std::string const&);
-	
+
 }
 #endif
 

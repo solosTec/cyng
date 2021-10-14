@@ -72,7 +72,7 @@ namespace cyng {
 		struct string_policy<std::uint8_t, BASE> {
 			static std::uint8_t cast(std::string const& str) {
 				try { 
-					return static_cast<std::uint8_t>(stoul(str, 0, BASE)); 
+					return static_cast<std::uint8_t>(stoul(str, nullptr, BASE)); 
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -82,7 +82,7 @@ namespace cyng {
 		struct string_policy<std::uint16_t, BASE> {
 			static std::uint16_t cast(std::string const& str) {
 				try { 
-					return static_cast<std::uint16_t>(stoul(str, 0, BASE)); 
+					return static_cast<std::uint16_t>(stoul(str, nullptr, BASE));
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -92,7 +92,7 @@ namespace cyng {
 		struct string_policy<std::uint32_t, BASE> {
 			static std::uint32_t cast(std::string const& str) {
 				try { 
-					return static_cast<std::uint32_t>(stoul(str, 0, BASE)); 
+					return static_cast<std::uint32_t>(stoul(str, nullptr, BASE)); 
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -102,7 +102,7 @@ namespace cyng {
 		struct string_policy<std::uint64_t, BASE> {
 			static std::uint64_t cast(std::string const& str) {
 				try {
-					return static_cast<std::uint64_t>(stoull(str, 0, BASE));
+					return static_cast<std::uint64_t>(stoull(str, nullptr, BASE));
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -112,7 +112,7 @@ namespace cyng {
 		struct string_policy<std::int8_t, BASE> {
 			static std::int8_t cast(std::string const& str) {
 				try {
-					return static_cast<std::int8_t>(stoi(str, 0, BASE));
+					return static_cast<std::int8_t>(stoi(str, nullptr, BASE));
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -122,7 +122,7 @@ namespace cyng {
 		struct string_policy<std::int16_t, BASE> {
 			static std::int16_t cast(std::string const& str) {
 				try {
-					return static_cast<std::int16_t>(stoi(str, 0, BASE));
+					return static_cast<std::int16_t>(stoi(str, nullptr, BASE));
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -132,7 +132,7 @@ namespace cyng {
 		struct string_policy<std::int32_t, BASE> {
 			static std::int32_t cast(std::string const& str) {
 				try {
-					return static_cast<std::int32_t>(stol(str, 0, BASE));
+					return static_cast<std::int32_t>(stol(str, nullptr, BASE));
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -142,7 +142,7 @@ namespace cyng {
 		struct string_policy<std::int64_t, BASE> {
 			static std::int64_t cast(std::string const& str) {
 				try {
-					return static_cast<std::int64_t>(stoll(str, 0, BASE));
+					return static_cast<std::int64_t>(stoll(str, nullptr, BASE));
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -152,7 +152,7 @@ namespace cyng {
 		struct string_policy<float, BASE> {
 			static float cast(std::string const& str) {
 				try {
-					return stof(str, 0);
+					return stof(str, nullptr);
 				}
 				catch (std::exception const&) {}
 				return 0;
@@ -172,7 +172,7 @@ namespace cyng {
 		struct string_policy<long double, BASE> {
 			static long double cast(std::string const& str) {
 				try {
-					return stold(str, 0);
+					return stold(str, nullptr);
 				}
 				catch (std::exception const&) {}
 				return 0;

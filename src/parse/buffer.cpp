@@ -29,6 +29,5 @@ namespace cyng {
 
 		return r;
 	}
-
 }
 

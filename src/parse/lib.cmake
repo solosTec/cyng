@@ -9,6 +9,7 @@ set (parse_cpp
     src/parse/version.cpp
     src/parse/duration.cpp
     src/parse/timestamp.cpp
+    src/parse/color.cpp
     src/parse/buffer.cpp
     src/parse/string.cpp
     src/parse/net.cpp
@@ -20,6 +21,7 @@ set (parse_h
     include/cyng/parse/version.h
     include/cyng/parse/duration.h
     include/cyng/parse/timestamp.h
+    include/cyng/parse/color.h
     include/cyng/parse/buffer.h
     include/cyng/parse/string.h
     include/cyng/parse/json.h

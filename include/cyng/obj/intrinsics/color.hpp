@@ -80,6 +80,10 @@ namespace cyng
 			: rgb_({ r, g, b, o })	//	double-brace required in C+11 but not in C++14
 		{}
 
+		color(rgb_type const& rgb)
+			: rgb_(rgb)
+		{}
+
 		/**
 		 * Initialize all channels with the same value. The resulting color is gray.
 		 */

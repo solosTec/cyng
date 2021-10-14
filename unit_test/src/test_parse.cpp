@@ -7,6 +7,7 @@
 #include <cyng/parse/buffer.h>
 #include <cyng/parse/mac.h>
 #include <cyng/parse/net.h>
+#include <cyng/parse/color.h>
 
 #include <cyng/io/ostream.h>
 #include <cyng/io/serialize.h>
@@ -284,6 +285,21 @@ BOOST_AUTO_TEST_CASE(chrono)
 	auto const tp5 = cyng::to_timestamp("2000-04-20T06:04:01-05:00");	//	 New York on standard time 
 	t_c = std::chrono::system_clock::to_time_t(tp5);
 	std::cout << std::put_time(std::localtime(&t_c), "%F %T.\n") << std::flush;
+}
+
+BOOST_AUTO_TEST_CASE(color)
+{
+	auto const c1 = cyng::to_color<std::uint8_t>("#00FFAA00");
+	BOOST_REQUIRE_EQUAL(c1.red(), 0);
+	BOOST_REQUIRE_EQUAL(c1.green(), 255);
+	BOOST_REQUIRE_EQUAL(c1.blue(), 170);
+	BOOST_REQUIRE_EQUAL(c1.opacity(), 0);
+
+	auto const c2 = cyng::to_color<std::uint16_t>("#111122223333AAAA");
+	BOOST_REQUIRE_EQUAL(c2.red(), 4369);
+	BOOST_REQUIRE_EQUAL(c2.green(), 8738);
+	BOOST_REQUIRE_EQUAL(c2.blue(), 13107);
+	BOOST_REQUIRE_EQUAL(c2.opacity(), 43690);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
