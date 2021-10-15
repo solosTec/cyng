@@ -192,18 +192,15 @@ namespace cyng {
 		boost::io::ios_flags_saver  ifs(os);
 
 		os
-			<< "rgb("
+			<< "#"
 			<< std::setfill('0')
 			<< std::hex
-			<< std::setw(2)
+			<< std::setw(2 * sizeof(T))
 			<< +v.red()
-			<< ' '
-			<< std::setw(2)
+			<< std::setw(2 * sizeof(T))
 			<< +v.green()
-			<< ' '
-			<< std::setw(2)
+			<< std::setw(2 * sizeof(T))
 			<< +v.blue()
-			<< ')'
 			;
 		return os;
 	}

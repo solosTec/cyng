@@ -289,13 +289,13 @@ BOOST_AUTO_TEST_CASE(chrono)
 
 BOOST_AUTO_TEST_CASE(color)
 {
-	auto const c1 = cyng::to_color<std::uint8_t>("#00FFAA00");
+	auto const c1 = cyng::to_color<std::uint8_t>("00FFAA00");
 	BOOST_REQUIRE_EQUAL(c1.red(), 0);
 	BOOST_REQUIRE_EQUAL(c1.green(), 255);
 	BOOST_REQUIRE_EQUAL(c1.blue(), 170);
 	BOOST_REQUIRE_EQUAL(c1.opacity(), 0);
 
-	auto const c2 = cyng::to_color<std::uint16_t>("#111122223333AAAA");
+	auto const c2 = cyng::to_color<std::uint16_t>("111122223333AAAA");
 	BOOST_REQUIRE_EQUAL(c2.red(), 4369);
 	BOOST_REQUIRE_EQUAL(c2.green(), 8738);
 	BOOST_REQUIRE_EQUAL(c2.blue(), 13107);

@@ -50,18 +50,20 @@ namespace cyng {
 
 	void stack::reba()
 	{
+		auto const bp = bp_;
+		BOOST_ASSERT(bp < bp_);
 		bp_ = saved_bp();
 		BOOST_ASSERT(s_.size() > bp_);
 
 		//	Restore old stack size:
-		s_.resize(bp_);	//	pop_back
+		s_.resize(bp);	//	pop_back
 	}
 
 	void stack::pull() {
 
 		auto const bp = bp_;
 		bp_ = saved_bp();
-		BOOST_ASSERT(s_.size() > bp_);
+		BOOST_ASSERT(s_.size() > bp);
 
 		auto const pos = s_.begin() + bp;
 		s_.erase(pos);
@@ -144,6 +146,7 @@ namespace cyng {
 		BOOST_ASSERT_MSG(size < s_.size(), "not enough parameters (vector)");
 		pop();
 		vector_t vec;
+		vec.reserve(size);
 		while (size-- != 0) {
 			vec.push_back(std::move(top()));
 			pop();
