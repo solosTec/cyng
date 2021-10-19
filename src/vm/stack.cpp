@@ -44,19 +44,26 @@ namespace cyng {
 
 	void stack::esba()
 	{
+		auto const bp = bp_;
 		bp_ = s_.size();
-		push(make_object(bp_));
+		push(make_object(bp));
 	}
 
 	void stack::reba()
 	{
 		auto const bp = bp_;
-		BOOST_ASSERT(bp < bp_);
 		bp_ = saved_bp();
+		BOOST_ASSERT(bp < bp_);
 		BOOST_ASSERT(s_.size() > bp_);
 
 		//	Restore old stack size:
 		s_.resize(bp);	//	pop_back
+	}
+
+	std::size_t stack::saved_bp() const
+	{
+		BOOST_ASSERT(bp_ < s_.size());
+		return value_cast<std::size_t>(s_.at(bp_), 0u);
 	}
 
 	void stack::pull() {
@@ -201,12 +208,6 @@ namespace cyng {
 		}
 	}
 
-	std::size_t stack::saved_bp() const
-	{
-		BOOST_ASSERT(bp_ < s_.size());
-		return value_cast<std::size_t>(s_.at(bp_), 0u);
-	}
-
 	void stack::swap()
 	{
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (swap)");
@@ -259,6 +260,7 @@ namespace cyng {
 		//
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (invoke)");
 		auto const id = top_value<std::size_t>();
+		BOOST_ASSERT_MSG(std::numeric_limits<std::size_t>::max() != id, "method not found");
 		pop();
 		make_tuple();
 		auto tpl = top_value<tuple_t>();

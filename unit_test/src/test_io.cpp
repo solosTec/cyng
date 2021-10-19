@@ -1,4 +1,4 @@
-#ifdef STAND_ALONE
+﻿#ifdef STAND_ALONE
 #   define BOOST_TEST_MODULE unit_test
 #endif
 
@@ -277,6 +277,14 @@ BOOST_AUTO_TEST_CASE(parser)
 	//
 	obj = cyng::make_object("hello, world!");
 	cmp = cyng::io::to_typed(obj);	//	hello, world!:s
+	inp = convert(obj);
+	p.read(std::begin(inp), std::end(inp));
+
+	//
+	//	test "¶" c2 b6
+	//
+	obj = cyng::make_object(std::string("\xc2\xb6"));
+	cmp = cyng::io::to_typed(obj);	//	utf-8
 	inp = convert(obj);
 	p.read(std::begin(inp), std::end(inp));
 

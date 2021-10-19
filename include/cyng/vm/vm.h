@@ -45,7 +45,7 @@ namespace cyng {
 					using R = typename F::result_type;
 					if constexpr (std::is_same<R, void>::value) {
 						function_call<F>(std::get<N>(tpl), msg);
-						ctx.push(cyng::make_object());	//	void => null
+						//ctx.push(cyng::make_object());	//	void => null
 					}
 					else {
 						ctx.push(cyng::make_object<R>(function_call<F>(std::get<N>(tpl), msg)));

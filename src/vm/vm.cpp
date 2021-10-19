@@ -135,6 +135,9 @@ namespace cyng {
 			ctx_.frm();
 			break;
 
+		case op::HALT:
+			break;
+
 		default:
 			BOOST_ASSERT_MSG(false, "unknown op code");
 			break;

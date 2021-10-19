@@ -18,12 +18,7 @@ namespace cyng {
 	std::string make_string(buffer_t const& buffer) {
 		std::string s;
 		s.reserve(buffer.size());
-		std::transform(buffer.begin(), buffer.end(), std::inserter(s, s.end()), [](char c) {
-			return ((c > 31) && (c < 127))
-				? c
-				: '.'
-				;
-			});
+		std::copy(buffer.begin(), buffer.end(), std::inserter(s, s.end()));
 		return s;
 	}
 
