@@ -22,6 +22,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 #ifdef _DEBUG_VM
 #include <cyng/io/ostream.h>
@@ -45,7 +46,6 @@ namespace cyng {
 					using R = typename F::result_type;
 					if constexpr (std::is_same<R, void>::value) {
 						function_call<F>(std::get<N>(tpl), msg);
-						//ctx.push(cyng::make_object());	//	void => null
 					}
 					else {
 						ctx.push(cyng::make_object<R>(function_call<F>(std::get<N>(tpl), msg)));
@@ -66,6 +66,8 @@ namespace cyng {
 				using R = typename F::result_type;
 #ifdef _DEBUG_TEST
 				std::cout << "invoke_r: " << idx << ", " << 0 << std::endl;
+#else
+				boost::ignore_unused(idx);
 #endif
 				if constexpr (std::is_same<R, void>::value) {
 					function_call<F>(std::get<0>(tpl), msg);

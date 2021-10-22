@@ -103,11 +103,7 @@ namespace cyng {
 	{
 		using u = unwrap_function_impl<F...>;
 		using tuple_t = typename u::tuple_t;
-		using R = typename u::return_t;
-
-//#ifdef _DEBUG
-//		auto const tmp = tuple_cast<tuple_t>(tpl);
-//#endif
+		//using R = typename u::return_t;
 
 		return std::apply(f, tuple_cast<tuple_t>(tpl));
 	}

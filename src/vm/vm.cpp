@@ -24,6 +24,7 @@ namespace cyng {
 
 
 	void vm_base::stop(eod) {
+		ctx_.tidy();
 #ifdef _DEBUG_VM
 		std::cerr << "vm::stop()" << std::endl;
 #endif

@@ -112,7 +112,7 @@ namespace cyng {
 			using R = typename std::tuple<>;
 
 			template< typename T >
-			static R convert(T const& inp)
+			static R convert(T const&)
 			{
 				return R();
 			}

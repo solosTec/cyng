@@ -46,6 +46,8 @@ namespace cyng {
 				using F = typename std::tuple_element<0, Tpl>::type;
 #ifdef _DEBUG_TEST
 				std::cout << "call: " << idx << ", " << 0 << std::endl;
+#else
+				boost::ignore_unused(idx);
 #endif
 				function_call<F>(std::get<0>(tpl), msg);
 			}

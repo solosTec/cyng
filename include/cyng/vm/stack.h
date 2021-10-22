@@ -144,7 +144,8 @@ namespace cyng {
 
 		template <typename T>
 		void disassemble() {
-			auto const c = value_cast<T>(s_.back(), T());
+			auto const c = top_value<T>(T());
+			pop();
 			for (auto const& obj : c) {
 				push(obj);
 			}

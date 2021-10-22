@@ -100,7 +100,7 @@ namespace cyng {
 	auto value_cast(object const& obj, T const& def) -> typename details::cast_policy<T>::R
 	{
 		using policy = details::cast_policy<T>;
-		using type = typename policy::R;
+		//using type = typename policy::R;
 		return policy::cast(obj, def);
 	}
 
