@@ -51,9 +51,9 @@ namespace cyng {
 				0,	//	tm_sec - Seconds.	[0-60] (1 leap second)
 				0,	//	tm_min - Minutes.	[0-59]
 				0,	//	tm_hour - Hours.	[0-23]
-				day,	//	tm_mday -  Day.		[1-31]
-				month - 1,		//	tm_mon - Month.	[0-11]
-				year - 1900,	//	tm_year - Year	- 1900
+				static_cast<int>(day),	//	tm_mday -  Day.		[1-31]
+				static_cast<int>(month - 1),	//	tm_mon - Month.	[0-11]
+				static_cast<int>(year - 1900),	//	tm_year - Year	- 1900
 				//	unused
 				0,		//	tm_wday - Day of week  [0-6]
 				0,		//	tm_yday - Days in year [0-365]
