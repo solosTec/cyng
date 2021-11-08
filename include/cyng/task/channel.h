@@ -45,8 +45,8 @@ namespace cyng {
 		 * Specify the name of a channel
 		 */
 		bool set_channel_name(std::string, std::size_t);
+		void set_channel_names(std::initializer_list<std::string> il);
 
-	//protected:
 		/**
 		 * @return std::numeric_limits<std::size_t>::max() if slot was not found
 		 */
@@ -95,6 +95,7 @@ namespace cyng {
 		 * @return true, if channel is open
 		 */
 		bool is_open() const noexcept;
+		bool is_open(std::size_t slot) const noexcept;
 
 		/**
 		 * Send a message to the specified slot of the task object.
@@ -105,6 +106,7 @@ namespace cyng {
 		 */
 		void dispatch(std::size_t slot, tuple_t&& msg);
 		void dispatch(std::size_t slot);
+
 		template< typename ...Args>
 		void dispatch(std::size_t slot, Args&& ...args) {
 			dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
@@ -152,7 +154,7 @@ namespace cyng {
 		template < typename R, typename P >
 		void suspend(std::chrono::duration<R, P> d, std::size_t slot, tuple_t&& msg) {
 
-			if (!is_open())	return;
+			if (!is_open(slot))	return;
 
 			message m(this->shared_from_this(), slot, std::move(msg));
 			auto sp = this->shared_from_this(); //  extend life time
@@ -162,7 +164,7 @@ namespace cyng {
 			timer_.expires_after(d);
 
 			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
-				if (ec != boost::asio::error::operation_aborted && is_open()) {
+				if (ec != boost::asio::error::operation_aborted && is_open(m.slot_)) {
 					task_->dispatch(m.slot_, m.msg_);
 				}
 			}));

@@ -25,14 +25,13 @@ namespace cyng {
 
     void channel::dispatch(std::size_t slot, tuple_t&& msg)
     {
-        if (is_open()) {
+        if (is_open(slot)) {
 
             //
             //  the context should be active
             //
             BOOST_ASSERT(!dispatcher_.context().stopped());
             BOOST_ASSERT_MSG(slot != std::numeric_limits<std::size_t>::max(), "unknown slot name");
-
 
             //
             //	thread safe access to task
@@ -41,7 +40,7 @@ namespace cyng {
             auto sp = this->shared_from_this(); //  extend life time
 
             boost::asio::post(dispatcher_, [this, sp, m]()->void {
-                if (is_open())  task_->dispatch(m.slot_, m.msg_);
+                if (is_open(m.slot_))  task_->dispatch(m.slot_, m.msg_);
              });
         }
     }
@@ -58,9 +57,17 @@ namespace cyng {
         dispatch(lookup(slot), make_tuple());
     }
 
-    bool channel::is_open() const noexcept
-    {
+    bool channel::is_open() const noexcept {
         return task_.operator bool();
+    }
+
+    bool channel::is_open(std::size_t slot) const noexcept
+    {
+        BOOST_ASSERT_MSG(slot < task_->get_signature_count(), "slot out of range");
+
+        return is_open()
+            && (slot < task_->get_signature_count())
+            ;
     }
 
     void channel::stop()
@@ -111,7 +118,7 @@ namespace cyng {
 
     void channel::suspend(time_point_t tp, std::size_t slot, tuple_t&& msg) {
 
-        if (!is_open())	return;
+        if (!is_open(slot))	return;
 
         message m(this->shared_from_this(), slot, std::move(msg));
         auto sp = this->shared_from_this(); //  extend life time
@@ -120,7 +127,7 @@ namespace cyng {
         //timer_.expires_at(std::chrono::time_point_cast<std::chrono::time_point<std::chrono::steady_clock, std::chrono::nanoseconds>>(tp));
 
         timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
-            if (ec != boost::asio::error::operation_aborted && is_open()) {
+            if (ec != boost::asio::error::operation_aborted && is_open(m.slot_)) {
                 task_->dispatch(m.slot_, m.msg_);
             }
             }));
@@ -167,6 +174,13 @@ namespace cyng {
      */
     bool slot_names::set_channel_name(std::string name, std::size_t slot) {
         return named_slots_.emplace(name, slot).second;
+    }
+
+    void slot_names::set_channel_names(std::initializer_list<std::string> il) {
+        std::size_t index{ named_slots_.size() };
+        for (auto pos = il.begin(); pos != il.end(); ++pos, ++index) {
+            set_channel_name(*pos, index);
+        }
     }
 
     std::size_t slot_names::lookup(std::string const& name) const {

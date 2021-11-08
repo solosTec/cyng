@@ -103,6 +103,10 @@ namespace cyng {
 			return id_;
 		}
 
+		virtual std::size_t get_signature_count() const noexcept {
+			return signature_count_ + 1u;
+		}
+
 	protected:
 		virtual void dispatch(std::size_t slot, tuple_t const& msg) override
 		{
