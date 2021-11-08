@@ -92,6 +92,7 @@ namespace cyng {
 		task(traits::weak_ref, channel_ptr scp, registry* reg, std::size_t id, Args &&... args)
 			: registry_(reg)
 			, id_(id)
+			//	task not complete at this stage
 			, impl_(scp, std::forward<Args>(args)...)
 		{}
 

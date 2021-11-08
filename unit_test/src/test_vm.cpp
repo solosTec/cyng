@@ -231,4 +231,53 @@ BOOST_AUTO_TEST_CASE(linearize)
 	BOOST_REQUIRE_EQUAL(deq_tlv.size(), 3);
 }
 
+//	--------------------------------------------------------------+
+
+class sig
+{
+	template <typename T> friend class cyng::task;
+
+
+	using signatures_t = std::tuple<
+		std::function<void()>,
+		std::function<void(cyng::eod)>>;
+
+	public:
+		sig(cyng::channel_weak wp)
+			: sigs_{ std::bind(&sig::hello, this), std::bind(&sig::stop, this, std::placeholders::_1) }
+			, channel_(wp)
+		{
+			auto sp = channel_.lock();
+			if (sp) {
+				sp->set_channel_names({ "hello" });
+			}
+		}
+
+	private:
+		void hello() {
+			std::cout << "hello" << std::endl;
+		}
+		void stop(cyng::eod) {
+			std::cout << "STOP" << std::endl;
+		}
+	private:
+		signatures_t sigs_;
+		cyng::channel_weak channel_;
+
+};
+
+BOOST_AUTO_TEST_CASE(signature)
+{
+	cyng::controller ctl;
+	//cyng::mesh fabric(ctl);
+
+	auto channel = ctl.create_named_channel_with_ref<sig>("sig");
+	BOOST_ASSERT(channel->is_open());
+	channel->dispatch("hello");
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	channel->stop();
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	ctl.stop();
+}
+
 BOOST_AUTO_TEST_SUITE_END()

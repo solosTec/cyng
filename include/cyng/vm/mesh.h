@@ -46,9 +46,11 @@ namespace cyng {
 	//	{}
 	//};
 
-	template <typename F>
-	auto make_description(std::string name, F&& f) -> description <F> {
-		return description <F>(name, std::forward<F>(f));
+	template <typename R, typename ... Args>
+	auto make_description(std::string name, std::function<R(Args...)> f) -> description <std::function<R(Args...)>> {
+		using function_t = typename std::function<R(Args...)>;
+		using type = description < std::function<R(Args...)>>;
+		return description <function_t>(name, std::forward<function_t>(f));
 	}
 
 	template <typename D>
