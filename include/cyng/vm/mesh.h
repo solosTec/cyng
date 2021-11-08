@@ -20,6 +20,48 @@ namespace cyng {
 	template <typename... Fns>	class vm;
 
 	/**
+	 * ToDo: add constraint that F must be a std::function<()> template
+	 *	requires std::is_function_v(F)
+	 */
+	template <typename F>
+	struct description {
+		using function_t = F;
+		function_t f_;
+		std::string const name_;
+
+		description(std::string name, function_t f)
+			: f_(f)
+			, name_(name)
+		{}
+	};
+
+	//template <typename R, typename ... Args>
+	//struct description< std::function<R(Args...)> > {
+	//	using function_t = std::function<R(Args...)>;
+	//	function_t f_;
+	//	std::string const name_;
+	//	description(std::string name, function_t f)
+	//		: f_(f)
+	//		, name_(name)
+	//	{}
+	//};
+
+	template <typename F>
+	auto make_description(std::string name, F&& f) -> description <F> {
+		return description <F>(name, std::forward<F>(f));
+	}
+
+	template <typename D>
+	constexpr auto get_function(D d) -> typename D::function_t {
+		return d.f_;
+	}
+
+	template <typename D>
+	constexpr auto get_name(D d) -> std::string {
+		return d.name_;
+	}
+
+	/**
 	 * Managing VM instances
 	 */
 	class mesh
@@ -43,6 +85,34 @@ namespace cyng {
 			return create_vm(parent, std::forward<Fns>(fns)...);
 		}
 
+		template <typename... D>
+		vm_proxy make_proxy(D&&... ds) {
+
+			vm_proxy proxy = create_vm(get_function<D>(ds)...);
+			
+#ifdef _DEBUG
+			//((std::cout << get_name<D>(ds)), ...);
+#endif
+
+			//
+			//	set channel names
+			//
+			proxy.set_channel_names({ get_name<D>(ds)... });
+			return proxy;
+		}
+
+		template <typename... D>
+		vm_proxy make_proxy(boost::uuids::uuid parent, D&&... ds) {
+
+			vm_proxy proxy = create_vm(parent, get_function<D>(ds)...);
+
+			//
+			//	set channel names
+			//
+			proxy.set_channel_names({ get_name<D>(ds)... });
+			return proxy;
+		}
+
 		/**
 		 * Search for a VM with the specified tag
 		 */
@@ -54,6 +124,7 @@ namespace cyng {
 		controller& get_ctl();
 
 	private:
+
 		template <typename... Fns>
 		channel_ptr create_vm(Fns&&... fns) {
 			return create_vm(boost::uuids::nil_uuid(), std::forward<Fns>(fns)...);

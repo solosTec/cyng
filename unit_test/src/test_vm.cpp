@@ -94,13 +94,7 @@ public:
 
 BOOST_AUTO_TEST_CASE(library)
 {
-	//	--------------------------------------------------------------+
-
-	cyng::controller ctl;
-	cyng::mesh fabric(ctl);
-
 	session s;
-	//std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);	//	ok
 	std::function<std::uint64_t(std::string)> f1 = [&s](std::string str) -> std::uint64_t {	//	ok
 		//std::cout << str << std::endl;
 		BOOST_REQUIRE_EQUAL(str, "a string");
@@ -111,6 +105,43 @@ BOOST_AUTO_TEST_CASE(library)
 		BOOST_REQUIRE_EQUAL(vec.size(), 2);
 		return vec.size();
 	};
+
+	//	--------------------------------------------------------------+
+
+	cyng::controller ctl;
+	cyng::mesh fabric(ctl);
+
+	cyng::description d("f1", f1);
+	auto vm2 = fabric.make_proxy(cyng::make_description("foo", f1)
+		, cyng::make_description("bar", f2)
+	);	//	ok
+
+	vm2.execute(
+		cyng::op::ESBA,
+		cyng::make_object("a string"),
+		cyng::make_object<std::size_t>(1),
+		cyng::make_object("foo"),
+		cyng::op::RESOLVE,
+		cyng::op::INVOKE_R,
+		cyng::op::PULL,
+
+		cyng::op::ESBA,
+		cyng::make_object("another string (2)"),
+		cyng::make_object("and a secret"),
+		cyng::make_object<std::size_t>(2),
+		cyng::op::MAKE_VECTOR,
+		cyng::make_object<std::size_t>(1),	//	make tuple
+		cyng::make_object("bar"),
+		cyng::op::RESOLVE,
+		cyng::op::INVOKE_R,
+		cyng::op::PULL
+
+	);
+
+
+	//	--------------------------------------------------------------+
+
+	//std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);	//	ok
 
 	auto vm = fabric.create_proxy(f1, f2);	//	ok
 	//auto vm = fabric.create_proxy(std::move(f1));	//	ok
@@ -147,6 +178,8 @@ BOOST_AUTO_TEST_CASE(library)
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));
 	vm.stop();
+
+
 	ctl.stop();
 
 }

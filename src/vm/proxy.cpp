@@ -63,7 +63,15 @@ namespace cyng {
 	void vm_proxy::set_channel_name(std::string name, std::size_t idx) {
 		//	slot 3
 		//	set_channel_name(name, index)
+		BOOST_ASSERT_MSG(!name.empty(), "empty function name");
 		vm_->dispatch(3, cyng::make_tuple(name, idx));
+	}
+
+	void vm_proxy::set_channel_names(std::initializer_list<std::string> il) {
+		std::size_t index{ 0 };
+		for (auto pos = il.begin(); pos != il.end(); ++pos, ++index) {
+			set_channel_name(*pos, index);
+		}
 	}
 
 	boost::uuids::uuid vm_proxy::get_tag() const {

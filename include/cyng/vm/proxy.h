@@ -76,6 +76,7 @@ namespace cyng {
 		 * call with invoke().
 		 */
 		void set_channel_name(std::string name, std::size_t idx);
+		void set_channel_names(std::initializer_list<std::string> il);
 
 	private:
 		channel_ptr	vm_;
