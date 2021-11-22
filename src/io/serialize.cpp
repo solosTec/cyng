@@ -11,6 +11,8 @@
 #include <cyng/io/serializer/json_walker.h>
 #include <cyng/io/serializer/xml.hpp>
 
+#include <fstream>
+
 namespace cyng {
 	namespace io {
 
@@ -111,9 +113,7 @@ namespace cyng {
 			return serialize<XML>::write(node, obj);
 		}
 
-		std::string to_xml(object const& obj, std::string root_name)
-		{
-			std::stringstream ss;
+		void serialize_xml(std::ostream& os, object const& obj, std::string root_name) {
 			pugi::xml_document doc;
 			auto declarationNode = doc.append_child(pugi::node_declaration);
 			declarationNode.append_attribute("version") = "1.0";
@@ -124,8 +124,23 @@ namespace cyng {
 			root.append_attribute("xmlns:xsi") = "w3.org/2001/XMLSchema-instance";
 
 			serialize_xml(root, obj);
-			doc.save(ss);
+			doc.save(os);
+		}
+
+		std::string to_xml(object const& obj, std::string root_name)
+		{
+			std::stringstream ss;
+			serialize_xml(ss, obj, root_name);
 			return ss.str();
+		}
+
+		bool to_xml_file(object const& obj, std::string file_name, std::string root_name) {
+			std::ofstream of(file_name, std::fstream::app);
+			if (of.is_open()) {
+				serialize_xml(of, obj, root_name);
+				return true;
+			}
+			return false;
 		}
 
 		std::size_t serialize_csv(std::ostream& os, object const& obj)

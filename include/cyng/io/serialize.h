@@ -71,8 +71,9 @@ namespace cyng {
 		 *
 		 * @see https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#built-in-datatypes
 		 */
-		//std::size_t serialize_xml(pugi::xml_node, object const&);
+		void serialize_xml(std::ostream&, object const&, std::string root_name);
 		std::string to_xml(object const&, std::string root_name);
+		bool to_xml_file(object const&, std::string file_name, std::string root_name);
 
 		/**
 		 * Serialization to CSV.
