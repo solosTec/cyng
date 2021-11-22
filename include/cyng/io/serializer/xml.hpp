@@ -302,7 +302,7 @@ namespace cyng {
 		template <std::size_t N>
 		struct serializer <digest<N>, XML>
 		{
-			using type = typename digest<N>;
+			using type = digest<N>;
 			static bool write(pugi::xml_node node, type const& v) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
