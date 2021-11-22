@@ -304,8 +304,9 @@ namespace cyng {
 			static bool write(pugi::xml_node node, type const& v) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
-				const std::string str = to_string(v);
-				return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+				//const std::string str = to_string(v);
+				//return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+				return false;
 			}
 		};
 
@@ -316,8 +317,9 @@ namespace cyng {
 			static bool write(pugi::xml_node node, aes_key<N> const& key) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
-				const std::string str = to_string(key);
-				return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+				//const std::string str = to_string(key);
+				//return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+				return false;
 			}
 		};
 
