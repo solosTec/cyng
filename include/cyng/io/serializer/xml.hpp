@@ -15,6 +15,8 @@
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/intrinsics/mac.h>
 #include <cyng/obj/intrinsics/pid.h>
+#include <cyng/obj/intrinsics/digest.hpp>
+#include <cyng/obj/intrinsics/aes_key.hpp>
 #include <cyng/obj/tag.hpp>
 
 #include <cyng/io/serialize.hpp>
