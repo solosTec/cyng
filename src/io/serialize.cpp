@@ -108,7 +108,7 @@ namespace cyng {
 			return ss.str();
 		}
 
-		std::size_t serialize_xml(pugi::xml_node node, object const& obj)
+		std::size_t serialize_xml_native(pugi::xml_node node, object const& obj)
 		{
 			return serialize<XML>::write(node, obj);
 		}
@@ -123,7 +123,7 @@ namespace cyng {
 			pugi::xml_node root = doc.append_child(root_name.c_str());
 			root.append_attribute("xmlns:xsi") = "w3.org/2001/XMLSchema-instance";
 
-			serialize_xml(root, obj);
+			serialize_xml_native(root, obj);
 			doc.save(os);
 		}
 
