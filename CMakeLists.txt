@@ -232,6 +232,7 @@ target_include_directories(cyng_vm
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${pugixml_SOURCE_DIR}/src>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -341,6 +342,7 @@ target_include_directories(cyng_io
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${pugixml_SOURCE_DIR}/src>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -350,6 +352,7 @@ target_compile_features(cyng_io PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 target_link_libraries(cyng_io 
     PRIVATE 
         Boost::boost 
+        pugixml
 )
 
 #
@@ -488,6 +491,39 @@ target_compile_definitions(cyng_rnd
 
 target_link_libraries(cyng_rnd 
     PRIVATE 
+        Boost::boost 
+)
+
+#
+# add library: cyng_xml
+#
+include (src/xml/lib.cmake)
+add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
+
+target_include_directories(cyng_xml
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${pugixml_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_xml PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug cyng_xml library
+#
+target_compile_definitions(cyng_xml 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_XML>
+)
+
+target_link_libraries(cyng_xml 
+    PRIVATE 
+#        pugixml 
+#        cyng::cyng_io
         Boost::boost 
 )
 

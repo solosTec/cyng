@@ -21,6 +21,7 @@
 #include <cyng/io/serializer/binary.hpp>
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/io/serializer/csv.hpp>
+#include <cyng/io/serializer/xml.hpp>
 
 namespace cyng {
 	namespace io {
@@ -139,6 +140,27 @@ namespace cyng {
 					return 0;
 				}
 			}
+		};
+
+		template <>
+		struct serialize<XML>
+		{
+			template <typename T>
+			static bool write_impl(pugi::xml_node node, object const& obj)
+			{
+				//
+				//	select a serializer
+				//
+				using serial_t = serializer <T, XML>;
+				auto ptr = object_cast<T>(obj);
+				return (ptr != nullptr)
+					? serial_t::write(node, *ptr)
+					: 0
+					;
+
+			}
+
+			static bool write(pugi::xml_node node, object const& obj);
 		};
 	}
 }

@@ -7,8 +7,9 @@
 #ifndef CYNG_IO_SERIALIZE_H
 #define CYNG_IO_SERIALIZE_H
 
-#include <ostream>
 #include <cyng/obj/intrinsics/container.h>
+#include <ostream>
+#include <pugixml.hpp>
 
 namespace cyng {
 	class object;
@@ -63,9 +64,15 @@ namespace cyng {
 		/**
 		 * Serialization to XML.
 		 * struct XML {};
+		 *
+		 * For correct representation of NULL values the XML namespace
+		 * xmlns:xsi = "w3.org/2001/XMLSchema-instance"
+		 * must be declared.
+		 *
+		 * @see https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#built-in-datatypes
 		 */
-		std::size_t serialize_xml(std::ostream&, object const&);
-		std::string to_xml(object const&);
+		std::size_t serialize_xml(pugi::xml_node, object const&);
+		std::string to_xml(object const&, std::string root_name);
 
 		/**
 		 * Serialization to CSV.

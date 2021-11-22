@@ -24,6 +24,7 @@ set (io_serializer
     include/cyng/io/serializer/json_walker.h
     include/cyng/io/serializer/plain.hpp
     include/cyng/io/serializer/typed.hpp
+    include/cyng/io/serializer/xml.hpp
     src/io/serialize.cpp
     src/io/serializer/io.cpp
     src/io/serializer/binary.cpp
@@ -32,6 +33,7 @@ set (io_serializer
     src/io/serializer/json_walker.cpp
     src/io/serializer/plain.cpp
     src/io/serializer/typed.cpp
+    src/io/serializer/xml.cpp
 )
 
 set (io_parser
@@ -48,10 +50,15 @@ set (io_iso
     src/io/iso_3166_1.cpp
 )
 
+set (io_xml
+    ${pugixml_SOURCE_DIR}/src/pugixml.hpp
+    ${pugixml_SOURCE_DIR}/src/pugixml.cpp
+)
 
 source_group("serializer" FILES ${io_serializer})
 source_group("parser" FILES ${io_parser})
 source_group("iso" FILES ${io_iso})
+source_group("xml" FILES ${io_xml})
 
 
 # define the docscript lib
@@ -61,5 +68,6 @@ set (io_lib
   ${io_serializer}
   ${io_parser}
   ${io_iso}
+  ${io_xml}
 )
 
