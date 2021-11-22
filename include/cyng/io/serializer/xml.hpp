@@ -315,7 +315,7 @@ namespace cyng {
 		template <std::size_t N>
 		struct serializer <aes_key<N>, XML>
 		{
-			using type = typename aes_key<N>;
+			using type = aes_key<N>;
 			static bool write(pugi::xml_node node, aes_key<N> const& key) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
@@ -328,7 +328,7 @@ namespace cyng {
 		template <typename T>
 		struct serializer <color<T>, XML>
 		{
-			using type = typename color<T>;
+			using type = color<T>;
 			static bool write(pugi::xml_node node, color<T> const& col) {
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
 
