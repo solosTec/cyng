@@ -9,6 +9,7 @@
 #include <cyng/io/io.h>
 #include <cyng/obj/object.h>
 #include <cyng/io/serializer/json_walker.h>
+#include <cyng/io/serializer/xml.hpp>
 
 namespace cyng {
 	namespace io {
@@ -151,9 +152,9 @@ namespace cyng {
 			switch (obj.rtti().tag()) {
 			case TC_NULL:		return write_impl<traits::reverse_type<TC_NULL>::type>(node, obj);
 				case TC_BOOL:		return write_impl<traits::reverse_type<TC_BOOL>::type>(node, obj);
-				//case TC_CHAR:		return write_impl<traits::reverse_type<TC_CHAR>::type>(node, obj);
+				case TC_CHAR:		return write_impl<traits::reverse_type<TC_CHAR>::type>(node, obj);
 				case TC_FLOAT:		return write_impl<traits::reverse_type<TC_FLOAT>::type>(node, obj);
-				//case TC_DOUBLE:		return write_impl<traits::reverse_type<TC_DOUBLE>::type>(node, obj);
+				case TC_DOUBLE:		return write_impl<traits::reverse_type<TC_DOUBLE>::type>(node, obj);
 				//case TC_FLOAT80:	return write_impl<traits::reverse_type<TC_FLOAT80>::type>(node, obj);
 
 				case TC_UINT8:		return write_impl<traits::reverse_type<TC_UINT8>::type>(node, obj);
@@ -166,7 +167,7 @@ namespace cyng {
 				case TC_INT64:		return write_impl<traits::reverse_type<TC_INT64>::type>(node, obj);
 
 				case TC_STRING:		return write_impl<traits::reverse_type<TC_STRING>::type>(node, obj);
-				//case TC_FS_PATH:	return write_impl<traits::reverse_type<TC_FS_PATH>::type>(node, obj);
+				case TC_FS_PATH:	return write_impl<traits::reverse_type<TC_FS_PATH>::type>(node, obj);
 
 				case TC_TIME_POINT:		return write_impl<traits::reverse_type<TC_TIME_POINT>::type>(node, obj);
 				case TC_NANO_SECOND:	return write_impl<traits::reverse_type<TC_NANO_SECOND>::type>(node, obj);
@@ -188,17 +189,18 @@ namespace cyng {
 				case TC_OBIS:		return write_impl<traits::reverse_type<TC_OBIS>::type>(node, obj);
 				case TC_OBISPATH:	return write_impl<traits::reverse_type<TC_OBISPATH>::type>(node, obj);
 				case TC_EDIS:		return write_impl<traits::reverse_type<TC_EDIS>::type>(node, obj);
-				//case TC_COLOR_8:	return write_impl<traits::reverse_type<TC_COLOR_8>::type>(node, obj);
-				//case TC_COLOR_16:	return write_impl<traits::reverse_type<TC_COLOR_16>::type>(node, obj);
+
+				case TC_COLOR_8:	return write_impl<traits::reverse_type<TC_COLOR_8>::type>(node, obj);
+				case TC_COLOR_16:	return write_impl<traits::reverse_type<TC_COLOR_16>::type>(node, obj);
 
 				//case TC_DIGEST_MD5:		return write_impl<traits::reverse_type<TC_DIGEST_MD5>::type>(node, obj);
-				//case TC_DIGEST_SHA1:	return write_impl<traits::reverse_type<TC_DIGEST_SHA1>::type>(node, obj);
-				//case TC_DIGEST_SHA256:	return write_impl<traits::reverse_type<TC_DIGEST_SHA256>::type>(node, obj);
-				//case TC_DIGEST_SHA512:	return write_impl<traits::reverse_type<TC_DIGEST_SHA512>::type>(node, obj);
+				case TC_DIGEST_SHA1:	return write_impl<traits::reverse_type<TC_DIGEST_SHA1>::type>(node, obj);
+				case TC_DIGEST_SHA256:	return write_impl<traits::reverse_type<TC_DIGEST_SHA256>::type>(node, obj);
+				case TC_DIGEST_SHA512:	return write_impl<traits::reverse_type<TC_DIGEST_SHA512>::type>(node, obj);
 
-				//case TC_AES128:		return write_impl<traits::reverse_type<TC_AES128>::type>(node, obj);
-				//case TC_AES192:		return write_impl<traits::reverse_type<TC_AES192>::type>(node, obj);
-				//case TC_AES256:		return write_impl<traits::reverse_type<TC_AES256>::type>(node, obj);
+				case TC_AES128:		return write_impl<traits::reverse_type<TC_AES128>::type>(node, obj);
+				case TC_AES192:		return write_impl<traits::reverse_type<TC_AES192>::type>(node, obj);
+				case TC_AES256:		return write_impl<traits::reverse_type<TC_AES256>::type>(node, obj);
 
 				case TC_OBJECT:
 					BOOST_ASSERT_MSG(false, "nested object");

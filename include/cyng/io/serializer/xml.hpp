@@ -17,6 +17,7 @@
 #include <cyng/obj/intrinsics/pid.h>
 #include <cyng/obj/tag.hpp>
 
+#include <cyng/io/serialize.hpp>
 #include <pugixml.hpp>
 
 #include <boost/uuid/uuid.hpp>
@@ -27,6 +28,27 @@
 
 namespace cyng {
 	namespace io {
+
+		template <>
+		struct serialize<XML>
+		{
+			template <typename T>
+			static bool write_impl(pugi::xml_node node, object const& obj)
+			{
+				//
+				//	select a serializer
+				//
+				using serial_t = serializer <T, XML>;
+				auto ptr = object_cast<T>(obj);
+				return (ptr != nullptr)
+					? serial_t::write(node, *ptr)
+					: 0
+					;
+
+			}
+
+			static bool write(pugi::xml_node node, object const& obj);
+		};
 
 		template <>
 		struct serializer <null, XML>
@@ -62,6 +84,12 @@ namespace cyng {
 		struct serializer <boost::uuids::uuid, XML>
 		{
 			static bool write(pugi::xml_node node, boost::uuids::uuid const& v);
+		};
+
+		template <>
+		struct serializer <char, XML>
+		{
+			static bool write(pugi::xml_node node, char v);
 		};
 
 		template <>
@@ -148,6 +176,12 @@ namespace cyng {
 		struct serializer <std::chrono::system_clock::time_point, XML>
 		{
 			static bool write(pugi::xml_node node, std::chrono::system_clock::time_point const&);
+		};
+
+		template <>
+		struct serializer <std::filesystem::path, XML>
+		{
+			static bool write(pugi::xml_node node, std::filesystem::path const&);
 		};
 
 		template <>
@@ -261,6 +295,57 @@ namespace cyng {
 		struct serializer <revision, XML>
 		{
 			static bool write(pugi::xml_node node, revision const&);
+		};
+
+		template <std::size_t N>
+		struct serializer <digest<N>, XML>
+		{
+			using type = typename digest<N>;
+			static bool write(pugi::xml_node node, type const& v) {
+
+				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
+				const std::string str = to_string(v);
+				return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+			}
+		};
+
+		template <std::size_t N>
+		struct serializer <aes_key<N>, XML>
+		{
+			using type = typename aes_key<N>;
+			static bool write(pugi::xml_node node, aes_key<N> const& key) {
+
+				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
+				const std::string str = to_string(key);
+				return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+			}
+		};
+
+		template <typename T>
+		struct serializer <color<T>, XML>
+		{
+			using type = typename color<T>;
+			static bool write(pugi::xml_node node, color<T> const& col) {
+				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
+
+				auto red_node = node.append_child("red");
+				auto const red_value = std::to_string(col.red());
+				red_node.append_child(pugi::node_pcdata).set_value(red_value.c_str());
+
+				auto green_node = node.append_child("green");
+				auto const green_value = std::to_string(col.green());
+				green_node.append_child(pugi::node_pcdata).set_value(green_value.c_str());
+
+				auto blue_node = node.append_child("blue");
+				auto const blue_value = std::to_string(col.blue());
+				blue_node.append_child(pugi::node_pcdata).set_value(blue_value.c_str());
+
+				auto opacity_node = node.append_child("opacity");
+				auto const opacity_value = std::to_string(col.green());
+				opacity_node.append_child(pugi::node_pcdata).set_value(opacity_value.c_str());
+
+				return true;
+			}
 		};
 
 	}

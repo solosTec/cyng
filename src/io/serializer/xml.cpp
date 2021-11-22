@@ -56,6 +56,12 @@ namespace cyng {
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
+		bool serializer <char, XML>::write(pugi::xml_node node, char v) {
+			node.append_attribute("type").set_value(cyng::intrinsic_name<std::int8_t>());
+			const std::string str = std::to_string(+v);
+			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+		}
+
 		bool serializer <std::int8_t, XML>::write(pugi::xml_node node, std::int8_t v)
 		{
 			node.append_attribute("type").set_value(cyng::intrinsic_name<std::int8_t>());
@@ -128,13 +134,17 @@ namespace cyng {
 		
 		bool serializer <std::chrono::system_clock::time_point, XML>::write(pugi::xml_node node, std::chrono::system_clock::time_point const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<std::chrono::system_clock::time_point>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			const std::string str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		
+		bool serializer <std::filesystem::path, XML>::write(pugi::xml_node node, std::filesystem::path const& v) {
+			node.append_attribute("type").set_value(cyng::intrinsic_name<std::filesystem::path>());
+			const std::string str = to_string(v);
+			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+		}
+
 		bool serializer <boost::asio::ip::address, XML>::write(pugi::xml_node node, boost::asio::ip::address const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<boost::asio::ip::address>());
 			std::stringstream ss;
@@ -154,56 +164,43 @@ namespace cyng {
 		bool serializer <mac64, XML>::write(pugi::xml_node node, mac64 const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<mac64>());
 			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		bool serializer <pid, XML>::write(pugi::xml_node node, pid const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<pid>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		bool serializer <obis, XML>::write(pugi::xml_node node, obis const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<obis>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		bool serializer <obis_path_t, XML>::write(pugi::xml_node node, obis_path_t const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<obis_path_t>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		bool serializer <edis, XML>::write(pugi::xml_node node, edis const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<edis>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		bool serializer <version, XML>::write(pugi::xml_node node, version const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<version>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 
 		bool serializer <revision, XML>::write(pugi::xml_node node, revision const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<revision>());
-			std::stringstream ss;
-			ss << v;
-			auto const str = ss.str();
+			auto const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 

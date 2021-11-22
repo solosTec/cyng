@@ -9,7 +9,7 @@
 
 #include <cyng/obj/intrinsics/container.h>
 #include <ostream>
-#include <pugixml.hpp>
+//#include <pugixml.hpp>
 
 namespace cyng {
 	class object;
@@ -71,7 +71,7 @@ namespace cyng {
 		 *
 		 * @see https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#built-in-datatypes
 		 */
-		std::size_t serialize_xml(pugi::xml_node, object const&);
+		//std::size_t serialize_xml(pugi::xml_node, object const&);
 		std::string to_xml(object const&, std::string root_name);
 
 		/**
