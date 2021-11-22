@@ -146,7 +146,7 @@ include(FetchContent)
 FetchContent_Declare(
   pugixml
   GIT_REPOSITORY https://github.com/zeux/pugixml
-  GIT_TAG v1.11)
+  GIT_TAG v1.11.4)
 FetchContent_MakeAvailable(pugixml)
 # Adds pugixml
 # use ${pugixml_SOURCE_DIR}/src
