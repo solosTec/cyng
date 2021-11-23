@@ -201,7 +201,7 @@ namespace cyng {
 		template <typename R, typename P>
 		struct serializer <std::chrono::duration<R, P>, XML>
 		{
-			using type = typename std::chrono::duration<R, P>;
+			using type = std::chrono::duration<R, P>;
 			static std::size_t write(pugi::xml_node node, std::chrono::duration<R, P> const& v) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
@@ -306,9 +306,8 @@ namespace cyng {
 			static bool write(pugi::xml_node node, type const& v) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
-				//const std::string str = to_string(v);
-				//return node.append_child(pugi::node_pcdata).set_value(str.c_str());
-				return false;
+				const std::string str = to_string(v);
+				return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 			}
 		};
 
@@ -319,9 +318,8 @@ namespace cyng {
 			static bool write(pugi::xml_node node, aes_key<N> const& key) {
 
 				node.append_attribute("type").set_value(cyng::intrinsic_name<type>());
-				//const std::string str = to_string(key);
-				//return node.append_child(pugi::node_pcdata).set_value(str.c_str());
-				return false;
+				const std::string str = to_string(key);
+				return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 			}
 		};
 
