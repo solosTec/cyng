@@ -7,36 +7,37 @@
 #ifndef CYNG_OBJ_TAG_HPP
 #define CYNG_OBJ_TAG_HPP
 
-#include <cstdint>
-#include <cstddef>
-#include <tuple>
-#include <string>
-#include <chrono>
-#include <filesystem>
-
-#include <boost/uuid/uuid.hpp>
-#include <boost/system/error_code.hpp>
-
-#include <boost/asio/ip/address.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/ip/udp.hpp>
-#include <boost/asio/ip/icmp.hpp>
-
-#include <cyng/obj/intrinsics/null.h>
-#include <cyng/obj/intrinsics/eod.h>
-#include <cyng/obj/intrinsics/op.h>
-#include <cyng/obj/intrinsics/severity.h>
-#include <cyng/obj/intrinsics/buffer.h>
-#include <cyng/obj/intrinsics/version.h>
-#include <cyng/obj/intrinsics/op.h>
-#include <cyng/obj/intrinsics/mac.h>
-#include <cyng/obj/intrinsics/pid.h>
-#include <cyng/obj/intrinsics/digest.hpp>
-#include <cyng/obj/intrinsics/aes_key.hpp>
-#include <cyng/obj/intrinsics/obis.h>
-#include <cyng/obj/intrinsics/edis.h>
-#include <cyng/obj/intrinsics/container.h>
-#include <cyng/obj/intrinsics/color.hpp>
+#include <cyng/obj/intrinsics.h>
+//#include <cstdint>
+//#include <cstddef>
+//#include <tuple>
+//#include <string>
+//#include <chrono>
+//#include <filesystem>
+//
+//#include <boost/uuid/uuid.hpp>
+//#include <boost/system/error_code.hpp>
+//
+//#include <boost/asio/ip/address.hpp>
+//#include <boost/asio/ip/tcp.hpp>
+//#include <boost/asio/ip/udp.hpp>
+//#include <boost/asio/ip/icmp.hpp>
+//
+//#include <cyng/obj/intrinsics/null.h>
+//#include <cyng/obj/intrinsics/eod.h>
+//#include <cyng/obj/intrinsics/op.h>
+//#include <cyng/obj/intrinsics/severity.h>
+//#include <cyng/obj/intrinsics/buffer.h>
+//#include <cyng/obj/intrinsics/version.h>
+//#include <cyng/obj/intrinsics/op.h>
+//#include <cyng/obj/intrinsics/mac.h>
+//#include <cyng/obj/intrinsics/pid.h>
+//#include <cyng/obj/intrinsics/digest.hpp>
+//#include <cyng/obj/intrinsics/aes_key.hpp>
+//#include <cyng/obj/intrinsics/obis.h>
+//#include <cyng/obj/intrinsics/edis.h>
+//#include <cyng/obj/intrinsics/container.h>
+//#include <cyng/obj/intrinsics/color.hpp>
 
 #include <cyng/meta.hpp>
 

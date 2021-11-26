@@ -9,7 +9,6 @@
 
 #include <cyng/obj/intrinsics/container.h>
 #include <ostream>
-//#include <pugixml.hpp>
 
 namespace cyng {
 	class object;
@@ -81,6 +80,14 @@ namespace cyng {
 		 */
 		std::size_t serialize_csv(std::ostream&, object const&);
 		std::string to_csv(object const&);
+
+		/**
+		 * Serialization to CPP.
+		 * struct CPP {};
+		 */
+		std::size_t serialize_cpp(std::ostream&, object const&);
+		std::string to_cpp(object const&);
+
 	}
 }
 #endif

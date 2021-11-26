@@ -25,6 +25,7 @@ set (io_serializer
     include/cyng/io/serializer/plain.hpp
     include/cyng/io/serializer/typed.hpp
     include/cyng/io/serializer/xml.hpp
+    include/cyng/io/serializer/cpp.hpp
     src/io/serialize.cpp
     src/io/serializer/io.cpp
     src/io/serializer/binary.cpp
@@ -34,6 +35,7 @@ set (io_serializer
     src/io/serializer/plain.cpp
     src/io/serializer/typed.cpp
     src/io/serializer/xml.cpp
+    src/io/serializer/cpp.cpp
 )
 
 set (io_parser

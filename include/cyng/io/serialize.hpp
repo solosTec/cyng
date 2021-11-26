@@ -21,6 +21,7 @@
 #include <cyng/io/serializer/binary.hpp>
 #include <cyng/io/serializer/json.hpp>
 #include <cyng/io/serializer/csv.hpp>
+#include <cyng/io/serializer/cpp.hpp>
 
 namespace cyng {
 	namespace io {

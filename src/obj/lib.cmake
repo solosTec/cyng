@@ -22,6 +22,7 @@ set (object_h
     include/cyng/obj/util.hpp
     include/cyng/obj/compare.hpp
     include/cyng/obj/clone.hpp
+    include/cyng/obj/intrinsics.h
 )
 
 set (object_intrinscis

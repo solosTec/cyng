@@ -8,25 +8,11 @@
 #define CYNG_IO_XML_HPP
 
 #include <cyng/io/io.h>
-#include <cyng/obj/intrinsics/color.hpp>
-#include <cyng/obj/intrinsics/null.h>
-#include <cyng/obj/intrinsics/eod.h>
-#include <cyng/obj/intrinsics/buffer.h>
-#include <cyng/obj/intrinsics/container.h>
-#include <cyng/obj/intrinsics/mac.h>
-#include <cyng/obj/intrinsics/pid.h>
-#include <cyng/obj/intrinsics/digest.hpp>
-#include <cyng/obj/intrinsics/aes_key.hpp>
+#include <cyng/obj/intrinsics.h>
 #include <cyng/obj/tag.hpp>
 
 #include <cyng/io/serialize.hpp>
 #include <pugixml.hpp>
-
-#include <boost/uuid/uuid.hpp>
-#include <boost/asio/ip/address.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/ip/udp.hpp>
-#include <boost/asio/ip/icmp.hpp>
 
 namespace cyng {
 	namespace io {

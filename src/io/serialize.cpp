@@ -249,5 +249,17 @@ namespace cyng {
 
 		}
 
+		std::size_t serialize_cpp(std::ostream& os, object const& obj)
+		{
+			return serialize<CPP>::write(os, obj);
+		}
+
+		std::string to_cpp(object const& obj)
+		{
+			std::stringstream ss;
+			serialize_cpp(ss, obj);
+			return ss.str();
+		}
+
 	}
 }

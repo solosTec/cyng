@@ -20,6 +20,9 @@
 namespace cyng {
 	namespace io {
 
+		/**
+		 * fallback
+		 */
 		template <typename T>
 		struct serializer <T, JSON>
 		{

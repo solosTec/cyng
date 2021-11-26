@@ -542,4 +542,20 @@ BOOST_AUTO_TEST_CASE(xml)
 
 }
 
+BOOST_AUTO_TEST_CASE(cpp)
+{
+	auto const vec = cyng::make_vector({ cyng::make_tuple(
+		cyng::make_param("generated", std::chrono::system_clock::now()),
+		cyng::make_param("version", cyng::version(1, 2)),
+		cyng::make_param("log-dir", "/tmp"),
+		cyng::make_param("tag", boost::uuids::random_generator()()),
+		cyng::make_param("country-code", "CH"),
+		cyng::make_param("language-code", "AA"),
+		cyng::make_param("generate-profile", false)) });
+
+	auto const str = cyng::io::to_cpp(cyng::make_object(vec));
+	std::cout << str << std::endl;
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()

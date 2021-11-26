@@ -50,6 +50,12 @@ namespace cyng {
 		struct CSV {};
 
 		/**
+		 * Serialization to C++.
+		 * Cenerate C++ source code compatible with this library.
+		 */
+		struct CPP {};
+
+		/**
 		 * RAAI class to get written byte count
 		 */
 		class calc_size
