@@ -379,6 +379,7 @@ target_compile_definitions(cyng_log
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_LOG>
         "$<$<PLATFORM_ID:Linux>:APPENDER_SYS_LOG>"
+        "$<$<PLATFORM_ID:Linux>:APPENDER_JOURNALD>"
 		"$<$<PLATFORM_ID:Windows>:APPENDER_EVENT_LOG>"
 )
 

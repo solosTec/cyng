@@ -30,8 +30,10 @@ set (log_appender
 )
 
 if (UNIX)
-    list(APPEND log_appender "src/log/appender/sys_log.cpp")
+    list(APPEND log_appender "include/cyng/log/appender/journald.h")
     list(APPEND log_appender "include/cyng/log/appender/sys_log.h")
+    list(APPEND log_appender "src/log/appender/sys_log.cpp")
+    list(APPEND log_appender "src/log/appender/journald.cpp")
 endif()
 
 if (WIN32)
