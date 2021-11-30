@@ -386,6 +386,7 @@ target_compile_definitions(cyng_log
 target_link_libraries(cyng_log 
     PRIVATE 
         Boost::boost 
+        "$<$<PLATFORM_ID:Linux>:systemd>"
 )
 
 #
