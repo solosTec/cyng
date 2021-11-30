@@ -14,6 +14,7 @@
 #include  <iomanip>
 
 #include <boost/io/ios_state.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 namespace cyng {
 	namespace io {
@@ -249,17 +250,28 @@ namespace cyng {
 			os << '"';
 			switch (s)
 			{
-			case severity::LEVEL_TRACE:		os << "cyng::make_object(cyng::severity::LEVEL_TRACE)";		break;
-			case severity::LEVEL_DEBUG: 	os << "cyng::make_object(cyng::severity::LEVEL_DEBUG)";		break;
-			case severity::LEVEL_INFO: 		os << "cyng::make_object(cyng::severity::LEVEL_INFO)";		break;
-			case severity::LEVEL_WARNING: 	os << "cyng::make_object(cyng::severity::LEVEL_WARNING)";	break;
-			case severity::LEVEL_ERROR: 	os << "cyng::make_object(cyng::severity::LEVEL_ERROR)";		break;
-			case severity::LEVEL_FATAL: 	os << "cyng::make_object(cyng::severity::LEVEL_FATAL)";		break;
+			case severity::LEVEL_TRACE:		os << "cyng::severity::LEVEL_TRACE";		break;
+			case severity::LEVEL_DEBUG: 	os << "cyng::severity::LEVEL_DEBUG";		break;
+			case severity::LEVEL_INFO: 		os << "cyng::severity::LEVEL_INFO";		break;
+			case severity::LEVEL_WARNING: 	os << "cyng::severity::LEVEL_WARNING";	break;
+			case severity::LEVEL_ERROR: 	os << "cyng::severity::LEVEL_ERROR";		break;
+			case severity::LEVEL_FATAL: 	os << "cyng::severity::LEVEL_FATAL";		break;
 			default:
 				break;
 			}
 			os << '"';
 
+			return cs;
+		}
+
+		
+		std::size_t serializer <boost::uuids::uuid, CPP>::write(std::ostream& os, boost::uuids::uuid const& v) {
+			calc_size const cs(os);
+			os
+				<< "boost::uuids::uuid::string_generator()("
+				<< boost::uuids::to_string(v)
+				<< ")"
+				;
 			return cs;
 		}
 

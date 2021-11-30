@@ -145,11 +145,11 @@ namespace cyng {
 			static std::size_t write(std::ostream& os, severity s);
 		};
 
-		//template <>
-		//struct serializer <boost::uuids::uuid, CPP>
-		//{
-		//	static std::size_t write(std::ostream& os, boost::uuids::uuid const& v);
-		//};
+		template <>
+		struct serializer <boost::uuids::uuid, CPP>
+		{
+			static std::size_t write(std::ostream& os, boost::uuids::uuid const& v);
+		};
 
 		template <>
 		struct serializer <vector_t, CPP>
