@@ -17,6 +17,10 @@
 #include <cyng/log/appender/sys_log.h>
 #endif
 
+#ifdef APPENDER_JOURNALD
+#include <cyng/log/appender/journald.h>
+#endif
+
 namespace cyng {
 
 	log::log()
