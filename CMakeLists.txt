@@ -389,14 +389,13 @@ target_compile_definitions(cyng_log
         $<$<CONFIG:Debug>:_DEBUG_LOG>
         "$<$<PLATFORM_ID:Linux>:APPENDER_SYS_LOG>"
         "$<$<BOOL:${WITH_SYSTEMD}>:APPENDER_JOURNALD>"
-#        "$<$<PLATFORM_ID:Linux>:APPENDER_JOURNALD>"
 		"$<$<PLATFORM_ID:Windows>:APPENDER_EVENT_LOG>"
 )
 
 target_link_libraries(cyng_log 
     PRIVATE 
         Boost::boost 
-        "$<$<PLATFORM_ID:Linux>:systemd>"
+        "$<$<BOOL:${WITH_SYSTEMD}>:systemd>"
 )
 
 #
