@@ -12,7 +12,7 @@
 #include <cyng/store/record.h>
 #include <cyng/store/meta.h>
 
-#include <pugixml.hpp>
+//#include <pugixml.hpp>
 
 namespace cyng 
 {
@@ -22,6 +22,12 @@ namespace cyng
 		 * read an XML file into an object
 		 */
 		object read_file(std::string const&);
+
+		//
+		//	Don't expose <pugixml.hpp> because it's hard to link
+		//	with  other projects since the pugixml library is already
+		//	part of this project.
+		//
 
 		/**
 		 * Generic way to read a record.
@@ -36,7 +42,7 @@ namespace cyng
 		 }
 		 * @endcode
 		 */
-		cyng::record read(pugi::xml_node, meta_store const&);
+		//cyng::record read(pugi::xml_node, meta_store const&);
 	}
 }
 #endif

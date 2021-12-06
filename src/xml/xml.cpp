@@ -3,6 +3,7 @@
 #include <cyng/xml/reader.hpp>
 
 #include <sstream>
+#include <pugixml.hpp>
 
 #include <boost/core/ignore_unused.hpp>
 
@@ -36,61 +37,62 @@ namespace cyng
 			return make_object(ss.str());
 		}
 
-		cyng::record read(pugi::xml_node node, meta_store const& meta)
-		{
-			try {
-				cyng::key_t key;
-				cyng::data_t data;
-				std::uint64_t gen{ 0 };
+	//	cyng::record read(pugi::xml_node node, meta_store const& meta)
+	//	{
+	//		try {
+	//			cyng::key_t key;
+	//			cyng::data_t data;
+	//			std::uint64_t gen{ 0 };
 
-				pugi::xml_node const param_key = node.find_child_by_attribute("param", "name", "key");
-				if (param_key) {
+	//			pugi::xml_node const param_key = node.find_child_by_attribute("param", "name", "key");
+	//			if (param_key) {
 
-					//
-					//	key
-					//
-					meta.loop([&](std::size_t, column const& col, bool pk) {
+	//				//
+	//				//	key
+	//				//
+	//				meta.loop([&](std::size_t, column const& col, bool pk) {
 
-						if (pk) {
-							auto type = param_key.child(col.name_.c_str()).attribute("type").as_string();
-							key.push_back(produce_object(type, param_key.child_value(col.name_.c_str())));
-						}
-					});
+	//					if (pk) {
+	//						auto type = param_key.child(col.name_.c_str()).attribute("type").as_string();
+	//						key.push_back(produce_object(type, param_key.child_value(col.name_.c_str())));
+	//					}
+	//				});
 
-				}
-				pugi::xml_node const param_data = node.find_child_by_attribute("param", "name", "data");
-				if (param_data) {
+	//			}
+	//			pugi::xml_node const param_data = node.find_child_by_attribute("param", "name", "data");
+	//			if (param_data) {
 
-					//
-					//	data
-					//
-					meta.loop([&](std::size_t, column const& col, bool pk) {
+	//				//
+	//				//	data
+	//				//
+	//				meta.loop([&](std::size_t, column const& col, bool pk) {
 
-						if (!pk) {
-							BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
-							auto type = param_data.child(col.name_.c_str()).attribute("type").as_string();
-							data.push_back(produce_object(type, param_data.child_value(col.name_.c_str())));
-						}
+	//					if (!pk) {
+	//						BOOST_ASSERT_MSG(!boost::algorithm::equals(col.name_, "gen"), "keyword gen is not allowed in this context");
+	//						auto type = param_data.child(col.name_.c_str()).attribute("type").as_string();
+	//						data.push_back(produce_object(type, param_data.child_value(col.name_.c_str())));
+	//					}
 
-					});
+	//				});
 
-					//
-					//	gen(eration)
-					//
-					gen = std::stoull(param_data.child_value("gen"));
-				}
+	//				//
+	//				//	gen(eration)
+	//				//
+	//				gen = std::stoull(param_data.child_value("gen"));
+	//			}
 
-				return cyng::record(meta, key, data, gen);
-			}
-			catch (std::exception const&) {
-			}
+	//			return cyng::record(meta, key, data, gen);
+	//		}
+	//		catch (std::exception const&) {
+	//		}
 
-			//
-			//	return empty record
-			//
-			return cyng::record(meta);
+	//		//
+	//		//	return empty record
+	//		//
+	//		return cyng::record(meta);
 
-		}
+	//	}
+
 	}
 }
 
