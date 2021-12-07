@@ -1,42 +1,26 @@
 #include <cyng/sys/locale.h>
-#include <boost/predef.h>
-
-#if defined(BOOST_OS_WINDOWS_AVAILABLE)
-#include <Windows.h>
-//#include <boost/regex/pending/unicode_iterator.hpp>
 
 #include <iostream>
-#else
-#include <cyng/sys/linux.hpp>
+
 #include <boost/locale.hpp>
-#endif
-
-#include <iostream>
 
 namespace cyng {
 	namespace sys {
 
-		std::string get_system_locale() {
-#if defined(BOOST_OS_WINDOWS_AVAILABLE)
-			std::string loc;
-			constexpr std::size_t BUFFER_SIZE = 512;
-			WCHAR wcBuffer[BUFFER_SIZE];
-			//auto r = GetUserDefaultLocaleName(wcBuffer, BUFFER_SIZE);
-			auto r = GetSystemDefaultLocaleName(wcBuffer, BUFFER_SIZE);
-			if (r > 0) {
-				for (auto const& c : wcBuffer) {
-					if (c == 0)	break;
-					loc.push_back(c);
-				}				
-			}
+		std::array<std::string, 4> get_system_locale() {
 
-			return loc;
-#else
-			//	see https://www.boost.org/doc/libs/1_74_0/libs/locale/doc/html/hello_8cpp-example.html
-			// return std::use_facet<boost::locale::info>(some_locale).name()
-			// return info.name();
-			return "ch";
-#endif
+			boost::locale::generator gen;
+			auto loc = gen("");
+
+			//std::cout << std::use_facet<boost::locale::info>(loc).name() << std::endl;
+			//std::cout << std::use_facet<boost::locale::info>(loc).country() << std::endl;
+			//std::cout << std::use_facet<boost::locale::info>(loc).language() << std::endl;
+			//std::cout << std::use_facet<boost::locale::info>(loc).encoding() << std::endl;
+
+			return { std::use_facet<boost::locale::info>(loc).name() 
+				, std::use_facet<boost::locale::info>(loc).country()
+				, std::use_facet<boost::locale::info>(loc).language()
+				, std::use_facet<boost::locale::info>(loc).encoding() };
 
 		}
 

@@ -13,17 +13,22 @@
 
 #include <string>
 #include <cstddef>
-//#include <chrono>
-//#include <cyng.h>
-//#include <boost/version.hpp>
-//#include <boost/asio/version.hpp>
-//#include <boost/beast/version.hpp>
+#include <array>
 
 namespace cyng {
 	namespace sys
 	{
-		std::string get_system_locale();
-		//std::string get_system_country();
+		enum info : std::size_t {
+			NAME = 0, 
+			COUNTRY = 1, 
+			LANGUAGE = 2,
+			ENCODING = 3
+		};
+
+		/**
+		 * @return an array with name, country, language and encoding information.
+		 */
+		std::array<std::string, 4> get_system_locale();
 	}
 }
 #endif
