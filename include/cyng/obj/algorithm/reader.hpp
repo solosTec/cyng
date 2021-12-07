@@ -9,6 +9,7 @@
 
 #include <cyng/obj/object.h>
 #include <cyng/obj/algorithm/find.h>
+#include <cyng/obj/value_cast.hpp>
 
 #include <type_traits>
 
@@ -33,6 +34,11 @@ namespace cyng {
 			return find(container_, name);
 		}
 
+		template< typename U>
+		auto get(std::string const& name, U&& def) const -> decltype(value_cast<U>(get(name), def)) {
+			return value_cast<U>(get(name), def);
+		}
+
 		/**
 		 * Simple element access by index
 		 * Works for attribute maps and vectors. Searchs in tuples, vectors
@@ -42,6 +48,11 @@ namespace cyng {
 		 */
 		object get(std::size_t idx) const {
 			return find(container_, idx);
+		}
+
+		template< typename U>
+		auto get(std::size_t idx, U&& def) const -> decltype(value_cast<U>(get(idx), def)) {
+			return value_cast<U>(get(idx), def);
 		}
 
 		/**
