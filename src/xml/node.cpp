@@ -18,6 +18,7 @@ namespace cyng
 		struct document::impl {
 			pugi::xml_document doc;
 		};
+        
 		document::document()  noexcept
 			: node_(std::make_unique<impl>())
 		{}
@@ -69,6 +70,9 @@ namespace cyng
 		//
 		struct node::impl {
 			pugi::xml_node node;
+            impl(pugi::xml_node n)
+                : node(n)
+            {}
 		};
 
 		node::node()  noexcept
