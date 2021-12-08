@@ -68,7 +68,8 @@ target_link_libraries(unit_test
         cyng_parse
         "$<$<PLATFORM_ID:Linux>:pthread;${CMAKE_DL_LIBS}>"
         "$<$<PLATFORM_ID:Windows>:odbc32>"
-        Boost::date_time 
+#        Boost::date_time 
+        Boost::locale
         Boost::unit_test_framework
         $<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.1>,$<CXX_COMPILER_ID:GNU>>:stdc++fs>        
 )

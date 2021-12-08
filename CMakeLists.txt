@@ -112,7 +112,7 @@ set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build SHARED libraries")
 set(Boost_NO_BOOST_CMAKE OFF)
 find_package(Boost 1.75 
     REQUIRED 
-    COMPONENTS regex iostreams program_options unit_test_framework system thread random date_time
+    COMPONENTS regex iostreams program_options unit_test_framework system thread random locale 
 #    PATHS "C:/local/boost_1_75_0"
 #    CONFIG
 )
@@ -126,11 +126,11 @@ message(STATUS "** Boost Path       : ${Boost_LIBRARY_DIRS}")
 message(STATUS "** Boost_LIBRARIES              : ${Boost_LIBRARIES}")
 message(STATUS "** Boost_THREAD_LIBRARY         : ${Boost_THREAD_LIBRARY}")
 message(STATUS "** Boost_SYSTEM_LIBRARY         : ${Boost_SYSTEM_LIBRARY}")
-#message(STATUS "** Boost_FILESYSTEM_LIBRARY     : ${Boost_FILESYSTEM_LIBRARY}")
-message(STATUS "** Boost_DATE_TIME_LIBRARY      : ${Boost_DATE_TIME_LIBRARY}")
+#message(STATUS "** Boost_DATE_TIME_LIBRARY      : ${Boost_DATE_TIME_LIBRARY}")
 message(STATUS "** Boost_PROGRAM_OPTIONS_LIBRARY: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 message(STATUS "** Boost_RANDOM_LIBRARY         : ${Boost_RANDOM_LIBRARY}")
 message(STATUS "** Boost_REGEX_LIBRARY          : ${Boost_REGEX_LIBRARY}")
+message(STATUS "** Boost_LOCALE_LIBRARY         : ${Boost_LOCALE_LIBRARY}")
 message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
 
 
@@ -180,6 +180,7 @@ target_include_directories(cyng_obj
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -187,13 +188,8 @@ target_include_directories(cyng_obj
 target_compile_features(cyng_obj PRIVATE 
 cxx_alignas
     cxx_std_20
-#    cxx_alignof
-#    cxx_attributes
     cxx_auto_type
     cxx_constexpr
-#    cxx_defaulted_functions
-#    cxx_deleted_functions
-#    cxx_final
     cxx_lambdas
     cxx_noexcept
     cxx_override
@@ -201,10 +197,8 @@ cxx_alignas
     cxx_rvalue_references
     cxx_static_assert
     cxx_strong_enums
-#    cxx_trailing_return_types
 #    cxx_unicode_literals
 #    cxx_user_literals
-#    cxx_variadic_macros
 )
 
 #
@@ -217,7 +211,6 @@ target_compile_definitions(cyng_obj
 
 target_link_libraries(cyng_obj 
     PRIVATE 
-        Boost::boost 
         date::date
 )
 
@@ -233,6 +226,7 @@ target_include_directories(cyng_vm
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${pugixml_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -250,10 +244,10 @@ target_compile_definitions(cyng_vm
         $<$<CONFIG:Debug>:__DEBUG_VM>
 )
 
-target_link_libraries(cyng_vm 
-    PRIVATE 
-        Boost::boost 
-)
+# target_link_libraries(cyng_vm 
+#     PRIVATE 
+#         Boost::boost 
+# )
 
 #
 # add library: cyng_store
@@ -266,6 +260,7 @@ target_include_directories(cyng_store
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -290,7 +285,7 @@ target_compile_options(cyng_store
 target_link_libraries(cyng_store 
     PRIVATE 
         "$<$<PLATFORM_ID:Linux>:cyng_task>"
-        Boost::boost 
+#        Boost::boost 
 )
 
 #
@@ -304,6 +299,7 @@ target_include_directories(cyng_task
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -324,10 +320,10 @@ target_compile_options(cyng_task
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
 )
 
-target_link_libraries(cyng_task 
-    PRIVATE 
-        Boost::boost 
-)
+# target_link_libraries(cyng_task 
+#     PRIVATE 
+#         Boost::boost 
+# )
 
 
 #
@@ -399,48 +395,6 @@ target_link_libraries(cyng_log
 )
 
 #
-# add library: cyng_sys
-#
-include (src/sys/lib.cmake)
-add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
-
-target_include_directories(cyng_sys
-    PUBLIC 
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_compile_features(cyng_sys PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
-
-#
-#   debug sys library
-#
-target_compile_definitions(cyng_sys 
-    PRIVATE 
-        $<$<CONFIG:Debug>:_DEBUG_SYS>
-        $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
-)
-
-# -Wno-psabi if gcc 8.x
-target_compile_options(cyng_sys 
-    PRIVATE 
-        $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
-)
-
-#
-#   There is a dependency to parse library
-#   dependencies: cyng_parse
-#
-target_link_libraries(cyng_sys 
-    PRIVATE 
-        "$<$<PLATFORM_ID:Linux>:cyng_parse>"
-        Boost::boost 
-)
-  
-#
 # add library: cyng_parse
 #
 include (src/parse/lib.cmake)
@@ -474,6 +428,52 @@ target_link_libraries(cyng_parse
         "$<$<PLATFORM_ID:Linux>:cyng_io>"
         Boost::boost 
 )
+
+
+#
+# add library: cyng_sys
+#
+include (src/sys/lib.cmake)
+add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
+
+target_include_directories(cyng_sys
+    PUBLIC 
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(cyng_sys PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+
+#
+#   debug sys library
+#
+target_compile_definitions(cyng_sys 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_SYS>
+        $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
+)
+
+# -Wno-psabi if gcc 8.x
+target_compile_options(cyng_sys 
+    PRIVATE 
+        $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
+)
+
+#
+#   There is a dependency to parse library
+#   dependencies: cyng_parse
+#
+target_link_libraries(cyng_sys 
+    PRIVATE 
+        "$<$<PLATFORM_ID:Linux>:cyng_parse>"
+        "$<$<PLATFORM_ID:Linux>:${Boost_LOCALE_LIBRARY}>"
+#        Boost::boost 
+)
+  
 
 #
 # add library: cyng_rnd
@@ -650,6 +650,7 @@ endif()
 # unit tests
 # call CMake with -DCYNG_UNIT_TEST:BOOL=TRUE to generate unit tests 
 #
+message(STATUS "** unit tests         : ${${CAPITAL_NAME}_UNIT_TEST}")
 if(${CAPITAL_NAME}_UNIT_TEST)
 
     add_subdirectory(unit_test)
