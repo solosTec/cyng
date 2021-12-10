@@ -40,9 +40,11 @@ set (io_serializer
 
 set (io_parser
     include/cyng/io/parser/parser.h
+    include/cyng/io/parser/utf-8.hpp
+    include/cyng/io/parser/stream.hpp
     src/io/parser/parser.cpp
-    include/cyng/io/parser/utf-8.h
     src/io/parser/utf-8.cpp
+    src/io/parser/stream.cpp
 )
 
 set (io_iso

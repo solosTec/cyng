@@ -4,8 +4,8 @@
  * Copyright (c) 2020 Sylko Olzscher
  *
  */
-#ifndef CYNG_IO_UTF_8_H
-#define CYNG_IO_UTF_8_H
+#ifndef CYNG_IO_UTF_8_HPP
+#define CYNG_IO_UTF_8_HPP
 
 #include <cstdint>
 #include <array>
@@ -337,7 +337,8 @@ namespace cyng {
 			}
 			return 0;
 		}
+
 	}
 }
 
-#endif  //  DOCC_SCRIPT_UTF_8_H
+#endif  //  CYNG_IO_UTF_8_HPP

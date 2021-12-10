@@ -12,7 +12,7 @@
   #pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include <cyng/io/parser/utf-8.h>
+#include <cyng/io/parser/utf-8.hpp>
 #include <cyng/parse/json/json_tokenizer.h>
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/object.h>
