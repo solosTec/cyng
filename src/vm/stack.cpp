@@ -115,7 +115,7 @@ namespace cyng {
 	 */
 	void stack::make_param_map()
 	{
-		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (param_map)");
+		BOOST_ASSERT_MSG(s_.size() > 0, "not enough parameters (param_map)");
 		auto size = top_value<std::size_t>();
 		BOOST_ASSERT_MSG(size < s_.size(), "not enough parameters (param_map)");
 		pop();
