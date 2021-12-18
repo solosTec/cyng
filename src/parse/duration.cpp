@@ -31,6 +31,11 @@ namespace cyng {
 		}
 	}
 
+	std::chrono::nanoseconds to_nanoseconds(std::string const& str) {
+		auto const [h, m, s] = split(str);
+		return std::chrono::nanoseconds(static_cast<std::chrono::nanoseconds::rep>(s * 1000ULL * 1000ULL * 1000ULL) + (m * 60ULL * 1000ULL * 1000ULL * 1000ULL) + (h * 60ULL * 60ULL * 1000ULL * 1000ULL * 1000ULL));
+	}
+
 	std::chrono::microseconds to_microseconds(std::string const& str) {
 		auto const [h, m, s] = split(str);
 		return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(s * 1000ULL * 1000ULL) + (m * 60ULL * 1000ULL * 1000ULL) + (h * 60ULL * 60ULL * 1000ULL * 1000ULL));

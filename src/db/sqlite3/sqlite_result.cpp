@@ -449,8 +449,7 @@ namespace cyng
 						//	Example:
 						//	12dea96fec20593566ab75692c9949596833adc9
 						// 
-						auto const buffer = to_buffer(inp);
-						return make_object(make_digest<cyng::crypto::sha1_size>(buffer));
+						return make_object(to_digest<cyng::crypto::sha1_size>(inp));
 					}
 					return make_object();
 				}
@@ -465,9 +464,7 @@ namespace cyng
 						int size = ::sqlite3_column_bytes(stmt, index);
 						BOOST_ASSERT_MSG(size == cyng::crypto::sha256_size * 2, "invalid SHA256 format");
 						std::string const inp((const char*)ptr, size);
-
-						auto const buffer = to_buffer(inp);
-						return make_object(make_digest<cyng::crypto::sha256_size>(buffer));
+						return make_object(to_digest<cyng::crypto::sha256_size>(inp));
 					}
 					return make_object();
 				}
@@ -482,9 +479,7 @@ namespace cyng
 						int size = ::sqlite3_column_bytes(stmt, index);
 						BOOST_ASSERT_MSG(size == cyng::crypto::sha512_size * 2, "invalid SHA512 format");
 						std::string const inp((const char*)ptr, size);
-
-						auto const buffer = to_buffer(inp);
-						return make_object(make_digest<cyng::crypto::sha512_size>(buffer));
+						return make_object(to_digest<cyng::crypto::sha512_size>(inp));
 					}
 					return make_object();
 				}
@@ -563,9 +558,9 @@ namespace cyng
 					const unsigned char* ptr = ::sqlite3_column_text(stmt, index);
 					if (ptr != NULL)
 					{
-						int size = ::sqlite3_column_bytes(stmt, index);
+						auto const size = ::sqlite3_column_bytes(stmt, index);
 						std::string result;
-						result.reserve(size + 3);
+						result.reserve(size + 3u);
 						result = "%(" + std::string((const char*)ptr, size) + ")";
 						
 						//	call object parser

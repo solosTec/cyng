@@ -264,6 +264,21 @@ namespace cyng {
 			return v.size() + sizeof(std::uint16_t) + ll;
 		}
 
+		std::size_t serializer <raw, BINARY>::write(std::ostream& os, raw const& v)
+		{
+			//
+			//	type - length - value
+			//
+			serialize_type_tag<raw>(os);
+			auto const lit = v.get_literal();
+			auto const code = v.get_code();
+
+			auto const ll = serialize_length(os, lit.size() + sizeof(code));
+			write_binary(os, code);
+			os << lit;
+			return lit.size() + sizeof(code) + sizeof(std::uint16_t) + ll;
+		}
+
 		std::size_t serializer <attr_t, BINARY>::write(std::ostream& os, attr_t const& v)
 		{
 			//	serialize value

@@ -225,6 +225,10 @@ namespace cyng {
 				BOOST_ASSERT(buffer_.size() == crypto::aes_256_key::bytes());
 				return make_object(make_aes_key<crypto::aes_256_key::size()>(buffer_));
 
+			case TC_RAW:
+				BOOST_ASSERT(buffer_.size() > sizeof(std::uint16_t));	//	minimal requirement
+				return make_object(make_raw(buffer_));
+
 			case TC_TUPLE:	
 			case TC_VECTOR:	
 			case TC_DEQUE:	
@@ -243,9 +247,9 @@ namespace cyng {
 
 			case TC_IP_ADDRESS:	return make_object(make_ip_address(buffer_));
 
-			case TC_IP_TCP_ENDPOINT:	return make_object(make_endpoint<traits::reverse_type<TC_IP_TCP_ENDPOINT>::type>(buffer_));
-			case TC_IP_UDP_ENDPOINT:	return make_object(make_endpoint<traits::reverse_type<TC_IP_UDP_ENDPOINT>::type>(buffer_));
-			case TC_IP_ICMP_ENDPOINT:	return make_object(make_endpoint<traits::reverse_type<TC_IP_ICMP_ENDPOINT>::type>(buffer_));
+			case TC_IP_TCP_ENDPOINT:	return make_object(make_endpoint<traits::reverse_type<TC_IP_TCP_ENDPOINT>::type::protocol_type>(buffer_));
+			case TC_IP_UDP_ENDPOINT:	return make_object(make_endpoint<traits::reverse_type<TC_IP_UDP_ENDPOINT>::type::protocol_type>(buffer_));
+			case TC_IP_ICMP_ENDPOINT:	return make_object(make_endpoint<traits::reverse_type<TC_IP_ICMP_ENDPOINT>::type::protocol_type>(buffer_));
 
 			case TC_EOD:	
 				BOOST_ASSERT(buffer_.empty());

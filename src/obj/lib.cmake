@@ -33,6 +33,7 @@ set (object_intrinscis
     src/obj/intrinsics/edis.cpp
     src/obj/intrinsics/pid.cpp
     src/obj/intrinsics/container.cpp
+    src/obj/intrinsics/raw.cpp
 
     include/cyng/obj/intrinsics/aes_key.hpp
     include/cyng/obj/intrinsics/buffer.h
@@ -48,6 +49,7 @@ set (object_intrinscis
     include/cyng/obj/intrinsics/severity.h
     include/cyng/obj/intrinsics/version.h
     include/cyng/obj/intrinsics/color.hpp
+    include/cyng/obj/intrinsics/raw.h
 )
 
 set (object_core 

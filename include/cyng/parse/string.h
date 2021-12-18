@@ -45,8 +45,6 @@ namespace cyng {
 	[[nodiscard]]
 	std::chrono::system_clock::time_point to_tp_datetime(std::string const&);
 
-	[[nodiscard]]
-	boost::asio::ip::address to_ip_address(std::string const&);
 
 	template <std::size_t N>
 	[[nodiscard]]
@@ -57,6 +55,17 @@ namespace cyng {
 		auto const buffer = hex_to_buffer(str);
 		return make_aes_key<N>(buffer);
 
+	}
+
+	template <std::size_t N>
+	[[nodiscard]]
+	auto to_digest(std::string const& str) -> digest<N> {
+
+		//	valid options for N are 20 (SHA1), 32 (SHA 256) and 64 (SHA 512)
+		BOOST_ASSERT_MSG(str.size() == N * 2, "invalid SHA digest format");
+
+		auto const buffer = hex_to_buffer(str);
+		return make_digest<N>(buffer);
 	}
 
 	namespace {
@@ -185,6 +194,25 @@ namespace cyng {
 	[[nodiscard]]
 	T to_numeric(std::string const& str) {
 		return string_policy<T, BASE>::cast(str);
+	}
+
+	[[nodiscard]]
+	boost::asio::ip::address to_ip_address(std::string const&);
+
+	template<typename T>
+	[[nodiscard]]
+	boost::asio::ip::basic_endpoint<T> to_ip_endpoint(std::string const& s) {
+		auto pos = s.find_last_of(':');
+		if (pos != std::string::npos) {
+			auto const address = s.substr(0, pos);
+			++pos;	//	position after ':'
+			if (pos < s.length()) {
+				auto const service = s.substr(pos);
+				BOOST_ASSERT(!service.empty());
+				return boost::asio::ip::basic_endpoint<T>(to_ip_address(address), to_numeric<std::uint16_t>(service));
+			}
+		}
+		return boost::asio::ip::basic_endpoint<T>();
 	}
 
 }

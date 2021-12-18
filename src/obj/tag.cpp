@@ -6,7 +6,33 @@
  */ 
 #include <cyng/obj/tag.hpp>
 
+#include <algorithm>
+#include <iterator>
+
+#include <boost/algorithm/string.hpp>
+
 namespace cyng {
+
+	bool type_code_exists(std::string name) {
+		return std::find_if(std::begin(traits::names), std::end(traits::names), [name](std::string const& cmp) {
+			return boost::algorithm::equals(name, cmp);
+		}) != std::end(traits::names);
+	}
+
+	type_code type_code_by_name(std::string name) {
+		auto const pos = std::find_if(std::begin(traits::names), std::end(traits::names), [name](std::string const& cmp) {
+			return boost::algorithm::equals(name, cmp);
+		});
+
+		if (pos != std::end(traits::names)) {
+			auto const idx = std::distance(std::begin(traits::names), pos);
+			return static_cast<type_code>(idx);
+		}
+
+		//	not found
+		return TC_NULL;
+	}
+
 }
 
 namespace std {

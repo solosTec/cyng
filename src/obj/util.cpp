@@ -173,6 +173,12 @@ namespace cyng {
 		return ec;
 	}
 
+	raw make_raw(buffer_t const& buffer) {
+		auto const code = to_numeric<std::uint16_t>(buffer);
+		auto const lit = make_string(buffer, sizeof(code));
+		return raw(lit, code);
+	}
+
 	op make_op(buffer_t const& buffer) {
 		BOOST_ASSERT(buffer.size() == 2);
 		return static_cast<op>(to_numeric<std::uint16_t>(buffer));

@@ -16,6 +16,11 @@ namespace cyng {
 	/**
 	 * expected format is "00:00:1.000000"
 	 */
+	std::chrono::nanoseconds to_nanoseconds(std::string const& str);
+
+	/**
+	 * expected format is "00:00:1.000000"
+	 */
 	std::chrono::microseconds to_microseconds(std::string const& str);
 
 	/**

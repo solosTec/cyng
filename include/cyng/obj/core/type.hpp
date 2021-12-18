@@ -114,7 +114,7 @@ namespace cyng {
 		template <typename U>
 		constexpr bool is_same() const
 		{
-			return typeid(T) == typeid (U);
+			return std::is_same_v<T, U>;
 		}
 
 	};

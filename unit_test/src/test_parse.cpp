@@ -8,6 +8,9 @@
 #include <cyng/parse/mac.h>
 #include <cyng/parse/net.h>
 #include <cyng/parse/color.h>
+#include <cyng/parse/timestamp.h>
+#include <cyng/parse/raw.h>
+#include <cyng/parse/string.h>
 
 #include <cyng/io/ostream.h>
 #include <cyng/io/serialize.h>
@@ -15,7 +18,6 @@
 #include <cyng/parse/csv/csv_parser.h>
 #include <cyng/parse/csv/line_cast.hpp>
 #include <cyng/parse/csv.h>
-#include <cyng/parse/timestamp.h>
 
 #include <cyng/obj/tag.hpp>
 #include <cyng/obj/util.hpp>
@@ -300,6 +302,12 @@ BOOST_AUTO_TEST_CASE(color)
 	BOOST_REQUIRE_EQUAL(c2.green(), 8738);
 	BOOST_REQUIRE_EQUAL(c2.blue(), 13107);
 	BOOST_REQUIRE_EQUAL(c2.opacity(), 43690);
+}
+
+BOOST_AUTO_TEST_CASE(string)
+{
+	auto v = cyng::to_ip_endpoint<boost::asio::ip::tcp>("192.168.1.2:9001");
+	//std::cout << v << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

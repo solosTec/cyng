@@ -8,37 +8,6 @@
 #define CYNG_OBJ_TAG_HPP
 
 #include <cyng/obj/intrinsics.h>
-//#include <cstdint>
-//#include <cstddef>
-//#include <tuple>
-//#include <string>
-//#include <chrono>
-//#include <filesystem>
-//
-//#include <boost/uuid/uuid.hpp>
-//#include <boost/system/error_code.hpp>
-//
-//#include <boost/asio/ip/address.hpp>
-//#include <boost/asio/ip/tcp.hpp>
-//#include <boost/asio/ip/udp.hpp>
-//#include <boost/asio/ip/icmp.hpp>
-//
-//#include <cyng/obj/intrinsics/null.h>
-//#include <cyng/obj/intrinsics/eod.h>
-//#include <cyng/obj/intrinsics/op.h>
-//#include <cyng/obj/intrinsics/severity.h>
-//#include <cyng/obj/intrinsics/buffer.h>
-//#include <cyng/obj/intrinsics/version.h>
-//#include <cyng/obj/intrinsics/op.h>
-//#include <cyng/obj/intrinsics/mac.h>
-//#include <cyng/obj/intrinsics/pid.h>
-//#include <cyng/obj/intrinsics/digest.hpp>
-//#include <cyng/obj/intrinsics/aes_key.hpp>
-//#include <cyng/obj/intrinsics/obis.h>
-//#include <cyng/obj/intrinsics/edis.h>
-//#include <cyng/obj/intrinsics/container.h>
-//#include <cyng/obj/intrinsics/color.hpp>
-
 #include <cyng/meta.hpp>
 
 namespace cyng {
@@ -84,6 +53,7 @@ namespace cyng {
 			mac64,
 			pid,
 			obis,
+			obis_path_t,
 			edis,
 			color_8,
 			color_16,
@@ -98,6 +68,7 @@ namespace cyng {
 			crypto::aes_256_key,
 
 			object,			//	object is also part of the type system
+			raw,			//	unparsed object
 
 			tuple_t,
 			vector_t,
@@ -115,8 +86,6 @@ namespace cyng {
 			boost::asio::ip::tcp::endpoint,
 			boost::asio::ip::udp::endpoint,
 			boost::asio::ip::icmp::endpoint,
-
-			obis_path_t,
 
 			eod	//	last entry
 
@@ -174,6 +143,7 @@ namespace cyng {
 			"mac64",
 			"pid",
 			"obis",
+			"obis:path",
 			"edis",
 			"color:8",
 			"color:16",
@@ -188,6 +158,7 @@ namespace cyng {
 			"crypto::AES256",
 
 			"obj",		//	object
+			"raw",		//	unparsed object
 
 			"tpl",		//	tuple_t
 			"vec",		//	vector_t
@@ -206,7 +177,6 @@ namespace cyng {
 			"ip:udp:ep",	//	boost::asio::ip::udp::endpoint
 			"ip:icmp:ep",	//	boost::asio::ip::icmp::endpoint
 
-			"obis:path",
 			"eod"	//	end-of-data
 		};
 
@@ -237,15 +207,13 @@ namespace cyng {
 		struct has_type<T, std::tuple<T, Ts...>>
 			: std::true_type
 		{};
-
-
 	}
 
 	/**
 	 * @return true if data type T is in the type list tag_t, i.e. it is a built-in type
 	 */
 	template <typename T>
-	constexpr bool built_in_type()
+	constexpr bool built_in_type() noexcept
 	{
 		return traits::has_type<T, traits::tag_t>::value;
 	}
@@ -255,14 +223,14 @@ namespace cyng {
 	 */
 	template <typename T>
 	constexpr typename std::enable_if<traits::has_type<T, traits::tag_t>::value, std::size_t>::type
-	type_tag_traits()
+	type_tag_traits() noexcept
 	{
 		return tmp::index<T, traits::tag_t>::value;
 	}
 
 	template <typename T>
 	constexpr typename std::enable_if<!traits::has_type<T, traits::tag_t>::value, std::size_t>::type
-	type_tag_traits()
+	type_tag_traits() noexcept
 	{
 		//
 		//	specialize type_tag<> for your custom data types
@@ -324,6 +292,7 @@ namespace cyng {
 		TC_MAC64 = type_tag_traits<mac64>(),
 		TC_PID = type_tag_traits<pid>(),
 		TC_OBIS = type_tag_traits<obis>(),
+		TC_OBISPATH = type_tag_traits<obis_path_t>(),
 		TC_EDIS = type_tag_traits<edis>(),
 		TC_COLOR_8 = type_tag_traits<color_8>(),
 		TC_COLOR_16 = type_tag_traits<color_16>(),
@@ -338,6 +307,7 @@ namespace cyng {
 		TC_AES256 = type_tag_traits<crypto::aes_256_key>(),
 
 		TC_OBJECT = type_tag_traits<object>(),
+		TC_RAW = type_tag_traits<raw>(),
 
 		TC_TUPLE = type_tag_traits<tuple_t>(),
 		TC_VECTOR = type_tag_traits<vector_t>(),
@@ -356,11 +326,49 @@ namespace cyng {
 		TC_IP_UDP_ENDPOINT = type_tag_traits<boost::asio::ip::udp::endpoint>(),
 		TC_IP_ICMP_ENDPOINT = type_tag_traits<boost::asio::ip::icmp::endpoint>(),
 
-		TC_OBISPATH = type_tag_traits<obis_path_t>(),
-
 		TC_EOD = type_tag_traits<eod>()
 
 	};
+
+	/**
+	 * Simple wrapper for the 
+	 * @return the type_code type_tag_traits<>() function.
+	 */
+	template <typename T>
+	constexpr type_code get_type_code() {
+		return static_cast<type_code>(type_tag_traits<T>());
+	}
+
+	/**
+	 * Search for a matching type name. The search is case sensitive.
+	 */
+	type_code type_code_by_name(std::string);
+
+	/**
+	 * @return true if type code name exists
+	 */
+	bool type_code_exists(std::string);
+
+	constexpr char const* intrinsic_name_by_type_code(type_code tc)
+	{
+		return (tc < TC_EOD) 
+			? traits::names[tc]
+			: ""
+			;
+	}
+
+	//
+	//	provide support for the "raw" data type
+	//
+
+	/**
+	 * create a raw object from the type information
+	 */
+	template <typename T>
+	raw make_raw(std::string const& lit) noexcept {
+		return raw(lit, get_type_code<T>());
+	}
+
 }
 
 #include <functional>

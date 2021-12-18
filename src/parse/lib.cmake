@@ -13,6 +13,8 @@ set (parse_cpp
     src/parse/buffer.cpp
     src/parse/string.cpp
     src/parse/net.cpp
+    src/parse/raw.cpp
+    src/parse/op.cpp
 )
     
 set (parse_h
@@ -27,6 +29,8 @@ set (parse_h
     include/cyng/parse/json.h
     include/cyng/parse/csv.h
     include/cyng/parse/net.h
+    include/cyng/parse/raw.h
+    include/cyng/parse/op.h
 )
 
 set (parse_json

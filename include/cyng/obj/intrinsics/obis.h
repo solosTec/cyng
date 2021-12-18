@@ -29,7 +29,7 @@ namespace cyng {
 		enum value_group {
 			VG_MEDIUM = 0,		//	A - 0 .. 15
 			VG_CHANNEL = 1,		//	B - channel 0 .. 255
-			VG_INDICATOR = 2,	//	C - metric (physcial value)
+			VG_INDICATOR = 2,	//	C - metric (physical value)
 			VG_MODE = 3,		//	D - measurement mode
 			VG_QUANTITY = 4,	//	E - tariff
 			VG_STORAGE = 5,		//	F

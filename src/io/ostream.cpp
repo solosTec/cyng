@@ -276,6 +276,16 @@ namespace cyng {
 		return os << boost::uuids::to_string(tag);
 	}
 
+	std::ostream& operator<<(std::ostream& os, raw const& r) {
+		return os 
+			<< '<' 
+			<< r.get_code()
+			<< ':'
+			<< r.get_literal()
+			<< '>'
+			;
+	}
+
 	std::ostream& operator<<(std::ostream& os, tuple_t const& tpl)
 	{
 		os << '{';

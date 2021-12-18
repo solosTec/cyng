@@ -193,14 +193,18 @@ namespace cyng {
 
 	template<typename T>
 	[[nodiscard]]
-	auto make_endpoint(buffer_t const& buffer) -> T {
+	auto make_endpoint(buffer_t const& buffer) -> boost::asio::ip::basic_endpoint<T> {
 
 		// T => boost::asio::ip::basic_endpoint<T>;
+		using ep_t = boost::asio::ip::basic_endpoint<T>;
 		auto const port = to_numeric<std::uint16_t>(buffer);
 		auto const address = make_string(buffer, sizeof(port));
 		//	port + address
-		return T(boost::asio::ip::make_address(address), port);
+		return ep_t(boost::asio::ip::make_address(address), port);
 	}
+
+	[[nodiscard]]
+	raw make_raw(buffer_t const&);
 
 	[[nodiscard]]
 	boost::system::error_code make_ec(buffer_t const&);
