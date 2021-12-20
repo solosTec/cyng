@@ -16,8 +16,12 @@ namespace cyng {
 	/**
 	 * Create a 'real' object from the raw (unparsed) data.
 	 * Note: This is not possible for every type.
+	 * This is different then make_object() so we need a different name - hence construct_object()
 	 */
-	object make_object(raw const&);
+	object construct_object(raw const&);
+
+	bool is_constructable(std::uint16_t tc);
+
 
 }
 #endif

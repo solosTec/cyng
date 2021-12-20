@@ -23,7 +23,99 @@
 
 namespace cyng {
 
-	object make_object(raw const& r) {
+	bool is_constructable(std::uint16_t tc) {
+		switch (tc) {
+		case TC_NULL:
+		case TC_BOOL:
+			return true;
+
+		case TC_CHAR:
+			break;
+
+		case TC_FLOAT:
+		case TC_DOUBLE:
+		case TC_FLOAT80:
+		case TC_UINT8:
+		case TC_UINT16:
+		case TC_UINT32:
+		case TC_UINT64:
+		case TC_INT8:
+		case TC_INT16:
+		case TC_INT32:
+		case TC_INT64:
+		case TC_STRING:
+			return true;
+
+		case TC_FS_PATH:
+			break;
+
+		case TC_TIME_POINT:
+		case TC_NANO_SECOND:
+		case TC_MICRO_SECOND:
+		case TC_MILLI_SECOND:
+		case TC_SECOND:
+		case TC_MINUTE:
+		case TC_HOUR:
+		case TC_BUFFER:
+		case TC_VERSION:
+		case TC_REVISION:
+		case TC_OP:
+			return true;
+		case TC_SEVERITY:
+			break;
+		case TC_MAC48:
+		case TC_MAC64:
+			return true;
+
+		case TC_PID:
+		case TC_OBIS:
+		case TC_OBISPATH:
+		case TC_EDIS:
+			break;
+
+		case TC_COLOR_8:
+		case TC_COLOR_16:
+		case TC_DIGEST_MD5:
+		case TC_DIGEST_SHA1:
+		case TC_DIGEST_SHA256:
+		case TC_DIGEST_SHA512:
+		case TC_AES128:
+		case TC_AES192:
+		case TC_AES256:
+			return true;
+
+		case TC_OBJECT:
+		case TC_RAW:
+			//	nested
+			break;
+
+		case TC_TUPLE:
+		case TC_VECTOR:
+		case TC_DEQUE:
+
+		case TC_ATTR_MAP:
+		case TC_ATTR:
+		case TC_PARAM_MAP:
+		case TC_PARAM:
+			break;
+		case TC_EC:
+			break;
+		case TC_UUID:
+		case TC_IP_ADDRESS:
+		case TC_IP_TCP_ENDPOINT:
+		case TC_IP_UDP_ENDPOINT:
+		case TC_IP_ICMP_ENDPOINT:
+		case TC_EOD:
+			return true;
+
+		default:
+			break;
+		}
+		return false;
+
+	}
+
+	object construct_object(raw const& r) {
 		switch (r.get_code()) {
 		case TC_NULL:
 			//	no literal required
