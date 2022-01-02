@@ -84,5 +84,56 @@ namespace cyng {
 		return boost::asio::ip::make_address(str, ec);
 
 	}
+
+	obis to_obis(std::string const& str) {
+		//	six hex numbers
+		auto const buffer = hex_to_buffer(str);
+		if (buffer.size() == obis::size()) {
+			return { 
+				static_cast<std::uint8_t>(buffer.at(0)),
+				static_cast<std::uint8_t>(buffer.at(1)),
+				static_cast<std::uint8_t>(buffer.at(2)),
+				static_cast<std::uint8_t>(buffer.at(3)),
+				static_cast<std::uint8_t>(buffer.at(4)),
+				static_cast<std::uint8_t>(buffer.at(5))
+			};
+		}
+
+		return obis();
+	}
+
+	obis_path_t to_obis_path(std::string const& str) {
+		//	"obis:obis:obis"
+		obis_path_t r;
+		auto const v = split(str, ":");
+		std::transform(std::begin(v), std::begin(v), std::inserter(r, r.end()), [](std::string const& s) {
+			return to_obis(s);
+		});
+		return r;
+	}
+
+	edis to_edis(std::string const& str) {
+		//	something like "c.d.e" with c, d, e as decimal numbers
+		std::array< std::uint8_t, edis::size() > a = { 0 };
+		auto const v = split(str, ".");
+		if (v.size() == edis::size()) {
+			std::transform(std::begin(v), std::begin(v), a.begin(), [](std::string const& s) {
+				return to_numeric<std::uint8_t, 10>(s);
+			});
+		}
+		return { a.at(0), a.at(1), a.at(2) };
+	}
+
+	std::filesystem::path to_fs_path(std::string const& s) {
+		//	"path"
+		std::string str = s;
+		str.erase(remove(str.begin(), str.end(), '\"'), str.end());
+		try {
+			return std::filesystem::path(str);
+		}
+		catch (...) {}
+		return std::filesystem::path();
+	}
+
 }
 

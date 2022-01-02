@@ -44,10 +44,8 @@ namespace cyng {
 		case TC_INT32:
 		case TC_INT64:
 		case TC_STRING:
-			return true;
-
 		case TC_FS_PATH:
-			break;
+			return true;
 
 		case TC_TIME_POINT:
 		case TC_NANO_SECOND:
@@ -71,7 +69,7 @@ namespace cyng {
 		case TC_OBIS:
 		case TC_OBISPATH:
 		case TC_EDIS:
-			break;
+			return true;
 
 		case TC_COLOR_8:
 		case TC_COLOR_16:
@@ -153,7 +151,7 @@ namespace cyng {
 		case TC_STRING:	
 			return make_object(r.get_literal());
 		case TC_FS_PATH:
-			break;
+			return make_object(to_fs_path(r.get_literal()));
 
 		case TC_TIME_POINT:
 			return make_object(to_tp_iso8601(r.get_literal()));
@@ -185,10 +183,15 @@ namespace cyng {
 		case TC_MAC64:
 			return make_object(to_mac64(r.get_literal()));
 		case TC_PID:
+			return make_object(pid(to_numeric<boost::process::pid_t>(r.get_literal())));
+
 		case TC_OBIS:
+			return make_object(to_obis(r.get_literal()));
 		case TC_OBISPATH:
+			return make_object(to_obis_path(r.get_literal()));
 		case TC_EDIS:
-			break;
+			return make_object(to_edis(r.get_literal()));
+
 		case TC_COLOR_8:
 			return make_object(to_color<std::uint8_t>(r.get_literal()));
 		case TC_COLOR_16:
@@ -211,9 +214,11 @@ namespace cyng {
 			return make_object(to_aes_key<crypto::aes256_size>(r.get_literal()));
 
 		case TC_OBJECT:
-		case TC_RAW:	
 			//	nested
 			break;
+		case TC_RAW:
+			//	nested
+			return make_object(r);
 
 		case TC_TUPLE:
 		case TC_VECTOR:

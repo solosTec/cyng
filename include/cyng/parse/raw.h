@@ -20,6 +20,9 @@ namespace cyng {
 	 */
 	object construct_object(raw const&);
 
+	/**
+	 * @return true if specified data type is constructable (from raw type)
+	 */
 	bool is_constructable(std::uint16_t tc);
 
 

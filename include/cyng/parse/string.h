@@ -215,6 +215,18 @@ namespace cyng {
 		return boost::asio::ip::basic_endpoint<T>();
 	}
 
+	[[nodiscard]]
+	obis to_obis(std::string const&);
+
+	[[nodiscard]]
+	obis_path_t to_obis_path(std::string const&);
+
+	[[nodiscard]]
+	edis to_edis(std::string const&);
+
+	[[nodiscard]]
+	std::filesystem::path to_fs_path(std::string const&);
+
 }
 #endif
 

@@ -209,7 +209,7 @@ namespace cyng {
 	}
 
 	/**
-	 * Convert an arbitrary list ob objects into a path
+	 * Convert an arbitrary list of objects into a path
 	 * separated by a delimiter symbol.
 	 * see https://en.cppreference.com/w/cpp/utility/integer_sequence
 	 */
