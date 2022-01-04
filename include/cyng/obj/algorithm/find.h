@@ -10,6 +10,7 @@
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/value_cast.hpp>
+#include <cyng/obj/numeric_cast.hpp>
 
 #include <type_traits>
 
@@ -130,6 +131,9 @@ namespace cyng {
 		static_assert(std::is_unsigned_v<K>
 			|| std::is_same_v<K, std::string>, "Key must be of type std::string or an unsigned integer");
 
+		if constexpr (std::is_arithmetic_v<T>) {
+			return numeric_cast<T>(find(c, key), def);
+		}
 		return value_cast<T>(find(c, key), def);
 	}
 
