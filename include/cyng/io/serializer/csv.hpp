@@ -19,9 +19,9 @@ namespace cyng {
 	namespace io {
 
 		template <>
-		struct serializer <bool, CSV>
+		struct serializer <null, CSV>
 		{
-			static std::size_t write(std::ostream& os, bool v);
+			static std::size_t write(std::ostream& os, null);
 		};
 
 		template <>

@@ -15,9 +15,10 @@
 namespace cyng {
 	namespace io {
 
-		std::size_t serializer <bool, CSV>::write(std::ostream& os, bool v)
+		std::size_t serializer <null, CSV>::write(std::ostream& os, null)
 		{
-			return serializer<bool, PLAIN>::write(os, v);
+			//	write simply nothing
+			return 0;
 		}
 
 		std::size_t serializer <vector_t, CSV>::write(std::ostream& os, vector_t const& vec)
@@ -40,7 +41,7 @@ namespace cyng {
 					case TC_DEQUE:
 						break;
 					default:
-						os << ", ";
+						os << ",";
 						break;
 					}
 
@@ -63,7 +64,7 @@ namespace cyng {
 					init = true;
 				}
 				else {
-					os << ", ";
+					os << ",";
 				}
 				serialize_csv(os, obj);
 			}
