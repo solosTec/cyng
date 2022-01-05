@@ -154,8 +154,8 @@ namespace cyng {
 			//	force to floating point division
 			const double idle_time_delta = r.at(IDLE) - prev_idle_time;
 			const double total_time_delta = total - prev_total_time;
-			// const double utilization = 100.0 * (1.0 - idle_time_delta / total_time_delta);
-			const double utilization = 1.0 - (idle_time_delta / total_time_delta);
+			const double utilization = 100.0 * (1.0 - (idle_time_delta / total_time_delta));
+			//const double utilization = 1.0 - (idle_time_delta / total_time_delta);
 
 			prev_idle_time = r.at(IDLE);
 			prev_total_time = total;	
