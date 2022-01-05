@@ -10,9 +10,11 @@
 #include <cyng/store/key.hpp>
 #include <cyng/store/meta.h>
 #include <cyng/obj/value_cast.hpp>
-#include <type_traits>
+#include <cyng/obj/numeric_cast.hpp>
 
+#include <type_traits>
 #include <functional>
+
 #include <boost/uuid/uuid.hpp>
 
 namespace cyng {
@@ -77,6 +79,9 @@ namespace cyng {
 
 		template <typename T>
 		auto value(std::string name, T&& def) const -> typename details::cast_policy<T>::R {
+			if constexpr (std::is_arithmetic_v<T>) {
+				return numeric_cast<T>(at(name), std::forward<T>(def));
+			}
 			return value_cast<T>(at(name), std::forward<T>(def));
 		}
 
