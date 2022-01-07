@@ -646,6 +646,12 @@ if (WIN32)
 endif()
 
 #
+#   add libraries
+#
+add_subdirectory(src/net)
+
+
+#
 # unit tests
 # call CMake with -DCYNG_UNIT_TEST:BOOL=TRUE to generate unit tests 
 #

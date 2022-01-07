@@ -75,18 +75,6 @@ namespace cyng {
 		return channels;
 	}
 
-	//channel_ptr registry::lookup(std::size_t id)
-	//{
- //		// static_assert(BOOST_ASIO_HAS_STD_FUTURE == 1, "asio future not supported");
-	//	if (!shutdown_) {
-
-	//		auto answer = find_channel(id, boost::asio::use_future);
-	//		return answer.get();
-	//	}
-
-	//	return channel_ptr();
-	//}
-
 	std::vector<channel_ptr> registry::lookup(std::string name)
 	{
 		if (!shutdown_) {

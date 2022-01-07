@@ -38,12 +38,6 @@ namespace cyng {
 		registry(boost::asio::io_context& io);
 
 		/**
-		 * lookup for channel by ID
-		 * @return shared pointer of channel object. Could be empty.
-		 */
-		//channel_ptr lookup(std::size_t);
-
-		/**
 		 * lookup for channel by name
 		 */
 		std::vector<channel_ptr> lookup(std::string);
@@ -114,27 +108,6 @@ namespace cyng {
 		 */
 		void remove(std::size_t);
 		void remove_sync(std::size_t id);
-
-		//template <typename Token>
-		//auto find_channel(std::size_t id, Token&& token)
-		//{
-		//	using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
-		//	typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-		//	result_type result(handler);
-
-		//	dispatcher_.post([this, handler, id]() mutable {
-		//		channel_ptr ptr = lookup_sync(id);
-
-		//		if (ptr)
-		//			handler(boost::system::error_code{}, ptr);
-		//		else
-		//			handler(boost::asio::error::not_found, ptr);
-
-		//		});
-
-		//	return result.get();
-		//}
 
 		template <typename Token>
 		auto find_channels(std::string name, Token&& token)

@@ -35,17 +35,6 @@ namespace cyng {
 		{}
 	};
 
-	//template <typename R, typename ... Args>
-	//struct description< std::function<R(Args...)> > {
-	//	using function_t = std::function<R(Args...)>;
-	//	function_t f_;
-	//	std::string const name_;
-	//	description(std::string name, function_t f)
-	//		: f_(f)
-	//		, name_(name)
-	//	{}
-	//};
-
 	template <typename R, typename ... Args>
 	auto make_description(std::string name, std::function<R(Args...)> f) -> description <std::function<R(Args...)>> {
 		using function_t = typename std::function<R(Args...)>;

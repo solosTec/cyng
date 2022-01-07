@@ -14,7 +14,8 @@ add_executable(unit_test
     src/test_parse.cpp
     src/test_task.cpp
     src/demo_task.cpp
-    src/demo_task_ref.cpp)
+    src/demo_task_ref.cpp
+    src/test_net.cpp)
 
 target_compile_features(unit_test PRIVATE cxx_std_20)
 

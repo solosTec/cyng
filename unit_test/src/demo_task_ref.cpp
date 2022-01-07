@@ -16,10 +16,7 @@ namespace cyng {
 	{
 		auto sp = channel_.lock();
 		if (sp) {
-			sp->set_channel_name("demo0", 0);
-			sp->set_channel_name("demo1", 1);
-			sp->set_channel_name("demo2", 2);
-			sp->set_channel_name("demo3", 3);
+			sp->set_channel_names({ "demo0", "demo1","demo2","demo3" });
 		}
 	}
 
