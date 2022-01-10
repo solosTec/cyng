@@ -228,7 +228,6 @@ namespace cyng {
 #ifdef _DEBUG_TEST
 			std::cout << "function count: " << offset + func_count << std::endl;
 #endif
-			//invoke_r_helper<offset + func_count - 1>::call(offset + slot, msg, sigs_, ctx_);
 			invoke_r_helper<offset + func_count - 1>::call(slot, msg, sigs_, ctx_);
 		}
 

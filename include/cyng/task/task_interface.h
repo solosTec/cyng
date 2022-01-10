@@ -23,6 +23,7 @@ namespace cyng {
 		virtual ~task_interface() {}
 		virtual std::size_t get_id() const noexcept = 0;
 		virtual std::size_t get_signature_count() const noexcept = 0;
+		virtual void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t const& msg) = 0;
 
 	protected:
 		virtual void dispatch(std::size_t slot, tuple_t const& msg) = 0;

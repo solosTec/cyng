@@ -47,6 +47,7 @@ namespace cyng {
 		std::cout << "demo_task_ref::demo1(" << n << ")" << std::endl;
 #endif
 		auto sp = channel_.lock();
+		//	call function #2 - demo2()
 		if (sp)	sp->suspend(std::chrono::seconds(2), 2, make_tuple(2, "dude", 3.f));
 	}
 
@@ -54,11 +55,12 @@ namespace cyng {
 	{
 		// std::cout << "demo_task_ref::demo2(" << a << ", " << b << ", " << c << ")" << std::endl;
 	}
-	void demo_task_ref::demo3(int n)
+	int demo_task_ref::demo3(int n)
 	{
 #ifdef _DEBUG_TEST
 		std::cout << "demo_task_ref::demo3(" << n << ")" << std::endl;
 #endif
+		return n + 1;
 	}
 
 }

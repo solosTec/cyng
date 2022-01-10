@@ -67,6 +67,7 @@ target_link_libraries(unit_test
         cyng_store
         cyng_sys
         cyng_parse
+        cyng_net
         "$<$<PLATFORM_ID:Linux>:pthread;${CMAKE_DL_LIBS}>"
         "$<$<PLATFORM_ID:Windows>:odbc32>"
         Boost::locale

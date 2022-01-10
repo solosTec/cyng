@@ -23,17 +23,6 @@ namespace cyng {
 	using channel_ptr = std::shared_ptr<channel>;
 	using channel_weak = std::weak_ptr<channel>;
 
-	struct message {
-		message(channel_ptr, std::size_t, tuple_t&& msg);
-		message(channel_ptr, std::size_t, tuple_t const& msg);
-		message(message const&);
-		message(message&&) noexcept;
-
-		channel_ptr cp_;
-		std::size_t const slot_;
-		tuple_t msg_;
-	};
-
 	/**
 	 * Base class to manage named slots
 	 */
@@ -123,6 +112,7 @@ namespace cyng {
 			dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
+
 		/**
 		 * Close this communication channel
 		 * @return true if channel was closed, false if channel was already closed
@@ -156,16 +146,15 @@ namespace cyng {
 
 			if (!is_open(slot))	return;
 
-			message m(this->shared_from_this(), slot, std::move(msg));
 			auto sp = this->shared_from_this(); //  extend life time
 
 			//	formerly: expires_from_now()
 			//	Since boost 1.66.0
 			timer_.expires_after(d);
 
-			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
-				if (ec != boost::asio::error::operation_aborted && is_open(m.slot_)) {
-					task_->dispatch(m.slot_, m.msg_);
+			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, slot, msg](boost::system::error_code const& ec) {
+				if (ec != boost::asio::error::operation_aborted && is_open(slot)) {
+					task_->dispatch(slot, msg);
 				}
 			}));
 		}
@@ -189,7 +178,31 @@ namespace cyng {
 			suspend(tp, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
+		/**
+		 * Calls function(slot_producer) and pass result as parameter to function(slot_consumer).
+		 * 
+		 * @param slot_producer slot id of the producer function
+		 * @param slot_consumer slot id of the consumer function
+		 * @param msg parameters for for producer function
+		 */
+		void next(std::size_t slot_producer, std::size_t slot_consumer, tuple_t&& msg);
+
+		/**
+		 * Calls function(slot_producer) and pass result as parameter to function(slot_consumer).
+		 *
+		 * @param slot_producer slot id of the producer function
+		 * @param slot_producer consumer channel object with the consumer function
+		 * @param slot_consumer slot id of the consumer function
+		 * @param msg parameters for for producer function
+		 */
+		void next(std::size_t slot_producer, channel_ptr consumer, std::size_t slot_consumer, tuple_t&& msg);
+
 	private:
+
+		/**
+		 * apply result of function(slot) as argument to f(result)
+		 */
+		void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t&& msg);
 
 		/**
 		 * open channel by providing a task interface
@@ -230,8 +243,8 @@ namespace cyng {
 	 * Use the same strand as the channel
 	 */
 	template <typename Token>
-	void exec(channel& cr, Token&& token) {
-		boost::asio::post(cr.dispatcher_, std::forward<Token>(token));
+	void exec(channel& ch, Token&& token) {
+		boost::asio::post(ch.dispatcher_, std::forward<Token>(token));
 	}
 
 }

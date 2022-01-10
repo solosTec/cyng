@@ -52,6 +52,54 @@ namespace cyng {
 				function_call<F>(std::get<0>(tpl), msg);
 			}
 		};
+
+		template <std::size_t N>
+		struct invoke_f_helper
+		{
+			template <typename Tpl>
+			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl, std::function<void(tuple_t&& msg)> f) {
+				using F = typename std::tuple_element<N, Tpl>::type;
+#ifdef _DEBUG_TEST
+				std::cout << "invoke_r: " << idx << ", " << N << std::endl;
+#endif
+				if (idx == N) {
+					using R = typename F::result_type;
+					if constexpr (std::is_same<R, void>::value) {
+						function_call<F>(std::get<N>(tpl), msg);
+						f(cyng::make_tuple());	//	void
+					}
+					else {
+						f(cyng::make_tuple(function_call<F>(std::get<N>(tpl), msg)));
+					}
+					return;
+				}
+				invoke_f_helper<N - 1>::call(idx, msg, tpl, f);
+			}
+		};
+
+		template <>
+		struct invoke_f_helper<0>
+		{
+			template <typename Tpl>
+			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl, std::function<void(tuple_t&& msg)> f) {
+
+				using F = typename std::tuple_element<0, Tpl>::type;
+				using R = typename F::result_type;
+#ifdef _DEBUG_TEST
+				std::cout << "invoke_r: " << idx << ", " << 0 << std::endl;
+#else
+				boost::ignore_unused(idx);
+#endif
+				if constexpr (std::is_same<R, void>::value) {
+					function_call<F>(std::get<0>(tpl), msg);
+					f(cyng::make_tuple());	//	void
+				}
+				else {
+					f(cyng::make_tuple(function_call<F>(std::get<0>(tpl), msg)));
+				}
+			}
+		};
+
 	}
 
 	namespace traits {
@@ -133,6 +181,14 @@ namespace cyng {
 			//
 			//	after this: undefined behaviour
 			//
+		}
+
+		void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t const& msg) override
+		{
+			BOOST_ASSERT(slot <= signature_count_);
+			if (slot > signature_count_)	return;
+			//	apply result of function as argument to f(result)
+			invoke_f_helper<signature_count_>::call(slot, msg, impl_.sigs_, f);
 		}
 
 	private:

@@ -33,11 +33,11 @@ message(STATUS "** Library type       : ${GLOBAL_LIBRARY_TYPE}")
 
 include (lib.cmake)
 
-add_library(net ${GLOBAL_LIBRARY_TYPE} ${net_lib})
+add_library(cyng_net ${GLOBAL_LIBRARY_TYPE} ${net_lib})
 
-target_compile_features(net PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
+target_compile_features(cyng_net PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 
-target_compile_definitions(net
+target_compile_definitions(cyng_net
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_NET>
 )
@@ -45,12 +45,12 @@ target_compile_definitions(net
 #
 # -Wno-psabi for gcc > 7.1
 #
-target_compile_options(net 
+target_compile_options(cyng_net 
     PRIVATE 
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
 )
 
-target_include_directories(net
+target_include_directories(cyng_net
     PRIVATE
 #        $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
@@ -60,12 +60,12 @@ target_include_directories(net
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-#target_link_directories(net
+#target_link_directories(cyng_net
 #    PRIVATE
 #        ${Boost_LIBRARY_DIRS}
 #)
 
-#target_link_libraries(net 
+#target_link_libraries(cyng_net 
 #    PRIVATE 
 #        date::date
 #)

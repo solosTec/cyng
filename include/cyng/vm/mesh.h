@@ -9,6 +9,7 @@
 
 #include <cyng/vm/proxy.h>
 #include <cyng/task/controller.h>
+
 #include <type_traits>
 
 #include <boost/uuid/random_generator.hpp>
@@ -125,7 +126,7 @@ namespace cyng {
 		channel_ptr create_vm(boost::uuids::uuid parent, Fns&&... fns) {
 
 			//
-			//	create a uuid
+			//	create an uuid
 			//
 			auto const tag = uuid_rgn_();
 

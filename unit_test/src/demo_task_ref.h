@@ -26,7 +26,7 @@ namespace cyng {
 			std::function<int(void)>,
 			std::function<void(int)>,
 			std::function<void(int, std::string, float)>,
-			std::function<void(int)>,
+			std::function<int(int)>,
 			std::function<void(eod)>
 		>;
 
@@ -37,7 +37,7 @@ namespace cyng {
 		int demo0();
 		void demo1(int);
 		void demo2(int, std::string, float);
-		void demo3(int);
+		int demo3(int);
 
 		void stop(eod);
 

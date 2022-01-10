@@ -4,6 +4,7 @@ namespace cyng {
 
 		client_factory::client_factory(controller& ctl) noexcept
 			: ctl_(ctl)
+			, uuid_rgn_()
 		{}
 
 	}

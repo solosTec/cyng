@@ -36,11 +36,10 @@ namespace cyng {
             //
             //	thread safe access to task
             //
-            message m(this->shared_from_this(), slot, std::move(msg));
-            auto sp = this->shared_from_this(); //  extend life time
+            auto sp = shared_from_this(); //  extend life time
 
-            boost::asio::post(dispatcher_, [this, sp, m]()->void {
-                if (is_open(m.slot_))  task_->dispatch(m.slot_, m.msg_);
+            boost::asio::post(dispatcher_, [this, sp, slot, msg]()->void {
+                    if (is_open(slot))  task_->dispatch(slot, msg);
              });
         }
     }
@@ -55,6 +54,39 @@ namespace cyng {
 
     void channel::dispatch(std::string slot) {
         dispatch(lookup(slot), make_tuple());
+    }
+
+    void channel::next(std::size_t slot_producer, std::size_t slot_consumer, tuple_t&& msg) {
+        next(slot_producer, [&](cyng::tuple_t&& msg)->void {
+            this->dispatch(slot_consumer, std::move(msg));
+            }, std::move(msg));
+    }
+
+    void channel::next(std::size_t slot_producer, channel_ptr consumer, std::size_t slot_consumer, tuple_t&& msg) {
+        next(slot_producer, [&](cyng::tuple_t&& msg)->void {
+            consumer->dispatch(slot_consumer, std::move(msg));
+            }, std::move(msg));
+    }
+
+    void channel::next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t&& msg) {
+        if (is_open(slot)) {
+
+            //
+            //  the context should be active
+            //
+            BOOST_ASSERT(!dispatcher_.context().stopped());
+            BOOST_ASSERT_MSG(slot != std::numeric_limits<std::size_t>::max(), "unknown slot name");
+
+            //
+            //	thread safe access to task
+            //
+            auto sp = shared_from_this(); //  extend life time
+
+            boost::asio::post(dispatcher_, [this, sp, slot, f, msg]()->void {
+                if (sp->is_open(slot))  task_->next(slot, f, msg);
+                });
+        }
+
     }
 
     bool channel::is_open() const noexcept {
@@ -120,15 +152,13 @@ namespace cyng {
 
         if (!is_open(slot))	return;
 
-        message m(this->shared_from_this(), slot, std::move(msg));
         auto sp = this->shared_from_this(); //  extend life time
 
         timer_.expires_at(tp);
-        //timer_.expires_at(std::chrono::time_point_cast<std::chrono::time_point<std::chrono::steady_clock, std::chrono::nanoseconds>>(tp));
 
-        timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, m](boost::system::error_code const& ec) {
-            if (ec != boost::asio::error::operation_aborted && is_open(m.slot_)) {
-                task_->dispatch(m.slot_, m.msg_);
+        timer_.async_wait(boost::asio::bind_executor(dispatcher_, [=, this](boost::system::error_code const& ec) {
+            if (ec != boost::asio::error::operation_aborted && is_open(slot)) {
+                task_->dispatch(slot, msg);
             }
             }));
     }
@@ -138,34 +168,12 @@ namespace cyng {
     }
 
 
-    boost::asio::io_context::strand& expose_dispatcher(channel& cr) {
-        return cr.dispatcher_;
+    boost::asio::io_context::strand& expose_dispatcher(channel& ch) {
+        BOOST_ASSERT(ch.is_open());
+        return ch.dispatcher_;
     }
 
-    message::message(channel_ptr cp, std::size_t id, tuple_t&& msg)
-        : cp_(cp)
-        , slot_(id)
-        , msg_(std::move(msg))  //  move
-    {}
-    message::message(channel_ptr cp, std::size_t id, tuple_t const& msg)
-        : cp_(cp)
-        , slot_(id)
-        , msg_(msg) //  copy
-    {}
-
-    message::message(message const& msg)
-        : cp_(msg.cp_)
-        , slot_(msg.slot_)
-        , msg_(msg.msg_)  //  copy
-    {}
-
-    message::message(message&& msg) noexcept
-        : cp_(std::move(msg.cp_))
-        , slot_(msg.slot_)
-        , msg_(std::move(msg.msg_))  //  move
-    {}
-
-    slot_names::slot_names()
+     slot_names::slot_names()
         : named_slots_()
     {}
 
