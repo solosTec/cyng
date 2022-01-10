@@ -52,7 +52,7 @@ namespace cyng {
 				std::function<void(eod)>	//	stop
 			>;
 
-			using endpoint_list_t = resolver_t::results_type;
+			using endpoint_list_t = typename resolver_t::results_type;
 			using endpoint_iterator = typename endpoint_list_t::iterator;
 
 			/**
