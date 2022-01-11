@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(client)
 {
 	cyng::controller ctl(2);
 	cyng::net::client_factory cf(ctl);
-	auto channel = cf.create_channel<boost::asio::ip::tcp::socket, 2048>([&](boost::asio::ip::tcp::endpoint ep) {
+	auto proxy = cf.create_proxy<boost::asio::ip::tcp::socket, 2048>([&](boost::asio::ip::tcp::endpoint ep) {
 				std::cout << "on connect " << ep << std::endl;
 			},
 		[&](boost::system::error_code ec) {
@@ -34,12 +34,15 @@ BOOST_AUTO_TEST_CASE(client)
 
 		});
 
-	channel->dispatch(0, "google.com", "80");
+	//channel->dispatch(0, "google.com", "80");
+	proxy.connect("google.com", "80");
 	std::this_thread::sleep_for(std::chrono::seconds(2));
-	channel -> dispatch("send", cyng::make_buffer("GET / HTTP/1.1\r\n\r\n"));
+	//channel -> dispatch("send", cyng::make_buffer("GET / HTTP/1.1\r\n\r\n"));
+	proxy.send("GET / HTTP/1.1\r\n\r\n");
 
 	std::this_thread::sleep_for(std::chrono::seconds(20));
-	channel->stop();
+	//channel->stop();
+	proxy.stop();
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	ctl.shutdown();
 	ctl.stop();

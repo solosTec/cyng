@@ -32,6 +32,7 @@ namespace cyng {
 	}
 
 	vm_proxy& vm_proxy::operator=(channel_ptr channel) {
+		BOOST_ASSERT(channel);
 		vm_ = channel;
 		return *this;
 	}
@@ -39,7 +40,9 @@ namespace cyng {
 	void vm_proxy::run() {
 		//	slot 2
 		//	run()
-		vm_->dispatch(2, make_tuple());
+		if (vm_) {
+			vm_->dispatch(2, make_tuple());
+		}
 	}
 
 	void vm_proxy::load(object&& obj) {
@@ -53,18 +56,24 @@ namespace cyng {
 	void vm_proxy::load(deque_t&& deq) {
 		//	slot 1
 		//	ctx_.load(deq)
-		vm_->dispatch(1, cyng::make_tuple(std::move(deq)));
+		if (vm_) {
+			vm_->dispatch(1, cyng::make_tuple(std::move(deq)));
+		}
 	}
 
 	void vm_proxy::stop() {
-		vm_->stop();
+		if (vm_) {
+			vm_->stop();
+		}
 	}
 
 	void vm_proxy::set_channel_name(std::string name, std::size_t idx) {
 		//	slot 3
 		//	set_channel_name(name, index)
 		BOOST_ASSERT_MSG(!name.empty(), "empty function name");
-		vm_->dispatch(3, cyng::make_tuple(name, idx));
+		if (vm_) {
+			vm_->dispatch(3, cyng::make_tuple(name, idx));
+		}
 	}
 
 	void vm_proxy::set_channel_names(std::initializer_list<std::string> il) {

@@ -25,10 +25,7 @@ namespace cyng {
 		/**
 		 * @tparam S socket type (boost::asio::ip::tcp::socket)
 		 * @tparam N receive buffer size (2048)
-		 * @tparam R resolver (boost::asio::ip::tcp::resolver)
-		 * @tparam P parser
 		 * 
-		 * parser callback
 		 * timeout callback (calculate timeout)
 		 * on_connect callback
 		 * on_close callback

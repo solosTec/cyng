@@ -9,6 +9,7 @@
 
 #include <cyng/task/controller.h>
 #include <cyng/net/client.hpp>
+#include <cyng/net/client_proxy.h>
 
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -21,6 +22,22 @@ namespace cyng {
 		{
 		public:
 			explicit client_factory(controller&) noexcept;
+
+			/**
+			 * @tparam S socket type (boost::asio::ip::tcp::socket)
+			 * @tparam N receive buffer size (2048)
+			 * @tparam R resolver (boost::asio::ip::tcp::resolver)
+			 * @tparam P parser
+			 */
+			template <typename S, std::size_t N>
+			client_proxy create_proxy(std::function<void(typename S::endpoint_type)> cb_connect
+				, std::function<void(boost::system::error_code)> cb_reconnect
+				, std::function<void(cyng::buffer_t)> cb_receive) {
+
+				return { create_channel<S, N >(cb_connect, cb_reconnect, cb_receive) };
+			}
+
+		private:
 
 			/**
 			 * @tparam S socket type (boost::asio::ip::tcp::socket)
