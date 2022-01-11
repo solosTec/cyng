@@ -169,13 +169,13 @@ namespace cyng {
 			suspend(d, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
-		void suspend(time_point_t tp, std::size_t slot, tuple_t&& msg);
+		bool suspend(time_point_t tp, std::size_t slot, tuple_t&& msg);
 
-		void suspend(time_point_t tp, std::string slot, tuple_t&& msg);
+		bool suspend(time_point_t tp, std::string slot, tuple_t&& msg);
 
 		template< typename ...Args>
-		void suspend(time_point_t tp, std::string slot, Args&& ...args) {
-			suspend(tp, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
+		bool suspend(time_point_t tp, std::string slot, Args&& ...args) {
+			return suspend(tp, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
 		}
 
 		/**

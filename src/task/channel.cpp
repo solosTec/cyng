@@ -39,7 +39,7 @@ namespace cyng {
             auto sp = shared_from_this(); //  extend life time
 
             boost::asio::post(dispatcher_, [this, sp, slot, msg]()->void {
-                    if (is_open(slot))  task_->dispatch(slot, msg);
+                   if (sp->is_open(slot))  task_->dispatch(slot, msg);
              });
         }
     }
@@ -148,23 +148,25 @@ namespace cyng {
             ;
     }
 
-    void channel::suspend(time_point_t tp, std::size_t slot, tuple_t&& msg) {
+    bool channel::suspend(time_point_t tp, std::size_t slot, tuple_t&& msg) {
 
-        if (!is_open(slot))	return;
+        if (!is_open(slot))	return false;
 
         auto sp = this->shared_from_this(); //  extend life time
 
         timer_.expires_at(tp);
 
-        timer_.async_wait(boost::asio::bind_executor(dispatcher_, [=, this](boost::system::error_code const& ec) {
-            if (ec != boost::asio::error::operation_aborted && is_open(slot)) {
+        timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, slot, msg, sp](boost::system::error_code const& ec) {
+            if (ec != boost::asio::error::operation_aborted && sp->is_open(slot)) {
                 task_->dispatch(slot, msg);
             }
             }));
+
+        return true;
     }
 
-    void channel::suspend(time_point_t tp, std::string slot, tuple_t&& msg) {
-        suspend(tp, lookup(slot), std::move(msg));
+    bool channel::suspend(time_point_t tp, std::string slot, tuple_t&& msg) {
+        return suspend(tp, lookup(slot), std::move(msg));
     }
 
 
