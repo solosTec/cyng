@@ -5,6 +5,7 @@
 #include <boost/test/unit_test.hpp>
 #include <cyng/net/client.hpp>
 #include <cyng/net/client_factory.hpp>
+#include <cyng/net/server_factory.hpp>
 #include <cyng/io/ostream.h>
 
 #include <iostream>
@@ -43,6 +44,23 @@ BOOST_AUTO_TEST_CASE(client)
 	std::this_thread::sleep_for(std::chrono::seconds(20));
 	//channel->stop();
 	proxy.stop();
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	ctl.shutdown();
+	ctl.stop();
+
+}
+
+BOOST_AUTO_TEST_CASE(server)
+{
+	cyng::controller ctl(2);
+	cyng::net::server_factory sf(ctl);
+	auto const ep = boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 9999u);
+	auto channel = sf.create_channel<boost::asio::ip::tcp::socket, 2048>(ep, [](boost::system::error_code ec) {
+		std::cout << "accept callback " << ec << std::endl;
+		});
+	channel->dispatch(0);	//	start
+	std::this_thread::sleep_for(std::chrono::seconds(20));
+	channel->stop();
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	ctl.shutdown();
 	ctl.stop();

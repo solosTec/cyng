@@ -77,6 +77,7 @@ namespace cyng {
 						acceptor_.bind(ep_, ec);
 					}
 					if (!ec) {
+						//	firewall configuration must allow this listener
 						acceptor_.listen(boost::asio::socket_base::max_listen_connections, ec);
 					}
 					if (!ec) {
@@ -101,10 +102,15 @@ namespace cyng {
 				acceptor_.async_accept([this, cp](boost::system::error_code ec, socket_t socket) {
 					if (!ec) {
 						//	new session
+
 						//
 						//	update session counter
 						//
 						++session_counter_;
+						boost::system::error_code ec;
+						std::string msg = "hello\r\n";
+						boost::asio::write(socket, boost::asio::buffer(msg), ec);
+						socket.close();
 
 						//
 						//	continue listening
