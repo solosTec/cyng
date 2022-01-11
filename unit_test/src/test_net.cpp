@@ -54,13 +54,22 @@ BOOST_AUTO_TEST_CASE(server)
 {
 	cyng::controller ctl(2);
 	cyng::net::server_factory sf(ctl);
-	auto const ep = boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 9999u);
-	auto channel = sf.create_channel<boost::asio::ip::tcp::socket, 2048>(ep, [](boost::system::error_code ec) {
-		std::cout << "accept callback " << ec << std::endl;
+	auto const ep = boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 9999u);
+
+	auto proxy = sf.create_proxy<boost::asio::ip::tcp::socket, 2048>(ep, [](boost::system::error_code ec) {
+		std::cout << "listen callback " << ec << std::endl;
+		},
+		[](boost::asio::ip::tcp::socket socket) {
+
+			boost::system::error_code ec;
+			std::string msg = "hello\r\n";
+			boost::asio::write(socket, boost::asio::buffer(msg), ec);
+			socket.close();
+
 		});
-	channel->dispatch(0);	//	start
+	proxy.start();	//	start
 	std::this_thread::sleep_for(std::chrono::seconds(20));
-	channel->stop();
+	proxy.stop();
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	ctl.shutdown();
 	ctl.stop();

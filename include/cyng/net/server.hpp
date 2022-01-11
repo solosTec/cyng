@@ -42,16 +42,18 @@ namespace cyng {
 			server(channel_weak wp
 				, boost::asio::io_context& ctx
 					, endpoint_t ep
-					, std::function<void(boost::system::error_code)> cb_accept
+					, std::function<void(boost::system::error_code)> cb_listen
+					, std::function<void(socket_t)> cb_accept
 				)
 				: sigs_{
 					std::bind(&server::start, this),	//	start
-					cb_accept, // accept
+					cb_listen, // listen
 					std::bind(&server::stop, this, std::placeholders::_1)	//	eod
 			}
 				, channel_(wp)
 				, ctx_(ctx)
 				, ep_(ep)
+				, cb_accept_(cb_accept)
 				, acceptor_(ctx)
 				, session_counter_{ 0 }
 			{
@@ -71,7 +73,6 @@ namespace cyng {
 					acceptor_.open(ep_.protocol(), ec);
 					if (!ec) {
 						acceptor_.set_option(socket_t::reuse_address(true));
-						//acceptor_.set_option(boost::asio::ip::tcp::socket::reuse_address(true));
 					}
 					if (!ec) {
 						acceptor_.bind(ep_, ec);
@@ -107,10 +108,7 @@ namespace cyng {
 						//	update session counter
 						//
 						++session_counter_;
-						boost::system::error_code ec;
-						std::string msg = "hello\r\n";
-						boost::asio::write(socket, boost::asio::buffer(msg), ec);
-						socket.close();
+						cb_accept_(std::move(socket));
 
 						//
 						//	continue listening
@@ -146,6 +144,7 @@ namespace cyng {
 			channel_weak channel_;
 			boost::asio::io_context& ctx_;
 			endpoint_t const ep_;
+			std::function<void(socket_t)> cb_accept_;
 			acceptor_t acceptor_;
 			std::uint64_t session_counter_;
 		};
