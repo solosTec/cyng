@@ -188,8 +188,9 @@ namespace cyng {
 
     void slot_names::set_channel_names(std::initializer_list<std::string> il) {
         std::size_t index{ named_slots_.size() };
-        for (auto pos = il.begin(); pos != il.end(); ++pos, ++index) {
-            set_channel_name(*pos, index);
+        for (auto const& name : il) {
+            set_channel_name(name, index);
+            ++index;
         }
     }
 
