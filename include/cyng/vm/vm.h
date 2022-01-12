@@ -189,6 +189,7 @@ namespace cyng {
 
 		vm(channel_weak wp, mesh& fab, boost::uuids::uuid tag, Fns... fns)
 			: vm_base(wp, fab, tag)
+			, arity_{ get_arg_count(fns)... }
 			, sigs_{
 				[&](object obj) {	ctx_.load(std::move(obj)); },
 				[&](deque_t deq) {	ctx_.load(std::move(deq)); },
@@ -198,7 +199,6 @@ namespace cyng {
 				//	external functions
 				std::forward<Fns>(fns)...
 			}
-			, arity_{ get_arg_count(fns)... }
 		{}
 
 	protected:
@@ -243,8 +243,8 @@ namespace cyng {
 		}
 
 	private:
-		signatures_t sigs_;
 		arity_t const arity_;
+		signatures_t sigs_;
 	};
 
 }
