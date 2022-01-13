@@ -38,6 +38,10 @@ namespace cyng {
 	[[nodiscard]]
 	buffer_t to_buffer(object const& obj);
 
+	/**
+	 * no hex conversion
+	 * @see hex_to_buffer()
+	 */
 	[[nodiscard]]
 	buffer_t to_buffer(std::string const& str);
 
