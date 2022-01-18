@@ -40,7 +40,9 @@ namespace cyng	{
 
 	bool obis::starts_with(buffer_t seq) const {
 		if (seq.size() < size()) {
-			return std::equal(seq.begin(), seq.end(), value_.begin());
+			return std::equal(seq.begin(), seq.end(), value_.begin(), [](char c1, std::uint8_t c2) {
+				return static_cast<std::uint8_t>(c1) == c2;
+				});
 		}
 		return false;
 	}

@@ -259,6 +259,15 @@ BOOST_AUTO_TEST_CASE(obis)
     BOOST_REQUIRE_EQUAL(cyng::to_str(o), "010203040506");
     //std::cout << std::hex << o.to_uint64() << std::endl;
     BOOST_REQUIRE_EQUAL(o.to_uint64(), 0x010203040506);
+
+    o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01);
+    auto b = o.starts_with(cyng::make_buffer({ 0x81, 0x49, 0x63, 0x3C, 0x01 }));
+    BOOST_CHECK(b);
+
+    o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01);
+    b = o.starts_with(cyng::make_buffer({ 0x81, 0x49, 0x63, 0x3C, 0x02 }));
+    BOOST_CHECK(!b);
+
 }
 
 BOOST_AUTO_TEST_CASE(algorithm)
