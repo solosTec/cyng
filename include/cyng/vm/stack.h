@@ -68,6 +68,11 @@ namespace cyng {
 		 */
 		void make_param();
 
+		/** @brief build a property
+		 *
+		 */
+		void make_prop();
+
 		/** @brief build an attribute map
 		 *
 		 */
@@ -77,6 +82,11 @@ namespace cyng {
 		 *
 		 */
 		void make_param_map();
+
+		/** @brief build a property map
+		 *
+		 */
+		void make_prop_map();
 
 		/** @brief build a tuple (std::list<object>)
 		 *

@@ -205,7 +205,8 @@ BOOST_AUTO_TEST_CASE(cast)
     BOOST_REQUIRE_EQUAL(n16, 42);
 
     BOOST_REQUIRE(o6); 
-    auto ptr1 = cyng::object_release<std::uint16_t>(o6);
+    //  has to be the same type
+    auto ptr1 = cyng::object_release<int>(o6);
     BOOST_REQUIRE(!o6); //  empty
     BOOST_REQUIRE_EQUAL(*ptr1.first, 42);
     delete ptr1.second;    //  prevent memory leak

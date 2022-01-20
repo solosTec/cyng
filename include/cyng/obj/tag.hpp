@@ -78,6 +78,8 @@ namespace cyng {
 			attr_t,			//	std::pair<std::size_t, object>;
 			param_map_t,	//	std::map<std::string, object>;
 			param_t,		//	std::pair<std::string, object>;
+			prop_map_t,		//	std::map<obis, object>;
+			prop_t,			//	std::pair<obis, object>;
 
 			boost::system::error_code,
 			boost::uuids::uuid,
@@ -168,6 +170,8 @@ namespace cyng {
 			"attr",		//	attr_t - std::pair<std::size_t, object>;
 			"pmap",		//	param_map_t - std::map<std::string, object>;
 			"param",	//	param_t - std::pair<std::string, object>;
+			"omap",		//	prop_map_t - std::map<obis, object>;
+			"prop",		//	prop_t - std::pair<obis, object>;
 
 			"ec",		//	boost::system::error_code
 			"uuid",		//	boost::uuids::uuid
@@ -317,6 +321,8 @@ namespace cyng {
 		TC_ATTR = type_tag_traits<attr_t>(),			//	std::pair<std::size_t, object>;
 		TC_PARAM_MAP = type_tag_traits<param_map_t>(),	//	std::map<std::string, object>;
 		TC_PARAM = type_tag_traits<param_t>(),			//	std::pair<std::string, object>;
+		TC_PROP_MAP = type_tag_traits<prop_map_t>(),	//	std::map<obis, object>;
+		TC_PROP = type_tag_traits<prop_t>(),			//	std::pair<obis, object>;
 
 		TC_EC = type_tag_traits<boost::system::error_code>(),
 		TC_UUID = type_tag_traits<boost::uuids::uuid>(),

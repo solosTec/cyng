@@ -311,6 +311,11 @@ namespace cyng {
 			static std::size_t write(std::ostream& os, param_t const&);
 		};
 		template <>
+		struct serializer <prop_t, BINARY>
+		{
+			static std::size_t write(std::ostream& os, prop_t const&);
+		};
+		template <>
 		struct serializer <attr_map_t, BINARY>
 		{
 			static std::size_t write(std::ostream& os, attr_map_t const&);
@@ -319,6 +324,11 @@ namespace cyng {
 		struct serializer <param_map_t, BINARY>
 		{
 			static std::size_t write(std::ostream& os, param_map_t const&);
+		};
+		template <>
+		struct serializer <prop_map_t, BINARY>
+		{
+			static std::size_t write(std::ostream& os, prop_map_t const&);
 		};
 		template <>
 		struct serializer <tuple_t, BINARY>

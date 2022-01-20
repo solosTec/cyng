@@ -92,8 +92,10 @@ namespace cyng {
 		//	assembly
 		case op::MAKE_ATTR: 		os << "MAKE_ATTR";	break;
 		case op::MAKE_PARAM: 		os << "MAKE_PARAM";	break;
+		case op::MAKE_PROP: 		os << "MAKE_PROP";	break;
 		case op::MAKE_ATTR_MAP: 	os << "MAKE_ATTR_MAP";	break;
 		case op::MAKE_PARAM_MAP: 	os << "MAKE_PARAM_MAP";	break;
+		case op::MAKE_PROP_MAP: 	os << "MAKE_PROP_MAP";	break;
 		case op::MAKE_TUPLE: 		os << "MAKE_TUPLE";	break;
 		case op::MAKE_VECTOR: 		os << "MAKE_VECTOR";	break;
 		case op::MAKE_DEQUE: 		os << "MAKE_DEQUE";	break;
@@ -419,6 +421,47 @@ namespace cyng {
 			;
 
 		io::serialize_plain(os, param.second);
+
+		os
+			<< ')'
+			;
+
+		return os;
+	}
+
+	std::ostream& operator<<(std::ostream& os, prop_map_t const& omap)
+	{
+		bool flag = false;
+		os << '$' << '(';
+		for (auto const& prop : omap) {
+
+			if (flag) {
+				os << ',';
+			}
+			else {
+				flag = true;
+			}
+
+			os << '(' << '"' << prop.first << '"' << ':';
+			io::serialize_plain(os, prop.second);
+			os << ')';
+		}
+		os << ')';
+		return os;
+	}
+
+	std::ostream& operator<<(std::ostream& os, prop_t const& prop)
+	{
+		os
+			<< '('
+			<< '"'
+			<< prop.first
+			<< '"'
+			<< "obis"
+			<< ':'
+			;
+
+		io::serialize_plain(os, prop.second);
 
 		os
 			<< ')'

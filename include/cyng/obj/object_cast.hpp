@@ -75,7 +75,7 @@ namespace cyng {
 		//	if cast failed we return a null pointer
 		if (p == nullptr) {
 
-			//	reset
+			//	reset to prevent a memory leak
 			obj.obj_.reset(ptr);
 			return std::make_pair(nullptr, nullptr);
 		}

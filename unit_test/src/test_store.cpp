@@ -178,10 +178,10 @@ public:
 		, std::uint64_t
 		, boost::uuids::uuid) override {
 
-		std::cout 
-			<< "insert " 
-			<< tbl->meta().get_name() 
-			<< std::endl;
+		//std::cout 
+		//	<< "insert " 
+		//	<< tbl->meta().get_name() 
+		//	<< std::endl;
 		return true;
 	}
 

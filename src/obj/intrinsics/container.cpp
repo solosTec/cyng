@@ -7,6 +7,7 @@
 
 #include <cyng/obj/intrinsics/container.h>
 #include <cyng/obj/object.h>
+#include <cyng/obj/intrinsics/obis.h>
 
 namespace cyng	{
 
@@ -91,6 +92,26 @@ namespace std {
 		std::size_t h{ 0 };
 		h ^= std::hash<cyng::param_t::first_type>{}(param.first) << 1;
 		h ^= param.second.hash() << 1;
+		return h;
+	}
+	size_t hash<cyng::prop_map_t>::operator()(cyng::prop_map_t const& prop_map) const
+	{
+		auto const f = std::hash<cyng::prop_t>{};
+		std::size_t h{ 0 };
+		for (auto const& prop : prop_map) {
+
+			//
+			//	combine all values
+			//
+			h ^= f(prop) << 1;
+		}
+		return h;
+	}
+	size_t hash<cyng::prop_t>::operator()(cyng::prop_t const& prop) const
+	{
+		std::size_t h{ 0 };
+		h ^= std::hash<cyng::prop_t::first_type>{}(prop.first) << 1;
+		h ^= prop.second.hash() << 1;
 		return h;
 	}
 

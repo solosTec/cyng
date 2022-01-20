@@ -18,6 +18,7 @@
 namespace cyng {
 
 	class object;
+	class obis;
 
 	/*
 	 * Define container classes
@@ -39,6 +40,13 @@ namespace cyng {
 	using param_map_t = std::map<std::string, object>;
 	using param_map_value = param_map_t::value_type;
 	using param_t = std::pair<std::string, object>;
+
+	/**
+	 * properties are sorted by a code (obis)
+	 */
+	using prop_map_t = std::map<obis, object>;
+	using prop_map_value = param_map_t::value_type;
+	using prop_t = std::pair<obis, object>;
 
 }
 
@@ -80,6 +88,16 @@ namespace std {
 	class hash<cyng::param_t> {
 	public:
 		size_t operator()(cyng::param_t const&) const;
+	};
+	template <>
+	class hash<cyng::prop_map_t> {
+	public:
+		size_t operator()(cyng::prop_map_t const&) const;
+	};
+	template <>
+	class hash<cyng::prop_t> {
+	public:
+		size_t operator()(cyng::prop_t const&) const;
 	};
 
 }

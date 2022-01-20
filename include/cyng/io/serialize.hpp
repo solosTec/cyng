@@ -122,6 +122,8 @@ namespace cyng {
 					case TC_ATTR:		return write_impl<traits::reverse_type<TC_ATTR>::type>(os, obj);
 					case TC_PARAM_MAP:	return write_impl<traits::reverse_type<TC_PARAM_MAP>::type>(os, obj);
 					case TC_PARAM:		return write_impl<traits::reverse_type<TC_PARAM>::type>(os, obj);
+					case TC_PROP_MAP:	return write_impl<traits::reverse_type<TC_PROP_MAP>::type>(os, obj);
+					case TC_PROP:		return write_impl<traits::reverse_type<TC_PROP>::type>(os, obj);
 
 					case TC_EC:			return write_impl<traits::reverse_type<TC_EC>::type>(os, obj);
 					case TC_UUID:		return write_impl<traits::reverse_type<TC_UUID>::type>(os, obj);

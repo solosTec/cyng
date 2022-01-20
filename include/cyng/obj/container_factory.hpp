@@ -122,6 +122,39 @@ namespace cyng {
 		param_map_t map_;
 	};
 
+	/**
+	 * example
+	 * @code
+	 prop_map_t m = prop_map_factory(make_obis(1,2,3,4,5,6), 1)(make_obis(6,5,4,3,2,1), 2);
+	 * @endcode
+	 */
+	class prop_map_factory
+	{
+	public:
+		prop_map_factory();
+
+		template < typename T >
+		prop_map_factory(obis const& key, T&& v)
+			: map_()
+		{
+			BOOST_ASSERT_MSG(!is_nil(key), "property without a name");
+			map_.emplace(key, make_object(v));
+		}
+
+		template < typename T >
+		prop_map_factory operator()(obis const& key, T&& v)
+		{
+			BOOST_ASSERT_MSG(!is_nil(key), "property without a name");
+			map_.emplace(key, make_object(v));
+			return *this;
+		}
+
+		object operator()() const;
+		operator prop_map_t() const;
+
+	private:
+		prop_map_t map_;
+	};
 }
 
 #endif //	CYNG_OBJ_FACTORY_HPP

@@ -304,6 +304,18 @@ namespace cyng {
 
 		}
 
+		std::size_t serializer <prop_t, BINARY>::write(std::ostream& os, prop_t const& v)
+		{
+			//	serialize value
+			std::size_t size = serialize_binary(os, v.second);
+
+			//	serialize obis code
+			size += serialize_binary(os, make_object(v.first));
+
+			//	serialize instruction
+			return size + serialize_binary(os, make_object(op::MAKE_PROP));
+
+		}
 
 		std::size_t serializer <attr_map_t, BINARY>::write(std::ostream& os, attr_map_t const& amap)
 		{
@@ -335,6 +347,22 @@ namespace cyng {
 
 			//	serialize instruction
 			return size + serialize_binary(os, make_object(op::MAKE_PARAM_MAP));
+		}
+
+		std::size_t serializer <prop_map_t, BINARY>::write(std::ostream& os, prop_map_t const& omap)
+		{
+			std::size_t size{ 0 };
+
+			//	serialize each element from parameter map
+			for (auto const& prop : omap) {
+				size += serializer <prop_t, BINARY>::write(os, prop);
+			}
+
+			//	element count
+			size += serialize_binary(os, make_object<std::size_t>(omap.size()));
+
+			//	serialize instruction
+			return size + serialize_binary(os, make_object(op::MAKE_PROP_MAP));
 		}
 
 		std::size_t serializer <tuple_t, BINARY>::write(std::ostream& os, tuple_t const& v)

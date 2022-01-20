@@ -39,5 +39,19 @@ namespace cyng {
 		return map_;
 	}
 
+	prop_map_factory::prop_map_factory()
+		: map_()
+	{}
+
+	object prop_map_factory::operator()() const
+	{
+		return make_object(map_);
+	}
+
+	prop_map_factory::operator prop_map_t() const
+	{
+		return map_;
+	}
+
 }
 

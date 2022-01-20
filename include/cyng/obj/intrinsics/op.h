@@ -59,8 +59,10 @@ namespace cyng {
 		//	assembly
 		MAKE_ATTR,			//!< 	build an attribute
 		MAKE_PARAM,			//!< 	build a parameter
+		MAKE_PROP,			//!< 	build a property
 		MAKE_ATTR_MAP,		//!< 	build an attribute map
 		MAKE_PARAM_MAP,		//!< 	build a parameter map
+		MAKE_PROP_MAP,		//!< 	build a property map
 		MAKE_TUPLE,			//!< 	build a tuple (std::list<object>)
 		MAKE_VECTOR,		//!< 	build a vector (std::vector<object>)
 		MAKE_DEQUE,			//!< 	build a deque (std::deque<object>)

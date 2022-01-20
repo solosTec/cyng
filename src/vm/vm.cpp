@@ -95,11 +95,17 @@ namespace cyng {
 		case op::MAKE_PARAM:
 			ctx_.make_param();
 			break;
+		case op::MAKE_PROP:
+			ctx_.make_prop();
+			break;
 		case op::MAKE_ATTR_MAP:
 			ctx_.make_attr_map();
 			break;
 		case op::MAKE_PARAM_MAP:
 			ctx_.make_param_map();
+			break;
+		case op::MAKE_PROP_MAP:
+			ctx_.make_prop_map();
 			break;
 		case op::MAKE_TUPLE:
 			ctx_.make_tuple();

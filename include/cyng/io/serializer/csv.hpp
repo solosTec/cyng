@@ -25,6 +25,12 @@ namespace cyng {
 		};
 
 		template <>
+		struct serializer <bool, CSV>
+		{
+			static std::size_t write(std::ostream& os, bool);
+		};
+
+		template <>
 		struct serializer <vector_t, CSV>
 		{
 			static std::size_t write(std::ostream& os, vector_t const&);

@@ -174,6 +174,12 @@ namespace cyng {
 	std::ostream& operator<<(std::ostream& os, param_map_t const&);
 	std::ostream& operator<<(std::ostream& os, param_t const&);
 
+	/**
+	 * properties are sorted by an code (obis)
+	 */
+	std::ostream& operator<<(std::ostream& os, prop_map_t const&);
+	std::ostream& operator<<(std::ostream& os, prop_t const&);
+
 	template <typename T>
 	std::ostream& operator<<(std::ostream& os, color<T> const& v)
 	{

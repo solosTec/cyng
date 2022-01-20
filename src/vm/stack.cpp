@@ -93,6 +93,16 @@ namespace cyng {
 		push(make_object(param_t(key, remove())));
 	}
 
+	/** @brief build a property
+	 *
+	 */
+	void stack::make_prop()
+	{
+		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (prop)");
+		auto const key = pop_value<obis>();
+		push(make_object(prop_t(key, remove())));
+	}
+
 	/** @brief build an attribute map
 	 *
 	 */
@@ -124,6 +134,22 @@ namespace cyng {
 			pmap.insert(pop_value<param_t>());
 		}
 		push(make_object(std::move(pmap)));
+	}
+
+	/** @brief build a property map
+	 *
+	 */
+	void stack::make_prop_map()
+	{
+		BOOST_ASSERT_MSG(s_.size() > 0, "not enough parameters (prop_map)");
+		auto size = top_value<std::size_t>();
+		BOOST_ASSERT_MSG(size < s_.size(), "not enough parameters (prop_map)");
+		pop();
+		prop_map_t omap;
+		while (size-- != 0) {
+			omap.insert(pop_value<prop_t>());
+		}
+		push(make_object(std::move(omap)));
 	}
 
 	/** @brief build a tuple (std::list<object>)

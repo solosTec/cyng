@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(json)
 
 BOOST_AUTO_TEST_CASE(csv)
 {
-	// std::cout << cyng::io::to_csv(cyng::make_object(false)) << std::endl;
+	//std::cout << cyng::io::to_csv(cyng::make_object(false)) << std::endl;
 	BOOST_REQUIRE_EQUAL(cyng::io::to_csv(cyng::make_object(false)), "false");
 }
 
@@ -528,22 +528,41 @@ BOOST_AUTO_TEST_CASE(path)
 
 BOOST_AUTO_TEST_CASE(xml)
 {
+	auto const tp = std::chrono::system_clock::from_time_t(1642664487);
+	boost::uuids::uuid tag{ {0x7c, 0xa6, 0xb0, 0x5c, 0x2a, 0x02, 0x47, 0x55, 0x9e, 0xc5, 0xe6, 0xd0, 0x6a, 0x45, 0x89, 0xdd} };
 	auto const vec = cyng::make_vector({ cyng::make_tuple(
-		cyng::make_param("generated", std::chrono::system_clock::now()),
+		cyng::make_param("generated", tp),
 		cyng::make_param("version", cyng::version(1, 2)),
 		cyng::make_param("log-dir", "/tmp"),
-		cyng::make_param("tag", boost::uuids::random_generator()()),
+		cyng::make_param("tag", tag),
 		cyng::make_param("country-code", "CH"),
 		cyng::make_param("language-code", "AA"),
 		cyng::make_param("generate-profile", false)) });
 
 	auto const str = cyng::io::to_xml(cyng::make_object(vec), "root");
-	std::cout << str << std::endl;
-
+	//std::cout << str << std::endl;
+	//
+	//	note: The comparison string contains tabs '\t'. The end of line character is '\n'.
+	//	This could be a problem on different platforms with a different end-of-line marker.
+	//
+	std::string r = R"xml(<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root xmlns:xsi="w3.org/2001/XMLSchema-instance" type="vec" size="1">
+	<element index="0" type="tpl" size="7">
+		<param name="generated" type="chrono:tp">2022-01-20T07:41:27+0100</param>
+		<param name="version" type="v">1.2</param>
+		<param name="log-dir" type="s">/tmp</param>
+		<param name="tag" type="uuid">7ca6b05c-2a02-4755-9ec5-e6d06a4589dd</param>
+		<param name="country-code" type="s">CH</param>
+		<param name="language-code" type="s">AA</param>
+		<param name="generate-profile" type="bool">false</param>
+	</element>
+</root>
+)xml";
+	BOOST_CHECK_EQUAL(r, str);
 }
 
 BOOST_AUTO_TEST_CASE(cpp)
-{
+{	
 	auto const vec = cyng::make_vector({ cyng::make_tuple(
 		cyng::make_param("generated", std::chrono::system_clock::now()),
 		cyng::make_param("version", cyng::version(1, 2)),
@@ -554,7 +573,7 @@ BOOST_AUTO_TEST_CASE(cpp)
 		cyng::make_param("generate-profile", false)) });
 
 	auto const str = cyng::io::to_cpp(cyng::make_object(vec));
-	std::cout << str << std::endl;
+	//std::cout << str << std::endl;
 
 }
 

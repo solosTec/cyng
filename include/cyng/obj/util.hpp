@@ -98,6 +98,13 @@ namespace cyng {
 		return { to_str(o), make_object(std::forward<Args>(args)...) };
 	}
 
+	template < typename... Args >
+	[[nodiscard]]
+	prop_t make_prop(obis const& o, Args&&... args)
+	{
+		return { o, make_object(std::forward<Args>(args)...) };
+	}
+
 	[[nodiscard]]
 	std::string make_string(buffer_t const&);
 

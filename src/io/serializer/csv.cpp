@@ -21,6 +21,14 @@ namespace cyng {
 			return 0;
 		}
 
+		std::size_t serializer <bool, CSV>::write(std::ostream& os, bool v)
+		{
+			boost::io::ios_flags_saver  ifs(os);
+			calc_size const cs(os);
+			os << std::boolalpha << v;
+			return cs;
+		}
+
 		std::size_t serializer <vector_t, CSV>::write(std::ostream& os, vector_t const& vec)
 		{
 			calc_size const cs(os);
