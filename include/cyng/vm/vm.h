@@ -39,7 +39,7 @@ namespace cyng {
 			template <typename Tpl>
 			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl, context& ctx) {
 				using F = typename std::tuple_element<N, Tpl>::type;
-#ifdef _DEBUG_TEST
+#ifdef __DEBUG_TEST
 				std::cout << "invoke_r: " << idx << ", " << N << std::endl;
 #endif
 				if (idx == N) {
@@ -64,7 +64,7 @@ namespace cyng {
 
 				using F = typename std::tuple_element<0, Tpl>::type;
 				using R = typename F::result_type;
-#ifdef _DEBUG_TEST
+#ifdef __DEBUG_TEST
 				std::cout << "invoke_r: " << idx << ", " << 0 << std::endl;
 #else
 				boost::ignore_unused(idx);
@@ -225,7 +225,7 @@ namespace cyng {
 		virtual void invoke_r() override {
 
 			auto [slot, msg] = ctx_.invoke_r();
-#ifdef _DEBUG_TEST
+#ifdef __DEBUG_TEST
 			std::cout << "function count: " << offset + func_count << std::endl;
 #endif
 			invoke_r_helper<offset + func_count - 1>::call(slot, msg, sigs_, ctx_);

@@ -75,8 +75,9 @@ BOOST_AUTO_TEST_CASE(vm)
 		cyng::op::ASSERT_TYPE
 	);
 
-	std::this_thread::sleep_for(std::chrono::seconds(20));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	vm.stop();
+	ctl.shutdown();
 	ctl.stop();
 
 }
@@ -179,7 +180,7 @@ BOOST_AUTO_TEST_CASE(library)
 	std::this_thread::sleep_for(std::chrono::seconds(4));
 	vm.stop();
 
-
+	ctl.shutdown();
 	ctl.stop();
 
 }
@@ -214,7 +215,8 @@ BOOST_AUTO_TEST_CASE(mesh)
 	}
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	vm.stop();
-	std::this_thread::sleep_for(std::chrono::seconds(2));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	ctl.shutdown();
 	ctl.stop();
 
 }
@@ -239,12 +241,12 @@ class sig
 
 
 	using signatures_t = std::tuple<
-		std::function<void()>,
+		std::function<void(std::string)>,
 		std::function<void(cyng::eod)>>;
 
 	public:
 		sig(cyng::channel_weak wp)
-			: sigs_{ std::bind(&sig::hello, this), std::bind(&sig::stop, this, std::placeholders::_1) }
+			: sigs_{ std::bind(&sig::hello, this, std::placeholders::_1), std::bind(&sig::stop, this, std::placeholders::_1) }
 			, channel_(wp)
 		{
 			auto sp = channel_.lock();
@@ -254,11 +256,12 @@ class sig
 		}
 
 	private:
-		void hello() {
-			std::cout << "hello" << std::endl;
+		void hello(std::string s) {
+			//std::cout << "hello" << std::endl;
+			BOOST_CHECK_EQUAL(s, "abc");
 		}
 		void stop(cyng::eod) {
-			std::cout << "STOP" << std::endl;
+			//std::cout << "STOP" << std::endl;
 		}
 	private:
 		signatures_t sigs_;
@@ -273,10 +276,11 @@ BOOST_AUTO_TEST_CASE(signature)
 
 	auto channel = ctl.create_named_channel_with_ref<sig>("sig");
 	BOOST_ASSERT(channel->is_open());
-	channel->dispatch("hello");
+	channel->dispatch("hello", "abc");
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	channel->stop();
-	std::this_thread::sleep_for(std::chrono::seconds(2));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	ctl.shutdown();
 	ctl.stop();
 }
 
