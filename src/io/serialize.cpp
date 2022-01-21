@@ -9,6 +9,7 @@
 #include <cyng/io/io.h>
 #include <cyng/obj/object.h>
 #include <cyng/io/serializer/json_walker.h>
+#include <cyng/io/serializer/pretty_walker.h>
 #include <cyng/io/serializer/xml.hpp>
 
 #include <fstream>
@@ -60,6 +61,36 @@ namespace cyng {
 			return ss.str();
 		}
 
+		void serialize_pretty(std::ostream& os, object const& obj) {
+			pretty_walker walker(os);
+			traverse(obj, walker);
+		}
+		void serialize_pretty(std::ostream& os, vector_t const& vec) {
+			pretty_walker walker(os);
+			traverse(vec, walker);
+		}
+		void serialize_pretty(std::ostream& os, tuple_t const& tpl) {
+			pretty_walker walker(os);
+			traverse(tpl, walker);
+		}
+
+		std::string to_pretty(object const& obj) {
+			std::stringstream ss;
+			serialize_pretty(ss, obj);
+			return ss.str();
+		}
+		std::string to_pretty(vector_t const& vec) {
+			std::stringstream ss;
+			serialize_pretty(ss, vec);
+			return ss.str();
+		}
+		std::string to_pretty(tuple_t const& tpl) {
+			std::stringstream ss;
+			serialize_pretty(ss, tpl);
+			return ss.str();
+		}
+
+
 		std::size_t serialize_binary(std::ostream& os, object const& obj)
 		{
 			return serialize<BINARY>::write(os, obj);
@@ -101,10 +132,28 @@ namespace cyng {
 			json_walker walker(os);
 			traverse(obj, walker);
 		}
+		void serialize_json_pretty(std::ostream& os, vector_t const& vec) {
+			json_walker walker(os);
+			traverse(vec, walker);
+		}
+		void serialize_json_pretty(std::ostream& os, tuple_t const& tpl) {
+			json_walker walker(os);
+			traverse(tpl, walker);
+		}
 
 		std::string to_json_pretty(object const& obj) {
 			std::stringstream ss;
 			serialize_json_pretty(ss, obj);
+			return ss.str();
+		}
+		std::string to_json_pretty(vector_t const& vec) {
+			std::stringstream ss;
+			serialize_json_pretty(ss, vec);
+			return ss.str();
+		}
+		std::string to_json_pretty(tuple_t const& tpl) {
+			std::stringstream ss;
+			serialize_json_pretty(ss, tpl);
 			return ss.str();
 		}
 

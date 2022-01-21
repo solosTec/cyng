@@ -22,14 +22,18 @@ namespace cyng {
 	{
 	public:
 		virtual ~dom_walker();
-		virtual void visit(object const&, type_code, std::size_t depth, walker_state, bool is_vector) = 0;
+		virtual void visit(object const&, type_code, std::size_t depth, walker_state) = 0;
 		virtual void open(type_code, std::size_t depth, std::size_t size) = 0;
-		virtual void close(type_code, std::size_t depth, walker_state) = 0;
+		virtual void close(type_code, std::size_t depth, walker_state, type_code parent_type) = 0;
 		virtual void pair(std::size_t, std::size_t depth) = 0;
-		virtual void pair(std::string, std::size_t depth) = 0;
+		virtual void pair(std::string const&, std::size_t depth) = 0;
+		virtual void pair(obis const&, std::size_t depth) = 0;
 	};
 
 	void traverse(object const&, dom_walker&);
+	void traverse(vector_t const&, dom_walker&);
+	void traverse(tuple_t const&, dom_walker&);
+
 
 }
 

@@ -28,6 +28,11 @@ namespace cyng {
 		struct TYPED {};
 
 		/**
+		 * Serialization to a readable hierarchical, tree-like structure
+		 */
+		struct PRETTY {};
+
+		/**
 		 * Serialization to an internal binary
 		 * format with TLV (type-length-value) encoding.
 		 */

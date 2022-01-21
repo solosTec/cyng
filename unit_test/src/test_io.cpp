@@ -186,6 +186,23 @@ BOOST_AUTO_TEST_CASE(typed)
 	BOOST_REQUIRE_EQUAL(cyng::io::to_typed(cyng::make_eod()), "eod");
 }
 
+BOOST_AUTO_TEST_CASE(pretty) {
+	auto const tp = std::chrono::system_clock::from_time_t(1642664487);
+	boost::uuids::uuid tag{ {0x7c, 0xa6, 0xb0, 0x5c, 0x2a, 0x02, 0x47, 0x55, 0x9e, 0xc5, 0xe6, 0xd0, 0x6a, 0x45, 0x89, 0xdd} };
+	auto const vec = cyng::make_vector({ cyng::make_tuple(
+		cyng::make_param("generated", tp),
+		cyng::make_param("version", cyng::version(1, 2)),
+		cyng::make_param("log-dir", "/tmp"),
+		cyng::make_param("tag", tag),
+		cyng::make_param("country-code", "CH"),
+		cyng::make_param("language-code", "AA"),
+		cyng::make_param("generate-profile", false)) });
+
+	cyng::io::serialize_pretty(std::cout, vec);
+	//std::cout << cyng::io::to_pretty(cyng::make_object(vec)) << std::endl;
+	//std::cout << cyng::io::to_pretty(vec) << std::endl;
+}
+
 BOOST_AUTO_TEST_CASE(binary)
 {
 }

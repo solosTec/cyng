@@ -17,14 +17,17 @@ namespace cyng {
 			, nl_(true)
 		{}
 
-		void json_walker::visit(object const& obj, type_code, std::size_t depth, walker_state state, bool is_vector) {
-			if (is_vector)	os_ << std::string(depth * 2, ' ');
+		void json_walker::visit(object const& obj, type_code, std::size_t depth, walker_state state) {
+			if (nl_)	os_ << indentation(depth);
 			serialize_json(os_, obj);
 			if (state != walker_state::LAST) {
 				os_ << ", ";
+				os_ << std::endl;
+				nl_ = true;
 			}
-			os_ << std::endl;
-			nl_ = true;
+			else {
+				nl_ = false;
+			}
 		}
 		void json_walker::open(type_code tag, std::size_t depth, std::size_t size) {
 			switch (tag) {
@@ -32,7 +35,7 @@ namespace cyng {
 			case TC_DEQUE:
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
-				if (nl_)	os_ << std::string(depth * 2, ' ');
+				if (nl_)	os_ << indentation(depth);
 
 				os_ << "{";
 				if (size > 1) {
@@ -44,7 +47,7 @@ namespace cyng {
 				}
 				break;
 			case TC_VECTOR:
-				if (nl_)	os_ << std::string(depth * 2, ' ');
+				if (nl_)	os_ << indentation(depth);
 
 				os_ << "[ ";
 				if (size > 1) {
@@ -59,26 +62,56 @@ namespace cyng {
 				break;
 			}
 		}
-		void json_walker::close(type_code tag, std::size_t depth, walker_state state) {
+		void json_walker::close(type_code tag, std::size_t depth, walker_state state, type_code parent_type) {
 			switch (tag) {
 			case TC_TUPLE:
 			case TC_DEQUE:
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
-				os_ << std::string(depth * 2, ' ') << "}";
-				if (state != walker_state::LAST) {
-					os_ << ", ";
+				if (nl_) {
+					os_ << indentation(depth);
 				}
-				os_ << std::endl;
-				nl_ = true;
+				os_ << "}";
+				if (state != walker_state::LAST) {
+					os_ << ", " << std::endl;
+					nl_ = true;
+				}
+				else {
+					switch (parent_type) {
+					case TC_TUPLE:
+					case TC_VECTOR:
+					case TC_DEQUE:
+						nl_ = false;
+						break;
+					default:
+						os_ << std::endl;
+						nl_ = true;
+						break;
+					}
+				}
 				break;
 			case TC_VECTOR:
-				os_ << std::string(depth * 2, ' ') << "]";
-				if (state != walker_state::LAST) {
-					os_ << ", ";
+				if (nl_) {
+					os_ << indentation(depth);
 				}
-				os_ << std::endl;
-				nl_ = true;
+				os_ << "]";
+				if (state != walker_state::LAST) {
+					os_ << ", " << std::endl;
+					nl_ = true;
+				}
+				else {
+					switch (parent_type) {
+					case TC_TUPLE:
+					case TC_VECTOR:
+					case TC_DEQUE:
+						nl_ = false;
+						break;
+					default:
+						os_ << std::endl;
+						nl_ = true;
+						break;
+					}
+				}
 				break;
 			default:
 				break;
@@ -86,7 +119,7 @@ namespace cyng {
 		}
 
 		void json_walker::pair(std::size_t n, std::size_t depth) {
-			if (nl_)	os_ << std::string(depth * 2, ' ');
+			if (nl_)	os_ << indentation(depth);
 			else os_ << ' ';
 
 			os_
@@ -96,8 +129,8 @@ namespace cyng {
 				;
 			nl_ = false;
 		}
-		void json_walker::pair(std::string name, std::size_t depth) {
-			if (nl_)	os_ << std::string(depth * 2, ' ');
+		void json_walker::pair(std::string const& name, std::size_t depth) {
+			if (nl_)	os_ << indentation(depth);
 			else os_ << ' ';
 
 			os_
@@ -106,6 +139,20 @@ namespace cyng {
 				<< "\": "
 				;
 			nl_ = false;
+		}
+		void json_walker::pair(obis const& code, std::size_t depth) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< "\""
+				<< code
+				<< "\": "
+				;
+			nl_ = false;
+		}
+		std::string json_walker::indentation(std::size_t depth) {
+			return std::string(depth * 2, ' ');
 		}
 
 	}

@@ -36,6 +36,15 @@ namespace cyng {
 		std::string to_typed(object const&);
 		std::string to_typed(vector_t const&);
 		std::string to_typed(tuple_t const&);
+		/**
+		 * print a hierarchical, tree-like structure
+		 */
+		void serialize_pretty(std::ostream&, object const&);
+		void serialize_pretty(std::ostream&, vector_t const&);
+		void serialize_pretty(std::ostream&, tuple_t const&);
+		std::string to_pretty(object const&);
+		std::string to_pretty(vector_t const&);
+		std::string to_pretty(tuple_t const&);
 
 		/**
 		 * Serialization to an internal binary
@@ -58,7 +67,11 @@ namespace cyng {
 		std::string to_json(tuple_t const&);
 
 		void serialize_json_pretty(std::ostream&, object const&);
+		void serialize_json_pretty(std::ostream&, vector_t const&);
+		void serialize_json_pretty(std::ostream&, tuple_t const&);
 		std::string to_json_pretty(object const&);
+		std::string to_json_pretty(vector_t const&);
+		std::string to_json_pretty(tuple_t const&);
 
 		/**
 		 * Serialization to XML.
