@@ -82,13 +82,17 @@ namespace cyng {
 		}
 
 		void traverse(dom_walker& walker, attr_t attr, std::size_t depth, walker_state state, type_code parent_type) {
+			walker.open(TC_ATTR, depth, 1);
 			walker.pair(attr.first, depth);
 			traverse(walker, attr.second, depth, state, TC_ATTR);
+			walker.close(TC_ATTR, depth, state, parent_type);
 		}
 
 		void traverse(dom_walker& walker, param_t param, std::size_t depth, walker_state state, type_code parent_type) {
+			walker.open(TC_PARAM, depth, 1);
 			walker.pair(param.first, depth);
 			traverse(walker, param.second, depth, state, TC_PARAM);
+			walker.close(TC_PARAM, depth, state, parent_type);
 		}
 
 		void traverse(dom_walker& walker, object const& obj, std::size_t depth, walker_state state, type_code parent_type) {

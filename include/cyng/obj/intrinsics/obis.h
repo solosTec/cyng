@@ -74,6 +74,10 @@ namespace cyng {
 			//BOOST_ASSERT(a < 16);
 		}
 
+		constexpr obis(data_type d)
+			: value_({ d.at(VG_MEDIUM), d.at(VG_CHANNEL), d.at(VG_INDICATOR), d.at(VG_MODE), d.at(VG_QUANTITY), d.at(VG_STORAGE) })
+		{}
+
 		obis(obis const&) = default;
 
 		/**
@@ -133,6 +137,32 @@ namespace cyng {
 	 */
 	[[nodiscard]]
 	std::string to_str(obis const&);
+
+	/**
+	 * An OBIS code like "81 81 11 06 FF FF" has a depth of 2
+	 * because there are two (2) "FF" values at the end.
+	 * This actually allows to list 2^16 = 65536 elements.
+	 */
+	std::size_t depth(obis const&);
+
+	/**
+	 * If an OBIS code has a depth > 0 then descend() produces
+	 * the code of the first entry in the list. If depth == 0
+	 * the function returns the OBIS code unchanged.
+	 * 
+	 * Examples:
+	 * "81 81 11 06 FF FF" => "81 81 11 06 01 FF"
+	 * "81 81 11 06 01 FF" => "81 81 11 06 01 01"
+	 */
+	obis descend(obis const&);
+
+	/**
+	 * Produces the next element in a list.
+	 * Examples:
+	 * "81 81 11 06 01 FF" => "81 81 11 06 02 FF"
+	 * "81 81 11 06 01 02" => "81 81 11 06 01 02"
+	 */
+	obis next(obis const&);
 
 	//	comparison (constexpr since C++20)
 	bool operator==(obis const& lhs, obis const& rhs) noexcept;

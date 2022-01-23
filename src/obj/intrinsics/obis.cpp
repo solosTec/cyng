@@ -85,6 +85,49 @@ namespace cyng	{
 		return false;
 	}
 
+	std::size_t depth(obis const& o) {
+		std::size_t d = 0;
+		for (auto pos = o.data().rbegin(); pos != o.data().rend(); ++pos) {
+			if (*pos == 0xff) {
+				++d;
+			}
+			else {
+				break;
+			}
+		}
+		return d;
+	}
+
+	obis descend(obis const& o) {
+		//	copy
+		obis::data_type d = o.data();
+		for (auto pos = d.rbegin(); pos != d.rend(); ++pos) {
+			if (*pos != 0xff && pos != d.rbegin()) {
+				*--pos = 0x01;	//	index starts with 1
+				return d;	//	implicit conversion to obis type
+			}
+		}
+		return o;
+	}
+
+	/**
+	 * Produces the next element in a list.
+	 * Examples:
+	 * "81 81 11 06 01 FF" => "81 81 11 06 02 FF"
+	 * "81 81 11 06 01 02" => "81 81 11 06 01 02"
+	 */
+	obis next(obis const& o) {
+		//	copy
+		obis::data_type d = o.data();
+		for (auto pos = d.rbegin(); pos != d.rend(); ++pos) {
+			if (*pos != 0xff && pos != d.rbegin()) {
+				++(* pos);
+				return d;	//	implicit conversion to obis type
+			}
+		}
+		return o;
+	}
+
 	//	comparison
 	bool operator==(obis const& lhs, obis const& rhs) noexcept
 	{

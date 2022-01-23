@@ -165,6 +165,7 @@ namespace cyng {
 			os_
 				<< '#'
 				<< n
+				<< ' '
 				;
 			nl_ = false;
 		}
@@ -198,6 +199,5 @@ namespace cyng {
 			}
 			return s;
 		}
-
 	}
 }
