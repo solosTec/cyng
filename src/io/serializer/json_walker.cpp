@@ -151,6 +151,66 @@ namespace cyng {
 				;
 			nl_ = false;
 		}
+		void json_walker::simple(attr_t const& attr, std::size_t depth, walker_state state) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< "\""
+				<< attr.first
+				<< "\": "
+				;
+			serialize_json(os_, attr.second);
+
+			if (state != walker_state::LAST) {
+				os_ << ", ";
+				nl_ = true;
+			}
+
+			os_ << std::endl;
+			nl_ = true;
+		}
+		void json_walker::simple(param_t const& param, std::size_t depth, walker_state state) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< "\""
+				<< param.first
+				<< "\": "
+				;
+
+			serialize_json(os_, param.second);
+
+			if (state != walker_state::LAST) {
+					os_ << ", ";
+					nl_ = true;
+				}
+
+			os_ << std::endl;
+			nl_ = true;
+		}
+		void json_walker::simple(prop_t const& prop, std::size_t depth, walker_state state) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< "\""
+				<< prop.first
+				<< "\": "
+				;
+
+			serialize_json(os_, prop.second);
+
+			if (state != walker_state::LAST) {
+				os_ << ", ";
+				nl_ = true;
+			}
+
+			os_ << std::endl;
+			nl_ = true;
+		}
+
 		std::string json_walker::indentation(std::size_t depth) {
 			return std::string(depth * 2, ' ');
 		}

@@ -21,6 +21,9 @@ namespace cyng {
 			virtual void pair(std::size_t, std::size_t depth) override;
 			virtual void pair(std::string const&, std::size_t depth) override;
 			virtual void pair(obis const&, std::size_t depth) override;
+			virtual void simple(attr_t const&, std::size_t depth, walker_state) override;
+			virtual void simple(param_t const&, std::size_t depth, walker_state) override;
+			virtual void simple(prop_t const&, std::size_t depth, walker_state) override;
 
 		private:
 			static std::string indentation(std::size_t depth);

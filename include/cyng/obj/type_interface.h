@@ -56,13 +56,22 @@ namespace cyng {
 		 */
 		virtual bool is_const() const noexcept = 0;
 
+		/**
+		 * @return true if build-in type
+		 */
+		virtual bool is_intrinsic() const noexcept = 0;
 
 		/**
 		 * This is the position in the global type tuple.
 		 * 
 		 * @return The internal type tag (type_code)
 		 */
-		virtual std::size_t tag() const = 0;
+		virtual std::uint16_t tag() const noexcept = 0;
+
+		/**
+		 * @return true if type is an instrinsic container class
+		 */
+		virtual bool is_intrinsic_container() const noexcept = 0;
 
 		/**
 		 * @return the type if for built-in types

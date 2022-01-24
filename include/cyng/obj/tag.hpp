@@ -226,20 +226,20 @@ namespace cyng {
 	 * @return the index of the specified type in the type tuple
 	 */
 	template <typename T>
-	constexpr typename std::enable_if<traits::has_type<T, traits::tag_t>::value, std::size_t>::type
+	constexpr typename std::enable_if<traits::has_type<T, traits::tag_t>::value, std::uint16_t>::type
 	type_tag_traits() noexcept
 	{
 		return tmp::index<T, traits::tag_t>::value;
 	}
 
 	template <typename T>
-	constexpr typename std::enable_if<!traits::has_type<T, traits::tag_t>::value, std::size_t>::type
+	constexpr typename std::enable_if<!traits::has_type<T, traits::tag_t>::value, std::uint16_t>::type
 	type_tag_traits() noexcept
 	{
 		//
 		//	specialize type_tag<> for your custom data types
 		//
-		return -1;
+		return -1;	//	TC_EXTRINSIC == 61
 		//return cyng::traits::type_tag<T>::tag::value;
 	}
 
@@ -332,7 +332,9 @@ namespace cyng {
 		TC_IP_UDP_ENDPOINT = type_tag_traits<boost::asio::ip::udp::endpoint>(),
 		TC_IP_ICMP_ENDPOINT = type_tag_traits<boost::asio::ip::icmp::endpoint>(),
 
-		TC_EOD = type_tag_traits<eod>()
+		TC_EOD = type_tag_traits<eod>(),
+
+		TC_EXTRINSIC = type_tag_traits<eod>() + 1,	//	not intrinsic
 
 	};
 
@@ -355,12 +357,38 @@ namespace cyng {
 	 */
 	bool type_code_exists(std::string);
 
+	/**
+	 * @return the type name from the traits::names table
+	 */
 	constexpr char const* intrinsic_name_by_type_code(type_code tc)
 	{
 		return (tc < TC_EOD) 
 			? traits::names[tc]
 			: ""
 			;
+	}
+
+	/**
+	 * @return true if data type is a container
+	 */
+	constexpr bool is_container(type_code tc) {
+		//	c++14 required
+		switch (tc) {
+		case TC_TUPLE:
+		case TC_VECTOR:
+		case TC_DEQUE:
+
+		case TC_ATTR_MAP:
+		case TC_ATTR:
+		case TC_PARAM_MAP:
+		case TC_PARAM:
+		case TC_PROP_MAP:
+		case TC_PROP:
+			return true;
+		default:
+			break;
+		}
+		return false;
 	}
 
 	//

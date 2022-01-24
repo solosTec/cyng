@@ -88,15 +88,28 @@ namespace cyng {
 		}
 
 		/**
+		 * @return true if build-in type
+		 */
+		virtual bool is_intrinsic() const noexcept override {
+			return built_in_type<T>();
+		}
+
+		/**
 		 * This is the position in the global type tuple.
 		 *
 		 * @return The internal type tag (type_code)
 		 */
-		virtual std::size_t tag() const
-		{
+		virtual std::uint16_t tag() const noexcept override {
 			return built_in_type<T>()
 				? type_tag_traits<T>()
-				: -1
+				: TC_EXTRINSIC
+				;
+		}
+
+		virtual bool is_intrinsic_container() const noexcept override {
+			return built_in_type<T>()
+				? is_container(get_type_code<T>())
+				: false
 				;
 		}
 

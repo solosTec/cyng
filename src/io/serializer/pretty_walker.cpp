@@ -191,6 +191,47 @@ namespace cyng {
 			nl_ = false;
 		}
 
+		void pretty_walker::simple(attr_t const& attr, std::size_t depth, walker_state) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< '#'
+				<< attr.first
+				<< ','
+				<< attr.second
+				<< std::endl
+				;
+			nl_ = true;
+
+		}
+		void pretty_walker::simple(param_t const& param, std::size_t depth, walker_state) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< param.first
+				<< ':'
+				<< param.second
+				<< std::endl
+				;
+			nl_ = true;
+
+		}
+		void pretty_walker::simple(prop_t const& prop, std::size_t depth, walker_state) {
+			if (nl_)	os_ << indentation(depth);
+			else os_ << ' ';
+
+			os_
+				<< '$'
+				<< prop.first
+				<< ':'
+				<< prop.second
+				<< std::endl
+				;
+			nl_ = true;
+		}
+
 		std::string pretty_walker::indentation(std::size_t depth) {
 			std::string s;
 			s.reserve(depth * 2);

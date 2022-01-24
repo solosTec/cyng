@@ -28,6 +28,9 @@ namespace cyng {
 		virtual void pair(std::size_t, std::size_t depth) = 0;
 		virtual void pair(std::string const&, std::size_t depth) = 0;
 		virtual void pair(obis const&, std::size_t depth) = 0;
+		virtual void simple(attr_t const&, std::size_t depth, walker_state) = 0;
+		virtual void simple(param_t const&, std::size_t depth, walker_state) = 0;
+		virtual void simple(prop_t const&, std::size_t depth, walker_state) = 0;
 	};
 
 	void traverse(object const&, dom_walker&);

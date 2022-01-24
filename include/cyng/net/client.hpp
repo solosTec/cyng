@@ -197,9 +197,12 @@ namespace cyng {
 				auto sp = channel_.lock();
 				if (sp) {
 					if (!cs.is_complete()) {
-					//socket_.async_connect(
-					//	cs.pos_->endpoint(), std::bind(&client::on_connect, this, cs, std::placeholders::_1));
 
+					//
+					//	It's valid to pass the parameter connect_state (cs) per value since the iterator
+					//	internally uses a index. So the same iterator can work on a copy of the 
+					//  endpoint list.
+					//
 					socket_.async_connect(
 						cs.pos_->endpoint(), expose_dispatcher(*sp).wrap(std::bind(&client::on_connect, this, cs, std::placeholders::_1)));
 					
