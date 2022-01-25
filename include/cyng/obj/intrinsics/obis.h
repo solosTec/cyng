@@ -104,11 +104,6 @@ namespace cyng {
 	};
 
 	/**
-	 * definition of an OBIS path
-	 */
-	using obis_path_t = std::vector<obis>;
-
-	/**
 	 *	@return true if OBIS code has no global definition.
 	 */
 	bool is_private(obis const&);
@@ -209,6 +204,17 @@ namespace cyng {
 			, code[obis::VG_QUANTITY]
 			, static_cast<std::uint8_t>(s & 0xFF));
 	}
+
+	/**
+	 * definition of an OBIS path
+	 */
+	using obis_path_t = std::vector<obis>;
+
+	/**
+	 * Produce an obis path extended by the specified obis code.
+	 */
+	obis_path_t append(obis_path_t, obis);
+	obis_path_t append(obis_path_t, obis_path_t);
 
 }
 

@@ -155,7 +155,15 @@ namespace cyng	{
 		return !(lhs < rhs);
 	}
 
+	obis_path_t append(obis_path_t p, obis code) {
+		p.push_back(code);
+		return p;
+	}
 
+	obis_path_t append(obis_path_t p, obis_path_t e) {
+		p.insert(p.end(), e.begin(), e.end());
+		return p;
+	}
 }
 
 
