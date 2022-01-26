@@ -72,5 +72,39 @@ namespace cyng {
 			static constexpr std::size_t value = 1 + index<T, std::tuple<Types...>>::value;
 		};
 
+		//
+		//	https://stackoverflow.com/questions/35190992/how-do-i-create-a-type-list-to-expand-into-a-tuple
+		//
+
+		/**
+		 * Example:
+		 * @code
+		 * template<class... T>
+			struct ComponentList {};
+
+			template<class List>
+			struct ComponentManager {
+				rebind<List, std::tuple> components;
+			};
+
+			int main() {
+				using List = ComponentList<int, char, long>;
+				ComponentManager<List> manager;
+				std::cout << std::get<0>(manager.components) << '\n';
+			}
+		 * @endcode
+		 */
+		template<class A, template<class...> class B>
+		struct rebind_;
+
+		template<template<class...> class A, class... T, template<class...> class B>
+		struct rebind_<A<T...>, B> {
+			using type = B<T...>;
+		};
+
+		template<class A, template<class...> class B>
+		using rebind = typename rebind_<A, B>::type;
+
+
 	}
 }

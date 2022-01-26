@@ -16,9 +16,6 @@
 
 namespace cyng {
 
-	//template<typename... Args>
-	//struct identity { };
-
 	namespace {
 
 
@@ -30,7 +27,8 @@ namespace cyng {
 		{
 			/// The return type of the function.
 			using return_t = R;
-			using tuple_t = std::tuple<Args...>;
+			//using tuple_t = std::tuple<Args...>;
+			using arg_t = std::tuple<std::decay_t<Args>...>;
 
 			/// The argument types of the function as pack in identity.
 			//typedef identity<Args...> argument_type;
@@ -42,6 +40,11 @@ namespace cyng {
 
 			/// The function provided as function_ptr
 			typedef R(*function_ptr)(Args...);
+			
+			static arg_t cast(tuple_t const& tpl) {
+				return tuple_cast<Args...>(tpl);
+			}
+
 		};
 
 		/// STL: std::function
@@ -75,35 +78,29 @@ namespace cyng {
 
 	}
 
-	/**
-	 * Helps to convert a type list into a function call
-	 */
-	template <typename... F>
-	struct f_type
-	{
-		using function_t = typename unwrap_function_impl<F...>::function_t;
-		using return_t = typename unwrap_function_impl<F...>::return_t;
-		using tuple_t = typename unwrap_function_impl<F...>::tuple_t;
-	};
 
 	template <typename... F>
 	[[nodiscard]]
-	auto function_cast(tuple_t const& tpl)-> typename unwrap_function_impl<F...>::tuple_t
+	auto function_cast(tuple_t const& tpl)-> typename unwrap_function_impl<F...>::arg_t
 	{
 		using u = unwrap_function_impl<F...>;
-		using tuple_type = typename u::tuple_t; 
+		using tuple_type = typename u::arg_t;
 
-		//std::cout << u::size::value << ", " << std::tuple_size< tuple_t>::value << std::endl;
-
-		return tuple_cast<tuple_type>(tpl);
+		constexpr auto size = std::tuple_size< tuple_type >::value;
+#ifdef __DEBUG
+		std::cout << tpl.size() << ", " << size << std::endl;
+#endif
+		//
+		// call tuple_cast<>() with expanded tuple_type
+		// 
+		return u::cast(tpl);
 	}
 
 	template <typename... F>
 	auto function_call(typename unwrap_function_impl<F...>::function_t f, tuple_t const& tpl)-> typename unwrap_function_impl<F...>::return_t
 	{
 		using u = unwrap_function_impl<F...>;
-		using tuple_t = typename u::tuple_t;
-		//using R = typename u::return_t;
+		using tuple_t = typename u::arg_t;
 
 		return std::apply(f, tuple_cast<tuple_t>(tpl));
 	}

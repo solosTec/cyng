@@ -192,7 +192,7 @@ struct dummy
 };
 
 
-BOOST_AUTO_TEST_CASE(cast)
+BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
 {
     dummy d;
 
@@ -251,6 +251,15 @@ BOOST_AUTO_TEST_CASE(cast)
 
     // auto r2 = container_transform<cyng::vector_t>(cyng::make_tuple(1, 2, 3.4));
     // BOOST_REQUIRE_EQUAL(r2.size(), 3);
+
+    //
+    //  tuple cast
+    //
+    auto tplc1 = cyng::make_tuple(42, "hello", 3.4);
+    auto const[v1, v2, v3] = tuple_cast<int, std::string, double>(tplc1);
+    BOOST_CHECK_EQUAL(v1, 42);
+    BOOST_CHECK_EQUAL(v2, "hello");
+    BOOST_CHECK_EQUAL(v3, 3.4);
 }
 
 BOOST_AUTO_TEST_CASE(obis)
