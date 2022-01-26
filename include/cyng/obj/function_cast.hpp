@@ -27,8 +27,8 @@ namespace cyng {
 		{
 			/// The return type of the function.
 			using return_t = R;
-			//using tuple_t = std::tuple<Args...>;
-			using arg_t = std::tuple<std::decay_t<Args>...>;
+			using arg_t = std::tuple<Args...>;
+			//using arg_t = std::tuple<std::decay_t<Args>...>;
 
 			/// The argument types of the function as pack in identity.
 			//typedef identity<Args...> argument_type;
@@ -90,19 +90,20 @@ namespace cyng {
 #ifdef __DEBUG
 		std::cout << tpl.size() << ", " << size << std::endl;
 #endif
+		return tuple_cast<tuple_type>(tpl);
 		//
 		// call tuple_cast<>() with expanded tuple_type
 		// 
-		return u::cast(tpl);
+		//return u::cast(tpl);
 	}
 
 	template <typename... F>
 	auto function_call(typename unwrap_function_impl<F...>::function_t f, tuple_t const& tpl)-> typename unwrap_function_impl<F...>::return_t
 	{
 		using u = unwrap_function_impl<F...>;
-		using tuple_t = typename u::arg_t;
+		using arg_t = typename u::arg_t;
 
-		return std::apply(f, tuple_cast<tuple_t>(tpl));
+		return std::apply(f, tuple_cast<arg_t>(tpl));
 	}
 
 }

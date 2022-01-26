@@ -136,13 +136,13 @@ namespace cyng {
 		using R = typename tuple_cast_helper<Args...>::R;
 
 		//	compile time meets runtime
-		constexpr auto size = sizeof...(Args);
-		BOOST_ASSERT(size == tpl.size());
-
-		return (size == tpl.size())
-			? tuple_cast_helper<std::decay_t<Args>...>::convert(tpl)
-			: R{}
-			;
+		//constexpr auto size = sizeof...(Args);
+		//BOOST_ASSERT(size >= tpl.size());
+		return tuple_cast_helper<std::decay_t<Args>...>::convert(tpl);
+		//return (size == tpl.size())
+		//	? tuple_cast_helper<std::decay_t<Args>...>::convert(tpl)
+		//	: R{}
+		//	;
 	}
 
 	/**
