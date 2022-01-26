@@ -93,6 +93,13 @@ namespace cyng
 		return obj_->rtti();
 	}
 
+	std::uint16_t object::tag() const noexcept {
+		return (!*this)
+			? obj_->tag()
+			: TC_NULL
+			;
+	}
+
 	object& object::operator=(object&& r) noexcept
 	{
 		//	move
@@ -128,7 +135,7 @@ namespace cyng
 
 	bool is_null(object const& obj) {
 		if (!obj)	return true;
-		return obj.rtti().tag() == TC_NULL;
+		return obj.tag() == TC_NULL;
 	}
 
 	bool operator==(object const& o1, object const& o2) {

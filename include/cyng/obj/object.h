@@ -79,6 +79,13 @@ namespace cyng {
 		type_interface const& rtti() const;
 
 		/**
+		 * This is the position in the global type tuple.
+		 *
+		 * @return The internal type tag (type_code)
+		 */
+		std::uint16_t tag() const noexcept;
+
+		/**
 		 * transfer ownership
 		 */
 		object& operator=(object&& obj) noexcept;

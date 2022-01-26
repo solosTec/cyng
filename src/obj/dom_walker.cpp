@@ -131,7 +131,7 @@ namespace cyng {
 
 		void traverse(dom_walker& walker, object const& obj, std::size_t depth, walker_state state, type_code parent_type) {
 
-			auto const tag = obj.rtti().tag();
+			auto const tag = obj.tag();
 			switch (tag) {
 			case TC_TUPLE:
 				traverse(walker, container_cast<tuple_t>(obj), depth, state, parent_type);
@@ -168,7 +168,7 @@ namespace cyng {
 		}
 	}
 	void traverse(object const& obj, dom_walker& walker) {
-		traverse(walker, obj, 0, walker_state::LAST, static_cast<type_code>(obj.rtti().tag()));
+		traverse(walker, obj, 0, walker_state::LAST, static_cast<type_code>(obj.tag()));
 	}
 
 	void traverse(vector_t const& vec, dom_walker& walker) {

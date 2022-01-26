@@ -487,7 +487,7 @@ namespace cyng
 
 			bool statement::bind(int index, object& obj, std::size_t column_size)
 			{
-				switch (obj.rtti().tag())
+				switch (obj.tag())
 				{	
 					case TC_NULL:		return detail::bind_null_value(stmt_, column_size);
 

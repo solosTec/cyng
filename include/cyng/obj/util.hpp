@@ -227,7 +227,7 @@ namespace cyng {
 	 */
 	template < type_code TC>
 	bool is_of_type(object const& obj) {
-		return obj.rtti().tag() == TC;
+		return obj.tag() == TC;
 	}
 
 	/**

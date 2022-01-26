@@ -99,12 +99,12 @@ namespace cyng {
 		 *
 		 * @return The internal type tag (type_code)
 		 */
-		virtual std::uint16_t tag() const noexcept override {
-			return built_in_type<T>()
-				? type_tag_traits<T>()
-				: TC_EXTRINSIC
-				;
-		}
+		//virtual std::uint16_t tag() const noexcept override {
+		//	return built_in_type<T>()
+		//		? type_tag_traits<T>()
+		//		: TC_EXTRINSIC
+		//		;
+		//}
 
 		virtual bool is_intrinsic_container() const noexcept override {
 			return built_in_type<T>()

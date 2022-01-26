@@ -35,8 +35,8 @@ BOOST_AUTO_TEST_CASE(constructor)
     //std::cout << obj.rtti().extend() << std::endl;
     BOOST_REQUIRE_EQUAL(obj.rtti().extend(), 0);
 
-    //std::cout << obj.rtti().tag() << std::endl;
-    BOOST_REQUIRE_EQUAL(obj.rtti().tag(), cyng::TC_NULL);
+    //std::cout << obj.tag() << std::endl;
+    BOOST_REQUIRE_EQUAL(obj.tag(), cyng::TC_NULL);
     BOOST_REQUIRE_EQUAL(obj.rtti().type_name(), "null");
 
     auto o2 = cyng::make_object(2);

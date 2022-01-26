@@ -291,7 +291,7 @@ namespace cyng {
 				else {
 					os << ", ";
 				}
-				auto const tag = obj.rtti().tag();
+				auto const tag = obj.tag();
 				switch (tag)
 				{
 				case TC_ATTR:
@@ -348,7 +348,7 @@ namespace cyng {
 				<< ' '
 				;
 
-			auto const tag = param.second.rtti().tag();
+			auto const tag = param.second.tag();
 			switch (tag)
 			{
 			case TC_ATTR:

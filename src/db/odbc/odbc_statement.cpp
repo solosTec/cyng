@@ -518,7 +518,7 @@ namespace cyng
 			
 			bool statement::bind(int index, object& obj, std::size_t column_size)
 			{
-				switch (obj.rtti().tag())
+				switch (obj.tag())
 				{	
 					case TC_BOOL:		return bind_value_by_code<TC_BOOL>(obj, 1);
 					case TC_INT8:		return bind_value_by_code<TC_INT8>(obj, 1);

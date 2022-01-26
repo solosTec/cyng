@@ -22,6 +22,13 @@ namespace cyng {
 
 		virtual type_interface const& rtti() const noexcept = 0;
 
+		/**
+		 * This is the position in the global type tuple.
+		 *
+		 * @return The internal type tag (type_code)
+		 */
+		 virtual std::uint16_t tag() const noexcept = 0;
+
 	};
 }
 #endif

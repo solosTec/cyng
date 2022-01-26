@@ -213,7 +213,7 @@ namespace cyng {
 	void stack::split()
 	{
 		BOOST_ASSERT_MSG(!s_.empty(), "not enough parameters (split)");
-		switch (top().rtti().tag()) {
+		switch (top().tag()) {
 		case TC_TUPLE:
 			disassemble<traits::reverse_type<TC_TUPLE>::type>();
 			break;
@@ -245,7 +245,7 @@ namespace cyng {
 	void stack::assert_type() {
 		BOOST_ASSERT_MSG(s_.size() > 1, "not enough parameters (assert_type)");
 		auto const tag = pop_value<type_code>();
-		BOOST_ASSERT_MSG(s_.back().rtti().tag() == tag, "ASSERT_TYPE");
+		BOOST_ASSERT_MSG(s_.back().tag() == tag, "ASSERT_TYPE");
 	}
 
 	void stack::assert_value() {

@@ -41,7 +41,7 @@ namespace cyng {
 					init = true;
 				}
 				else {
-					auto const tag = obj.rtti().tag();
+					auto const tag = obj.tag();
 					switch (tag)
 					{
 					case TC_TUPLE:

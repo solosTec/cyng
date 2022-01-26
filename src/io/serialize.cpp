@@ -213,7 +213,7 @@ namespace cyng {
 			//	This switch converts the type data available at runtime
 			//	in serialization functions selected from the compiler
 			//
-			switch (obj.rtti().tag()) {
+			switch (obj.tag()) {
 			case TC_NULL:		return write_impl<traits::reverse_type<TC_NULL>::type>(node, obj);
 				case TC_BOOL:		return write_impl<traits::reverse_type<TC_BOOL>::type>(node, obj);
 				case TC_CHAR:		return write_impl<traits::reverse_type<TC_CHAR>::type>(node, obj);

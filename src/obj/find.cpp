@@ -23,7 +23,7 @@ namespace cyng {
 		{
 			return std::find_if(std::begin(*p), std::end(*p), [idx](object const& obj) -> bool {
 
-				switch (obj.rtti().tag()) {
+				switch (obj.tag()) {
 				case TC_ATTR:
 					return object_cast<attr_t>(obj)->first == idx;
 				case TC_UINT32:
@@ -45,7 +45,7 @@ namespace cyng {
 		{
 			return std::find_if(std::begin(*p), std::end(*p), [&name](object const& obj) -> bool {
 
-				switch (obj.rtti().tag()) {
+				switch (obj.tag()) {
 				case TC_PARAM:
 					return boost::algorithm::equals(object_cast<param_t>(obj)->first, name);
 				case TC_STRING:
@@ -60,7 +60,7 @@ namespace cyng {
 		template <typename T >
 		object extract(typename T::const_iterator pos) {
 
-			switch ((*pos).rtti().tag()) {
+			switch ((*pos).tag()) {
 			case TC_ATTR:	return object_cast<attr_t>(*pos)->second;
 			case TC_PARAM:	return object_cast<param_t>(*pos)->second;
 			default:
@@ -200,7 +200,7 @@ namespace cyng {
 
 	object find(object const& obj, std::size_t idx)
 	{
-		switch (obj.rtti().tag())
+		switch (obj.tag())
 		{
 		case TC_TUPLE:
 			return find(object_cast<tuple_t>(obj), idx);
@@ -248,7 +248,7 @@ namespace cyng {
 	object find(object const& obj, std::string const& name)
 	{
 		if (!obj)	return obj;
-		switch (obj.rtti().tag())
+		switch (obj.tag())
 		{
 		case TC_TUPLE:
 			return find(object_cast<tuple_t>(obj), name);

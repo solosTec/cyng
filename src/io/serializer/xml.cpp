@@ -211,7 +211,7 @@ namespace cyng {
 			std::size_t index{ 0 };
 			for (auto const& obj : v)
 			{
-				switch (obj.rtti().tag())
+				switch (obj.tag())
 				{
 				case TC_TUPLE:
 				case TC_VECTOR:
@@ -256,7 +256,7 @@ namespace cyng {
 			{
 				for (auto const& obj : v)
 				{
-					switch (obj.rtti().tag())
+					switch (obj.tag())
 					{
 					case TC_TUPLE:
 					case TC_VECTOR:
@@ -276,7 +276,7 @@ namespace cyng {
 			}
 			else if (v.size() == 1)
 			{
-				switch (v.front().rtti().tag())
+				switch (v.front().tag())
 				{
 				case TC_TUPLE:
 				case TC_VECTOR:

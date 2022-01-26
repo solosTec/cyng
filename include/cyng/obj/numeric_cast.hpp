@@ -49,7 +49,7 @@ namespace cyng {
 	{
 		static_assert(std::is_arithmetic<T>::value, "only arithmetic types supported");
 		try {
-			switch (obj.rtti().tag()) {
+			switch (obj.tag()) {
 			case TC_BOOL: {
 				auto const b = value_cast(obj, false);
 				//	if expected and provided type both booleans don't return a numeric limit
