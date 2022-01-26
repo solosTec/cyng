@@ -94,7 +94,7 @@ namespace cyng
 	}
 
 	std::uint16_t object::tag() const noexcept {
-		return (!*this)
+		return (*this)
 			? obj_->tag()
 			: TC_NULL
 			;
