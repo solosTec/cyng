@@ -73,18 +73,19 @@ namespace cyng {
 		template < typename ... Args >
 		struct tuple_cast_helper
 		{
-			using size = std::integral_constant<std::size_t, sizeof...(Args)>;
 			using R = typename std::tuple< Args... >;
+			constexpr static auto size = sizeof...(Args);
+			//using size = std::integral_constant<std::size_t, sizeof...(Args)>;
 
 			template < typename T >
-			using cast_type = convert< size::value - 1, T, Args...>;
+			using cast_type = convert< size - 1, T, Args...>;
 
 			template< typename T >
 			static R convert(T const& inp)
 			{
 				//	compile time meets runtime
-				using size = std::integral_constant<std::size_t, sizeof...(Args)>;
-				BOOST_ASSERT(size::value == inp.size());
+				//constexpr auto size = sizeof...(Args);
+				BOOST_ASSERT(size == inp.size());
 
 				R out;
 				cast_type< T >::set(inp.crbegin(), inp.crend(), out);
@@ -96,10 +97,14 @@ namespace cyng {
 		struct tuple_cast_helper< std::tuple< Args... >>
 		{
 			using R = typename std::tuple< std::decay_t<Args> ...>;
+			constexpr static auto size = sizeof...(Args);
 
 			template< typename T >
 			static R convert(T const& inp)
 			{
+#ifdef _DEBUG
+				BOOST_ASSERT(size == inp.size());
+#endif
 				return /*typename*/ tuple_cast_helper< Args...>::template convert< T >(inp);
 			}
 		};
@@ -111,6 +116,7 @@ namespace cyng {
 		struct tuple_cast_helper <std::tuple<>>
 		{
 			using R = typename std::tuple<>;
+			constexpr static auto size = 0;
 
 			template< typename T >
 			static R convert(T const&)
@@ -136,13 +142,13 @@ namespace cyng {
 		using R = typename tuple_cast_helper<Args...>::R;
 
 		//	compile time meets runtime
-		//constexpr auto size = sizeof...(Args);
-		//BOOST_ASSERT(size >= tpl.size());
-		return tuple_cast_helper<std::decay_t<Args>...>::convert(tpl);
-		//return (size == tpl.size())
-		//	? tuple_cast_helper<std::decay_t<Args>...>::convert(tpl)
-		//	: R{}
-		//	;
+		constexpr auto size = tuple_cast_helper<Args...>::size;
+		BOOST_ASSERT(size == tpl.size());
+
+		return (size == tpl.size())
+			? tuple_cast_helper<std::decay_t<Args>...>::convert(tpl)
+			: R{}
+			;
 	}
 
 	/**
@@ -154,7 +160,7 @@ namespace cyng {
 		using R = typename std::tuple< std::decay_t<Args> ...>;
 
 		//	compile time meets runtime
-		constexpr auto size = sizeof...(Args);
+		constexpr auto size = tuple_cast_helper<Args...>::size;
 		BOOST_ASSERT(size == vec.size());
 
 		return (size == vec.size())
@@ -171,7 +177,7 @@ namespace cyng {
 		using R = typename std::tuple< std::decay_t<Args> ...>;
 
 		//	compile time meets runtime
-		constexpr auto size = sizeof...(Args);
+		constexpr auto size = tuple_cast_helper<Args...>::size;
 		BOOST_ASSERT(size == deq.size());
 
 		return (size == deq.size())

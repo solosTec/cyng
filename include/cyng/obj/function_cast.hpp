@@ -33,7 +33,7 @@ namespace cyng {
 			/// The argument types of the function as pack in identity.
 			//typedef identity<Args...> argument_type;
 
-			using size = std::integral_constant<std::size_t, sizeof...(Args)>;
+			constexpr static auto size = sizeof...(Args);
 
 			/// The function provided as std::function
 			using function_t = std::function<R(Args...)> ;
@@ -86,8 +86,9 @@ namespace cyng {
 		using u = unwrap_function_impl<F...>;
 		using tuple_type = typename u::arg_t;
 
-		constexpr auto size = std::tuple_size< tuple_type >::value;
+		//constexpr auto size = std::tuple_size< tuple_type >::value;
 #ifdef __DEBUG
+		constexpr auto size = u::size;
 		std::cout << tpl.size() << ", " << size << std::endl;
 #endif
 		return tuple_cast<tuple_type>(tpl);

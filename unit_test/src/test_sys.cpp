@@ -81,8 +81,8 @@ BOOST_AUTO_TEST_CASE(meminfo)
 BOOST_AUTO_TEST_CASE(cpu)
 {
 
-	for(int i = 0; i < 100; ++i) {
-		std::cout << cyng::sys::get_cpu_load(0) << std::endl;
+	for(int i = 12; i != 0; --i) {
+		//std::cout << '#' << i << " - "cyng::sys::get_cpu_load(0) << std::endl;
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }

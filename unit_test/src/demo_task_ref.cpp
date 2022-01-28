@@ -2,6 +2,7 @@
 #include <cyng/task/channel.h>
 #include <cyng/obj/util.hpp>
 #include <iostream>
+#include <boost/test/unit_test.hpp>
 
 namespace cyng {
 
@@ -29,7 +30,7 @@ namespace cyng {
 	void demo_task_ref::stop(eod)
 	{
 #ifdef _DEBUG_TEST
-		std::cout << "demo_task_ref::stop()" << std::endl;
+		//std::cout << "demo_task_ref::stop()" << std::endl;
 #endif
 	}
 
@@ -44,22 +45,28 @@ namespace cyng {
 	void demo_task_ref::demo1(int n)
 	{
 #ifdef _DEBUG_TEST
-		std::cout << "demo_task_ref::demo1(" << n << ")" << std::endl;
+		//std::cout << "demo_task_ref::demo1(" << n << ")" << std::endl;
 #endif
+		BOOST_CHECK_GT(n, 1);
 		auto sp = channel_.lock();
 		//	call function #2 - demo2()
-		if (sp)	sp->suspend(std::chrono::seconds(2), 2, make_tuple(2, "dude", 3.f));
+		if (sp)	sp->suspend(std::chrono::seconds(2), 2, make_tuple(2, "dude", 3.14f));
 	}
 
 	void demo_task_ref::demo2(int a, std::string b, float c)
 	{
 		// std::cout << "demo_task_ref::demo2(" << a << ", " << b << ", " << c << ")" << std::endl;
+		BOOST_CHECK_EQUAL(a, 2);
+		BOOST_CHECK_EQUAL(b, "dude");
+		//	c == 3.14000010
+		BOOST_CHECK_CLOSE(c, 3.14, 0.00001);
 	}
 	int demo_task_ref::demo3(int n)
 	{
 #ifdef _DEBUG_TEST
-		std::cout << "demo_task_ref::demo3(" << n << ")" << std::endl;
+		//std::cout << "demo_task_ref::demo3(" << n << ")" << std::endl;
 #endif
+		BOOST_CHECK_GT(n, 10);
 		return n + 1;
 	}
 
