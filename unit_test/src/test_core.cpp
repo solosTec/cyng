@@ -15,6 +15,7 @@
 #include <cyng/obj/algorithm/reader.hpp>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/parse/buffer.h>
+#include <cyng/io/ostream.h>
 
 #include <cyng.h>
 
@@ -170,6 +171,8 @@ BOOST_AUTO_TEST_CASE(type_name_test)
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::attr_map_t>(), "amap");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::param_map_t>(), "pmap");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::param_t>(), "param");
+    BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::prop_map_t>(), "omap");
+    BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::prop_t>(), "prop");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<boost::system::error_code>(), "ec");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<boost::uuids::uuid>(), "uuid");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<boost::asio::ip::address>(), "ip:address");
@@ -277,6 +280,15 @@ BOOST_AUTO_TEST_CASE(obis)
     o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01);
     b = o.starts_with(cyng::make_buffer({ 0x81, 0x49, 0x63, 0x3C, 0x02 }));
     BOOST_CHECK(!b);
+
+    o = cyng::make_obis_2(o, 0x0406);
+    BOOST_CHECK_EQUAL(o, cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x04, 0x06));
+
+    auto u16 = o.to_uint16();
+    BOOST_CHECK_EQUAL(u16, 0x0406);
+
+    o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x1A2B);
+    BOOST_CHECK_EQUAL(o, cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x1A, 0x2B));
 
 }
 

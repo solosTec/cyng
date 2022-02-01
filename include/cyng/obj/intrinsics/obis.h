@@ -83,8 +83,12 @@ namespace cyng {
 		/**
 		 *	Fill the first 6 bytes from a u64 value with the OBIS groups
 		 */
-		[[nodiscard]]
 		std::uint64_t to_uint64() const;
+
+		/**
+		 *	extract storage and quantity field into one integer
+		 */
+		std::uint16_t to_uint16() const;
 
 		data_type const& data() const;
 
@@ -191,19 +195,41 @@ namespace cyng {
 			, static_cast<std::uint8_t>(f & 0xFF));
 	}
 
+	constexpr obis make_obis(std::uint8_t a
+		, std::uint8_t b
+		, std::uint8_t c
+		, std::uint8_t d
+		, std::uint16_t ef) {
+
+#if defined(cyng_BIG_ENDIAN)
+		return obis(a, b, c, d, ef & 0xFF, (ef >> 8) & 0xFF);
+#else
+		return obis(a, b, c, d, (ef >> 8) & 0xFF, ef & 0xFF);
+#endif
+	}
+
 	/**
 	 * Generate an OBIS code from an existing code but change the storage field
 	 *
 	 * @param s storage value
 	 */
-	constexpr obis make_obis(obis const& code, std::uint32_t s) {
+	constexpr obis make_obis(obis const& code, std::uint8_t s) {
 		return obis(code[obis::VG_MEDIUM]
 			, code[obis::VG_CHANNEL]
 			, code[obis::VG_INDICATOR]
 			, code[obis::VG_MODE]
 			, code[obis::VG_QUANTITY]
-			, static_cast<std::uint8_t>(s & 0xFF));
+			, s);
 	}
+
+
+	/**
+	 * Generate an OBIS code from an existing code but change the storage and quantity field
+	 *
+	 * @param s the value of s will be splitted in two 8 bit unsigned integers that will
+	 * replace the last two values of the specified obis code.
+	 */
+	obis make_obis_2(obis const& code, std::uint16_t s);
 
 	/**
 	 * definition of an OBIS path

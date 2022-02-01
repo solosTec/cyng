@@ -111,7 +111,7 @@ namespace cyng {
 				}
 				os_ << "}";
 				if (state != walker_state::LAST) {
-					os_ << ", " << std::endl;
+					os_ << std::endl;
 					nl_ = true;
 				}
 				else {
@@ -124,7 +124,7 @@ namespace cyng {
 				}
 				os_ << "]";
 				if (state != walker_state::LAST) {
-					os_ << ", " << std::endl;
+					os_ << std::endl;
 					nl_ = true;
 				}
 				else {
@@ -137,7 +137,7 @@ namespace cyng {
 				}
 				os_ << ">";
 				if (state != walker_state::LAST) {
-					os_ << ", " << std::endl;
+					os_ << std::endl;
 					nl_ = true;
 				}
 				else {
@@ -147,9 +147,9 @@ namespace cyng {
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
 				os_ << indentation(depth) << ")";
-				if (state != walker_state::LAST) {
-					os_ << ", ";
-				}
+				//if (state != walker_state::LAST) {
+				//	os_ << ", ";
+				//}
 				os_ << std::endl;
 				nl_ = true;
 				break;
@@ -196,9 +196,8 @@ namespace cyng {
 			else os_ << ' ';
 
 			os_
-				<< '#'
 				<< attr.first
-				<< ','
+				<< '#'
 				<< attr.second
 				<< std::endl
 				;

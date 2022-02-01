@@ -9,6 +9,7 @@
 #include <cyng/obj/intrinsics/edis.h>
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/io/io_buffer.h>
+#include <cyng/obj/array_cast.hpp>
 
 #include <numeric>
 
@@ -33,6 +34,21 @@ namespace cyng	{
 		BOOST_ASSERT(r < 0xFFFFFFFFFFFF);
 		return r;
 	}
+
+	std::uint16_t obis::to_uint16() const {
+		//
+		//	use only storage and quantity field
+		//
+
+		//	check network byte ordering
+		//
+#if defined(cyng_BIG_ENDIAN)
+		return (value_.at(VG_STORAGE) << 8) | value_.at(VG_QUANTITY);
+#else
+		return (value_.at(VG_QUANTITY) << 8) | value_.at(VG_STORAGE);
+#endif
+	}
+
 
 	obis::data_type const& obis::data() const {
 		return value_;
@@ -126,6 +142,16 @@ namespace cyng	{
 			}
 		}
 		return o;
+	}
+
+	obis make_obis_2(obis const& code, std::uint16_t s) {
+		auto const a = to_array<std::uint8_t>(s);
+		return obis(code[obis::VG_MEDIUM]
+			, code[obis::VG_CHANNEL]
+			, code[obis::VG_INDICATOR]
+			, code[obis::VG_MODE]
+			, a.at(0)
+			, a.at(1));
 	}
 
 	//	comparison

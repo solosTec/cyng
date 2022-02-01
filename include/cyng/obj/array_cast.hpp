@@ -13,11 +13,6 @@
 #include <algorithm>
 #include <iterator>
 
-#ifdef _DEBUG
-#include <cyng/io/ostream.h>
-#include <cyng/io/ostream.h>
-#endif
-
 #include <boost/assert.hpp>
 
 namespace cyng {
@@ -28,14 +23,18 @@ namespace cyng {
 	template <typename U, typename T>
 	auto to_array(T n) -> std::array< U, sizeof(T) / sizeof(U) >
 	{
-		static_assert(sizeof(T) > sizeof(U), "subtype must be smaller");
+		static_assert(sizeof(T) > sizeof(U), "subtype must be smaller");	//	or equal
 		static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "arithmetic data type required");
 
 		//
 		//	define an array to hold the integral type
 		//
-		using result_type = std::array< U, sizeof(T) / sizeof(U) >;
+		constexpr auto size = sizeof(T) / sizeof(U);
+		using result_type = std::array< U, size >;
 
+		//
+		//	iterators
+		//
 		auto const begin = reinterpret_cast<U const*>(&n);
 		auto end = begin + sizeof(T);
 
