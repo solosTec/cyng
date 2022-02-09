@@ -60,6 +60,7 @@ namespace cyng {
 		void forward(table const*
 			, key_t const&
 			, attr_t const&
+			, data_t const&
 			, std::uint64_t
 			, boost::uuids::uuid);
 

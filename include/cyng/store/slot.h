@@ -36,6 +36,7 @@ namespace cyng {
 		virtual bool forward(table const* tbl
 			, key_t const& key
 			, attr_t const& attr
+			, data_t const&
 			, std::uint64_t gen
 			, boost::uuids::uuid tag) override;
 

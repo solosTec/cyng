@@ -77,13 +77,15 @@ namespace cyng {
 	void pub::forward(table const* tbl
 		, key_t const& key
 		, attr_t const& attr
+		, data_t const& data
 		, std::uint64_t gen
 		, boost::uuids::uuid tag) {
 
 		std::forward_list<slot_ptr> expired;
 
+		//	signal an modify event
 		for (auto& sp : slots_insert_) {
-			if (!sp->forward(tbl, key, attr, gen, tag)) {
+			if (!sp->forward(tbl, key, attr, data, gen, tag)) {
 				expired.push_front(sp);
 			}
 		}

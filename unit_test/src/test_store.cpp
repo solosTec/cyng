@@ -188,6 +188,7 @@ public:
 	virtual bool forward(cyng::table const* tbl
 		, cyng::key_t const& key
 		, cyng::attr_t const& attr
+		, cyng::data_t const& data
 		, std::uint64_t gen
 		, boost::uuids::uuid tag) override {
 		return true;

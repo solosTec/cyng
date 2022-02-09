@@ -146,12 +146,6 @@ namespace cyng {
 			if (pos->second.data_.at(idx) != data.at(idx)) {
 
 				//
-				//	publish
-				//
-				attr_t attr(idx, data.at(idx));
-				this->pub::forward(this, key, attr, pos->second.generation_, source);
-
-				//
 				//	apply
 				//
 				swap(pos->second.data_.at(idx), data.at(idx));
@@ -160,6 +154,12 @@ namespace cyng {
 				//	update generation
 				//
 				++pos->second.generation_;
+
+				//
+				//	publish
+				//
+				attr_t attr(idx, data.at(idx));
+				this->pub::forward(this, key, attr, pos->second.data_, pos->second.generation_, source);
 
 			}
 		}
@@ -215,8 +215,7 @@ namespace cyng {
 				//
 				//	publish
 				//
-				//attr_t attr(idx, data.at(idx));
-				this->pub::forward(this, key, attr, pos->second.generation_, source);
+				this->pub::forward(this, key, attr, pos->second.data_, pos->second.generation_, source);
 
 				//
 				//	apply
@@ -257,7 +256,7 @@ namespace cyng {
 					//
 					//	publish
 					//
-					this->pub::forward(this, key, attr, pos->second.generation_, source);
+					this->pub::forward(this, key, attr, pos->second.data_, pos->second.generation_, source);
 
 					//
 					//	apply
