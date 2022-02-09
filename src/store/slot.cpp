@@ -56,10 +56,12 @@ namespace cyng {
 
 	bool slot::forward(table const* tbl
 		, key_t const& key
+		, data_t const& data
 		, boost::uuids::uuid tag) {
 
 		auto sp = channel_.lock();
 
+		//	remove event
 		if (sp)	sp->dispatch("db.remove", cyng::make_tuple(
 			tbl,
 			key,

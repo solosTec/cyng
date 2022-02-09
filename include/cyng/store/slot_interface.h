@@ -48,6 +48,7 @@ namespace cyng {
 		 */
 		virtual bool forward(table const* tbl
 			, key_t const& key
+			, data_t const& data
 			, boost::uuids::uuid tag) = 0;
 
 		/**

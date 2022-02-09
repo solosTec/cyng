@@ -333,7 +333,7 @@ namespace cyng {
 			//
 			//	publish
 			//
-			forward(this, key, source);
+			forward(this, key, pos->second.data_, source);
 
 			//
 			//	remove

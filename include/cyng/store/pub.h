@@ -68,6 +68,7 @@ namespace cyng {
 		 */
 		void forward(table const*
 			, key_t const&
+			, data_t const&
 			, boost::uuids::uuid);
 
 		/**

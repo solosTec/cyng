@@ -21,20 +21,30 @@ namespace cyng {
 		explicit slot(channel_weak);
 		slot(slot const&) = default;
 
+		/**
+		 * insert event
+		 */
 		virtual bool forward(table const*
 			, key_t const&
 			, data_t const&
 			, std::uint64_t
 			, boost::uuids::uuid) override;
 
+		/**
+		 * modify event
+		 */
 		virtual bool forward(table const* tbl
 			, key_t const& key
 			, attr_t const& attr
 			, std::uint64_t gen
 			, boost::uuids::uuid tag) override;
 
+		/**
+		 * remove event
+		 */
 		virtual bool forward(table const* tbl
 			, key_t const& key
+			, data_t const& data
 			, boost::uuids::uuid tag) override;
 
 		virtual bool forward(table const*
