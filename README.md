@@ -297,7 +297,8 @@ CYNG C++ library is free software under the terms of the [MIT License](https://g
 
 Your pull requests are welcomed or you can post an [issue](https://github.com/solosTec/cyng/pulls)
 
-## Contributors ##
+## Structure ##
 
-![Top Contributors](https://images.repography.com/23255267/solosTec/cyng/top-contributors/fb81572cf36d44c1278d8e54ea2926bd.svg)
+![Structure](https://images.repography.com/23255267/solosTec/cyng/structure/fb81572cf36d44c1278d8e54ea2926bd.svg)
+
 
