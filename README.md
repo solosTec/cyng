@@ -1,4 +1,3 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/282b117236244ea2b9c4752b29cb05f8)](https://www.codacy.com/app/solosTec/cyng?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=solosTec/cyng&amp;utm_campaign=Badge_Grade)
 ![GitHub](https://img.shields.io/github/license/solosTec/cyng.svg)
 
 # CYNG C++ Library #
@@ -297,3 +296,8 @@ CYNG C++ library is free software under the terms of the [MIT License](https://g
 ## Contact ##
 
 Your pull requests are welcomed or you can post an [issue](https://github.com/solosTec/cyng/pulls)
+
+## Contributors ##
+
+![Top Contributors](https://images.repography.com/23255267/solosTec/cyng/top-contributors/fb81572cf36d44c1278d8e54ea2926bd.svg)
+
