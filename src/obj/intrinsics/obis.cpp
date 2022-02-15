@@ -63,6 +63,15 @@ namespace cyng	{
 		return false;
 	}
 
+	bool obis::starts_with(std::initializer_list<std::uint8_t> seq) const {
+		if (seq.size() < size()) {
+			return std::equal(seq.begin(), seq.end(), value_.begin(), [](std::uint8_t c1, std::uint8_t c2) {
+				return c1 == c2;
+				});
+		}
+		return false;
+	}
+
 
 	bool is_private(obis const& o) {
 		return 	(o[obis::VG_MEDIUM] >= 0x80 && o[obis::VG_MEDIUM] <= 0xC7)

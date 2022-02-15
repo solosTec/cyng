@@ -101,6 +101,7 @@ namespace cyng {
 		 * @return true if the obis code starts with the specified buffer sequence
 		 */
 		bool starts_with(buffer_t) const;
+		bool starts_with(std::initializer_list<std::uint8_t>) const;
 
 	private:
 		data_type	value_;
