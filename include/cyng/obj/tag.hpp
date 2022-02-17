@@ -81,6 +81,8 @@ namespace cyng {
 			prop_map_t,		//	std::map<obis, object>;
 			prop_t,			//	std::pair<obis, object>;
 
+			prg_t,			//	std::deque<buffer_t>
+
 			boost::system::error_code,
 			boost::uuids::uuid,
 
@@ -172,6 +174,7 @@ namespace cyng {
 			"param",	//	param_t - std::pair<std::string, object>;
 			"omap",		//	prop_map_t - std::map<obis, object>;
 			"prop",		//	prop_t - std::pair<obis, object>;
+			"prg,"		//	prg_t - std::deque<buffer_t>
 
 			"ec",		//	boost::system::error_code
 			"uuid",		//	boost::uuids::uuid
@@ -323,6 +326,7 @@ namespace cyng {
 		TC_PARAM = type_tag_traits<param_t>(),			//	std::pair<std::string, object>;
 		TC_PROP_MAP = type_tag_traits<prop_map_t>(),	//	std::map<obis, object>;
 		TC_PROP = type_tag_traits<prop_t>(),			//	std::pair<obis, object>;
+		TC_PRG = type_tag_traits < prg_t>(),			//	std::deque<buffer_t>
 
 		TC_EC = type_tag_traits<boost::system::error_code>(),
 		TC_UUID = type_tag_traits<boost::uuids::uuid>(),
@@ -384,6 +388,7 @@ namespace cyng {
 		case TC_PARAM:
 		case TC_PROP_MAP:
 		case TC_PROP:
+		case TC_PRG:
 			return true;
 		default:
 			break;

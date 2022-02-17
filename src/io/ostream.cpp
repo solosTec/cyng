@@ -348,6 +348,23 @@ namespace cyng {
 		return os;
 	}
 
+	std::ostream& operator<<(std::ostream& os, prg_t const& prg) {
+		os << '(';
+		bool init = false;
+		for (auto const& buf : prg) {
+			if (!init) {
+				init = true;
+			}
+			else {
+				os << ",";
+			}
+			os << buf;
+		}
+		os << ')';
+		return os;
+	}
+
+
 	std::ostream& operator<<(std::ostream& os, attr_map_t const& amap)
 	{
 		os << '#' << '(';

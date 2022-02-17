@@ -103,6 +103,11 @@ namespace cyng {
 		 */
 		void make_deque();
 
+		/** @brief build a program (std::deque<buffer_t>)
+		 *
+		 */
+		void make_prg();
+
 		void frm();
 
 		/** @brief push all elements of a container onto stack

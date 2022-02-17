@@ -232,8 +232,9 @@ namespace cyng {
 			case TC_TUPLE:	
 			case TC_VECTOR:	
 			case TC_DEQUE:	
+			case TC_PRG:
 
-			case TC_ATTR_MAP:	
+			case TC_ATTR_MAP:
 			case TC_ATTR:		
 			case TC_PARAM_MAP:	
 			case TC_PARAM:

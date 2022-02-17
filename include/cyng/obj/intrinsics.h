@@ -46,5 +46,6 @@
 #include <cyng/obj/intrinsics/raw.h>
 
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/intrinsics/program.h>
 
 #endif //	CYNG_OBJ_INTRINSICS_H

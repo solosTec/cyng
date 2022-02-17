@@ -23,9 +23,9 @@ namespace cyng {
 	/*
 	 * Define container classes
 	 */
-	using tuple_t = std::list<object>;
-	using vector_t = std::vector<object>;
-	using deque_t = std::deque<object>;
+	using tuple_t = std::list<object>;		//!<	tuple
+	using vector_t = std::vector<object>;	//!<	vector
+	using deque_t = std::deque<object>;		//!<	deque
 
 	/**
 	 * attributes are sorted by an index

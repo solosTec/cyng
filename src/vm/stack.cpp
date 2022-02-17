@@ -204,6 +204,22 @@ namespace cyng {
 		push(make_object(std::move(deq)));
 	}
 
+	void stack::make_prg()
+	{
+		BOOST_ASSERT_MSG(!s_.empty(), "not enough parameters (prg)");
+		auto size = top_value<std::size_t>();
+		BOOST_ASSERT_MSG(size < s_.size(), "not enough parameters (prg)");
+		pop();
+		prg_t prg;
+		cyng::buffer_t tmp;
+		while (size-- != 0) {
+			BOOST_ASSERT_MSG(top().tag() == TC_BUFFER, "not a buffer (prg)");
+			prg.push_back(value_cast(std::move(top()), tmp));
+			pop();
+		}
+		push(make_object(std::move(prg)));
+	}
+
 	void stack::frm() {
 		BOOST_ASSERT_MSG(s_.size() > bp_, "invalid frame");
 		auto const size = s_.size() - bp_;

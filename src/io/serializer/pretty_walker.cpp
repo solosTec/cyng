@@ -63,6 +63,18 @@ namespace cyng {
 					nl_ = false;
 				}
 				break;
+			case TC_PRG:
+				if (nl_)	os_ << indentation(depth);
+
+				os_ << "!(";
+				if (size > 1) {
+					os_ << std::endl;
+					nl_ = true;
+				}
+				else {
+					nl_ = false;
+				}
+				break;
 			case TC_PARAM_MAP:
 				if (nl_)	os_ << indentation(depth);
 
@@ -109,7 +121,7 @@ namespace cyng {
 				if (nl_) {
 					os_ << indentation(depth);
 				}
-				os_ << "}";
+				os_ << '}';
 				if (state != walker_state::LAST) {
 					os_ << std::endl;
 					nl_ = true;
@@ -122,7 +134,7 @@ namespace cyng {
 				if (nl_) {
 					os_ << indentation(depth);
 				}
-				os_ << "]";
+				os_ << ']';
 				if (state != walker_state::LAST) {
 					os_ << std::endl;
 					nl_ = true;
@@ -135,7 +147,20 @@ namespace cyng {
 				if (nl_) {
 					os_ << indentation(depth);
 				}
-				os_ << ">";
+				os_ << '>';
+				if (state != walker_state::LAST) {
+					os_ << std::endl;
+					nl_ = true;
+				}
+				else {
+					nl_ = false;
+				}
+				break;
+			case TC_PRG:
+				if (nl_) {
+					os_ << indentation(depth);
+				}
+				os_ << ')';
 				if (state != walker_state::LAST) {
 					os_ << std::endl;
 					nl_ = true;
@@ -147,9 +172,6 @@ namespace cyng {
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
 				os_ << indentation(depth) << ")";
-				//if (state != walker_state::LAST) {
-				//	os_ << ", ";
-				//}
 				os_ << std::endl;
 				nl_ = true;
 				break;

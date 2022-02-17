@@ -66,6 +66,7 @@ namespace cyng {
 		MAKE_TUPLE,			//!< 	build a tuple (std::list<object>)
 		MAKE_VECTOR,		//!< 	build a vector (std::vector<object>)
 		MAKE_DEQUE,			//!< 	build a deque (std::deque<object>)
+		MAKE_PRG,			//!< 	build a program (std::deque<buffer_t>)
 
 		//	deassembly
 		SPLIT,				//!<	push all elements of a container onto stack

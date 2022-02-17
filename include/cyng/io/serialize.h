@@ -8,6 +8,8 @@
 #define CYNG_IO_SERIALIZE_H
 
 #include <cyng/obj/intrinsics/container.h>
+//#include <cyng/obj/intrinsics/program.h>
+
 #include <ostream>
 
 namespace cyng {

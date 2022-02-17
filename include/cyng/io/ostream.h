@@ -162,6 +162,11 @@ namespace cyng {
 	std::ostream& operator<<(std::ostream& os, vector_t const&);
 	std::ostream& operator<<(std::ostream& os, deque_t const&);
 
+	//
+	//	program
+	//
+	std::ostream& operator<<(std::ostream& os, prg_t const&);
+
 	/**
 	 * attributes are sorted by an index
 	 */

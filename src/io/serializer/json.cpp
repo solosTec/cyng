@@ -70,6 +70,35 @@ namespace cyng {
 			return cs;
 		}
 
+		std::size_t serializer <prg_t, JSON>::write(std::ostream& os, prg_t const& prg)
+		{
+			calc_size const cs(os);
+
+			if (prg.empty()) {
+				os << "null";
+			}
+			else {
+				os << '[';
+
+				//	serialize each element from the tuple
+				bool init = false;
+
+				for (auto const& buf : prg) {
+					if (!init) {
+						init = true;
+					}
+					else {
+						os << ", ";
+					}
+					serializer <buffer_t, JSON>::write(os, buf);
+				}
+
+				os << ']';
+			}
+
+			return cs;
+		}
+
 		std::size_t serializer <tuple_t, JSON>::write(std::ostream& os, tuple_t const& tpl) {
 
 			calc_size const cs(os);

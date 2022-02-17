@@ -9,6 +9,7 @@
 
 #include <cyng/io/io.h>
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/intrinsics/program.h>
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/intrinsics/null.h>
@@ -49,6 +50,12 @@ namespace cyng {
 		struct serializer <vector_t, JSON>
 		{
 			static std::size_t write(std::ostream& os, vector_t const&);
+		};
+
+		template <>
+		struct serializer <prg_t, JSON>
+		{
+			static std::size_t write(std::ostream& os, prg_t const&);
 		};
 
 		template <>

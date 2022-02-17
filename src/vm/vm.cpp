@@ -116,6 +116,9 @@ namespace cyng {
 		case op::MAKE_DEQUE:
 			ctx_.make_deque();
 			break;
+		case op::MAKE_PRG:
+			ctx_.make_prg();
+			break;
 
 		case op::SPLIT:
 			ctx_.split();

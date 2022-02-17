@@ -420,5 +420,22 @@ namespace cyng {
 			return size + serialize_binary(os, make_object(op::MAKE_DEQUE));
 		}
 
+		std::size_t serializer <prg_t, BINARY>::write(std::ostream& os, prg_t const& v)
+		{
+			std::size_t size{ 0 };
+
+			//	serialize each buffer from set
+			for (auto const& buf : v) {
+				size += serializer<buffer_t, BINARY>::write(os, buf);
+			}
+
+			//	element count as object
+			size += serialize_binary(os, make_object<std::size_t>(v.size()));
+
+			//
+			//	serialize instruction to build a set
+			//
+			return size + serialize_binary(os, make_object(op::MAKE_PRG));
+		}
 	}
 }
