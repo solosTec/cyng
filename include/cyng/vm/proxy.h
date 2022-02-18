@@ -67,7 +67,9 @@ namespace cyng {
 		void stop();
 
 		/**
-		 * @return the VM tag
+		 * This is NOT the VM tag. It's the UUID derived from the channel name.
+		 * 
+		 * @return the channel tag
 		 */
 		boost::uuids::uuid get_tag() const;
 

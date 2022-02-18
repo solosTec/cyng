@@ -13,6 +13,7 @@
 //#include <cyng/obj/container_factory.hpp>
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/util.hpp>
+#include <cyng/vm/generator.hpp>
 
 #ifdef _DEBUG_OBJECT
 #include <cyng/io/ostream.h>
@@ -282,6 +283,37 @@ BOOST_AUTO_TEST_CASE(signature)
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	ctl.shutdown();
 	ctl.stop();
+}
+
+BOOST_AUTO_TEST_CASE(forward)
+{
+	//	note: unused
+	boost::uuids::uuid parent{ {0x8d, 0xd8, 0x2a, 0x20, 0x1f, 0x0e, 0x43, 0x1f, 0x82, 0xb6, 0xf4, 0xc4, 0xbe, 0x72, 0x30, 0xcf} };
+
+	std::function<std::uint64_t(std::string)> f1 = [](std::string str) -> std::uint64_t {	//	ok
+		std::cout << "f1: " << str << std::endl;
+		return str.size();
+	};
+	std::function<std::uint64_t(std::string)> f2 = [](std::string str) -> std::uint64_t {	//	ok
+		std::cout << "f2: " << str << std::endl;
+		return str.size();
+	};
+
+	cyng::controller ctl;
+	cyng::mesh fabric(ctl);
+	auto vm1 = fabric.make_proxy(parent, cyng::make_description("f1", f1), cyng::make_description("f2", f1));
+	auto vm2 = fabric.make_proxy(parent, cyng::make_description("f2", f2));
+
+	vm1.load(cyng::generate_forward("f2", vm1.get_tag(), "hello from vm1"));
+	vm1.run();
+
+	std::this_thread::sleep_for(std::chrono::seconds(20));
+	vm1.stop();
+	vm2.stop();
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	ctl.shutdown();
+	ctl.stop();
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -155,28 +155,40 @@ namespace cyng {
 
 	}
 
-	void vm_base::ident() {
+	boost::uuids::uuid vm_base::get_channel_tag() const {
 		auto sp = channel_.lock();
-		if (sp) {
-			ctx_.push(cyng::make_object(get_tag(sp)));
-		}
-		else {
-			ctx_.push(cyng::make_object(boost::uuids::nil_uuid()));
-		}
+		return (sp)
+			? get_tag(sp)
+			: boost::uuids::nil_uuid()
+			;
+	}
+
+	void vm_base::ident() {
+		ctx_.push(cyng::make_object(get_channel_tag()));
 	}
 
 	void vm_base::forward() {
 		//
 		//	get target UUID
 		// 
-		auto tag = ctx_.forward();
-		auto channel = mesh_.lookup(tag);
-		//BOOST_ASSERT_MSG(channel, "channel not found");
+		auto const tag = ctx_.forward();
 		auto [slot, msg] = ctx_.invoke();
-		if (channel)	channel->dispatch(slot, std::move(msg));
+		if (get_channel_tag() == tag) {
+			//
+			//	Forward to same VM.
+			//	No lookup required.
+			//
+			//std::cerr << "***warning: forward to same vm " << tag << std::endl;
+			auto channel = channel_.lock();
+			if (channel)	channel->dispatch(slot, std::move(msg));
+		}
+		else {
+			auto channel = mesh_.lookup(tag);
+			if (channel)	channel->dispatch(slot, std::move(msg));
 #ifdef _DEBUG
-		else std::cerr << "***warning: channel " << tag << " not found" << std::endl;
+			else std::cerr << "***warning: channel " << tag << " not found" << std::endl;
 #endif
+		}
 	}
 
 	void vm_base::resolve() {

@@ -114,6 +114,8 @@ namespace cyng {
 		virtual void invoke() = 0;
 		virtual void invoke_r() = 0;
 
+		boost::uuids::uuid get_channel_tag() const;
+
 	private:
 		/**
 		 * push UUID on stack
@@ -123,13 +125,26 @@ namespace cyng {
 		void resolve();
 
 	protected:
+		/**
+		 * Back reference to the connected channel.
+		 * The channel is the thread-safe way to communicate with the VM.
+		 */
 		channel_weak channel_;
+
 		/**
 		 * So VM is able to post messages to all receivers
 		 * in the same realm.
 		 */
 		mesh& mesh_;
+
+		/**
+		 * Provides the stack and the memory used by the VM
+		 */
 		context ctx_;
+
+		/**
+		 * hierarchical structure possible, if one VM spawns another VM.
+		 */
 		boost::uuids::uuid const parent_;
 	};
 
