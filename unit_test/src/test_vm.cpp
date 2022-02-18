@@ -87,16 +87,35 @@ class session
 {
 public:
 	session() {}
-	inline std::uint64_t foo(std::string s) {
+	inline std::uint64_t foo(std::string s) const {
+		return s.size();
+	}
+	inline std::uint64_t bar(std::string s) {
 		return s.size();
 	}
 };
+
+
+//template <typename T, typename R, typename ... Args>
+//std::function<R(Args...)> vm_adaptor(T* p, R(T::* ptr)(Args...)) {
+//	return [p, ptr](Args... args) {return ((*p).*ptr)(args...); };
+//}
+//
+//template <typename T, typename R, typename ... Args>
+//std::function<R(Args...)> vm_adaptor(T* p, R(T::* ptr)(Args...) const) {
+//	return [p, ptr](Args... args) {return ((*p).*ptr)(args...); };
+//}
+
 
 //	--------------------------------------------------------------+
 
 BOOST_AUTO_TEST_CASE(library)
 {
 	session s;
+
+	//	typedef std::uint64_t(session::* callback)(std::string) const;
+	//auto f = session::foo;	
+
 	std::function<std::uint64_t(std::string)> f1 = [&s](std::string str) -> std::uint64_t {	//	ok
 		//std::cout << str << std::endl;
 		BOOST_REQUIRE_EQUAL(str, "a string");
@@ -150,8 +169,32 @@ BOOST_AUTO_TEST_CASE(library)
 
 	//auto vm = fabric.create_proxy(std::bind(&session::foo, &s, std::placeholders::_1));	//	not ok
 
-	vm.set_channel_name("foo", 0);
-	vm.set_channel_name("bar", 1);
+	typedef std::uint64_t(session:: * callback)(std::string) const;
+	callback f3 = &session::foo;
+	auto const length = (s.*f3)("hello");
+	//auto vmX = fabric.create_proxy((s.*f3));
+
+	//auto vmY = fabric.create_proxy([](std::string s)->std::uint64_t {
+	//	return s.size();
+	//	});
+
+	auto vmZ = fabric.create_proxy(cyng::vm_adaptor<session, std::uint64_t, std::string>(&s, &session::foo));
+	vmZ.set_channel_names({ "Z" });
+	vmZ.execute(
+		cyng::op::ESBA,
+		cyng::make_object("zzz"),
+		cyng::make_object<std::size_t>(1),
+		cyng::make_object("Z"),
+		cyng::op::RESOLVE,
+		cyng::op::INVOKE_R,
+		cyng::op::PULL
+	);
+	vm.load(make_object(cyng::op::TIDY));
+	vm.run();
+
+
+
+	vm.set_channel_names({ "foo", "bar"});
 
 	vm.execute(
 		cyng::op::ESBA,
@@ -175,7 +218,6 @@ BOOST_AUTO_TEST_CASE(library)
 
 	);
 	vm.load(make_object(cyng::op::TIDY));
-
 	vm.run();
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));

@@ -64,6 +64,7 @@ namespace cyng {
 #endif
 				if (idx == N) {
 					using R = typename F::result_type;
+					//using R = std::invoke_result<F, tuple_t&&>::type;
 					if constexpr (std::is_same<R, void>::value) {
 						function_call<F>(std::get<N>(tpl), msg);
 						f(cyng::make_tuple());	//	void

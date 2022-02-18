@@ -143,6 +143,26 @@ namespace cyng {
 		boost::uuids::random_generator	uuid_rgn_;
 	};
 
+	/**
+	 * Adapter templates to build vm functions.
+	 * Reference parameters not supported.
+	 * 
+	 * Example:
+	 * @code
+	 * auto vm = fabric.create_proxy(vm_adaptor<session, std::uint64_t, std::string>(&s, &session::foo));
+	 * @endcode
+	 */
+	template <typename T, typename R, typename ... Args>
+	std::function<R(Args...)> vm_adaptor(T* p, R(T::* ptr)(Args...)) {
+		return [p, ptr](Args... args) {return ((*p).*ptr)(std::forward<Args>(args)...); };
+		
+	}
+
+	template <typename T, typename R, typename ... Args>
+	std::function<R(Args...)> vm_adaptor(T* p, R(T::* ptr)(Args...) const) {
+		return [p, ptr](Args... args) {return ((*p).*ptr)(std::forward<Args>(args)...); };
+	}
+
 }
 #endif
 
