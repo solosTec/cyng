@@ -162,6 +162,20 @@ namespace cyng
 		}
 
 		//
+		//	+-- DROP -------------------------------------------------+
+		//
+		drop::drop(dialect d, meta_sql const& m)
+			: details::base(d, clause_t{ "DROP", "TABLE" })
+		{
+			if (has_feature(dialect_, IF_NOT_EXISTS)) {
+				clause_.push_back("IF NOT EXISTS");
+			}
+
+			clause_.push_back(m.get_name());
+
+		}
+
+		//
 		//	+-- INSERT -----------------------------------------------+
 		//
 		insert::insert(dialect d, meta_sql const& m)

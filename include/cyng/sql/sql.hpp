@@ -28,6 +28,7 @@ namespace cyng
 		class insert;
 		class update;
 		class remove;
+		class drop;
 
 		/**
 		 * expands to ?
@@ -191,6 +192,15 @@ namespace cyng
 		private:
 			void columns(meta_sql const&);
 			void pks(meta_sql const&);
+		};
+
+		/**
+		 * Drop table statement
+		 */
+		class drop : public details::base
+		{
+		public:
+			drop(dialect, meta_sql const&);
 		};
 
 		/**
