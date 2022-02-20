@@ -145,9 +145,13 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 	 auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
 
 	 //
-	 //	calls function 3 and pass result as parameter to function 1
-	 channel->next(3, 1, cyng::make_tuple(11));
-	 std::this_thread::sleep_for(std::chrono::seconds(1));
+	 //	* calls function 3 demo_task_ref::demo3(int n)
+	 // * demo3() increase the specified inter value 11 by one
+	 //	* and pass result (12) as parameter to function 1 demo_task_ref::demo1(int n).
+	 //
+	 //channel->next(3, 1, cyng::make_tuple(11));
+	 channel->next("demo3", "demo1", cyng::make_tuple(11));
+	 std::this_thread::sleep_for(std::chrono::seconds(100));
 	 channel->stop();
 	 ctl.shutdown();
 	 ctl.stop();

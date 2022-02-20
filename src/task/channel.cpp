@@ -62,6 +62,12 @@ namespace cyng {
             }, std::move(msg));
     }
 
+    void channel::next(std::string slot_producer, std::string slot_consumer, tuple_t&& msg) {
+        next(slot_producer, [=](cyng::tuple_t&& msg)->void {
+            this->dispatch(slot_consumer, std::move(msg));
+            }, std::move(msg));
+    }
+
     void channel::next(std::size_t slot_producer, channel_ptr consumer, std::size_t slot_consumer, tuple_t&& msg) {
         next(slot_producer, [&](cyng::tuple_t&& msg)->void {
             consumer->dispatch(slot_consumer, std::move(msg));
@@ -88,6 +94,11 @@ namespace cyng {
         }
 
     }
+
+    void channel::next(std::string slot, std::function<void(tuple_t&& msg)> f, tuple_t&& msg) {
+        next(lookup(slot), f, std::move(msg));
+    }
+
 
     bool channel::is_open() const noexcept {
         return task_.operator bool();

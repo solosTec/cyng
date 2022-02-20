@@ -186,6 +186,7 @@ namespace cyng {
 		 * @param msg parameters for for producer function
 		 */
 		void next(std::size_t slot_producer, std::size_t slot_consumer, tuple_t&& msg);
+		void next(std::string slot_producer, std::string slot_consumer, tuple_t&& msg);
 
 		/**
 		 * Calls function(slot_producer) and pass result as parameter to function(slot_consumer).
@@ -196,6 +197,7 @@ namespace cyng {
 		 * @param msg parameters for for producer function
 		 */
 		void next(std::size_t slot_producer, channel_ptr consumer, std::size_t slot_consumer, tuple_t&& msg);
+		//void next(std::string slot_producer, channel_ptr consumer, std::string slot_consumer, tuple_t&& msg);
 
 	private:
 
@@ -203,6 +205,7 @@ namespace cyng {
 		 * apply result of function(slot) as argument to f(result)
 		 */
 		void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t&& msg);
+		void next(std::string slot, std::function<void(tuple_t&& msg)> f, tuple_t&& msg);
 
 		/**
 		 * open channel by providing a task interface
