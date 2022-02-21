@@ -113,7 +113,7 @@ namespace cyng {
             ;
     }
 
-    void channel::stop()
+    bool channel::stop()
     {
         //  extend life time
         auto sp = this->shared_from_this(); 
@@ -124,7 +124,7 @@ namespace cyng {
         //
         auto ptr = task_.release();
 
-        if (nullptr == ptr) return;
+        if (nullptr == ptr) return false;
         BOOST_ASSERT(!is_open());
 
         //
@@ -140,6 +140,7 @@ namespace cyng {
         });
 
         ptr = nullptr;
+        return true;
     }
 
     bool channel::cancel_timer() {

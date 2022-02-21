@@ -61,10 +61,11 @@ namespace cyng {
 		}
 	}
 
-	void vm_proxy::stop() {
-		if (vm_) {
-			vm_->stop();
-		}
+	bool vm_proxy::stop() {
+		return (vm_)
+			? vm_->stop()
+			: false
+			;
 	}
 
 	void vm_proxy::set_channel_name(std::string name, std::size_t idx) {

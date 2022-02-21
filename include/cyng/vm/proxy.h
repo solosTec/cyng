@@ -63,8 +63,9 @@ namespace cyng {
 
 		/**
 		 * stop VM
+		 * @return true if channel was closed, false if channel was already closed
 		 */
-		void stop();
+		bool stop();
 
 		/**
 		 * This is NOT the VM tag. It's the UUID derived from the channel name.

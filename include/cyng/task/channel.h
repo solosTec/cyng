@@ -117,7 +117,7 @@ namespace cyng {
 		 * Close this communication channel
 		 * @return true if channel was closed, false if channel was already closed
 		 */
-		void stop();
+		bool stop();
 
 		/*
 		 * cancel timer
