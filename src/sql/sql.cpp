@@ -168,7 +168,7 @@ namespace cyng
 			: details::base(d, clause_t{ "DROP", "TABLE" })
 		{
 			if (has_feature(dialect_, IF_NOT_EXISTS)) {
-				clause_.push_back("IF NOT EXISTS");
+				clause_.push_back("IF EXISTS");
 			}
 
 			clause_.push_back(m.get_name());
