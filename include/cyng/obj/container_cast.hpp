@@ -94,7 +94,7 @@ namespace cyng {
 	param_map_t to_param_map(tuple_t const& tpl);
 
 	/**
-	 * Convert a property map to a parameter map converting the OBIS code
+	 * Convert recursively a property map to a parameter map converting the OBIS code
 	 * to a string.
 	 */
 	param_map_t to_param_map(prop_map_t const& pm);

@@ -24,7 +24,10 @@ namespace cyng {
 	param_map_t to_param_map(prop_map_t const& props) {
 		param_map_t pmap;
 		std::transform(std::begin(props), std::end(props), std::inserter(pmap, pmap.end()), [](prop_map_t::value_type const& prop) {
-			return make_param(cyng::to_str(prop.first), prop.second);
+			return (prop.second.tag() == TC_PROP_MAP) 
+				? make_param(cyng::to_str(prop.first), to_param_map(container_cast<prop_map_t>(prop.second)))
+				: make_param(cyng::to_str(prop.first), prop.second)
+				;
 			});
 		return pmap;
 	}
