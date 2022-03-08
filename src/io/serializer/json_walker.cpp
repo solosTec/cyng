@@ -35,6 +35,7 @@ namespace cyng {
 			case TC_DEQUE:
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
+			case TC_PROP_MAP:
 				if (nl_)	os_ << indentation(depth);
 
 				os_ << "{";
@@ -68,6 +69,7 @@ namespace cyng {
 			case TC_DEQUE:
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
+			case TC_PROP_MAP:
 				if (nl_) {
 					os_ << indentation(depth);
 				}
