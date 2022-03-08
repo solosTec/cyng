@@ -21,16 +21,13 @@ namespace cyng {
 		return pmap;
 	}
 
-	//param_map_t to_param_map(vector_t const& vec)
-	//{
-	//	param_map_t pmap;
-	//	for (auto const& obj : vec) {
-	//		auto tpl = container_cast<tuple_t>(obj);
-	//		if (!tpl.empty()) {
-	//			pmap.insert(container_cast<param_t>(tpl.front()));
-	//		}
-	//	}
-	//	return pmap;
-	//}
+	param_map_t to_param_map(prop_map_t const& props) {
+		param_map_t pmap;
+		std::transform(std::begin(props), std::end(props), std::inserter(pmap, pmap.end()), [](prop_map_t::value_type const& prop) {
+			return make_param(cyng::to_str(prop.first), prop.second);
+			});
+		return pmap;
+	}
+
 }
 

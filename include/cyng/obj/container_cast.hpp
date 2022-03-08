@@ -89,9 +89,15 @@ namespace cyng {
 	}
 
 	/**
-	 * convert a tuple of "param_t"s to a parameter map.
+	 * Convert a tuple of "param_t"s to a parameter map.
 	 */
 	param_map_t to_param_map(tuple_t const& tpl);
+
+	/**
+	 * Convert a property map to a parameter map converting the OBIS code
+	 * to a string.
+	 */
+	param_map_t to_param_map(prop_map_t const& pm);
 
 	/**
 	 * Convert a param_map_t to a std::map<>. Works for parameter maps with a homogenous
