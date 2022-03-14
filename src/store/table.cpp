@@ -158,7 +158,7 @@ namespace cyng {
 				//
 				//	publish
 				//
-				attr_t attr(idx, data.at(idx));
+				attr_t attr(idx, pos->second.data_.at(idx));
 				this->pub::forward(this, key, attr, pos->second.data_, pos->second.generation_, source);
 
 			}
