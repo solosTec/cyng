@@ -166,7 +166,6 @@ namespace cyng {
 
 			if (state != walker_state::LAST) {
 				os_ << ", ";
-				nl_ = true;
 			}
 
 			os_ << std::endl;

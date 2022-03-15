@@ -77,6 +77,18 @@ namespace cyng {
 		using clock_t = timer_t::clock_type;
 		using time_point_t = clock_t::time_point;
 
+		class result {
+		public:
+			result(channel&, std::size_t slot, tuple_t&& msg);
+			result(result&) = default;
+			bool is_ready() const;
+			std::pair<cyng::tuple_t, bool> get_result() const;
+		private:
+			std::atomic<bool>	ready_;
+			tuple_t result_;
+		};
+		friend result;
+
 	public:
 		channel(boost::asio::io_context& io, std::string name);
 
@@ -197,9 +209,15 @@ namespace cyng {
 		 * @param msg parameters for for producer function
 		 */
 		void next(std::size_t slot_producer, channel_ptr consumer, std::size_t slot_consumer, tuple_t&& msg);
-		//void next(std::string slot_producer, channel_ptr consumer, std::string slot_consumer, tuple_t&& msg);
+
+		template< typename ...Args>
+		result defer(std::string slot, Args&& ...args) {
+			return result(*this, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
+		}
 
 	private:
+
+		void dispatch_r(std::size_t slot, tuple_t&& msg, std::function<void(cyng::tuple_t)>);
 
 		/**
 		 * apply result of function(slot) as argument to f(result)

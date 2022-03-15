@@ -24,16 +24,22 @@ namespace cyng {
 		struct invoke_helper
 		{
 			template <typename Tpl>
-			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl) {
+			static cyng::tuple_t call(std::size_t idx, tuple_t const& msg, Tpl& tpl) {
 				using F = typename std::tuple_element<N, Tpl>::type;
 #ifdef __DEBUG_TEST
 				std::cout << "call: " << idx << ", " << N << std::endl;
 #endif
 				if (idx == N) {
-					function_call<F>(std::get<N>(tpl), msg);
-					return;
+					using R = typename F::result_type;
+					if constexpr (std::is_same<R, void>::value) {
+						function_call<F>(std::get<N>(tpl), msg);
+						return cyng::make_tuple();
+					}
+					else {
+						return cyng::make_tuple(function_call<F>(std::get<N>(tpl), msg));
+					}
 				}
-				invoke_helper<N - 1>::call(idx, msg, tpl);
+				return invoke_helper<N - 1>::call(idx, msg, tpl);
 			}
 		};
 
@@ -41,15 +47,22 @@ namespace cyng {
 		struct invoke_helper<0>
 		{
 			template <typename Tpl>
-			static void call(std::size_t idx, tuple_t const& msg, Tpl& tpl) {
+			static cyng::tuple_t call(std::size_t idx, tuple_t const& msg, Tpl& tpl) {
 
 				using F = typename std::tuple_element<0, Tpl>::type;
+				using R = typename F::result_type;
 #ifdef __DEBUG_TEST
 				std::cout << "call: " << idx << ", " << 0 << std::endl;
 #else
 				boost::ignore_unused(idx);
 #endif
-				function_call<F>(std::get<0>(tpl), msg);
+				if constexpr (std::is_same<R, void>::value) {
+					function_call<F>(std::get<0>(tpl), msg);
+					return cyng::make_tuple();
+				}
+				else {
+					return cyng::make_tuple(function_call<F>(std::get<0>(tpl), msg));
+				}
 			}
 		};
 
@@ -64,7 +77,6 @@ namespace cyng {
 #endif
 				if (idx == N) {
 					using R = typename F::result_type;
-					//using R = std::invoke_result<F, tuple_t&&>::type;
 					if constexpr (std::is_same<R, void>::value) {
 						function_call<F>(std::get<N>(tpl), msg);
 						f(cyng::make_tuple());	//	void
@@ -158,11 +170,13 @@ namespace cyng {
 		}
 
 	protected:
-		virtual void dispatch(std::size_t slot, tuple_t const& msg) override
+		virtual cyng::tuple_t dispatch(std::size_t slot, tuple_t const& msg) override
 		{
 			BOOST_ASSERT(slot <= signature_count_);
-			if (slot > signature_count_)	return;
-			invoke_helper<signature_count_>::call(slot, msg, impl_.sigs_);
+			return (slot > signature_count_)	
+				? cyng::make_tuple()
+				: invoke_helper<signature_count_>::call(slot, msg, impl_.sigs_)
+				;
 		}
 		virtual void stop() override
 		{

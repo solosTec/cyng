@@ -26,7 +26,7 @@ namespace cyng {
 		virtual void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t const& msg) = 0;
 
 	protected:
-		virtual void dispatch(std::size_t slot, tuple_t const& msg) = 0;
+		virtual cyng::tuple_t dispatch(std::size_t slot, tuple_t const& msg) = 0;
 
 		/**
 		 * @param shutdown id true channel is in shutdown mode

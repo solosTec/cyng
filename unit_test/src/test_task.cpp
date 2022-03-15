@@ -2,13 +2,17 @@
 #   define BOOST_TEST_MODULE unit_test
 #endif
 
-#include <boost/test/unit_test.hpp>
-#include <cyng/task/controller.h>
-#include <cyng/obj/container_factory.hpp>
 #include "demo_task.h"
 #include "demo_task_ref.h"
+
+#include <cyng/task/controller.h>
+#include <cyng/obj/container_factory.hpp>
+#include <cyng/obj/value_cast.hpp>
+#include <cyng/io/ostream.h>
+
 #include <boost/asio/spawn.hpp>
 #include <boost/asio/use_future.hpp>
+#include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(task_suite)
 
@@ -151,10 +155,31 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 	 //
 	 //channel->next(3, 1, cyng::make_tuple(11));
 	 channel->next("demo3", "demo1", cyng::make_tuple(11));
+
+	 //channel->chain("demo3", cyng::make_tuple(11)).then("demo1");
 	 std::this_thread::sleep_for(std::chrono::seconds(100));
 	 channel->stop();
 	 ctl.shutdown();
 	 ctl.stop();
  }
 
+ BOOST_AUTO_TEST_CASE(defer)
+ {
+	 cyng::controller ctl;
+	 auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
+
+	 auto r = channel->defer("demo3", 11);
+	 std::this_thread::sleep_for(std::chrono::seconds(1));
+	 std::this_thread::sleep_for(std::chrono::seconds(1));
+	 std::this_thread::sleep_for(std::chrono::seconds(1));
+	 if (r.is_ready()) {
+		 std::cout << r.get_result().first << std::endl;
+	 }
+	 BOOST_CHECK(r.is_ready());
+
+	 std::this_thread::sleep_for(std::chrono::seconds(100));
+	 channel->stop();
+	 ctl.shutdown();
+	 ctl.stop();
+ }
 BOOST_AUTO_TEST_SUITE_END()

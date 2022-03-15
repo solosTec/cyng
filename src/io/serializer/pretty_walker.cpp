@@ -171,6 +171,7 @@ namespace cyng {
 				break;
 			case TC_PARAM_MAP:
 			case TC_ATTR_MAP:
+			case TC_PROP_MAP:
 				os_ << indentation(depth) << ")";
 				os_ << std::endl;
 				nl_ = true;

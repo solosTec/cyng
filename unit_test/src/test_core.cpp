@@ -126,6 +126,11 @@ BOOST_AUTO_TEST_CASE(constructor)
     BOOST_REQUIRE_EQUAL(key_1.key_.at(0), 0x6b);
     BOOST_REQUIRE_EQUAL(key_1.key_.at(0xF), 0x2b);
 
+    //
+    //  eod
+    //
+    auto const eod = cyng::make_object(cyng::eod());
+    BOOST_REQUIRE_EQUAL(eod.tag(), cyng::TC_EOD);
 }
 
 BOOST_AUTO_TEST_CASE(type_name_test)

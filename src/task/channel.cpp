@@ -2,7 +2,7 @@
 #include <cyng/task/task.hpp>
 #include <cyng/obj/object.h>
 
-#ifdef _DEBUG_TASK
+#if defined _DEBUG_TASK || defined _DEBUG
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <iostream>
@@ -39,9 +39,35 @@ namespace cyng {
             auto sp = shared_from_this(); //  extend life time
 
             boost::asio::post(dispatcher_, [this, sp, slot, msg]()->void {
-                   if (sp->is_open(slot))  task_->dispatch(slot, msg);
-             });
+                if (sp->is_open(slot)) {
+                    auto const tpl = task_->dispatch(slot, msg);
+                    boost::ignore_unused(tpl);
+                }
+            });
         }
+    }
+
+    void channel::dispatch_r(std::size_t slot, tuple_t&& msg, std::function<void(cyng::tuple_t)> cb) {
+        if (is_open(slot)) {
+
+            //
+            //  the context should be active
+            //
+            BOOST_ASSERT(!dispatcher_.context().stopped());
+            BOOST_ASSERT_MSG(slot != std::numeric_limits<std::size_t>::max(), "unknown slot name");
+
+            //
+            //	thread safe access to task
+            //
+            auto sp = shared_from_this(); //  extend life time
+
+            boost::asio::post(dispatcher_, [this, sp, slot, msg, cb]()->void {
+                if (sp->is_open(slot)) {
+                    cb(task_->dispatch(slot, msg));
+                }
+            });
+        }
+
     }
 
     void channel::dispatch(std::size_t slot) {
@@ -181,6 +207,22 @@ namespace cyng {
         return suspend(tp, lookup(slot), std::move(msg));
     }
 
+    channel::result::result(channel& c, std::size_t slot, tuple_t&& msg)
+        : ready_(false)
+        , result_()
+    {
+        c.dispatch_r(slot, std::move(msg), [this](cyng::tuple_t tpl) -> void {
+            ready_ = true;
+            result_ = tpl;
+            });
+    }
+
+    bool channel::result::is_ready() const {
+        return ready_;
+    }
+    std::pair<cyng::tuple_t, bool> channel::result::get_result() const {
+        return { result_, is_ready() };
+    }
 
     boost::asio::io_context::strand& expose_dispatcher(channel& ch) {
         BOOST_ASSERT(ch.is_open());
