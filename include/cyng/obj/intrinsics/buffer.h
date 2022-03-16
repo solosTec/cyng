@@ -56,6 +56,12 @@ namespace cyng {
 	 * @return hash of the buffer content
 	 */
 	std::size_t hash(buffer_t const& buffer);
+
+	/**
+	 * Generate a duplicate
+	 */
+	buffer_t clone(buffer_t const& buffer);
+
 }
 
 #include <functional>

@@ -46,6 +46,13 @@ namespace cyng	{
 		return h;
 	}
 
+	buffer_t clone(buffer_t const& buffer) {
+		buffer_t r;
+		r.reserve(buffer.size());
+		r.assign(buffer.begin(), buffer.end());
+		return r;
+	}
+
 }
 
 
