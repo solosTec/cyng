@@ -42,11 +42,18 @@ namespace cyng	{
 
 		//	check network byte ordering
 		//
+		BOOST_ASSERT(value_.at(VG_QUANTITY) != 0);
+		BOOST_ASSERT(value_.at(VG_STORAGE) != 0);
+		if (value_.at(VG_QUANTITY) == 0xFF) {
+			return value_.at(VG_STORAGE) - 1;
+		}
+		else {
 #if defined(cyng_BIG_ENDIAN)
-		return (value_.at(VG_STORAGE) << 8) | value_.at(VG_QUANTITY);
+			return ((value_.at(VG_STORAGE) - 1) << 8) | (value_.at(VG_QUANTITY) - 1);
 #else
-		return (value_.at(VG_QUANTITY) << 8) | value_.at(VG_STORAGE);
+			return ((value_.at(VG_QUANTITY) - 1) << 8) | (value_.at(VG_STORAGE) - 1);
 #endif
+		}
 	}
 
 
