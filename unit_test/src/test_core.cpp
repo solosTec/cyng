@@ -9,6 +9,8 @@
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/numeric_cast.hpp>
 #include <cyng/obj/tuple_cast.hpp>
+#include <cyng/obj/vector_cast.hpp>
+#include <cyng/obj/set_cast.hpp>
 #include <cyng/obj/function_cast.hpp>
 #include <cyng/obj/container_cast.hpp>
 #include <cyng/obj/algorithm/find.h>
@@ -268,6 +270,25 @@ BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
     BOOST_CHECK_EQUAL(v1, 42);
     BOOST_CHECK_EQUAL(v2, "hello");
     BOOST_CHECK_EQUAL(v3, 3.4);
+
+    //
+    //  set cast
+    //
+    auto tplc2 = cyng::make_tuple(42, 43, 44);
+    auto const set2 = cyng::set_cast<int>(tplc2, 0);
+    BOOST_CHECK_EQUAL(set2.size(), 3);
+    BOOST_CHECK(set2.contains(42));
+    BOOST_CHECK(set2.contains(43));
+    BOOST_CHECK(set2.contains(44));
+
+    //
+    //  vector cast
+    //
+    auto const vec2 = cyng::vector_cast<int>(tplc2, 0);
+    BOOST_CHECK_EQUAL(vec2.size(), 3);
+    BOOST_CHECK_EQUAL(vec2.at(0), 42);
+    BOOST_CHECK_EQUAL(vec2.at(1), 43);
+    BOOST_CHECK_EQUAL(vec2.at(2), 44);
 }
 
 BOOST_AUTO_TEST_CASE(obis)

@@ -67,6 +67,7 @@ set (object_cast
     include/cyng/obj/tuple_cast.hpp
     include/cyng/obj/value_cast.hpp
     include/cyng/obj/vector_cast.hpp
+    include/cyng/obj/set_cast.hpp
     include/cyng/obj/container_cast.hpp
     include/cyng/obj/array_cast.hpp
     include/cyng/obj/buffer_cast.hpp

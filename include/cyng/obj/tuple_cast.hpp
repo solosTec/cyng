@@ -187,20 +187,6 @@ namespace cyng {
 		;
 	}
 
-	/**
-	 * Parsing a buffer into a std::tuple<...> utilizing the functions defined in buffer_cast.hpp.
-	 */
-	//	ToDo: implement a generic buffer -> std::tuple<> cast
-	//template <typename ... Args>
-	//auto tuple_cast(cyng::buffer_t const& data) -> std::tuple< std::decay_t<Args> ...> {
-
-	//	using R = typename std::tuple< std::decay_t<Args> ...>;
-	//	constexpr std::size_t upper_bound = sizeof...(Args) - 1;
-	//	R r{};
-	//	buffer_to_tuple_cast_helper<upper_bound, std::decay_t<Args> ...>::cast(data, r, 0);
-	//	return r;
-	//}
-
 }
 
 #endif //	CYNG_OBJ_TUPLE_CAST_HPP
