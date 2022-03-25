@@ -183,11 +183,20 @@ namespace cyng {
 			if (channel)	channel->dispatch(slot, std::move(msg));
 		}
 		else {
-			auto channel = mesh_.lookup(tag);
-			if (channel)	channel->dispatch(slot, std::move(msg));
+			//
+			//	forward to other VM
+			//
+			mesh_.lookup(tag, [=, this](std::vector<channel_ptr> channels) mutable {
+				BOOST_ASSERT(channels.size() < 2);
+				if (!channels.empty()) {
+					channels.front()->dispatch(slot, std::move(msg));
+				}
 #ifdef _DEBUG
-			else std::cerr << "***warning: channel " << tag << " not found" << std::endl;
+				else {
+					std::cerr << "***warning: channel " << tag << " not found" << std::endl;
+				}
 #endif
+			});
 		}
 	}
 

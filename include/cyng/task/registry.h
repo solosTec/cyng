@@ -38,9 +38,11 @@ namespace cyng {
 		registry(boost::asio::io_context& io);
 
 		/**
-		 * lookup for channel by name
+		 * Collect a vector with channels of the specified name.
+		 * Collecting the channels is thread safe but the callback has to make sure
+		 * that no race condition happens on it's side.
 		 */
-		std::vector<channel_ptr> lookup(std::string);
+		void lookup(std::string, std::function<void(std::vector<channel_ptr>)>);
 
 		/** @brief shutdown - stop all tasks
 		 * 
@@ -56,15 +58,13 @@ namespace cyng {
 		bool reset();
 
 		/**
-		 * dispatch a message to a list of tasks
+		 * dispatch a message to a list of tasks at once
 		 */
 		void dispatch(std::vector<std::size_t> tasks, std::string slot, tuple_t&& msg);
 
 		/**
 		 * collect all channels with the specified name and dispatch the data
 		 * to the names slot.
-		 *
-		 * @return Number of channels found
 		 */
 		void dispatch(std::string channel, std::string slot, tuple_t msg);
 		void dispatch(std::size_t channel, std::string slot, tuple_t msg);
@@ -83,9 +83,20 @@ namespace cyng {
 		 * 
 		 * @return Number of channels found
 		 */
-		std::size_t dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg);
-		std::size_t dispatch_exclude(channel_ptr, std::string slot, tuple_t&& msg);
+		void dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg);
 
+		/**
+		 * Dispatch a message to all channels with the specified name
+		 * but exclude the specified channel
+		 *
+		 * @return Number of channels found
+		 */
+		void dispatch_exclude(channel_ptr channel, std::string slot, tuple_t&& msg);
+
+		/**
+		 * Call stop() method on specified task(s)
+		 */
+		void stop(std::string name);
 
 	private:
 		/**
@@ -108,24 +119,6 @@ namespace cyng {
 		 */
 		void remove(std::size_t);
 		void remove_sync(std::size_t id);
-
-		template <typename Token>
-		auto find_channels(std::string name, Token&& token)
-		{
-			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, std::vector<channel_ptr>)>;
-			typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-			result_type result(handler);
-
-			dispatcher_.post([this, handler, name]() mutable {
-
-				auto channels = lookup_sync(name);
-				handler(boost::system::error_code{}, channels);
-
-				});
-
-			return result.get();
-		}
 
 	private:
 		boost::asio::io_context::strand dispatcher_;

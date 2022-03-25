@@ -40,7 +40,7 @@ namespace cyng {
 
             boost::asio::post(dispatcher_, [this, sp, slot, msg]()->void {
                 if (sp->is_open(slot)) {
-                    auto const tpl = task_->dispatch(slot, msg);
+                    auto const tpl = task_->dispatch(slot, msg, sp);
                     boost::ignore_unused(tpl);
                 }
             });
@@ -63,7 +63,7 @@ namespace cyng {
 
             boost::asio::post(dispatcher_, [this, sp, slot, msg, cb]()->void {
                 if (sp->is_open(slot)) {
-                    cb(task_->dispatch(slot, msg));
+                    cb(task_->dispatch(slot, msg, sp));
                 }
             });
         }
@@ -162,7 +162,7 @@ namespace cyng {
             //
             //  call stop(eod) in task implementation class
             //
-            ptr->stop();
+            ptr->stop(sp);
         });
 
         ptr = nullptr;
@@ -196,7 +196,7 @@ namespace cyng {
 
         timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, slot, msg, sp](boost::system::error_code const& ec) {
             if (ec != boost::asio::error::operation_aborted && sp->is_open(slot)) {
-                task_->dispatch(slot, msg);
+                task_->dispatch(slot, msg, sp);
             }
             }));
 
@@ -257,3 +257,24 @@ namespace cyng {
     }
 
 }
+
+namespace std {
+
+    size_t hash<cyng::channel_ptr>::operator()(cyng::channel_ptr v) const noexcept
+    {
+        return (v)
+            ? v->get_id()
+            : 0u
+            ;
+    }
+    size_t hash<cyng::channel_weak>::operator()(cyng::channel_weak v) const noexcept
+    {
+        auto channel = v.lock();
+        return (channel)
+            ? hash<cyng::channel_ptr>()(channel)
+            : 0
+            ;
+    }
+}
+
+

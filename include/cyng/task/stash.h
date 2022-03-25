@@ -59,6 +59,12 @@ namespace cyng {
 		 * remove reference from channel list
 		 */
 		void unlock(std::size_t id);
+		void unlock(std::string name);
+
+		/**
+		 * Unlocks the task and stop it
+		 */
+		void stop(std::string name);
 
 		/**
 		 * not thtread safe
@@ -66,27 +72,27 @@ namespace cyng {
 		std::size_t size() const;
 
 	private:
-		template <typename Token>
-		auto find_channel(std::size_t id, Token&& token)
-		{
-			using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
-			typename result_type::completion_handler_type handler(std::forward<Token>(token));
+		//template <typename Token>
+		//auto find_channel(std::size_t id, Token&& token)
+		//{
+		//	using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
+		//	typename result_type::completion_handler_type handler(std::forward<Token>(token));
 
-			result_type result(handler);
+		//	result_type result(handler);
 
-			dispatcher_.post([this, handler, id]() mutable {
-				auto pos = list_.find(id);
-				if (pos != list_.end()) {
-					handler(boost::system::error_code{}, pos->second);
-				}
-				else {
-					handler(boost::asio::error::not_found, channel_ptr());
+		//	dispatcher_.post([this, handler, id]() mutable {
+		//		auto pos = list_.find(id);
+		//		if (pos != list_.end()) {
+		//			handler(boost::system::error_code{}, pos->second);
+		//		}
+		//		else {
+		//			handler(boost::asio::error::not_found, channel_ptr());
 
-				}
-				});
+		//		}
+		//		});
 
-			return result.get();
-		}
+		//	return result.get();
+		//}
 
 	private:
 		boost::asio::io_context::strand dispatcher_;

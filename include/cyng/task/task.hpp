@@ -170,7 +170,7 @@ namespace cyng {
 		}
 
 	protected:
-		virtual cyng::tuple_t dispatch(std::size_t slot, tuple_t const& msg) override
+		virtual cyng::tuple_t dispatch(std::size_t slot, tuple_t const& msg, channel_ptr) override
 		{
 			BOOST_ASSERT(slot <= signature_count_);
 			return (slot > signature_count_)	
@@ -178,12 +178,12 @@ namespace cyng {
 				: invoke_helper<signature_count_>::call(slot, msg, impl_.sigs_)
 				;
 		}
-		virtual void stop() override
+		virtual void stop(std::shared_ptr<channel> sp) override
 		{
 			//
 			//	call the last entry
 			//
-			dispatch(stop_idx_, cyng::make_tuple(eod{}));
+			dispatch(stop_idx_, cyng::make_tuple(eod{}), sp);
 
 			//
 			//	delete this task
@@ -198,7 +198,7 @@ namespace cyng {
 			//
 		}
 
-		void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t const& msg) override
+		virtual void next(std::size_t slot, std::function<void(tuple_t&& msg)> f, tuple_t const& msg) override
 		{
 			BOOST_ASSERT(slot <= signature_count_);
 			if (slot > signature_count_)	return;

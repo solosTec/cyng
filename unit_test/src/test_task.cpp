@@ -11,7 +11,6 @@
 #include <cyng/io/ostream.h>
 
 #include <boost/asio/spawn.hpp>
-#include <boost/asio/use_future.hpp>
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(task_suite)
@@ -59,13 +58,16 @@ BOOST_AUTO_TEST_CASE(named)
 {
 	cyng::controller ctl(4);
 	auto channel = ctl.create_named_channel<cyng::demo_task>("dude");
-	auto channels = ctl.get_registry().lookup("dude");
-	BOOST_REQUIRE(!channels.empty());
-	if (!channels.empty()) {
-		BOOST_REQUIRE_EQUAL(channels.size(), 1);
-		BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
-		channels.front()->stop();
-	}
+	ctl.get_registry().lookup("dude", [](std::vector<cyng::channel_ptr> channels) {
+
+		BOOST_REQUIRE(!channels.empty());
+		if (!channels.empty()) {
+			BOOST_REQUIRE_EQUAL(channels.size(), 1);
+			BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
+			channels.front()->stop();
+		}
+
+	});
 	ctl.shutdown();
 	ctl.stop();
 }
@@ -74,19 +76,24 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 {
 	cyng::controller ctl;
 	auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
-	auto channels = ctl.get_registry().lookup("dude");
-	BOOST_REQUIRE(!channels.empty());
-	if (!channels.empty()) {
-		BOOST_REQUIRE_EQUAL(channels.size(), 1);
-		BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
-		//channels.front()->dispatch(3, cyng::make_tuple(12));
-		channels.front()->dispatch("demo3", cyng::make_tuple(12));
-		channels.front()->dispatch(1, cyng::make_tuple(2));
-		std::this_thread::sleep_for(std::chrono::seconds(2));
-		std::this_thread::sleep_for(std::chrono::seconds(2));
-		std::this_thread::sleep_for(std::chrono::seconds(2));
-		channels.front()->stop();
-	}
+	ctl.get_registry().lookup("dude", [](std::vector<cyng::channel_ptr> channels) {
+
+		BOOST_REQUIRE(!channels.empty());
+		if (!channels.empty()) {
+			BOOST_REQUIRE_EQUAL(channels.size(), 1);
+			BOOST_REQUIRE_EQUAL(channels.front()->get_name(), "dude");
+			//	The following call generates an exception
+			//channels.front()->dispatch("demo4", cyng::make_tuple(channels.front()));
+			//channels.front()->dispatch(3, cyng::make_tuple(12));
+			channels.front()->dispatch("demo3", cyng::make_tuple(12));
+			channels.front()->dispatch(1, cyng::make_tuple(2));
+			//cyng::make_object(channels.front());
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			channels.front()->stop();
+		}
+	});
 	ctl.shutdown();
 	ctl.stop();
 }

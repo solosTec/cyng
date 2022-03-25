@@ -12,12 +12,13 @@ namespace cyng {
 		std::bind(&demo_task_ref::demo1, this, std::placeholders::_1),
 		std::bind(&demo_task_ref::demo2, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
 		std::bind(&demo_task_ref::demo3, this, std::placeholders::_1),
+		std::bind(&demo_task_ref::demo4, this, std::placeholders::_1),
 		std::bind(&demo_task_ref::stop, this, std::placeholders::_1),
 	},	channel_(wp)
 	{
 		auto sp = channel_.lock();
 		if (sp) {
-			sp->set_channel_names({ "demo0", "demo1","demo2","demo3" });
+			sp->set_channel_names({ "demo0", "demo1","demo2","demo3","demo4" });
 		}
 	}
 
@@ -68,6 +69,16 @@ namespace cyng {
 #endif
 		BOOST_CHECK_GT(n, 10);
 		return n + 1;
+	}
+
+	void demo_task_ref::demo4(std::weak_ptr<channel> wcp) {
+		auto cp = wcp.lock();
+		if (cp) {
+			std::cout << cp->get_name() << std::endl;
+		}
+		else {
+			std::cout << "NULL" << std::endl;
+		}
 	}
 
 }

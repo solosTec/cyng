@@ -96,6 +96,10 @@ namespace cyng {
 		 * @return true, if channel is open
 		 */
 		bool is_open() const noexcept;
+
+		/**
+		 * @return true, if channel is open and slot is in the valid range
+		 */
 		bool is_open(std::size_t slot) const noexcept;
 
 		/**
@@ -166,7 +170,7 @@ namespace cyng {
 
 			timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, slot, msg](boost::system::error_code const& ec) {
 				if (ec != boost::asio::error::operation_aborted && is_open(slot)) {
-					task_->dispatch(slot, msg);
+					task_->dispatch(slot, msg, sp);
 				}
 			}));
 		}
@@ -261,6 +265,14 @@ namespace cyng {
 	};
 
 	/**
+	 * comparison for equality
+	 */
+	inline bool operator==(channel const& lhs, channel const& rhs) {
+		return lhs.get_id() == rhs.get_id();
+	}
+	inline bool operator!=(channel const& lhs, channel const& rhs) { return !(lhs == rhs); }
+
+	/**
 	 * Use the same strand as the channel
 	 */
 	template <typename Token>
@@ -270,4 +282,19 @@ namespace cyng {
 
 }
 
+#include <functional>
+
+namespace std {
+
+	template <>
+	class hash<cyng::channel_ptr> {
+	public:
+		size_t operator()(cyng::channel_ptr) const noexcept;
+	};
+	template <>
+	class hash<cyng::channel_weak> {
+	public:
+		size_t operator()(cyng::channel_weak) const noexcept;
+	};
+}
 #endif

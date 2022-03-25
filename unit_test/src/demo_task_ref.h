@@ -27,6 +27,7 @@ namespace cyng {
 			std::function<void(int)>,
 			std::function<void(int, std::string, float)>,
 			std::function<int(int)>,
+			std::function<void(std::weak_ptr<channel>)>,
 			std::function<void(eod)>
 		>;
 
@@ -38,6 +39,7 @@ namespace cyng {
 		void demo1(int);
 		void demo2(int, std::string, float);
 		int demo3(int);
+		void demo4(std::weak_ptr<channel>);
 
 		void stop(eod);
 

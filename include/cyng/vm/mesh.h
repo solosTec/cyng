@@ -108,7 +108,8 @@ namespace cyng {
 		/**
 		 * Search for a VM with the specified tag
 		 */
-		channel_ptr lookup(boost::uuids::uuid tag);
+		//channel_ptr lookup(boost::uuids::uuid tag);
+		void lookup(boost::uuids::uuid tag, std::function<void(std::vector<channel_ptr>)> cb);
 
 		/**
 		 * get access to task manager

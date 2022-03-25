@@ -4,10 +4,8 @@
 #include <algorithm>
 #include <iterator>
 
-#include <thread>
-#include <future>
+//#include <thread>
 #include <boost/asio.hpp>
-#include <boost/asio/use_future.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/assert.hpp>
 
@@ -75,15 +73,12 @@ namespace cyng {
 		return channels;
 	}
 
-	std::vector<channel_ptr> registry::lookup(std::string name)
-	{
-		if (!shutdown_) {
+	void registry::lookup(std::string name, std::function<void(std::vector<channel_ptr>)> cb) {
+		dispatcher_.post([this, cb, name]() mutable {
 
-			auto answer = find_channels(name, boost::asio::use_future);
-			return answer.get();
-		}
+			cb(lookup_sync(name));
 
-		return std::vector<channel_ptr>();
+		});
 	}
 
 	bool registry::shutdown()
@@ -171,34 +166,41 @@ namespace cyng {
 
 	}
 
-	std::size_t registry::dispatch_exclude(std::size_t id, std::string channel, std::string slot, tuple_t&& msg) {
+	void registry::dispatch_exclude(std::size_t id, std::string name, std::string slot, tuple_t&& msg) {
 
-		std::size_t count{ 0 };
-		auto channels = lookup(channel);
-		for (auto& chp : channels) {
+		lookup(name, [=, this](std::vector<channel_ptr> channels) {
 
-			//
-			//	exclude 
-			// 
-			if (chp->get_id() != id) {
+			for (auto& source : channels) {
 
 				//
-				//	since every dispatch call expects it's own copy
-				//	of the data, we have to clone it.
-				chp->dispatch(slot, clone(msg));
-				++count;
+				//	exclude 
+				// 
+				if (source->get_id() != id) {
+
+					//
+					//	since every dispatch call expects it's own copy
+					//	of the data, we have to clone it.
+					source->dispatch(slot, clone(msg));
+					//++count;
+				}
 			}
-		}
-		return count;
-
+			});
 	}
 
-	std::size_t registry::dispatch_exclude(channel_ptr channel, std::string slot, tuple_t&& msg) {
+	void registry::dispatch_exclude(channel_ptr channel, std::string slot, tuple_t&& msg) {
 		if (channel) {
-			return dispatch_exclude(channel->get_id(), channel->get_name(), slot, std::move(msg));
+			dispatch_exclude(channel->get_id(), channel->get_name(), slot, std::move(msg));
 		}
-		return 0;
 	}
+
+	void registry::stop(std::string name) {
+		lookup(name, [](std::vector<cyng::channel_ptr> channels) {
+			for (auto receiver : channels) {
+				receiver->stop();
+			}
+		});
+	}
+
 
 	auto_remove::auto_remove(registry& reg, std::size_t id)
 		: reg_(reg)
