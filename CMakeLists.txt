@@ -733,7 +733,7 @@ else()
         OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    message(STATUS "** LSB release                  : ${LSB_RELEASE_ID_SHORT}")
+    message(STATUS "** LSB release        : ${LSB_RELEASE_ID_SHORT}")
 
     if (${LSB_RELEASE_ID_SHORT} STREQUAL "openSUSE")
         set(CPACK_GENERATOR "RPM")
