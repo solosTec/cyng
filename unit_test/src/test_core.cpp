@@ -204,6 +204,7 @@ struct dummy
 
 BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
 {
+    //std::cout << _MSC_VER << std::endl;
     dummy d;
 
     auto o6 = cyng::make_object(new int(42));

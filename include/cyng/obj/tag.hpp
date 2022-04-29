@@ -433,11 +433,16 @@ namespace std {
 		size_t operator()(boost::system::error_code const& ec) const noexcept;
 	};
 
+	/**
+	 * Since MSVC version 19.32 STL defines this specialization of std::hash<>.
+	 */
+#if defined(_MSC_VER) && (_MSC_VER < 1931) || !defined(_MSC_VER)
 	template <>
 	class hash<std::filesystem::path> {
 	public:
 		size_t operator()(std::filesystem::path const& p) const noexcept;
 	};
+#endif
 
 	template <>
 	class hash<boost::uuids::uuid> {
