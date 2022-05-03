@@ -11,6 +11,8 @@
 #
 include (${CMAKE_SOURCE_DIR}/3party/sqlite.cmake)
 add_library(cyng_sqlite3 ${GLOBAL_LIBRARY_TYPE} ${sqlite_lib})
+add_library(cyng::sqlite3 ALIAS "cyng_sqlite3")
+
 set_property(TARGET cyng_sqlite3 PROPERTY POSITION_INDEPENDENT_CODE ON)
 set(${CAPITAL_NAME}_SQLITE3_CONNECTOR ON CACHE BOOL "SQLite3 Connector")
 

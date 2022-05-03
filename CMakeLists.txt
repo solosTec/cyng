@@ -14,9 +14,14 @@ include (cmake/time_stamp.cmake)
 
 project(
     cyng
-    VERSION 0.9.3.${_TWEAK_ID}
+    VERSION 0.9.4.${_TWEAK_ID}
     LANGUAGES C CXX
 )
+
+#
+#   get an uppercase project name
+#
+string(TOUPPER ${PROJECT_NAME} CAPITAL_NAME)
 
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
@@ -65,11 +70,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include (TestBigEndian)
     TEST_BIG_ENDIAN(${PROJECT_NAME}_BIG_ENDIAN)
     message(STATUS "** big endian         : ${${PROJECT_NAME}_BIG_ENDIAN}")
-
-    #
-    #   get an uppercase project name
-    #
-    string(TOUPPER ${PROJECT_NAME} CAPITAL_NAME)
 
     #
     # manage unit test: CYNG_UNIT_TEST
@@ -173,6 +173,7 @@ message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 #
 include (src/obj/lib.cmake)
 add_library(cyng_obj ${GLOBAL_LIBRARY_TYPE} ${object_lib})
+add_library(cyng::obj ALIAS "cyng_obj")
 
 target_include_directories(cyng_obj
     PUBLIC 
@@ -218,6 +219,7 @@ target_link_libraries(cyng_obj
 #
 include (src/vm/lib.cmake)
 add_library(cyng_vm ${GLOBAL_LIBRARY_TYPE} ${vm_lib})
+add_library(cyng::vm ALIAS "cyng_vm")
 
 target_include_directories(cyng_vm
     PUBLIC 
@@ -253,6 +255,7 @@ target_compile_definitions(cyng_vm
 #
 include (src/store/lib.cmake)
 add_library(cyng_store ${GLOBAL_LIBRARY_TYPE} ${store_lib})
+add_library(cyng::store ALIAS "cyng_store")
 
 target_include_directories(cyng_store
     PUBLIC 
@@ -292,6 +295,7 @@ target_link_libraries(cyng_store
 #
 include (src/task/lib.cmake)
 add_library(cyng_task ${GLOBAL_LIBRARY_TYPE} ${task_lib})
+add_library(cyng::task ALIAS "cyng_task")
 
 target_include_directories(cyng_task
     PUBLIC 
@@ -330,6 +334,7 @@ target_compile_options(cyng_task
 #
 include (src/io/lib.cmake)
 add_library(cyng_io ${GLOBAL_LIBRARY_TYPE} ${io_lib})
+add_library(cyng::io ALIAS "cyng_io")
 
 target_include_directories(cyng_io
     PUBLIC 
@@ -355,6 +360,7 @@ target_link_libraries(cyng_io
 #
 include (src/log/lib.cmake)
 add_library(cyng_log ${GLOBAL_LIBRARY_TYPE} ${log_lib})
+add_library(cyng::log ALIAS "cyng_log")
 
 target_include_directories(cyng_log
     PUBLIC 
@@ -398,6 +404,7 @@ target_link_libraries(cyng_log
 #
 include (src/parse/lib.cmake)
 add_library(cyng_parse ${GLOBAL_LIBRARY_TYPE} ${parse_lib})
+add_library(cyng::parse ALIAS "cyng_parse")
 
 target_include_directories(cyng_parse
     PUBLIC 
@@ -434,6 +441,7 @@ target_link_libraries(cyng_parse
 #
 include (src/sys/lib.cmake)
 add_library(cyng_sys ${GLOBAL_LIBRARY_TYPE} ${sys_lib})
+add_library(cyng::sys ALIAS "cyng_sys")
 
 target_include_directories(cyng_sys
     PUBLIC 
@@ -479,6 +487,7 @@ target_link_libraries(cyng_sys
 #
 include (src/rnd/lib.cmake)
 add_library(cyng_rnd ${GLOBAL_LIBRARY_TYPE} ${rnd_lib})
+add_library(cyng::rnd ALIAS "cyng_rnd")
 
 target_include_directories(cyng_rnd
     PUBLIC 
@@ -509,6 +518,7 @@ target_link_libraries(cyng_rnd
 #
 include (src/xml/lib.cmake)
 add_library(cyng_xml ${GLOBAL_LIBRARY_TYPE} ${xml_lib})
+add_library(cyng::xml ALIAS "cyng_xml")
 
 target_include_directories(cyng_xml
     PUBLIC 
@@ -542,6 +552,7 @@ target_link_libraries(cyng_xml
 #
 include (src/sql/lib.cmake)
 add_library(cyng_sql ${GLOBAL_LIBRARY_TYPE} ${sql_lib})
+add_library(cyng::sql ALIAS "cyng_sql")
 
 target_include_directories(cyng_sql
     PUBLIC 
@@ -572,6 +583,7 @@ target_link_libraries(cyng_sql
 #
 include (src/db/lib.cmake)
 add_library(cyng_db ${GLOBAL_LIBRARY_TYPE} ${db_lib})
+add_library(cyng::db ALIAS "cyng_db")
 
 target_include_directories(cyng_db
     PUBLIC 
@@ -618,6 +630,7 @@ if (WIN32)
 
     include (src/scm/lib.cmake)
     add_library(cyng_scm ${GLOBAL_LIBRARY_TYPE} ${scm_lib})
+    add_library(cyng::scm ALIAS "cyng_scm")
 
     target_include_directories(cyng_scm
         PUBLIC 

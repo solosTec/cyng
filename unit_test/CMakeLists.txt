@@ -56,18 +56,18 @@ target_link_directories(unit_test
 #
 target_link_libraries(unit_test 
     PRIVATE
-        cyng_obj
-        cyng_task
-        cyng_io
-        cyng_vm
-        cyng_log
-        cyng_sql
-        cyng_db
-        cyng_sqlite3
-        cyng_store
-        cyng_sys
-        cyng_parse
-        cyng_net
+        cyng::obj
+        cyng::task
+        cyng::io
+        cyng::vm
+        cyng::log
+        cyng::sql
+        cyng::db
+        cyng::sqlite3
+        cyng::store
+        cyng::sys
+        cyng::parse
+        cyng::net
         "$<$<PLATFORM_ID:Linux>:pthread;${CMAKE_DL_LIBS}>"
         "$<$<PLATFORM_ID:Windows>:odbc32>"
         Boost::locale

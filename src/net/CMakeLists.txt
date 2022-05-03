@@ -1,3 +1,5 @@
+cmake_minimum_required (VERSION 3.14)
+project(NETWORK)
 
 
 message(STATUS "")                                                           
@@ -21,19 +23,20 @@ message(STATUS "   **                     **                                 ")
 message(STATUS "")                                                           
                                                            
 
-message(STATUS "** PROJECT_SOURCE_DIR : ${PROJECT_SOURCE_DIR}")
-message(STATUS "** PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
 message(STATUS "** CMAKE_SOURCE_DIR   : ${CMAKE_SOURCE_DIR}")
 message(STATUS "** CMAKE_BINARY_DIR   : ${CMAKE_BINARY_DIR}")
+message(STATUS "** PROJECT_SOURCE_DIR : ${PROJECT_SOURCE_DIR}")
+message(STATUS "** PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
 message(STATUS "** CURRENT_SOURCE_DIR : ${CMAKE_CURRENT_SOURCE_DIR}")
-message(STATUS "** ${PROJECT_NAME}_SOURCE_DIR    : ${${PROJECT_NAME}_SOURCE_DIR}")
-message(STATUS "** ${PROJECT_NAME}_BINARY_DIR    : ${${PROJECT_NAME}_BINARY_DIR}")
+message(STATUS "** ${PROJECT_NAME}_SOURCE_DIR : ${${PROJECT_NAME}_SOURCE_DIR}")
+message(STATUS "** ${PROJECT_NAME}_BINARY_DIR : ${${PROJECT_NAME}_BINARY_DIR}")
 message(STATUS "** Library type       : ${GLOBAL_LIBRARY_TYPE}")
 
 
 include (lib.cmake)
 
 add_library(cyng_net ${GLOBAL_LIBRARY_TYPE} ${net_lib})
+add_library(cyng::net ALIAS "cyng_net")
 
 target_compile_features(cyng_net PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 
@@ -59,14 +62,3 @@ target_include_directories(cyng_net
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-
-#target_link_directories(cyng_net
-#    PRIVATE
-#        ${Boost_LIBRARY_DIRS}
-#)
-
-#target_link_libraries(cyng_net 
-#    PRIVATE 
-#        date::date
-#)
-
