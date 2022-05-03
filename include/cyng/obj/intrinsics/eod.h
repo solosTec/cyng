@@ -27,7 +27,7 @@ namespace std {
 	public:
 		inline size_t operator()(cyng::eod) const noexcept
 		{
-			return cyng_EOD_HASH;
+			return CYNG_EOD_HASH;
 		}
 	};
 }

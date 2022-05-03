@@ -28,7 +28,7 @@ namespace std {
 		inline size_t operator()(cyng::null) const noexcept
 		{
 			//	see cyng.h
-			return cyng_NULL_HASH;
+			return CYNG_NULL_HASH;
 		}
 	};
 }

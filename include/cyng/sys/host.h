@@ -27,15 +27,15 @@ namespace cyng {
 		}
 
 		constexpr const char* get_processor() {
-			return cyng_SYSTEM_PROCESSOR;
+			return CYNG_SYSTEM_PROCESSOR;
 		}
 
 		constexpr const char* get_system_name() {
-			return cyng_SYSTEM_NAME;
+			return CYNG_SYSTEM_NAME;
 		}
 		
 		constexpr const char* get_system_version() {
-			return cyng_SYSTEM_VERSION;
+			return CYNG_SYSTEM_VERSION;
 		}
 
 		constexpr std::uint32_t get_boost_version() {
@@ -51,42 +51,42 @@ namespace cyng {
 		}
 
 		constexpr const char* get_project_name() {
-			return cyng_PROJECT_NAME;
+			return CYNG_PROJECT_NAME;
 		}
 
 		constexpr bool is_crosscompiled() {
-			return cyng_CROSSCOMPILING;
+			return CYNG_CROSSCOMPILING;
 		}
 
 		constexpr std::uint32_t get_build_year() {
-			return cyng_YEAR;
+			return CYNG_YEAR;
 		}
 
 		constexpr const char* get_build_time() {
-			return cyng_BUILD_AT;
+			return CYNG_BUILD_AT;
 		}
 		
-//#define cyng_HOST_FQDN "leo"
+//#define CYNG_HOST_FQDN "leo"
 		constexpr std::uint32_t get_host_number_of_logical_cores() {
-			return cyng_HOST_NUMBER_OF_PHYSICAL_CORES;
+			return CYNG_HOST_NUMBER_OF_PHYSICAL_CORES;
 		}
 		constexpr std::uint32_t get_host_number_of_physical_cores() {
-			return cyng_HOST_NUMBER_OF_PHYSICAL_CORES;
+			return CYNG_HOST_NUMBER_OF_PHYSICAL_CORES;
 		}
 		constexpr std::uint32_t get_host_total_virtual_memory() {
-			return cyng_TOTAL_VIRTUAL_MEMORY;
+			return CYNG_TOTAL_VIRTUAL_MEMORY;
 		}
 		constexpr std::uint32_t get_host_total_physical_memory() {
-			return cyng_TOTAL_PHYSICAL_MEMORY;
+			return CYNG_TOTAL_PHYSICAL_MEMORY;
 		}
 		constexpr const char* get_host_processor_description() {
-			return cyng_PROCESSOR_DESCRIPTION;
+			return CYNG_PROCESSOR_DESCRIPTION;
 		}
 		constexpr const char* get_host_os_release() {
-			return cyng_OS_RELEASE;
+			return CYNG_OS_RELEASE;
 		}
 		constexpr const char* get_os_version() {
-			return cyng_OS_VERSION;
+			return CYNG_OS_VERSION;
 		}
 
 		/**

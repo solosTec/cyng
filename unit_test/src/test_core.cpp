@@ -28,12 +28,12 @@ BOOST_AUTO_TEST_SUITE(core_suite)
 BOOST_AUTO_TEST_CASE(constructor)
 {
     cyng::object obj;
-    BOOST_REQUIRE_EQUAL(obj.hash(), cyng_NULL_HASH);
+    BOOST_REQUIRE_EQUAL(obj.hash(), CYNG_NULL_HASH);
     //std::cout << obj.hash() << std::endl;
     {
         auto const o = obj.clone();
         //std::cout << o.hash() << std::endl;
-        BOOST_REQUIRE_EQUAL(o.hash(), cyng_NULL_HASH);
+        BOOST_REQUIRE_EQUAL(o.hash(), CYNG_NULL_HASH);
     }
     //std::cout << obj.rtti().extend() << std::endl;
     BOOST_REQUIRE_EQUAL(obj.rtti().extend(), 0);
