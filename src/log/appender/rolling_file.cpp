@@ -19,7 +19,9 @@ namespace cyng {
 			, rotation_size_(rotation_size)
 			, log_stream_(path_.string(), std::fstream::app)
 			, uncommitted_{ 0 }
-		{} 
+		{
+			BOOST_ASSERT_MSG(log_stream_.is_open(), "cannot open log file");
+		} 
 
 		rolling_file::~rolling_file()
 		{
@@ -58,7 +60,6 @@ namespace cyng {
 				test_file_size();
 
 			}
-
 		}
 
 		void rolling_file::test_file_size() {
