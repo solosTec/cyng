@@ -85,7 +85,7 @@ namespace cyng {
 		template<typename I>
 		store(I pos, I end) {
 
-			using value_type = std::iterator_traits<I>::value_type;
+			using value_type = typename std::iterator_traits<I>::value_type;
 			static_assert(std::is_same_v<value_type, meta_store>);
 
 			//
