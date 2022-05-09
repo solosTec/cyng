@@ -156,4 +156,6 @@ namespace cyng
 	}	//	db
 }	//	cyng
 
+#include <cyng/db/details/statement_interface.h>
+
 #endif	

@@ -228,12 +228,12 @@ namespace cyng {
 	using meta_sql = meta<column_sql>;
 
 	/**
-	 * convert an in-memory table to a SQL table
+	 * Convert meta data of an in-memory table to meta data of a SQL table.
 	 */
 	meta_sql to_sql(meta_store const&, std::vector<std::size_t> const&  width);
 
 	/**
-	 * convert an in-memory table to a SQL table
+	 * Convert meta data of a SQL table to meta data an in-memory table.
 	 */
 	meta_store to_mem(meta_sql const&);
 }

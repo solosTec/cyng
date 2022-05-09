@@ -294,6 +294,10 @@ namespace cyng {
 		}
 
 		void connect(std::string name, slot_ptr);
+
+		/**
+		 * No inserts will be sent.
+		 */
 		void connect_only(std::string name, slot_ptr);
 		void connect_insert(std::string name, slot_ptr);
 		void connect_modify(std::string name, slot_ptr);
