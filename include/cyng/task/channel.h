@@ -80,7 +80,7 @@ namespace cyng {
 		class result {
 		public:
 			result(channel&, std::size_t slot, tuple_t&& msg);
-			result(result&) = default;
+			//result(result&) = default;	// implicitely deleted
 			bool is_ready() const;
 			std::pair<cyng::tuple_t, bool> get_result() const;
 		private:

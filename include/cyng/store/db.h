@@ -17,7 +17,8 @@
 #include <map>
 #include <tuple>
 #include <type_traits>
-#include  <mutex>
+#include <mutex>
+#include <iterator>
 
 namespace cyng {
 
@@ -76,6 +77,30 @@ namespace cyng {
 	{
 	public:
 		store();
+
+		/**
+		 * Initialize with a list of table schemes.
+		 * ToDo: use concepts to check if I is an iterator
+		 */
+		template<typename I>
+		store(I pos, I end) {
+
+			using value_type = std::iterator_traits<I>::value_type;
+			static_assert(std::is_same_v<value_type, meta_store>);
+
+			//
+			//	write lock
+			//
+			std::unique_lock<std::shared_mutex> ulock(m_);
+
+			while (pos != end) {
+				//
+				//	create table
+				//
+				tables_.emplace(pos->get_name(), std::make_shared<table>(*pos)).second;
+				advance(pos, 1);
+			}
+		}
 
 		/**
 		 * create and insert a new table

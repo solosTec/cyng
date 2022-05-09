@@ -11,6 +11,7 @@
 #include <cyng/obj/buffer_cast.hpp>
 
 #include <algorithm>
+#include <iterator>
 
 #include <boost/assert.hpp>
 
