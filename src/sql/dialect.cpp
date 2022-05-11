@@ -163,7 +163,7 @@ namespace cyng
 				case TC_MAC48:			return "CHAR(17)";
 				case TC_MAC64:			return "CHAR(19)";
 				case TC_PID:			return "BIGINT";
-				case TC_OBIS:			return "CHAR(12)";
+				case TC_OBIS:			return "INT UNSIGNED";
 				case TC_EDIS:			return "CHAR(8)";
 
 				case TC_DIGEST_MD5:		return "CHAR(32)";
@@ -239,7 +239,7 @@ namespace cyng
 				case TC_MAC48:			return "TEXT";
 				case TC_MAC64:			return "TEXT";
 				case TC_PID:			return "INT";
-				case TC_OBIS:			return "TEXT";
+				case TC_OBIS:			return "INT";
 				case TC_EDIS:			return "TEXT";
 
 				case TC_DIGEST_MD5:		return "TEXT";	//	32 bytes
@@ -311,7 +311,7 @@ namespace cyng
 				case TC_MAC48:			return "CHAR(17)";
 				case TC_MAC64:			return "CHAR(19)";
 				case TC_PID:			return "BIGINT";
-				case TC_OBIS:			return "CHAR(12)";
+				case TC_OBIS:			return "UNSIGNED INTEGER";
 				case TC_EDIS:			return "CHAR(8)";
 
 				case TC_DIGEST_MD5:		return "CHAR(32)";
@@ -382,7 +382,7 @@ namespace cyng
 				case TC_MAC48:			return "CHAR(17)";
 				case TC_MAC64:			return "CHAR(19)";
 				case TC_PID:			return "BIGINT";
-				case TC_OBIS:			return "CHAR(12)";
+				case TC_OBIS:			return "INTEGER";
 				case TC_EDIS:			return "CHAR(8)";
 
 				case TC_DIGEST_MD5:		return "CHAR(32)";
@@ -455,7 +455,7 @@ namespace cyng
 				case TC_MAC48:			return "macaddr";	// !
 				case TC_MAC64:			return "macaddr";
 				case TC_PID:			return "bigint";
-				case TC_OBIS:			return "TEXT";
+				case TC_OBIS:			return "integer";
 				case TC_EDIS:			return "TEXT";
 
 				case TC_DIGEST_MD5:		return "char(32)";
@@ -496,7 +496,7 @@ namespace cyng
 			case TC_BOOL:			return "SMALLINT";	//!<	BOOL is a synonym
 			case TC_CHAR:
 			case TC_INT8:			return "SMALLINT";
-			case TC_UINT8:			return "INTEGER UNSIGNED";
+			case TC_UINT8:			return "INTEGER UNSIGNED";	//	unsigned is not really a standard but may work
 			case TC_INT16:			return "INTEGER";
 			case TC_UINT16:			return "INTEGER UNSIGNED";
 			case TC_INT32:			return "INTEGER";
@@ -531,7 +531,7 @@ namespace cyng
 			case TC_MAC48:			return "CHARACTER(17)";
 			case TC_MAC64:			return "CHARACTER(19)";
 			case TC_PID:			return "INTEGER";
-			case TC_OBIS:			return "CHARACTER(12)";
+			case TC_OBIS:			return "INTEGER UNSIGNED";
 			case TC_EDIS:			return "CHARACTER(8)";
 
 			case TC_DIGEST_MD5:		return "CHARACTER(32)";

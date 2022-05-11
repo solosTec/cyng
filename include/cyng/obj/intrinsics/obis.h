@@ -233,6 +233,11 @@ namespace cyng {
 	obis make_obis_2(obis const& code, std::uint16_t s);
 
 	/**
+	 * Reverse function of to_uint64()
+	 */
+	obis make_obis(std::uint64_t);
+
+	/**
 	 * definition of an OBIS path
 	 */
 	using obis_path_t = std::vector<obis>;

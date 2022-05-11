@@ -412,6 +412,14 @@ namespace cyng
 					return make_object();
 				}
 
+				//	cyng::obis
+				template <>
+				object get_value<obis>(sqlite3_stmt* stmt, int index)
+				{
+					auto const n = sqlite3_column_int64(stmt, index);
+					return make_object(make_obis(n));
+				}
+
 				//	crypto::digest_md5
 				template <>
 				object get_value<crypto::digest_md5>(sqlite3_stmt* stmt, int index)
@@ -709,12 +717,13 @@ namespace cyng
 						case TC_REVISION:	return get_value_by_code<TC_REVISION>(*statement_, index);
 	// 			CYNG_OP,			//!<	VM operation
 						case TC_BUFFER:	return get_value_by_code<TC_BUFFER>(*statement_, index);
-						//case cyng::types::CYNG_INDEX:		return get_value_by_code<cyng::types::CYNG_INDEX>(*statement_, index);
-						//case cyng::types::CYNG_DIFF:		return get_value_by_code<cyng::types::CYNG_DIFF>(*statement_, index);
-	// 			TC_COLOR_8,		//!<	color with 8 bits per channel
-	// 			TC_COLOR_16,	//!<	color with 16 bits per channel
 						case TC_MAC48:			return get_value_by_code<TC_MAC48>(*statement_, index);
 						case TC_MAC64:			return get_value_by_code<TC_MAC64>(*statement_, index);
+
+						case TC_OBIS:			return get_value_by_code<TC_OBIS>(*statement_, index);
+						//case TC_EDIS:
+	// 			TC_COLOR_8,		//!<	color with 8 bits per channel
+	// 			TC_COLOR_16,	//!<	color with 16 bits per channel
 
 						case TC_DIGEST_MD5:		return get_value_by_code<TC_DIGEST_MD5>(*statement_, index);
 						case TC_DIGEST_SHA1:	return get_value_by_code<TC_DIGEST_SHA1>(*statement_, index);

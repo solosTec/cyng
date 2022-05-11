@@ -339,7 +339,7 @@ namespace cyng
 				{
 					if (ptr != nullptr)
 					{
-						//	store boost::asio::ip::tcp::endpoint as string
+						//	store obis as uin64
 						auto val = ptr->to_uint64();
 						is_ok(::sqlite3_bind_int64(stmt, index, val));
 					}

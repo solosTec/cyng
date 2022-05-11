@@ -170,6 +170,19 @@ namespace cyng	{
 			, a.at(1));
 	}
 
+	obis make_obis(std::uint64_t n) {
+		auto const a = to_array<std::uint8_t>(n);
+		return { 
+			a.at(0)
+			, a.at(1)
+			, a.at(2)
+			, a.at(3) 
+			, a.at(4) 
+			, a.at(5) 
+		};
+	}
+
+
 	//	comparison
 	bool operator==(obis const& lhs, obis const& rhs) noexcept
 	{
