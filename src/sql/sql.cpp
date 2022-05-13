@@ -16,9 +16,10 @@ namespace cyng
 		//
 		//	+-- SELECT -----------------------------------------------+
 		//
-		select::select(dialect d)
+		select::select(dialect d, meta_sql const& ms)
 			: dialect_(d)
 			, clause_({ "SELECT" })
+			, meta_(ms)
 		{}
 
 		clause_t select::reset_clause() {
@@ -30,7 +31,7 @@ namespace cyng
 
 		details::sql_from select::all() {
 			clause_.push_back("*");
-			return details::sql_from(dialect_, std::move(clause_));
+			return details::sql_from(dialect_, meta_, std::move(clause_));
 		}
 		details::sql_from select::all(meta_sql const& m, bool qualified) {
 
@@ -46,7 +47,8 @@ namespace cyng
 
 				//
 				//	Build a full qualified name if requested and 
-				//	check for datetime() in case of SQLite3
+				//	check for datetime() in case of SQLite3.
+				//	An optionally "ROWID" is included.
 				//
 				if (qualified) {
 					clause_.push_back(details::substitute_dt(m.get_name() + "." + col.name_, dialect_, col.type_));
@@ -55,18 +57,18 @@ namespace cyng
 					clause_.push_back(details::substitute_dt(col.name_, dialect_, col.type_));
 				}
 				});
-			return details::sql_from(dialect_, reset_clause());
+			return details::sql_from(dialect_, meta_, reset_clause());
 		}
 
 
 		details::sql_from select::count()	{
 			clause_.push_back("COUNT(*)");
-			return details::sql_from(dialect_, reset_clause());
+			return details::sql_from(dialect_, meta_, reset_clause());
 		}
 
 		details::sql_from select::sum(std::string col) {
 			clause_.push_back("SUM(" + col + ")");
-			return details::sql_from(dialect_, reset_clause());
+			return details::sql_from(dialect_, meta_, reset_clause());
 		}
 
 		details::sql_from select::sum(meta_sql const& meta, std::size_t idx) {
@@ -75,7 +77,7 @@ namespace cyng
 
 		details::sql_from select::avg(std::string col) {
 			clause_.push_back("AVG(" + col + ")");
-			return details::sql_from(dialect_, reset_clause());
+			return details::sql_from(dialect_, meta_, reset_clause());
 		}
 
 		details::sql_from select::avg(meta_sql const& meta, std::size_t idx) {
@@ -125,7 +127,7 @@ namespace cyng
 				//
 				//	ROWID is already in place.
 				//
-				if (!boost::algorithm::equals(col.name_, "ROWID")) {
+				if (!do_skip(col.name_)) {
 					if (!init) {
 						init = true;
 					}
@@ -194,7 +196,7 @@ namespace cyng
 				//
 				//	ROWID will set automatically
 				//
-				if (!boost::algorithm::equals(col.name_, "ROWID")) {
+				if (!do_skip(col.name_)) {
 					if (!init) {
 						init = true;
 					}
@@ -230,7 +232,7 @@ namespace cyng
 				//
 				//	ROWID will set automatically
 				//
-				if (!boost::algorithm::equals(col.name_, "ROWID")) {
+				if (!do_skip(col.name_)) {
 					if (!init) {
 						init = true;
 					}
@@ -250,14 +252,23 @@ namespace cyng
 		//
 		update::update(dialect d, meta_sql const& m)
 			: details::base(d, clause_t{ "UPDATE", m.get_name() })
+			, meta_(m)
 		{}
 
-		details::sql_where update::set_placeholder(meta_sql const& m) {
+		details::sql_where update::set_placeholder() {
+			return set_placeholder(meta_);
+		}
+
+		details::sql_where update::set_placeholder(std::size_t col) {
+			return set_placeholder(meta_, col);
+		}
+
+		details::sql_where update::set_placeholder(meta_sql const& ms) {
 
 			clause_.push_back("SET");
 
 			bool init = false;
-			m.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
+			ms.loop([&](std::size_t idx, column_sql const& col, bool pk)->void {
 				if (!pk) {
 					if (!init) {
 						init = true;
@@ -271,15 +282,15 @@ namespace cyng
 				}
 			});
 
-			return details::sql_where(dialect_, reset_clause(m));
+			return details::sql_where(dialect_, ms, reset_clause(ms));
 		}
 
-		details::sql_where update::set_placeholder(meta_sql const& m, std::size_t idx) {
+		details::sql_where update::set_placeholder(meta_sql const& ms, std::size_t idx) {
 
 			clause_.push_back("SET");
-			BOOST_ASSERT(idx < m.body_size());
+			BOOST_ASSERT(idx < ms.body_size());
 
-			auto const& col = m.get_body_column(idx + 1);	//	skip "gen"
+			auto const& col = ms.get_body_column(idx + 1);	//	skip "gen"
 
 			//
 			//	value
@@ -291,14 +302,14 @@ namespace cyng
 			//
 			//	gen (first column after the key)
 			//
-			auto const& gen = m.get_column(m.key_size());
+			auto const& gen = ms.get_column(ms.key_size());
 			BOOST_ASSERT(boost::algorithm::equals(gen.name_, "gen"));
 			clause_.push_back(",");
 			clause_.push_back(gen.name_);
 			clause_.push_back("=");
 			clause_.push_back(details::substitute_ph(dialect_, gen.type_));
 
-			return details::sql_where(dialect_, reset_clause(m));
+			return details::sql_where(dialect_, ms, reset_clause(ms));
 		}
 
 
@@ -314,11 +325,25 @@ namespace cyng
 		//
 		remove::remove(dialect d, meta_sql const& m)
 			: details::base(d, clause_t{ "DELETE", "FROM", m.get_name() })
+			, meta_(m)
 		{}
 
 		details::sql_where remove::self() {
-			return details::sql_where(dialect_, reset_clause());
+			return details::sql_where(dialect_, meta_, reset_clause());
 		}
+
+		details::sql_group_by remove::where(std::string clause) {
+			return self().where(clause);
+		}
+
+		details::sql_group_by remove::where(meta_sql const& m, pk type) {
+			return self().where(type);
+		}
+
+		details::sql_group_by remove::where(pk) {
+			return this->where(meta_, pk{});
+		}
+
 
 		clause_t remove::reset_clause() {
 			//	remains unchanged
@@ -367,11 +392,16 @@ namespace cyng
 				return to_str();
 			}
 
+			bool base::do_skip(std::string name) const {
+				return (dialect::SQLITE == dialect_) && boost::algorithm::equals(name, "ROWID");
+			}
+
 			//
 			//	+-- from ---------------------------------------------+
 			//
-			sql_from::sql_from(dialect d, clause_t&& vec)
+			sql_from::sql_from(dialect d, meta_sql const& ms, clause_t&& vec)
 				: base(d, std::move(vec))
+				, meta_(ms)
 			{
 				clause_.push_back("FROM");
 			}
@@ -383,7 +413,10 @@ namespace cyng
 
 			sql_where sql_from::from(std::string name) {
 				clause_.push_back(name);
-				return sql_where(dialect_, reset_clause());
+				return sql_where(dialect_, meta_, reset_clause());
+			}
+			sql_where sql_from::from() {
+				return from(meta_);
 			}
 			sql_where sql_from::from(meta_sql const& m) {
 				return from(m.get_name());
@@ -413,8 +446,9 @@ namespace cyng
 			//
 			//	+-- where --------------------------------------------+
 			//
-			sql_where::sql_where(dialect d, clause_t&& vec)
+			sql_where::sql_where(dialect d, meta_sql const& ms, clause_t&& vec)
 				: base(d, std::move(vec))
+				, meta_(ms)
 			{}
 
 			sql_group_by sql_where::where(std::string cond) {
@@ -450,6 +484,11 @@ namespace cyng
 				return sql_order_by(dialect_, reset_clause());
 
 			}
+
+			sql_group_by sql_where::where(pk) {
+				return sql_group_by(dialect_, reset_clause());
+			}
+
 
 			clause_t sql_where::reset_clause() {
 				return std::move(clause_);

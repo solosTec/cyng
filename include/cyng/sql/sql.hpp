@@ -33,12 +33,17 @@ namespace cyng
 		/**
 		 * expands to ?
 		 */
-		struct placeholder	{};
+		//struct placeholder	{};
 
 		/**
 		 * expands to all columns that are primary key
 		 */
 		struct pk {};
+
+		/**
+		 * expands to all columns that are not primary key
+		 */
+		struct body {};
 
 		using clause_t = std::vector<std::string>;
 
@@ -50,8 +55,12 @@ namespace cyng
 				std::string to_str() const;
 				std::string operator()() const;
 
+			protected:
+				bool do_skip(std::string) const;
+
 			private:
 				static bool is_between_brackets(std::string const&, std::string const&);
+
 			protected:
 				dialect const dialect_;
 				clause_t clause_;
@@ -94,33 +103,52 @@ namespace cyng
 
 			class sql_where : public base
 			{
+				//friend details::sql_group_by;
 			public:
-				sql_where(dialect, clause_t&&);
+				sql_where(dialect, meta_sql const& ms, clause_t&&);
 
 				/**
 				 * Use an arbitrary string as where clause.
 				 */
-				sql_group_by where(std::string);
-				//void having(std::string);
-				sql_order_by order_by(std::string);
-				//void offset(std::string);
+				template < std::size_t N >
+				sql_order_by where(const char(&c)[N]) {
+					return order_by(std::string(c, N - 1));
+				}
+				
+				sql_group_by where(std::string cond);
+				sql_order_by order_by(std::string cond);
+				sql_group_by where(pk);
 
+				template<typename EXPR>
+				details::sql_group_by where(EXPR expr) {
+					return where(expr.to_str(dialect_, meta_));
+				}
+
+			private:
 				/**
 				 * Specify the record by it's primary key
 				 */
 				sql_group_by where(meta_sql const&, pk);
-			private:
 				clause_t reset_clause();
+
+			private:
+				meta_sql const& meta_;
 			};
 
 			class sql_from : public base
 			{
 			public:
-				sql_from(dialect, clause_t&&);
+				sql_from(dialect, meta_sql const& ms, clause_t&&);
 				sql_where from(std::string);
-				sql_where from(meta_sql const&);
+				sql_where from();
 			private:
+				/**
+				 * Use another table scheme
+				 */
+				sql_where from(meta_sql const&);
 				clause_t reset_clause();
+			private:
+				meta_sql const& meta_;
 
 			};
 
@@ -148,7 +176,7 @@ namespace cyng
 		class select
 		{
 		public:
-			select(dialect);
+			select(dialect, meta_sql const& ms);
 
 			/**
 			 * SELECT *
@@ -179,6 +207,7 @@ namespace cyng
 		private:
 			dialect const dialect_;
 			clause_t clause_;
+			meta_sql const& meta_;
 		};
 
 		/**
@@ -255,17 +284,27 @@ namespace cyng
 			/**
 			 * update the complete table body
 			 */
-			details::sql_where set_placeholder(meta_sql const& m);
+			details::sql_where set_placeholder();
+
+			details::sql_where set_placeholder(std::size_t col);
+
+		private:
+			clause_t reset_clause(meta_sql const& m);
 
 			/**
 			 * update a single column and the "gen" column
-			 * 
+			 *
 			 * @param col zero based index of data body
 			 */
 			details::sql_where set_placeholder(meta_sql const& m, std::size_t col);
 
+			/**
+			 * update the complete table body
+			 */
+			details::sql_where set_placeholder(meta_sql const& m);
+
 		private:
-			clause_t reset_clause(meta_sql const& m);
+			meta_sql const& meta_;
 
 		};
 
@@ -277,9 +316,32 @@ namespace cyng
 		{
 		public:
 			remove(dialect, meta_sql const&);
-			details::sql_where self();
+
+			/**
+			 * @param clause any valid SQL clause after WHERE
+			 */
+			details::sql_group_by where(std::string clause);
+
+			/**
+			 * All primary keys in there WHERE clause chained by logical AND.
+			 */
+			details::sql_group_by where(pk);
+
+			/**
+			 * Accept an expression template
+			 */
+			template<typename EXPR>
+			details::sql_group_by where(EXPR expr) {
+				return self().where(expr.to_str(dialect_, meta_));
+			}
+
 		private:
+			details::sql_group_by where(meta_sql const& m, pk);
+			details::sql_where self();
 			clause_t reset_clause();
+
+		private:
+			meta_sql const& meta_;
 
 		};
 

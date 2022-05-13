@@ -32,8 +32,9 @@ namespace cyng
 
 		void storage::loop(meta_sql const& ms, loop_f f) {
 
-			cyng::sql::select s(s_.get_dialect());
-			auto const sql = s.all(ms, true).from(ms.get_name())();
+			cyng::sql::select s(s_.get_dialect(), ms);
+			//auto const sql = s.all(ms, true).from(ms.get_name())();
+			auto const sql = s.all(ms, true).from()();
 #ifdef _DEBUG_DB
 			std::cout << sql << std::endl;
 #endif

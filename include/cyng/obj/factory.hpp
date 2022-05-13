@@ -125,7 +125,8 @@ namespace cyng {
 		 * Handle C-style strings as std::string.
 		 */
 		template <std::size_t N>
-		struct boxing<const char(&)[N]>
+		struct boxing<const char[N]>
+		//struct boxing<const char(&)[N]>
 		{
 			using value_t = std::string;
 			using wrapper_t = wrapper<value_t>;
@@ -318,6 +319,14 @@ namespace cyng {
 	{
 		using policy_t = policy::boxing<T>;
 		return object(policy_t::create(std::forward<T>(v)));
+	}
+
+	/**
+	 * specialized for C-style strings
+	 */
+	template < std::size_t N >
+	object make_object(const char(&c)[N]) {
+		return make_object(std::string(c, N - 1));
 	}
 
 	/**

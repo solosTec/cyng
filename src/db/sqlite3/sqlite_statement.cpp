@@ -111,7 +111,7 @@ namespace cyng
 						//	If well prepared this statement call the SQLite julianday() function and converts 
 						//	the string into a float value.
 						std::time_t const tt = std::chrono::system_clock::to_time_t(*ptr);
-						auto tm = *std::gmtime(&tt);
+						auto tm = *std::localtime(&tt);
 						
 						std::stringstream ss;
 						ss << std::put_time(&tm, "%Y-%m-%d %T");
@@ -341,7 +341,7 @@ namespace cyng
 					{
 						//	store obis as uin64
 						auto val = ptr->to_uint64();
-						is_ok(::sqlite3_bind_int64(stmt, index, val));
+						return is_ok(::sqlite3_bind_int64(stmt, index, val));
 					}
 					return is_ok(::sqlite3_bind_null(stmt, index));
 				}
