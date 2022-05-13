@@ -46,7 +46,13 @@ BOOST_AUTO_TEST_CASE(constructor)
     BOOST_REQUIRE_EQUAL(*cyng::object_cast<int>(o2), 2);
 
     auto o3 = cyng::make_object("hello");
-    auto o4 = cyng::make_object(o3);   //  clone
+    BOOST_REQUIRE_EQUAL(o3.tag(), cyng::TC_STRING);
+    BOOST_REQUIRE_EQUAL(cyng::value_cast(o3, ""), "hello");
+
+    auto o4 = cyng::make_object(o3);   //  move
+    BOOST_REQUIRE_EQUAL(o4.tag(), cyng::TC_STRING);
+    BOOST_REQUIRE_EQUAL(cyng::value_cast(o4, ""), "hello");
+    BOOST_REQUIRE_EQUAL(o3.tag(), cyng::TC_NULL);
 
     auto o5 = cyng::make_object(cyng::make_buffer("buffer"));
     BOOST_REQUIRE_EQUAL(o5.rtti().type_name(), "binary");
@@ -104,9 +110,14 @@ BOOST_AUTO_TEST_CASE(constructor)
     //
     //  Boost
     //
-   
-    BOOST_REQUIRE_EQUAL(cyng::make_object(boost::system::errc::make_error_code(boost::system::errc::success)).rtti().type_name(), "ec");
-    BOOST_REQUIRE_EQUAL(cyng::make_object(boost::uuids::nil_uuid()).rtti().type_name(), "uuid");
+    {
+        auto const type_name = cyng::make_object(boost::system::errc::make_error_code(boost::system::errc::success)).rtti().type_name();
+        BOOST_REQUIRE_EQUAL(type_name, "ec");
+    }
+    {
+        auto const type_name = cyng::make_object(boost::uuids::nil_uuid()).rtti().type_name();
+        BOOST_REQUIRE_EQUAL(type_name, "uuid");
+    }
 
     //
     //  Boost.Asio
@@ -224,6 +235,14 @@ BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
 
     auto tpl = cyng::make_tuple(1, "hello", 2.3f);
     BOOST_REQUIRE_EQUAL(tpl.size(), 3); 
+    {
+        auto pos = std::begin(tpl);
+        BOOST_REQUIRE_EQUAL(pos->tag(), cyng::TC_INT32);
+        ++pos;
+        BOOST_REQUIRE_EQUAL(pos->tag(), cyng::TC_STRING);
+        ++pos;
+        BOOST_REQUIRE_EQUAL(pos->tag(), cyng::TC_FLOAT);
+    }
 
     using ft = std::function<int(int, std::string, float)>;
     ft f = [](int a, std::string b, float c)->int {

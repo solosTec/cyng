@@ -123,10 +123,12 @@ namespace cyng {
 
 		/**
 		 * Handle C-style strings as std::string.
+		 * 
+		 * Note: A specialization for "struct boxing<const char[N]>" 
+		 * would be wrong, since the argument type is a reference.
 		 */
 		template <std::size_t N>
-		struct boxing<const char[N]>
-		//struct boxing<const char(&)[N]>
+		struct boxing<const char(&)[N]>
 		{
 			using value_t = std::string;
 			using wrapper_t = wrapper<value_t>;

@@ -49,9 +49,9 @@ namespace cyng	{
 		}
 		else {
 #if defined(cyng_BIG_ENDIAN)
-			return ((value_.at(VG_STORAGE) - 1) << 8) | (value_.at(VG_QUANTITY) - 1);
+			return (value_.at(VG_STORAGE) << 8) | value_.at(VG_QUANTITY);
 #else
-			return ((value_.at(VG_QUANTITY) - 1) << 8) | (value_.at(VG_STORAGE) - 1);
+			return (value_.at(VG_QUANTITY) << 8) | value_.at(VG_STORAGE);
 #endif
 		}
 	}

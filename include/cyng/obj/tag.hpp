@@ -174,7 +174,8 @@ namespace cyng {
 			"param",	//	param_t - std::pair<std::string, object>;
 			"omap",		//	prop_map_t - std::map<obis, object>;
 			"prop",		//	prop_t - std::pair<obis, object>;
-			"prg,"		//	prg_t - std::deque<buffer_t>
+
+			"prg",		//	prg_t - std::deque<buffer_t>
 
 			"ec",		//	boost::system::error_code
 			"uuid",		//	boost::uuids::uuid

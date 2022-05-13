@@ -30,6 +30,11 @@ namespace cyng {
 	template < typename ...Args >
 	[[nodiscard]]
 	tuple_t make_tuple(Args&&... args) {
+		//
+		//	Doesn't find the "make_object(const char(&c)[N])" function,
+		//	so the internal policy traits must provide the correct function.
+		//	It seems that perfect forwarding has it's limits.
+		//
 		return { make_object<Args>(std::forward<Args>(args))... };
 	}
 
