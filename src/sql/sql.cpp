@@ -485,8 +485,8 @@ namespace cyng
 
 			}
 
-			sql_group_by sql_where::where(pk) {
-				return sql_group_by(dialect_, reset_clause());
+			sql_group_by sql_where::where(pk type) {
+				return where(meta_, type);
 			}
 
 

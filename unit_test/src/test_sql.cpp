@@ -85,7 +85,12 @@ BOOST_AUTO_TEST_CASE(update)
 
 	auto const ms = cyng::to_sql(m, { 0, 65, 32, 64 });
 	//	set placeholder for all values
-	std::cout << cyng::sql::update(cyng::sql::dialect::SQLITE, ms).set_placeholder().where(cyng::sql::pk())() << std::endl;
+	{
+		// UPDATE TDemo SET gen = ?, name = ?, age = julianday(?), tag = ? WHERE id = ?
+		auto const sql = cyng::sql::update(cyng::sql::dialect::SQLITE, ms).set_placeholder().where(cyng::sql::pk())();
+		//std::cout << sql << std::endl;
+		BOOST_CHECK_EQUAL(sql, "UPDATE TDemo SET gen = ?, name = ?, age = julianday(?), tag = ? WHERE id = ?");
+	}
 	std::cout << cyng::sql::update(cyng::sql::dialect::SQLITE, ms).set_placeholder().where(cyng::sql::make_constant("age") > cyng::sql::placeholder("age"))() << std::endl;
 }
 

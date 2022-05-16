@@ -111,7 +111,9 @@ namespace cyng
 						//	If well prepared this statement call the SQLite julianday() function and converts 
 						//	the string into a float value.
 						std::time_t const tt = std::chrono::system_clock::to_time_t(*ptr);
-						auto tm = *std::localtime(&tt);
+						//auto tm = *std::localtime(&tt);
+						auto tm = *std::gmtime(&tt);
+
 						
 						std::stringstream ss;
 						ss << std::put_time(&tm, "%Y-%m-%d %T");
