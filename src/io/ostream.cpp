@@ -300,7 +300,11 @@ namespace cyng {
 
 	std::ostream& operator<<(std::ostream& os, tuple_t const& tpl)
 	{
+#ifdef _DEBUG
+		os << '{' << tpl.size() << '*' << ' ';
+#else
 		os << '{';
+#endif
 
 		//	serialize each element from the tuple
 		bool init = false;
@@ -309,7 +313,7 @@ namespace cyng {
 				init = true;
 			}
 			else {
-				os << ",";
+				os << ',';
 			}
 			io::serialize_plain(os, obj);
 		}
@@ -320,8 +324,11 @@ namespace cyng {
 
 	std::ostream& operator<<(std::ostream& os, vector_t const& vec)
 	{
+#ifdef _DEBUG
+		os << '[' << vec.size() << '*' << ' ';
+#else
 		os << '[';
-
+#endif
 		//	serialize each element from the tuple
 		bool init = false;
 		for (auto const& obj : vec) {
@@ -329,7 +336,7 @@ namespace cyng {
 				init = true;
 			}
 			else {
-				os << ",";
+				os << ',';
 			}
 			io::serialize_plain(os, obj);
 		}
@@ -340,7 +347,11 @@ namespace cyng {
 
 	std::ostream& operator<<(std::ostream& os, deque_t const& deq)
 	{
+#ifdef _DEBUG
+		os << '<' << deq.size() << '*' << ' ';
+#else
 		os << '<';
+#endif
 
 		//	serialize each element from the tuple
 		bool init = false;
@@ -349,7 +360,7 @@ namespace cyng {
 				init = true;
 			}
 			else {
-				os << ",";
+				os << ',';
 			}
 			io::serialize_plain(os, obj);
 		}
