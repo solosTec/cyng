@@ -18,14 +18,5 @@ namespace cyng {
 	void mesh::lookup(boost::uuids::uuid tag, std::function<void(std::vector<channel_ptr>)> cb) {
 		ctl_.get_registry().lookup(boost::uuids::to_string(tag), cb);
 	}
-
-	//channel_ptr mesh::lookup(boost::uuids::uuid tag) {
-	//	auto res = ctl_.get_registry().lookup(boost::uuids::to_string(tag));
-	//	return res.empty()
-	//		? channel_ptr()
-	//		: res.front()
-	//		;
-	//}
-
 }
 
