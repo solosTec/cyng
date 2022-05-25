@@ -214,7 +214,10 @@ namespace cyng
 		//case TC_CODE:
 		//case TC_LABEL:
 		case TC_SEVERITY:		return make_object(to_severity(val));
-		case TC_BUFFER:			return make_object(to_buffer(val));
+			//		case TC_BUFFER:			return make_object(to_buffer(val)); //	Fixme: convert hex string to buffer
+		case TC_BUFFER:			
+			BOOST_ASSERT_MSG(val.size() % 2 == 0, "invalid hex string");
+			return make_object(hex_to_buffer(val));
 		case TC_MAC48:			return make_object(to_mac48(val));
 		case TC_MAC64:			return make_object(to_mac64(val));
 

@@ -17,7 +17,7 @@ namespace cyng {
 	buffer_t hex_to_buffer(std::string const& str) {
 
 		auto const size = str.size();
-		BOOST_ASSERT(size % 2 == 0);
+		BOOST_ASSERT_MSG(size % 2 == 0, "invalid hex string");
 		buffer_t r;
 		if ((size % 2) != 0)	return r;
 
