@@ -39,12 +39,10 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     message(STATUS "** CMake              : ${CMAKE_VERSION}")
    
-    
-    cmake_host_system_information(RESULT PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
-    message(STATUS "${PRETTY_NAME}")
-
-    cmake_host_system_information(RESULT ID_NAME QUERY DISTRIB_ID)
-    message(STATUS "${ID_NAME}")
+    # Alpine Linux v3.16/alpine
+    cmake_host_system_information(RESULT CYNG_HOST_PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
+    cmake_host_system_information(RESULT CYNG_HOST_ID_NAME QUERY DISTRIB_ID)
+    message(STATUS "** Host System        : ${CYNG_HOST_PRETTY_NAME}/${CYNG_HOST_ID_NAME}")
 
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
@@ -752,14 +750,7 @@ else()
 
     set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 
-    find_program(LSB_RELEASE_EXEC lsb_release)
-    execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
-        OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    message(STATUS "** LSB release        : ${LSB_RELEASE_ID_SHORT}")
-
-    if (${LSB_RELEASE_ID_SHORT} STREQUAL "openSUSE")
+    if (${CYNG_HOST_ID_NAME} STREQUAL "openSUSE")
         set(CPACK_GENERATOR "RPM")
     else()    
         #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-all-dev (>= 1.76), openssl (>= 1.1.0)")
