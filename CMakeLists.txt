@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14...3.21)
+cmake_minimum_required(VERSION 3.14...3.22)
 
 #
 # from command line: 
@@ -36,8 +36,15 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     message(STATUS "** Version numeral    : ${${PROJECT_NAME}_VERSION_NUMERAL}")
 
     message(STATUS "** Compiler           : ${CMAKE_CXX_COMPILER_ID} v${CMAKE_CXX_COMPILER_VERSION}")
-    
 
+    message(STATUS "** CMake              : ${CMAKE_VERSION}")
+   
+    
+    cmake_host_system_information(RESULT PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
+    message(STATUS "${PRETTY_NAME}")
+
+    cmake_host_system_information(RESULT ID_NAME QUERY DISTRIB_ID)
+    message(STATUS "${ID_NAME}")
 
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
