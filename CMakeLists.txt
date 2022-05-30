@@ -78,7 +78,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     if(NOT DEFINED ${CAPITAL_NAME}_UNIT_TEST)
 	    set(${CAPITAL_NAME}_UNIT_TEST OFF CACHE BOOL "build unit test")
     endif()
-
+    message(STATUS "** unit tests         : ${${CAPITAL_NAME}_UNIT_TEST}")
 
 endif()
 
@@ -108,11 +108,26 @@ set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build SHARED libraries")
 
 # Find packages ...
 
+
+set(SMF_BOOST_COMPONENTS regex iostreams program_options system thread random locale)
+
+#
+# unit tests
+# call CMake with -DCYNG_UNIT_TEST:BOOL=TRUE to generate unit tests 
+#
+
+if(${CAPITAL_NAME}_UNIT_TEST)
+
+    list(APPEND SMF_BOOST_COMPONENTS unit_test_framework)
+    add_subdirectory(unit_test)
+
+endif()
+
 # Find Boost
 set(Boost_NO_BOOST_CMAKE OFF)
 find_package(Boost 1.75 
     REQUIRED 
-    COMPONENTS regex iostreams program_options unit_test_framework system thread random locale 
+    COMPONENTS ${SMF_BOOST_COMPONENTS} 
 #    PATHS "C:/local/boost_1_75_0"
 #    CONFIG
 )
@@ -663,17 +678,6 @@ endif()
 #
 add_subdirectory(src/net)
 
-
-#
-# unit tests
-# call CMake with -DCYNG_UNIT_TEST:BOOL=TRUE to generate unit tests 
-#
-message(STATUS "** unit tests         : ${${CAPITAL_NAME}_UNIT_TEST}")
-if(${CAPITAL_NAME}_UNIT_TEST)
-
-    add_subdirectory(unit_test)
-
-endif()
 
 #
 # generate config file
