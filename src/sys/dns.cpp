@@ -30,6 +30,17 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
+//
+//	alpine linux <resolv.h>(musl) doesn't implement functions
+//	like res_ninit(&rs)
+//
+#define _GNU_SOURCE
+#include <features.h>
+#ifndef __USE_GNU
+#define __MUSL__ 
+#endif
+#undef _GNU_SOURCE // don't contaminate other includes unnecessarily
+
 #else
 #warning unknow OS
 #endif
@@ -42,12 +53,14 @@ namespace cyng
 		std::vector<boost::asio::ip::address>	get_dns_servers()
 		{
             std::vector<boost::asio::ip::address> dns;
-//             res_state rs;
-            struct __res_state rs;
+			//
+			//	alpine linux <resolv.h> (musl) doen't implement these functions
+			//
+#if !defined(__MUSL__)
+			struct __res_state rs;
  			::res_ninit(&rs);
 			for (int i = 0; i < rs.nscount; i++) {
 				sa_family_t family = rs.nsaddr_list[i].sin_family;
-// 				int port = ntohs(rs->nsaddr_list[i].sin_port);
 				if (family == AF_INET) { // IPV4 address
 					char str[INET_ADDRSTRLEN]; // String representation of address
 					inet_ntop(AF_INET, &(rs.nsaddr_list[i].sin_addr.s_addr), str, INET_ADDRSTRLEN);
@@ -61,6 +74,7 @@ namespace cyng
                     dns.push_back(boost::asio::ip::address::from_string(str));
 				}
 			}
+#endif	//	__MUSL__
 			return dns;
 		}
 #endif
