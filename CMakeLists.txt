@@ -39,10 +39,14 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     message(STATUS "** CMake              : ${CMAKE_VERSION}")
    
-    # Alpine Linux v3.16/alpine
-    cmake_host_system_information(RESULT CYNG_HOST_PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
-    cmake_host_system_information(RESULT CYNG_HOST_ID_NAME QUERY DISTRIB_ID)
-    message(STATUS "** Host System        : ${CYNG_HOST_PRETTY_NAME}/${CYNG_HOST_ID_NAME}")
+    if (NOT WIN32) 
+        # Alpine Linux v3.16/alpine
+        cmake_host_system_information(RESULT CYNG_HOST_PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
+        cmake_host_system_information(RESULT CYNG_HOST_ID_NAME QUERY DISTRIB_ID)
+        message(STATUS "** Host System        : ${CYNG_HOST_PRETTY_NAME}/${CYNG_HOST_ID_NAME} - (${CMAKE_SYSTEM_NAME})")
+    else()
+        message(STATUS "** Host System        : ${CMAKE_SYSTEM_NAME}")
+    endif()
 
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
@@ -133,8 +137,6 @@ set(Boost_NO_BOOST_CMAKE OFF)
 find_package(Boost 1.75 
     REQUIRED 
     COMPONENTS ${SMF_BOOST_COMPONENTS} 
-#    PATHS "C:/local/boost_1_75_0"
-#    CONFIG
 )
 # note: https://github.com/chriskohlhoff/asio/issues/585
 add_compile_definitions(BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE BOOST_BIND_NO_PLACEHOLDERS BOOST_SPIRIT_UNICODE BOOST_MPL_LIMIT_LIST_SIZE=50)
@@ -150,7 +152,11 @@ message(STATUS "** Boost_PROGRAM_OPTIONS_LIBRARY: ${Boost_PROGRAM_OPTIONS_LIBRAR
 message(STATUS "** Boost_RANDOM_LIBRARY         : ${Boost_RANDOM_LIBRARY}")
 message(STATUS "** Boost_REGEX_LIBRARY          : ${Boost_REGEX_LIBRARY}")
 message(STATUS "** Boost_LOCALE_LIBRARY         : ${Boost_LOCALE_LIBRARY}")
+if(${CAPITAL_NAME}_UNIT_TEST)
 message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
+else()
+message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : not installed")
+endif()
 
 
 # FetchContent added in CMake 3.11, downloads during the configure step
@@ -754,6 +760,10 @@ else()
         set(CPACK_GENERATOR "RPM")
     else()    
         #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-all-dev (>= 1.76), openssl (>= 1.1.0)")
+
+        #   architecture: amd64
+        message(STATUS "** architecture                 : ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")  
+        set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
 	    set(CPACK_GENERATOR "DEB")
     endif()
 endif()

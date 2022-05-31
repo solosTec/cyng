@@ -15,7 +15,7 @@ namespace cyng
 	namespace sys 
 	{
 		/**
-		 * get list of DSN servers
+		 * get list of DNS servers
 		 */
 		std::vector<boost::asio::ip::address> get_dns_servers();
 	}

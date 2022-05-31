@@ -13,11 +13,8 @@
 #if BOOST_OS_WINDOWS
 
 #include <cyng/sys/windows.h>
-//#include <winsock2.h>
-//#include <iphlpapi.h>
 #include <stdio.h>
 #include <windows.h>
-//#pragma comment(lib, "IPHLPAPI.lib")
 
 #define DNS_MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define DNS_FREE(x) HeapFree(GetProcessHeap(), 0, (x))
