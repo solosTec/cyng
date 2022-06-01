@@ -6,7 +6,7 @@
  */
 #include <cyng/io/serialize.h>
 #include <cyng/io/serialize.hpp>
-#include <cyng/io/io.h>
+//#include <cyng/io/io.h>
 #include <cyng/obj/object.h>
 #include <cyng/io/serializer/json_walker.h>
 #include <cyng/io/serializer/pretty_walker.h>

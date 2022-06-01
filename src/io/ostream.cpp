@@ -261,28 +261,28 @@ namespace cyng {
 		return os;
 	}
 
-	std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const& tp)
-	{
-		try {
-			std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
-			auto tm = *std::localtime(&tt);
-			return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
-		}
-		catch (std::exception const& ex) {
-			return os << ex.what();
-		}
-	}
+	// std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const& tp)
+	// {
+	// 	try {
+	// 		std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+	// 		auto tm = *std::localtime(&tt);
+	// 		return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+	// 	}
+	// 	catch (std::exception const& ex) {
+	// 		return os << ex.what();
+	// 	}
+	// }
 
-	std::ostream& operator<<(std::ostream& os, std::chrono::steady_clock::time_point const& tp) {
-		try {
-			std::time_t const tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - std::chrono::steady_clock::now()));
-			auto tm = *std::localtime(&tt);
-			return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
-		}
-		catch (std::exception const& ex) {
-			return os << ex.what();
-		}
-	}
+	// std::ostream& operator<<(std::ostream& os, std::chrono::steady_clock::time_point const& tp) {
+	// 	try {
+	// 		std::time_t const tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - std::chrono::steady_clock::now()));
+	// 		auto tm = *std::localtime(&tt);
+	// 		return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+	// 	}
+	// 	catch (std::exception const& ex) {
+	// 		return os << ex.what();
+	// 	}
+	// }
 
 	std::ostream& operator<<(std::ostream& os, boost::uuids::uuid const& tag) {
 		return os << boost::uuids::to_string(tag);

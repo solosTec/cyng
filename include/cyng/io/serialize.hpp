@@ -8,7 +8,6 @@
 #define CYNG_IO_SERIALIZE_HPP
 
 #include <cyng/io/io.h>
-#include <cyng/io/ostream.h>
 #include <cyng/obj/object.h>
 #include <cyng/obj/type_interface.h>
 #include <cyng/obj/object_cast.hpp>
