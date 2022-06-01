@@ -141,6 +141,28 @@ namespace cyng {
 	}
 
 	/**
+	 * @brief generic form for time points - to catch *all* implementations of a time point
+	 * 
+	 * @tparam C clock (std::chrono::_V2::system_clock)
+	 * @tparam D duration (std::chrono::duration<long int, std::ratio<1, 1000000000> >)
+	 */
+	//template <typename C, typename D>
+	//std::ostream& operator<<(std::ostream& os, std::chrono::time_point<C, D> const& tp) {
+
+	//	try {
+	//		//std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+	//		std::time_t const tt = C::to_time_t(tp);
+	//		//	std::time_t const tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - std::chrono::steady_clock::now()));
+	//		auto tm = *std::localtime(&tt);
+	//		return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+	//	}
+	//	catch (std::exception const& ex) {
+	//		return os << ex.what();
+	//	}
+	//	return os;
+	//}
+
+	/**
 	 * Write the time stamp in the following format:
 	 *
 	 * @code
@@ -150,29 +172,7 @@ namespace cyng {
 	 * All elements of fixed with and padded with zeros (0) if required
 	 */
 	std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const&);
-	// std::ostream& operator<<(std::ostream& os, std::chrono::steady_clock::time_point const&);
-
-	/**
-	 * @brief generic form for time points - to catch *all* implementations of a time point
-	 * 
-	 * @tparam C clock (std::chrono::_V2::system_clock)
-	 * @tparam D duration (std::chrono::duration<long int, std::ratio<1, 1000000000> >)
-	 */
-	template <typename C, typename D>
-	std::ostream& operator<<(std::ostream& os, std::chrono::time_point<C, D> const& tp) {
-
-		try {
-			//std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
-			std::time_t const tt = C::to_time_t(tp);
-			//	std::time_t const tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - std::chrono::steady_clock::now()));
-			auto tm = *std::localtime(&tt);
-			return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
-		}
-		catch (std::exception const& ex) {
-			return os << ex.what();
-		}
-		return os;
-	}
+	std::ostream& operator<<(std::ostream& os, std::chrono::steady_clock::time_point const&);
 
 	std::ostream& operator<<(std::ostream& os, boost::uuids::uuid const&);
 
