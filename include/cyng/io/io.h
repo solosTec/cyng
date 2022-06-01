@@ -86,7 +86,14 @@ namespace cyng {
 			static std::size_t write(std::ostream& os, T const& v)
 			{
 				calc_size const cs(os);
+#if __GNUC__ >= 12
+				//	FixMe: doesn't compile with g++12
+				//	g++12 generates an endless stream of errors that it doen't knwo how to serialize
+				//	a large list of data types like const std::chrono::_V2::system_clock::time_point
+				#warning "FixMe: serialization"
+#else
 				os << v;
+#endif
 				return cs;
 			}
 		};
