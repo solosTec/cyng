@@ -162,7 +162,8 @@ namespace cyng {
 	std::ostream& operator<<(std::ostream& os, std::chrono::time_point<C, D> const& tp) {
 
 		try {
-			std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+			//std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+			std::time_t const tt = C::to_time_t(tp);
 			//	std::time_t const tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now() + std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - std::chrono::steady_clock::now()));
 			auto tm = *std::localtime(&tt);
 			return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");

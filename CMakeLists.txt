@@ -113,7 +113,7 @@ include (cmake/db_connectors.cmake)
 string(TOLOWER ${CMAKE_CROSSCOMPILING} ${PROJECT_NAME}_CROSSCOMPILING)
 
 #   use shared libraries
-set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build SHARED libraries")
+#set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build SHARED libraries")
 
 # Find packages ...
 
