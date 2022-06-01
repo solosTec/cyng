@@ -6,7 +6,7 @@
  */
 #include <cyng/io/serializer/typed.hpp>
 #include <cyng/io/serializer/plain.hpp>
-#include <cyng/io/ostream.h>
+//#include <cyng/io/ostream.h>
 #include <boost/io/ios_state.hpp>
 
 namespace cyng {
@@ -115,7 +115,9 @@ namespace cyng {
 			static const type<std::chrono::system_clock::time_point> type;
 
 			calc_size const cs(os);
-			os << '"' << tp << '"' << type.type_name();
+			std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+			auto tm = *std::localtime(&tt);
+			os << '"' << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z") << '"' << type.type_name();
 			return cs;
 		}
 

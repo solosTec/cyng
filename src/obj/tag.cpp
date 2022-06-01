@@ -40,7 +40,8 @@ namespace std {
 	size_t hash<boost::system::error_code>::operator()(boost::system::error_code const& ec) const noexcept {
 		return ec.value();
 	}
-#if defined(_MSC_VER) && (_MSC_VER < 1931) || defined(__GNUC__) && (__cplusplus < 201703L)
+//#if defined(_MSC_VER) && (_MSC_VER < 1931) || defined(__GNUC__) && (__cplusplus < 201703L)
+#if defined(_MSC_VER) && (_MSC_VER < 1931) || defined(__GNUC__) && (__GNUC__ < 12)
 	size_t hash<std::filesystem::path>::operator()(std::filesystem::path const& p) const noexcept {
 		return boost::hash<std::filesystem::path>()(p);
 	}

@@ -21,6 +21,10 @@
 #include <boost/asio/ip/icmp.hpp>
 #include <boost/system/error_code.hpp>
 
+#ifdef _DEBUG
+#include <iostream>
+#endif
+
 namespace cyng {
 	namespace io {
 

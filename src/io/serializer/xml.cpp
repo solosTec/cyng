@@ -134,7 +134,7 @@ namespace cyng {
 		
 		bool serializer <std::chrono::system_clock::time_point, XML>::write(pugi::xml_node node, std::chrono::system_clock::time_point const& v) {
 			node.append_attribute("type").set_value(cyng::intrinsic_name<std::chrono::system_clock::time_point>());
-			const std::string str = to_string(v);
+			std::string const str = to_string(v);
 			return node.append_child(pugi::node_pcdata).set_value(str.c_str());
 		}
 

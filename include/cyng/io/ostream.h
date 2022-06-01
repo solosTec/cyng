@@ -11,6 +11,7 @@
 #include <chrono>
 #include <filesystem>
 #include <sstream>
+#include <iomanip>
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/system/error_code.hpp>
@@ -148,22 +149,17 @@ namespace cyng {
 	 *
 	 * All elements of fixed with and padded with zeros (0) if required
 	 */
-	// std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const&);
+	std::ostream& operator<<(std::ostream& os, std::chrono::system_clock::time_point const&);
 	// std::ostream& operator<<(std::ostream& os, std::chrono::steady_clock::time_point const&);
 
-	//std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::duration<long int, std::ratio<1, 1000000000> > >
-
 	/**
-	 * @brief 
+	 * @brief generic form for time points - to catch *all* implementations of a time point
 	 * 
 	 * @tparam C clock (std::chrono::_V2::system_clock)
 	 * @tparam D duration (std::chrono::duration<long int, std::ratio<1, 1000000000> >)
 	 */
 	template <typename C, typename D>
 	std::ostream& operator<<(std::ostream& os, std::chrono::time_point<C, D> const& tp) {
-
-		using clock_t = C;
-		using time_point_t = std::chrono::time_point<C, D>;
 
 		try {
 			std::time_t const tt = std::chrono::system_clock::to_time_t(tp);

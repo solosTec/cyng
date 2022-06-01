@@ -437,7 +437,8 @@ namespace std {
 	/**
 	 * Since MSVC version 19.32 STL defines this specialization of std::hash<>.
 	 */
-#if defined(_MSC_VER) && (_MSC_VER < 1931) || defined(__GNUC__) && (__cplusplus < 201703L)
+#if defined(_MSC_VER) && (_MSC_VER < 1931) || defined(__GNUC__) && (__GNUC__ < 12)
+//#if defined(_MSC_VER) && (_MSC_VER < 1931) || defined(__GNUC__) && (__cplusplus < 201703L)
 	template <>
 	class hash<std::filesystem::path> {
 	public:
