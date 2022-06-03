@@ -70,13 +70,20 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         add_compile_options(/MP)
         message(STATUS "** compile definitions: ${CMAKE_CXX_FLAGS}")
 
+        #
+        #   This is used by PugiXML
+        #   Build only a static library
+        #
+        set(BUILD_SHARED_LIBS OFF)
+
     elseif(CMAKE_COMPILER_IS_GNUCXX)
         set(GLOBAL_LIBRARY_TYPE SHARED)
 
         #
         #   This is used by PugiXML
         #
-        set(BUILD_SHARED_LIBS ON)
+        #set(BUILD_SHARED_LIBS ON)
+        set(BUILD_SHARED_AND_STATIC_LIBS ON)
     endif()
 
     #
