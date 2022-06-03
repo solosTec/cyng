@@ -57,12 +57,39 @@ namespace cyng {
 			});
 		}
 
+		/**
+		 * search by OBIS code
+		 */
+		template <typename T >
+		auto search(T const* p, obis const& code) -> typename T::const_iterator
+		{
+			return std::find_if(std::begin(*p), std::end(*p), [&code](object const& obj) -> bool {
+
+				switch (obj.tag()) {
+				case TC_PROP:
+					return object_cast<prop_t>(obj)->first == code;
+				case TC_OBIS:
+				{
+					auto const ptr = object_cast<obis>(obj);
+					return (ptr != nullptr)
+						? *object_cast<obis>(obj) == code
+						: false
+						;
+				}
+				default:
+					break;
+				}
+				return false;
+				});
+		}
+
 		template <typename T >
 		object extract(typename T::const_iterator pos) {
 
 			switch ((*pos).tag()) {
 			case TC_ATTR:	return object_cast<attr_t>(*pos)->second;
 			case TC_PARAM:	return object_cast<param_t>(*pos)->second;
+			case TC_PROP:	return object_cast<prop_t>(*pos)->second;
 			default:
 				break;
 			}
@@ -170,6 +197,45 @@ namespace cyng {
 				;
 		}
 
+		object find(vector_t const* p, obis const& code) {
+			auto const pos = search(p, code);
+			if (pos != p->end()) {
+				return extract<vector_t>(pos);
+			}
+			return make_object();
+		}
+
+		object find(deque_t const* p, obis const& code) {
+			auto const pos = search(p, code);
+			if (pos != p->end()) {
+				return extract<deque_t>(pos);
+			}
+			return make_object();
+		}
+
+		object find(tuple_t const* p, obis const& code) {
+			auto const pos = search(p, code);
+			if (pos != p->end()) {
+				return extract<tuple_t>(pos);
+			}
+			return make_object();
+		}
+
+		object find(prop_map_t const* p, obis const& code) {
+			auto const pos = p->find(code);
+			return (pos != p->end())
+				? pos->second
+				: make_object()
+				;
+		}
+
+		object find(prop_t const* p, obis const& code)
+		{
+			return (p->first == code)
+				? p->second
+				: make_object()
+				;
+		}
 	}
 
 
@@ -272,5 +338,52 @@ namespace cyng {
 	{
 		return value_cast<std::string>(find(c, key), std::string(def));
 	}
+
+	object find(vector_t const& v, obis const& code) {
+		return find(&v, code);
+	}
+
+	object find(deque_t const& v, obis const& code) {
+		return find(&v, code);
+	}
+
+	object find(tuple_t const& v, obis const& code) {
+		return find(&v, code);
+	}
+
+	object find(prop_map_t const& v, obis const& code) {
+		return find(&v, code);
+	}
+
+	object find(prop_t const& param, obis const& code) {
+		return find(&param, code);
+	}
+
+	object find(object const& obj, obis const& code)
+	{
+		if (!obj)	return obj;
+		switch (obj.tag())
+		{
+		case TC_TUPLE:
+			return find(object_cast<tuple_t>(obj), code);
+		case TC_VECTOR:
+			return find(object_cast<vector_t>(obj), code);
+		case TC_DEQUE:
+			return find(object_cast<deque_t>(obj), code);
+		case TC_PROP_MAP:
+			return find(object_cast<prop_map_t>(obj), code);
+		case TC_PROP:
+			return find(object_cast<prop_t>(obj), code);
+		case TC_ATTR_MAP:
+		case TC_ATTR:
+		case TC_PARAM_MAP:
+		case TC_PARAM:
+		default:
+			break;
+		}
+		return obj;
+	}
+
+
 }
 

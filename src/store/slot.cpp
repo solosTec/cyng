@@ -24,7 +24,6 @@ namespace cyng {
 		auto sp = channel_.lock();
 		if (sp)	sp->dispatch("db.insert", cyng::make_tuple(
 			tbl,
-//			tbl->meta().get_name(), 
 			key,
 			data,
 			gen,

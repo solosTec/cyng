@@ -9,6 +9,7 @@
 
 #include <cyng/obj/object.h>
 #include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/intrinsics/obis.h>
 #include <cyng/obj/value_cast.hpp>
 #include <cyng/obj/numeric_cast.hpp>
 
@@ -122,6 +123,52 @@ namespace cyng {
 	object find(object const&, std::string const&);
 
 	/**
+	 * Vectors are searched for parameters with this OBIS code and for simple vectors
+	 * of OBIS codes. In case of parameters the the function returns the parameter
+	 * value (if one was found). A vector of OBIS codes return the found code.
+	 *
+	 * If nothing has matched the function returns a null object.
+	 *
+	 * It seems that is doesn't make much sense to return the OBIS code that we were looking for.
+	 * But to return a boolean value could be confusing too. So we return the value that
+	 * was found. To indicate an successful search the safe bool conversion of object could
+	 * be usefull
+	 */
+	object find(vector_t const&, obis const&);
+
+	/**
+	 * Search the deque for a parameter with the specified OBIS code.
+	 * If nothing was found it returns the null object.
+	 */
+	object find(deque_t const&, obis const&);
+
+	/**
+	 * Name based access for parameters.
+	 *
+	 * @return the first object in the container that is a parameter with
+	 * the specified OBIS code.
+	 */
+	object find(tuple_t const&, obis const&);
+
+	/**
+	 * @return the value of the parameter with the specified OBIS code
+	 * of the null object.
+	 */
+	object find(prop_map_t const&, obis const&);
+
+	/**
+	 * @return the value of the parameter if the OBIS code is matching
+	 * the property value. Otherwise a null-objects will return.
+	 */
+	object find(prop_t const&, obis const&);
+
+	/**
+	 * Detect the type of the object and call the appropriate
+	 * find() method.
+	 */
+	object find(object const&, obis const&);
+
+	/**
 	 * Convinience function
 	 * Key must be of type std::string or an unsigned integer
 	 */
@@ -129,7 +176,8 @@ namespace cyng {
 	T find_value(C const& c, K key, T const& def)
 	{
 		static_assert(std::is_unsigned_v<K>
-			|| std::is_same_v<K, std::string>, "Key must be of type std::string or an unsigned integer");
+			|| std::is_same_v<K, std::string> 
+			|| std::is_same_v<K, obis>, "Key must be of type std::string, an unsigned integer or obis");
 
 		if constexpr (std::is_arithmetic_v<T>) {
 			return numeric_cast<T>(find(c, key), def);

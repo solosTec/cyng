@@ -56,6 +56,20 @@ namespace cyng {
 		}
 
 		/**
+		 * Simple element access by OBIS code.
+		 * Works for property maps and searchs in tuples, vectors
+		 * and sets for an parameter with the specified code.
+		 */
+		object get(obis const& code) const {
+			return find(container_, code);
+		}
+
+		template< typename U>
+		auto get(obis const& code, U&& def) const -> decltype(value_cast<U>(get(code), def)) {
+			return value_cast<U>(get(code), def);
+		}
+
+		/**
 		 * @return size of the container
 		 */
 		std::size_t size() const noexcept {
@@ -74,6 +88,13 @@ namespace cyng {
 		 */
 		reader<object> operator[](std::size_t idx) const {
 			return get(idx);	//	implicit cast
+		}
+
+		/**
+		 * OBIS subscript operator. Allows continuation.
+		 */
+		reader<object> operator[](obis const& code) {
+			return get(code);
 		}
 
 		/**
