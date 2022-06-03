@@ -708,7 +708,7 @@ configure_file (
 
 # export target to a cyng_coreTargets.cmake
 include(GNUInstallDirs)
-install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql cyng_sqlite3 cyng_store cyng_sys cyng_task cyng_vm cyng_xml cyng_net
+install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql cyng_sqlite3 cyng_store cyng_sys cyng_task cyng_vm cyng_xml cyng_net pugixml
     EXPORT cyng-export
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
