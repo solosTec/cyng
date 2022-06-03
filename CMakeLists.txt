@@ -51,6 +51,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
 
+
         # Docs only available if this is the main app
     find_package(Doxygen OPTIONAL_COMPONENTS dot)
     if(Doxygen_FOUND)
@@ -71,6 +72,11 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
         set(GLOBAL_LIBRARY_TYPE SHARED)
+
+        #
+        #   This is used by PugiXML
+        #
+        set(BUILD_SHARED_LIBS ON);
     endif()
 
     #
