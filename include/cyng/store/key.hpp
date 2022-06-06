@@ -13,6 +13,7 @@
 #include <cyng/obj/container_cast.hpp>
 
 #include <shared_mutex>
+#include <tuple>
 
 
 namespace cyng {
@@ -22,14 +23,21 @@ namespace cyng {
 	using data_t = key_t;
 
 	template < typename ...Args >
-	key_t key_generator(Args&&... args)
-	{
-		return container_transform<vector_t>(cyng::make_tuple(std::forward<Args>(args)...));
+	[[nodiscard]]
+	key_t key_generator(Args&&... args) {
+		return { make_object<Args>(std::forward<Args>(args))... };
 	}
 
 	template < typename ...Args >
-	data_t data_generator(Args&&... args)
-	{
+	key_t extend_key(key_t key, Args&&... args) {
+		key.reserve(key.size() + sizeof args...);
+		auto k = key_generator(std::forward<Args>(args)...);
+		std::move(k.begin(), k.end(), std::back_inserter(key));
+		return key;
+	}
+
+	template < typename ...Args >
+	data_t data_generator(Args&&... args) {
 		return key_generator(std::forward<Args>(args)...);
 	}
 
