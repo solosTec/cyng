@@ -94,6 +94,18 @@ namespace cyng {
 	param_map_t to_param_map(tuple_t const& tpl);
 
 	/**
+	 * Convert an attribute into an parameter by converting the index
+	 * to a string.
+	 */
+	param_t to_param(attr_t const&);
+
+	/**
+	 * Convert a property into an parameter by converting the OBIS code
+	 * to a string.
+	 */
+	param_t to_param(prop_t const&);
+
+	/**
 	 * Convert recursively a property map to a parameter map converting the OBIS code
 	 * to a string.
 	 */
