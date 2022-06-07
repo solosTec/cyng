@@ -336,6 +336,11 @@ BOOST_AUTO_TEST_CASE(obis)
     o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x1A2B);
     BOOST_CHECK_EQUAL(o, cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x1A, 0x2B));
 
+    std::uint64_t const i = 142394398216959uL; // 8181C78612FF
+    auto const o2 = cyng::make_obis(i);
+    BOOST_CHECK_EQUAL(o2, cyng::make_obis(0x81, 0x81, 0xC7, 0x86, 0x12, 0xFF));
+
+
 }
 
 BOOST_AUTO_TEST_CASE(algorithm)

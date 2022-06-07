@@ -172,14 +172,26 @@ namespace cyng	{
 
 	obis make_obis(std::uint64_t n) {
 		auto const a = to_array<std::uint8_t>(n);
-		return { 
-			a.at(0)
-			, a.at(1)
+		BOOST_ASSERT(a.size() == 8);
+#if defined(cyng_BIG_ENDIAN)
+		return {
+			a.at(5)
+			, a.at(4)
+			, a.at(3)
 			, a.at(2)
-			, a.at(3) 
-			, a.at(4) 
-			, a.at(5) 
+			, a.at(1)
+			, a.at(0)
 		};
+#else
+		return { 
+			a.at(2)
+			, a.at(3)
+			, a.at(4)
+			, a.at(5) 
+			, a.at(6) 
+			, a.at(7) 
+		};
+#endif
 	}
 
 
