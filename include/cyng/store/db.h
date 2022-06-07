@@ -164,6 +164,16 @@ namespace cyng {
 			, boost::uuids::uuid source);
 
 		/**
+		 * If predicate returns true, the element will be deleted.
+		 *
+		 * @tparam predicate for selecting records to be deleted
+		 * @return number of erased elements
+		 */
+		std::size_t erase(std::string const& name
+			, std::function<bool(record&&)> pred
+			, boost::uuids::uuid source);
+
+		/**
 		 * If a matching record was found, the record will be write/exclusive locked.
 		 * The modification signal is send in every case, even when old and new values
 		 * are equal. (This should be changed in an upcoming version).

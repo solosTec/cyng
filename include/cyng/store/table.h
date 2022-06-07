@@ -150,6 +150,14 @@ namespace cyng {
 		bool erase(key_t const& key, boost::uuids::uuid source);
 
 		/**
+		 * If predicate returns true, the element will be deleted.
+		 * 
+		 * @tparam predicate for selecting records to be deleted
+		 * @return number of erased elements
+		 */
+		std::size_t erase(std::function<bool(record&&)> f, boost::uuids::uuid source);
+
+		/**
 		 * @return true if table is of type auto
 		 */
 		virtual bool is_auto() const;

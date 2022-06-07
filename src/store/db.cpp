@@ -117,7 +117,6 @@ namespace cyng {
 
 	}
 
-
 	bool store::erase(std::string const& name
 		, key_t const& key
 		, boost::uuids::uuid source) {
@@ -137,6 +136,28 @@ namespace cyng {
 
 		return result;
 	}
+
+	std::size_t store::erase(std::string const& name
+		, std::function<bool(record&&)> pred
+		, boost::uuids::uuid source) {
+
+		std::size_t counter = 0u;
+
+		//
+		//	read lock on db
+		//
+		std::shared_lock<std::shared_mutex> sl(m_);
+
+		//	write lock on table
+		access([&](table* tbl) -> void {
+
+			counter = tbl->erase(pred, source);
+
+		}, access::write(name));
+
+		return counter;
+	}
+
 
 	bool store::modify(std::string const& name
 		, key_t const& key

@@ -323,7 +323,7 @@ namespace cyng {
 	bool table::erase(key_t const& key, boost::uuids::uuid source) {
 
 		//
-		//	update secondary key
+		//	ToDo: update secondary key
 		//
 
 		auto const pos = data_.find(key);
@@ -342,6 +342,35 @@ namespace cyng {
 		}
 		return false;
 
+	}
+
+	std::size_t table::erase(std::function<bool(record&&)> f, boost::uuids::uuid source) {
+		std::size_t counter{ 0 };
+		for(auto pos = data_.begin(); pos != data_.end(); )	{
+			//
+			//	read lock this record
+			//
+			std::shared_lock<std::shared_mutex> ulock(pos->second.m_);
+
+			if (f(record(meta(), pos->first, pos->second.data_, pos->second.generation_))) {
+
+
+				//
+				//	publish
+				//
+				forward(this, pos->first, pos->second.data_, source);
+
+				//
+				//	erase
+				//
+				pos = data_.erase(pos);
+				++counter;
+			}
+			else {
+				++pos;
+			}
+		}
+		return counter;
 	}
 
 	std::size_t table::loop(std::function<bool(record&&, std::size_t)> f) const {
