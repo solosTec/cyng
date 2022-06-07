@@ -10,6 +10,7 @@
 #include <cyng/obj/object.h>
 #include <cyng/obj/algorithm/find.h>
 #include <cyng/obj/value_cast.hpp>
+#include <cyng/obj/intrinsics/obis.h>
 
 #include <type_traits>
 
@@ -93,7 +94,7 @@ namespace cyng {
 		/**
 		 * OBIS subscript operator. Allows continuation.
 		 */
-		reader<object> operator[](obis const& code) {
+		reader<object> operator[](obis const& code) const {
 			return get(code);
 		}
 
