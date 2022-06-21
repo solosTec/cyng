@@ -94,7 +94,26 @@ namespace cyng {
 
 		constexpr value_type operator[](value_group vg) const {
 			BOOST_ASSERT(vg < VG_EOG);
-			return value_[vg];
+			return value_.at(vg);
+		}
+
+		constexpr value_type get_medium() const {
+			return value_.at(VG_MEDIUM);
+		}
+		constexpr value_type get_channel() const {
+			return value_.at(VG_CHANNEL);
+		}
+		constexpr value_type get_indicator() const {
+			return value_.at(VG_INDICATOR);
+		}
+		constexpr value_type get_mode() const {
+			return value_.at(VG_MODE);
+		}
+		constexpr value_type get_quantity() const {
+			return value_.at(VG_QUANTITY);
+		}
+		constexpr value_type get_storage() const {
+			return value_.at(VG_STORAGE);
 		}
 
 		/**
@@ -121,7 +140,9 @@ namespace cyng {
 	/**
 	 * @return true if medium is null
 	 */
-	bool is_abstract(obis const&);
+	constexpr bool is_abstract(obis const& o) {
+		return o.get_medium() == 0;
+	}
 
 	/**
 	 *	Create a buffer containing all 6 bytes of

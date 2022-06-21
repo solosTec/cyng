@@ -96,10 +96,6 @@ namespace cyng	{
 			});
 	}
 
-	bool is_abstract(obis const& o) {
-		return o[obis::VG_MEDIUM] == 0;
-	}
-
 	buffer_t to_buffer(obis const& o) {
 		return to_buffer(o.data());
 	}
