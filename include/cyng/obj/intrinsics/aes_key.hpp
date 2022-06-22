@@ -7,10 +7,12 @@
 #ifndef CYNG_OBJ_INTRINSCIS_AES_KEY_HPP
 #define CYNG_OBJ_INTRINSCIS_AES_KEY_HPP	
 
+#include <cyng/obj/intrinsics/buffer.h>
+
 #include <cstddef>
 #include <array>
 #include <type_traits>
-#include <cyng/obj/intrinsics/buffer.h>
+#include <algorithm>
 
 namespace cyng {
 
@@ -85,6 +87,11 @@ namespace cyng {
 		return buffer_t(key.key_.begin(), key.key_.end());
 	}
 
+	template <std::size_t N>
+	bool is_null(aes_key<N> const& key) 	{
+		using value_type = typename aes_key<N>::value_type;
+		return std::all_of(key.key_.begin(), key.key_.end(), [](value_type v) { return v == 0; });
+	}
 
 	namespace crypto
 	{
