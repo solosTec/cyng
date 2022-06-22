@@ -32,6 +32,10 @@ namespace cyng	{
 		});
 	}
 
+	bool is_null(buffer_t const& v) {
+		return std::all_of(v.cbegin(), v.cend(), [](char c) { return c == 0; });
+	}
+
 	std::size_t hash(buffer_t const& buffer)
 	{
 		std::size_t h{ 0 };

@@ -53,6 +53,11 @@ namespace cyng {
 	bool is_ascii(buffer_t const&);
 
 	/**
+	 * @return true if all elements are 0.
+	 */
+	bool is_null(buffer_t const& v);
+
+	/**
 	 * @return hash of the buffer content
 	 */
 	std::size_t hash(buffer_t const& buffer);
