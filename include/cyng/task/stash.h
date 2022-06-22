@@ -62,7 +62,9 @@ namespace cyng {
 		void unlock(std::string name);
 
 		/**
-		 * Unlocks the task and stop it
+		 * @brief Unlocks all tasks with the specified name and stops it.
+		 * 
+		 * @param name task name (case sensitive)
 		 */
 		void stop(std::string name);
 
@@ -70,29 +72,6 @@ namespace cyng {
 		 * not thtread safe
 		 */
 		std::size_t size() const;
-
-	private:
-		//template <typename Token>
-		//auto find_channel(std::size_t id, Token&& token)
-		//{
-		//	using result_type = typename boost::asio::async_result<std::decay_t<Token>, void(boost::system::error_code, channel_ptr)>;
-		//	typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-		//	result_type result(handler);
-
-		//	dispatcher_.post([this, handler, id]() mutable {
-		//		auto pos = list_.find(id);
-		//		if (pos != list_.end()) {
-		//			handler(boost::system::error_code{}, pos->second);
-		//		}
-		//		else {
-		//			handler(boost::asio::error::not_found, channel_ptr());
-
-		//		}
-		//		});
-
-		//	return result.get();
-		//}
 
 	private:
 		boost::asio::io_context::strand dispatcher_;

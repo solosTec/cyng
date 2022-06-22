@@ -1,10 +1,10 @@
 #include <cyng/task/registry.h>
+
 #include <cyng/obj/clone.hpp>
 
 #include <algorithm>
 #include <iterator>
 
-//#include <thread>
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/assert.hpp>
@@ -113,6 +113,10 @@ namespace cyng {
 		return false;
 	}
 
+	bool registry::is_shutdown() const {
+		return shutdown_.load();
+	}
+
 	bool registry::reset()
 	{
 		//
@@ -141,29 +145,32 @@ namespace cyng {
 
 	void registry::dispatch(std::string channel, std::string slot, tuple_t msg) {
 
-		dispatcher_.post([this, channel, slot, msg]() mutable {
+		if (!shutdown_) {
+			dispatcher_.post([this, channel, slot, msg]() mutable {
 
-			auto channels = lookup_sync(channel);
-			for (auto& chp : channels) {
+				auto channels = lookup_sync(channel);
+				for (auto& chp : channels) {
 					//	since every dispatch call expects it's own copy
 					//	of the data, we have to clone it.
 					chp->dispatch(slot, clone(msg));
 				}
 			});
+		}
 	}
 
 	void registry::dispatch(std::size_t channel, std::string slot, tuple_t msg) {
-		dispatcher_.post([this, channel, slot, msg]() mutable {
+		if (!shutdown_) {
+			dispatcher_.post([this, channel, slot, msg]() mutable {
 
-			auto pos = list_.find(channel);
-			if (pos != list_.end()) {
-				auto sp = pos->second.lock();
-				if (sp) {
-					sp->dispatch(slot, std::move(msg));
+				auto pos = list_.find(channel);
+				if (pos != list_.end()) {
+					auto sp = pos->second.lock();
+					if (sp) {
+						sp->dispatch(slot, std::move(msg));
+					}
 				}
-			}
 			});
-
+		}
 	}
 
 	void registry::dispatch_exclude(std::size_t id, std::string name, std::string slot, tuple_t&& msg) {

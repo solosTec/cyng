@@ -23,14 +23,16 @@ namespace cyng {
 	}
 
 	void stash::stop() {
-		for (auto pos = list_.rbegin(); pos != list_.rend(); pos++) {
-			auto scp = pos->second;
-			if (scp) {
+		if (!shutdown_) {
+			for (auto pos = list_.rbegin(); pos != list_.rend(); pos++) {
+				auto scp = pos->second;
+				if (scp) {
 #ifdef _DEBUG
-				auto const name = scp->get_name();
-				auto const id = scp->get_id();
+					auto const name = scp->get_name();
+					auto const id = scp->get_id();
 #endif
-				scp->stop();
+					scp->stop();
+				}
 			}
 		}
 	}
@@ -92,9 +94,8 @@ namespace cyng {
 		}
 	}
 
-
 	std::size_t stash::size() const {
-		return list_.size();
+		return (!shutdown_) ? list_.size() : 0;
 	}
 
 }

@@ -52,6 +52,11 @@ namespace cyng {
 		bool shutdown();
 
 		/**
+		 * @return true if registry is offline
+		 */
+		bool is_shutdown() const;
+
+		/**
 		 * unlock registry.
 		 * Not really thread safe
 		 */
