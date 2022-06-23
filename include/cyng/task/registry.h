@@ -37,6 +37,13 @@ namespace cyng {
 	public:
 		registry(boost::asio::io_context& io);
 
+#ifdef _DEBUG
+		/**
+		 * Allows to easily debug all task stop events  
+		 */
+		registry(boost::asio::io_context& io, std::function<void(std::string, std::size_t)>);
+#endif
+
 		/**
 		 * Collect a vector with channels of the specified name.
 		 * Collecting the channels is thread safe but the callback has to make sure
@@ -70,8 +77,20 @@ namespace cyng {
 		/**
 		 * collect all channels with the specified name and dispatch the data
 		 * to the names slot.
+		 * 
+		 * @channel channel/task name. There could be multiple tasks wth the same name.
+		 * @slot search dispatch table for specified method.
+		 * @msg data to dispatch. Data should be match with the function signature.
 		 */
 		void dispatch(std::string channel, std::string slot, tuple_t msg);
+
+		/**
+		 * Dispatch data to the specified slot.
+		 * 
+		 * @channel channel/task id
+		 * @slot search dispatch table for specified method.
+		 * @msg data to dispatch. Data should be match with the function signature.
+		 */
 		void dispatch(std::size_t channel, std::string slot, tuple_t msg);
 
 		/**
@@ -134,6 +153,10 @@ namespace cyng {
 		 * when a (locked) task tries to call the stop() method
 		 * during shutdown. Otherwise this would create a deadlock.
 		 */
+
+#ifdef _DEBUG
+		std::function<void(std::string, std::size_t)> on_stop_;
+#endif
 		std::atomic<bool> shutdown_;
 	};
 

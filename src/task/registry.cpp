@@ -14,8 +14,20 @@ namespace cyng {
 	registry::registry(boost::asio::io_context& io)
 		: dispatcher_(io)
 		, list_()
+#ifdef _DEBUG
+		, on_stop_()
+#endif		
 		, shutdown_(false)
 	{}
+
+#ifdef _DEBUG
+	registry::registry(boost::asio::io_context& io, std::function<void(std::string, std::size_t)> on_stop)
+		: dispatcher_(io)
+		, list_()
+		, on_stop_(on_stop)
+		, shutdown_(false)
+	{}
+#endif		
 
 	void registry::insert(channel_ptr chp)
 	{
@@ -35,6 +47,12 @@ namespace cyng {
 			//	remove from list and delete task
 			//
 			try {
+#ifdef _DEBUG
+				if (on_stop_) {
+					auto channel = pos->second.lock();
+					on_stop_((channel) ? channel->get_name() : "", pos->first);
+				}
+#endif	
 				list_.erase(pos);
 			}
 			catch (...) {}
@@ -98,6 +116,9 @@ namespace cyng {
 #ifdef _DEBUG
 					auto const name = scp->get_name();
 					auto const id = scp->get_id();
+					if (on_stop_) {
+						on_stop_(name, id);
+					}
 #endif
 					scp->stop();
 				}
