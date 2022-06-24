@@ -150,6 +150,9 @@ namespace cyng {
         //
         auto ptr = task_.release();
 
+        //
+        //  already closed (this is safe)
+        //
         if (nullptr == ptr) return false;
         BOOST_ASSERT(!is_open());
 
