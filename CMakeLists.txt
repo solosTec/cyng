@@ -205,6 +205,7 @@ message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 include (src/obj/lib.cmake)
 add_library(cyng_obj ${GLOBAL_LIBRARY_TYPE} ${object_lib})
 add_library(cyng::obj ALIAS "cyng_obj")
+#target_sources(cyng_obj INTERFACE "/include/cyng/obj/clone.hpp")
 
 target_include_directories(cyng_obj
     PUBLIC 
@@ -710,24 +711,47 @@ configure_file (
 #
 # install
 #
+if(UNIX)
+include(GNUInstallDirs)
+endif()
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
+        FILES_MATCHING # install only matched files
+        PATTERN "*.h"
+        PATTERN "*hpp"
+)
 
 # export target to a cyng_coreTargets.cmake
-include(GNUInstallDirs)
+
 install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql cyng_sqlite3 cyng_store cyng_sys cyng_task cyng_vm cyng_xml cyng_net pugixml
-    EXPORT cyng-export
+    EXPORT "${CMAKE_PROJECT_NAME}targets"
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BIN_DIR}
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDE_DIR}
 )
 
-install(EXPORT cyng-export
+#
+# Give CMake access to the version
+#
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    "${CMAKE_PROJECT_NAME}ConfigVersion.cmake"
+    VERSION 
+        "${CMAKE_PROJECT_VERSION}"
+    COMPATIBILITY 
+        AnyNewerVersion
+)
+
+install(EXPORT "${CMAKE_PROJECT_NAME}targets"
   FILE
-    cyng_coretargets.cmake
+    ${CMAKE_PROJECT_NAME}targets.cmake
   NAMESPACE
     cyng::
   DESTINATION
-    ${CMAKE_INSTALL_LIBDIR}/cmake/cyng
+    ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
 )
 
 #
