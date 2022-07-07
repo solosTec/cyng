@@ -101,7 +101,7 @@ namespace cyng {
 	[[nodiscard]]
 	param_t make_param(obis const& o, Args&&... args)
 	{	
-		return { to_str(o), make_object(std::forward<Args>(args)...) };
+		return { to_string(o), make_object(std::forward<Args>(args)...) };
 	}
 
 	template < typename... Args >

@@ -314,8 +314,8 @@ BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
 BOOST_AUTO_TEST_CASE(obis)
 {
     cyng::obis o(1, 2, 3, 4, 5, 6);
-    //std::cout << cyng::to_str(o) << std::endl;
-    BOOST_REQUIRE_EQUAL(cyng::to_str(o), "010203040506");
+    //std::cout << cyng::to_string(o) << std::endl;
+    BOOST_REQUIRE_EQUAL(cyng::to_string(o), "010203040506");
     //std::cout << std::hex << o.to_uint64() << std::endl;
     BOOST_REQUIRE_EQUAL(o.to_uint64(), 0x010203040506);
 

@@ -360,7 +360,7 @@ namespace cyng
 				, clause_(std::move(vec))
 			{}
 
-			std::string base::to_str() const {
+			std::string base::to_string() const {
 				std::string s;
 				bool init = false;
 				for (const auto& e : clause_) {
@@ -389,7 +389,7 @@ namespace cyng
 			}
 
 			std::string base::operator()() const {
-				return to_str();
+				return to_string();
 			}
 
 			bool base::do_skip(std::string name) const {

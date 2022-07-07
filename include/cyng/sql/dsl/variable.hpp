@@ -25,7 +25,7 @@ namespace cyng
 			: value_(v)
 			{}
 			
-			std::string to_str(dialect d, meta_sql const&) const {
+			std::string to_string(dialect d, meta_sql const&) const {
 				std::stringstream ss;
 				ss << value_;
 				return ss.str();
@@ -41,7 +41,7 @@ namespace cyng
 		struct variable < std::string >
 		{
 			variable(std::string& v);	
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 		
 			std::string& value_;
 		};
@@ -53,7 +53,7 @@ namespace cyng
 		struct variable < bool >
 		{
 			variable(bool& b);	
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 						
 			bool& b_;
 		};
@@ -65,7 +65,7 @@ namespace cyng
 		struct variable < std::chrono::system_clock::time_point >
 		{
 			variable(std::chrono::system_clock::time_point& tp);
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 			
 			std::chrono::system_clock::time_point& tp_;
 		};

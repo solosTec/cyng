@@ -29,7 +29,7 @@ namespace cyng
 			/**
 			 * Place a ? symbol into the output stream
 			 */
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 			std::string const name_;
 		};
 		

@@ -210,7 +210,7 @@ namespace cyng {
 
 
 	std::ostream& operator<<(std::ostream& os, obis const& o) {
-		return os << to_str(o);
+		return os << to_string(o);
 	}
 
 	std::ostream& operator<<(std::ostream& os, obis_path_t const& v) {

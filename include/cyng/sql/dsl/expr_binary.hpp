@@ -34,15 +34,15 @@ namespace cyng
 			, rhe_(rhexp)
 			{}
 			
-			std::string to_str(dialect d, meta_sql const& m) const {
+			std::string to_string(dialect d, meta_sql const& m) const {
 				std::stringstream ss;
 				ss 
 					<< '('
-					<< lhe_.to_str(d, m)
+					<< lhe_.to_string(d, m)
 					<< ' ' 
 					<< bop_ 
 					<< ' '
-					<< rhe_.to_str(d, m)
+					<< rhe_.to_string(d, m)
 					<< ')'
 					;
 				return ss.str();

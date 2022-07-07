@@ -9,7 +9,7 @@ namespace cyng
 			: value_(p)
 		{}
 
-		std::string constant < char const* >::to_str(dialect d, meta_sql const&) const {
+		std::string constant < char const* >::to_string(dialect d, meta_sql const&) const {
 			std::stringstream ss;
 			ss << '\'' << value_ << '\'';
 			return ss.str();
@@ -19,7 +19,7 @@ namespace cyng
 		: value_(s)
 		{}
 			
-		std::string constant < std::string >::to_str(dialect d, meta_sql const&) const {
+		std::string constant < std::string >::to_string(dialect d, meta_sql const&) const {
 			std::stringstream ss;
 			ss << '\'' << value_ << '\'';
 			return ss.str();
@@ -32,7 +32,7 @@ namespace cyng
 		: b_(b)
 		{}
 			
-		std::string constant < bool >::to_str(dialect d, meta_sql const&) const {
+		std::string constant < bool >::to_string(dialect d, meta_sql const&) const {
 			return (d == dialect::SQLITE)
 				? (b_ ? "1" : "0")
 				: (b_ ? "TRUE" : "FALSE")
@@ -45,7 +45,7 @@ namespace cyng
 		constant < std::chrono::system_clock::time_point >::constant(std::chrono::system_clock::time_point tp)
 			: tp_(tp)
 		{}
-		std::string constant < std::chrono::system_clock::time_point >::to_str(dialect d, meta_sql const&) const {
+		std::string constant < std::chrono::system_clock::time_point >::to_string(dialect d, meta_sql const&) const {
 
 			std::time_t const tt = std::chrono::system_clock::to_time_t(tp_);
 			auto tm = *std::localtime(&tt);

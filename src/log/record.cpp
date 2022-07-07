@@ -36,7 +36,7 @@ namespace cyng {
 
 #ifdef _DEBUG
 
-	std::string to_str(logging::record const& rec) {
+	std::string to_string(logging::record const& rec) {
 
 		std::stringstream ss;
 		ss

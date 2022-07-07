@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE(record)
 {
 	auto rec = cyng::logging::record::create(cyng::severity::LEVEL_TRACE, "hello");
 #ifdef _DEBUG
-	auto msg = cyng::to_str(*rec);
+	auto msg = cyng::to_string(*rec);
 	std::cout << msg << std::endl;
 #endif
 }

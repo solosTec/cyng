@@ -83,10 +83,8 @@ namespace cyng {
 
 	}
 
-
-
 #ifdef _DEBUG
-	std::string to_str(logging::record const&);
+	std::string to_string(logging::record const&);
 #endif
 }
 

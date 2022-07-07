@@ -119,7 +119,7 @@ namespace cyng
 						ss << std::put_time(&tm, "%Y-%m-%d %T");
 						auto const str = ss.str();
 
-						//const std::string str = to_str(*ptr);
+						//const std::string str = to_string(*ptr);
 						BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
 						return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
 					}

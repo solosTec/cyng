@@ -41,8 +41,8 @@ BOOST_AUTO_TEST_CASE(create)
 	, 1);
 
 	auto const ms = cyng::to_sql(m, { 0, 65, 32, 64 });
-	//std::cout << cyng::sql::create(cyng::sql::dialect::POSTGRESQL, ms).to_str() << std::endl;
-	auto const sql1 = cyng::sql::create(cyng::sql::dialect::POSTGRESQL, ms).to_str();
+	//std::cout << cyng::sql::create(cyng::sql::dialect::POSTGRESQL, ms).to_string() << std::endl;
+	auto const sql1 = cyng::sql::create(cyng::sql::dialect::POSTGRESQL, ms).to_string();
 	//	CREATE TABLE TDemo IF NOT EXISTS( id bigint, gen bigint, name VARCHAR(65), age timestamp, tag uuid, PRIMARY KEY( id ))
 	BOOST_REQUIRE_EQUAL(sql1, "CREATE TABLE TDemo IF NOT EXISTS( id bigint, gen bigint, name VARCHAR(65), age timestamp, tag uuid, PRIMARY KEY( id ))");
 
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(insert)
 	, 1);
 
 	auto const ms = cyng::to_sql(m, { 0, 65, 32, 64 });
-	//auto const sql1 = cyng::sql::insert(cyng::sql::dialect::SQLITE, ms).to_str();
+	//auto const sql1 = cyng::sql::insert(cyng::sql::dialect::SQLITE, ms).to_string();
 
 	auto const sql = cyng::sql::insert(cyng::sql::dialect::SQLITE, ms).bind_values(ms)();
 

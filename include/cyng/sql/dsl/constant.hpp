@@ -38,7 +38,7 @@ namespace cyng
 				: value_(std::forward<T>(v))
 			{}
 
-			std::string to_str(dialect d, meta_sql const&) const {
+			std::string to_string(dialect d, meta_sql const&) const {
 				std::stringstream ss;
 				ss << value_;
 				return ss.str();
@@ -54,7 +54,7 @@ namespace cyng
 		struct constant < std::string >
 		{
 			constant(std::string const& c);
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 
 			std::string const value_;
 		};
@@ -75,7 +75,7 @@ namespace cyng
 				: value_(c, N - 1)	//	copy
 			{}
 
-			std::string to_str(dialect d, meta_sql const&) const {
+			std::string to_string(dialect d, meta_sql const&) const {
 				std::stringstream ss;
 				ss << '\'' << value_ << '\'';
 				return ss.str();
@@ -92,7 +92,7 @@ namespace cyng
 		struct constant < char const* >
 		{
 			constant(char const*);
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 
 			std::string const value_;
 		};
@@ -105,7 +105,7 @@ namespace cyng
 		struct constant < bool >
 		{
 			constant(bool b);
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 
 			const bool b_;
 		};
@@ -117,7 +117,7 @@ namespace cyng
 		struct constant < std::chrono::system_clock::time_point >
 		{
 			constant(std::chrono::system_clock::time_point tp);			
-			std::string to_str(dialect d, meta_sql const&) const;
+			std::string to_string(dialect d, meta_sql const&) const;
 
 			const std::chrono::system_clock::time_point tp_;
 		};

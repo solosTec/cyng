@@ -60,7 +60,7 @@ namespace cyng
 			node read_file(std::string const& file_name, std::string const& root_name);
 
 			friend std::ostream& operator<<(std::ostream&, document const&);
-			std::string to_str() const;
+			std::string to_string() const;
 
 		private:
 			struct impl;

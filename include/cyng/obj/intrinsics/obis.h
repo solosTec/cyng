@@ -157,7 +157,7 @@ namespace cyng {
 	 * @see io_buffer.h
 	 */
 	[[nodiscard]]
-	std::string to_str(obis const&);
+	std::string to_string(obis const&);
 
 	/**
 	 * An OBIS code like "81 81 11 06 FF FF" has a depth of 2

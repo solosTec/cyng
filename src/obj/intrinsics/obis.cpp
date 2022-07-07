@@ -100,7 +100,7 @@ namespace cyng	{
 		return to_buffer(o.data());
 	}
 
-	std::string to_str(obis const& o) {
+	std::string to_string(obis const& o) {
 		return std::accumulate(std::begin(o.data()), std::end(o.data()), std::string(), [](std::string r, std::uint8_t c) {
 			return r + io::to_hex(c);
 			});

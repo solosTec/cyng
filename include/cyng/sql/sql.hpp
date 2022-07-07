@@ -52,7 +52,7 @@ namespace cyng
 			{
 			public:
 				base(dialect, clause_t&&);
-				std::string to_str() const;
+				std::string to_string() const;
 				std::string operator()() const;
 
 			protected:
@@ -121,7 +121,7 @@ namespace cyng
 
 				template<typename EXPR>
 				details::sql_group_by where(EXPR expr) {
-					return where(expr.to_str(dialect_, meta_));
+					return where(expr.to_string(dialect_, meta_));
 				}
 
 			private:
@@ -332,7 +332,7 @@ namespace cyng
 			 */
 			template<typename EXPR>
 			details::sql_group_by where(EXPR expr) {
-				return self().where(expr.to_str(dialect_, meta_));
+				return self().where(expr.to_string(dialect_, meta_));
 			}
 
 		private:

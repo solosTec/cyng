@@ -10,7 +10,7 @@ namespace cyng
 			: name_(name)
 		{}
 		
-		std::string placeholder::to_str(dialect d, meta_sql const& ms) const {
+		std::string placeholder::to_string(dialect d, meta_sql const& ms) const {
 			std::stringstream ss;
 			//	detect special datetime types to use with "julianday()"
 			auto const idx = ms.get_index_by_name(name_);

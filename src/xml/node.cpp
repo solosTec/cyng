@@ -52,7 +52,7 @@ namespace cyng
 			return n;
 		}
 
-		std::string document::to_str() const {
+		std::string document::to_string() const {
 			std::stringstream ss;
 			ss << *this;
 			return ss.str();
