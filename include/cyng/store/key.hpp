@@ -30,7 +30,8 @@ namespace cyng {
 
 	template < typename ...Args >
 	key_t extend_key(key_t key, Args&&... args) {
-		key.reserve(key.size() + sizeof args...);
+		constexpr auto size = sizeof... (Args);
+		key.reserve(key.size() + size);
 		auto k = key_generator(std::forward<Args>(args)...);
 		std::move(k.begin(), k.end(), std::back_inserter(key));
 		return key;
