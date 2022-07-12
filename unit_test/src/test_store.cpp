@@ -239,4 +239,41 @@ BOOST_AUTO_TEST_CASE(slot)
 	store.disconnect("demo", sp);
 }
 
+bool test_loop(std::uint64_t ui, std::string s, std::chrono::system_clock::time_point tp) {
+	std::cout << ui << ", " << s << ", " << tp << std::endl;
+	BOOST_REQUIRE(ui == 12U || ui == 42);
+	return ui == 42U;
+}
+
+BOOST_AUTO_TEST_CASE(loop)
+{
+	cyng::meta_store const m("demo"
+		, {
+			cyng::column("id", cyng::TC_UINT64),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
+		}
+	, 1);
+
+	cyng::table tbl(m);
+
+	tbl.insert(cyng::key_generator(static_cast<std::uint64_t>(12u))
+		, cyng::data_generator("A", std::chrono::system_clock::now())
+		, 1u	//	gen
+		, boost::uuids::nil_uuid());
+
+	tbl.insert(cyng::key_generator(static_cast<std::uint64_t>(42u))
+		, cyng::data_generator("O", std::chrono::system_clock::now())
+		, 1u	//	gen
+		, boost::uuids::nil_uuid());
+
+	std::function<bool(std::uint64_t, std::string, std::chrono::system_clock::time_point)> f = test_loop;
+	tbl.loop(f);
+	tbl.loop<std::uint64_t, std::string, std::chrono::system_clock::time_point>([](std::uint64_t ui, std::string s, std::chrono::system_clock::time_point tp) {
+		//std::cout << ui << ", " << s << ", " << tp << std::endl;
+		BOOST_REQUIRE(ui == 12U || ui == 42);
+		return true;
+		});
+}
+
 BOOST_AUTO_TEST_SUITE_END()

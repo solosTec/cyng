@@ -49,6 +49,18 @@ namespace cyng {
 
 	}
 
+	tuple_t record::get_tuple() const {
+		tuple_t tpl;
+		for (auto const& obj : key_) {
+			tpl.push_back(obj);
+		}
+		for (auto const& obj : data_) {
+			tpl.push_back(obj);
+		}
+		return tpl;
+
+	}
+
 	tuple_t record::to_tuple(param_map_t&& pm) const {
 
 		param_map_t key, data;

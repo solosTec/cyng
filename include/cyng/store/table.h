@@ -11,6 +11,7 @@
 #include <cyng/store/meta.h>
 #include <cyng/store/record.h>
 #include <cyng/obj/compare.hpp>
+#include <cyng/obj/function_cast.hpp>
 
 #include <unordered_map>
 #include <memory>
@@ -152,10 +153,49 @@ namespace cyng {
 		/**
 		 * If predicate returns true, the element will be deleted.
 		 * 
-		 * @tparam predicate for selecting records to be deleted
+		 * @param pred predicate for selecting records to be deleted
 		 * @return number of erased elements
 		 */
-		std::size_t erase(std::function<bool(record&&)> f, boost::uuids::uuid source);
+		std::size_t erase_if(std::function<bool(record&&)> pred, boost::uuids::uuid source);
+
+		/**
+		 * If pred returns true, the record will be removed.
+		 */
+		template <typename ...Args>
+		void erase_if(std::function<bool(Args...)> pred, boost::uuids::uuid source)  {
+
+			using F = std::function<bool(Args...)>;
+			for (auto pos = data_.begin(); pos != data_.end(); ) {
+
+				//
+				//	read lock this record
+				//
+				std::shared_lock<std::shared_mutex> ulock(pos->second.m_);
+
+				auto const rec = record(meta(), pos->first, pos->second.data_, pos->second.generation_);
+
+				//
+				//	unzip data and dispatch to specified function
+				//
+				auto const tpl = rec.get_tuple();
+				if (function_call<F>(pred, tpl)) {
+
+
+					//
+					//	publish
+					//
+					forward(this, pos->first, pos->second.data_, source);
+
+					//
+					//	erase
+					//
+					pos = data_.erase(pos);
+				}
+				else {
+					++pos;
+				}
+			}
+		}
 
 		/**
 		 * @return true if table is of type auto
@@ -200,6 +240,31 @@ namespace cyng {
 		 * @return count of invalid/skipped records
 		 */
 		std::size_t loop(std::function<bool(record&&, std::size_t)> f) const;
+
+		/**
+		 * Loop over a selected records.
+		 * 
+		 * This is the same mechanism used by the task library. A tuple of objects will be automatically
+		 * unpacked and dispatched to the specified function object.
+		 */
+		template <typename ...Args>
+		void loop(std::function<bool(Args...)> cb) const {
+
+			using F = std::function<bool(Args...)>;
+			for (auto const& row : data_)	{
+				//
+				//	read lock this record
+				//
+				std::shared_lock<std::shared_mutex> ulock(row.second.m_);
+
+				auto const rec = record(meta(), row.first, row.second.data_, row.second.generation_);
+				//
+				//	unzip data and dispatch to specified function
+				//
+				auto const tpl = rec.get_tuple();
+				if (!function_call<F>(cb, tpl))	break;
+			}
+		}
 
 		/**
 		 * Convert the table into a vector. Usefull for

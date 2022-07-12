@@ -60,6 +60,11 @@ namespace cyng {
 		tuple_t to_tuple() const;
 
 		/**
+		 * Extract the raw data as tuple (pk included)
+		 */
+		tuple_t get_tuple() const;
+
+		/**
 		 * Same as to_tuple() but with the option to add more
 		 * parameters.
 		 *

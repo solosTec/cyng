@@ -137,7 +137,7 @@ namespace cyng {
 		return result;
 	}
 
-	std::size_t store::erase(std::string const& name
+	std::size_t store::erase_if(std::string const& name
 		, std::function<bool(record&&)> pred
 		, boost::uuids::uuid source) {
 
@@ -151,7 +151,7 @@ namespace cyng {
 		//	write lock on table
 		access([&](table* tbl) -> void {
 
-			counter = tbl->erase(pred, source);
+			counter = tbl->erase_if(pred, source);
 
 		}, access::write(name));
 

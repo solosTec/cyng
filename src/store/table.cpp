@@ -344,7 +344,7 @@ namespace cyng {
 
 	}
 
-	std::size_t table::erase(std::function<bool(record&&)> f, boost::uuids::uuid source) {
+	std::size_t table::erase_if(std::function<bool(record&&)> f, boost::uuids::uuid source) {
 		std::size_t counter{ 0 };
 		for(auto pos = data_.begin(); pos != data_.end(); )	{
 			//

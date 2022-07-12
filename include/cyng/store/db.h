@@ -169,7 +169,7 @@ namespace cyng {
 		 * @tparam predicate for selecting records to be deleted
 		 * @return number of erased elements
 		 */
-		std::size_t erase(std::string const& name
+		std::size_t erase_if(std::string const& name
 			, std::function<bool(record&&)> pred
 			, boost::uuids::uuid source);
 
