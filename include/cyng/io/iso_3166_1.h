@@ -245,7 +245,7 @@ namespace cyng
 			CC_TO = calulate_cc('T', 'O'),	// Tonga  
 			CC_TT = calulate_cc('T', 'T'),	// Trinidad and Tobago  
 			CC_TN = calulate_cc('T', 'N'),	// Tunisia  
-			CC_TR = calulate_cc('T', 'R'),	// Turkey  
+			CC_TR = calulate_cc('T', 'R'),	// Türkiye  
 			CC_TM = calulate_cc('T', 'M'),	// Turkmenistan  
 			CC_TC = calulate_cc('T', 'C'),	// Turks and Caicos Islands  
 			CC_TV = calulate_cc('T', 'Z'),	// Tuvalu  
