@@ -4,22 +4,22 @@
 set (task_lib)
 
 set (task_cpp
-    src/task/channel.cpp
-    src/task/registry.cpp
-    src/task/stash.cpp
-    src/task/scheduler.cpp
-    src/task/controller.cpp
+    src/channel.cpp
+    src/registry.cpp
+    src/stash.cpp
+    src/scheduler.cpp
+    src/controller.cpp
 )
     
 set (tsk_h
-    include/cyng/task/task_fwd.h
-    include/cyng/task/channel.h
-    include/cyng/task/controller.h
-    include/cyng/task/registry.h
-    include/cyng/task/stash.h
-    include/cyng/task/scheduler.h
-    include/cyng/task/task.hpp
-    include/cyng/task/task_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/task_fwd.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/channel.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/controller.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/registry.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/stash.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/scheduler.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/task.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/task/task_interface.h
 )
 
 # define the docscript lib

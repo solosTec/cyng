@@ -4,44 +4,44 @@
 set (sys_lib)
 
 set (sys_cpp
-    src/sys/host.cpp
-    src/sys/process.cpp
-    src/sys/memory.cpp
-    src/sys/mac.cpp
-    src/sys/port.cpp
-    src/sys/locale.cpp
-    src/sys/filesystem.cpp
-    src/sys/dns.cpp
-    src/sys/ntp.cpp
-    src/sys/info.cpp
-    src/sys/cpu.cpp
-    src/sys/net.cpp
+    src/host.cpp
+    src/process.cpp
+    src/memory.cpp
+    src/mac.cpp
+    src/port.cpp
+    src/locale.cpp
+    src/filesystem.cpp
+    src/dns.cpp
+    src/ntp.cpp
+    src/info.cpp
+    src/cpu.cpp
+    src/net.cpp
 )
     
 set (sys_h
-    include/cyng/sys/host.h
-    include/cyng/sys/process.h
-    include/cyng/sys/memory.h
-    include/cyng/sys/mac.h
-    include/cyng/sys/port.h
-    include/cyng/sys/locale.h
-    include/cyng/sys/filesystem.h
-    include/cyng/sys/dns.h
-    include/cyng/sys/ntp.h
-    include/cyng/sys/info.h
-    include/cyng/sys/cpu.h
-    include/cyng/sys/net.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/host.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/process.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/memory.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/mac.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/port.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/locale.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/filesystem.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/dns.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/ntp.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/info.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/cpu.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/net.h
 )
 
 if(WIN32)
     set(sys_platform
-    include/cyng/sys/windows.h
-    src/sys/windows.cpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/windows.h
+    src/windows.cpp
     )
 else()
     set(sys_platform
-    include/cyng/sys/linux.hpp
-    src/sys/linux.cpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/linux.hpp
+    src/linux.cpp
     )
 endif()
 

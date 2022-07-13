@@ -31,7 +31,9 @@
 //	alpine linux <resolv.h>(musl) doesn't implement functions
 //	like res_ninit(&rs)
 //
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 #include <features.h>
 #ifndef __USE_GNU
 #define __MUSL__ 
