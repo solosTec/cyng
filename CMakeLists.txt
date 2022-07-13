@@ -166,34 +166,59 @@ else()
 message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : not installed")
 endif()
 
+if (PTXDIST_BUILD)
 
-# FetchContent added in CMake 3.11, downloads during the configure step
-# FetchContent_MakeAvailable was not added until CMake 3.14
-include(FetchContent)
+    #
+    #   PTXdist makes this modules available.
+    #   The "date" library is header only and doesn't require
+    #   additional steps.
+    #
+    find_package(PugiXML)
 
-# XML library
-#
-FetchContent_Declare(
-  pugixml
-  GIT_REPOSITORY https://github.com/zeux/pugixml
-  GIT_TAG v1.11.4)
-FetchContent_MakeAvailable(pugixml)
-# Adds pugixml
-# use ${pugixml_SOURCE_DIR}/src
-message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
+	if (${PUGIXML_FOUND})
+        message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
+        message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
+
+        #
+        #   Define the target
+        #
+        add_library(pugixml SHARED IMPORTED)
+        set_property(TARGET pugixml PROPERTY IMPORTED_LOCATION ${PUGIXML_LIBRARY})  
+
+    else()
+        message(WARNING "** PugiXML not found")
+	endif()
+
+else(PTXDIST)
+
+    # FetchContent added in CMake 3.11, downloads during the configure step
+    # FetchContent_MakeAvailable was not added until CMake 3.14
+    include(FetchContent)
+
+    # XML library
+    #
+    FetchContent_Declare(
+    pugixml
+    GIT_REPOSITORY https://github.com/zeux/pugixml
+    GIT_TAG v1.11.4)
+    FetchContent_MakeAvailable(pugixml)
+    # Adds pugixml
+    # use ${pugixml_SOURCE_DIR}/src
+    message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
 
 
-# chrono library
-#
-FetchContent_Declare(
-  date_src 
-  GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-  GIT_TAG v3.0.1)
-FetchContent_MakeAvailable(date_src)
-# Adds date 
-# use ${date_SOURCE_DIR}/include
-message(STATUS "** date library source          : ${date_SOURCE_DIR}")
+    # chrono library
+    #
+    FetchContent_Declare(
+    date_src 
+    GIT_REPOSITORY https://github.com/HowardHinnant/date.git
+    GIT_TAG v3.0.1)
+    FetchContent_MakeAvailable(date_src)
+    # Adds date 
+    # use ${date_SOURCE_DIR}/include
+    message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 
+endif(PTXDIST)
 
 #
 # add libraries
@@ -205,7 +230,6 @@ message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 include (src/obj/lib.cmake)
 add_library(cyng_obj ${GLOBAL_LIBRARY_TYPE} ${object_lib})
 add_library(cyng::obj ALIAS "cyng_obj")
-#target_sources(cyng_obj INTERFACE "/include/cyng/obj/clone.hpp")
 
 target_include_directories(cyng_obj
     PUBLIC 
@@ -218,7 +242,7 @@ target_include_directories(cyng_obj
 )
 
 target_compile_features(cyng_obj PRIVATE 
-cxx_alignas
+    cxx_alignas
     cxx_std_20
     cxx_auto_type
     cxx_constexpr
@@ -276,11 +300,6 @@ target_compile_definitions(cyng_vm
         $<$<CONFIG:Debug>:__DEBUG_OBJECT>
         $<$<CONFIG:Debug>:__DEBUG_VM>
 )
-
-# target_link_libraries(cyng_vm 
-#     PRIVATE 
-#         Boost::boost 
-# )
 
 #
 # add library: cyng_store
@@ -354,12 +373,6 @@ target_compile_options(cyng_task
     PRIVATE 
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
 )
-
-# target_link_libraries(cyng_task 
-#     PRIVATE 
-#         Boost::boost 
-# )
-
 
 #
 # add library: cyng_io
