@@ -189,7 +189,7 @@ if (PTXDIST_BUILD)
         message(WARNING "** PugiXML not found")
 	endif()
 
-else(PTXDIST)
+else(PTXDIST_BUILD)
 
     # FetchContent added in CMake 3.11, downloads during the configure step
     # FetchContent_MakeAvailable was not added until CMake 3.14
@@ -218,7 +218,7 @@ else(PTXDIST)
     # use ${date_SOURCE_DIR}/include
     message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 
-endif(PTXDIST)
+endif(PTXDIST_BUILD)
 
 #
 # add libraries
