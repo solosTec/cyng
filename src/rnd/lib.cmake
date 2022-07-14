@@ -4,13 +4,13 @@
 set (rnd_lib)
 
 set (rnd_cpp
-    src/rnd/rnd.cpp
-    src/rnd/statistics.cpp
+    src/rnd.cpp
+    src/statistics.cpp
 )
     
 set (rnd_h
-    include/cyng/rnd/rnd.hpp
-    include/cyng/rnd/statistics.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/rnd/rnd.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/rnd/statistics.h
 )
 
 # define the docscript lib

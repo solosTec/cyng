@@ -4,89 +4,89 @@
 set (object_lib)
 
 set (object_cpp
-    src/obj/object.cpp
-    src/obj/tracker.cpp
-    src/obj/factory.cpp
-    src/obj/util.cpp
-    src/obj/tag.cpp
-    src/obj/container_factory.cpp
+    src/object.cpp
+    src/tracker.cpp
+    src/factory.cpp
+    src/util.cpp
+    src/tag.cpp
+    src/container_factory.cpp
 )
     
 set (object_h
-    include/cyng/obj/container_factory.hpp
-    include/cyng/obj/factory.hpp
-    include/cyng/obj/object.h
-    include/cyng/obj/tag.hpp
-    include/cyng/obj/tracker.h
-    include/cyng/obj/type_interface.h
-    include/cyng/obj/util.hpp
-    include/cyng/obj/compare.hpp
-    include/cyng/obj/clone.hpp
-    include/cyng/obj/intrinsics.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/container_factory.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/factory.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/object.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/tag.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/tracker.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/type_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/util.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/compare.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/clone.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics.h
 )
 
 set (object_intrinscis
-    src/obj/intrinsics/buffer.cpp
-    src/obj/intrinsics/version.cpp
-    src/obj/intrinsics/mac.cpp
-    src/obj/intrinsics/obis.cpp
-    src/obj/intrinsics/edis.cpp
-    src/obj/intrinsics/pid.cpp
-    src/obj/intrinsics/container.cpp
-    src/obj/intrinsics/raw.cpp
-    src/obj/intrinsics/program.cpp
+    src/intrinsics/buffer.cpp
+    src/intrinsics/version.cpp
+    src/intrinsics/mac.cpp
+    src/intrinsics/obis.cpp
+    src/intrinsics/edis.cpp
+    src/intrinsics/pid.cpp
+    src/intrinsics/container.cpp
+    src/intrinsics/raw.cpp
+    src/intrinsics/program.cpp
 
-    include/cyng/obj/intrinsics/aes_key.hpp
-    include/cyng/obj/intrinsics/buffer.h
-    include/cyng/obj/intrinsics/container.h
-    include/cyng/obj/intrinsics/digest.hpp
-    include/cyng/obj/intrinsics/eod.h
-    include/cyng/obj/intrinsics/mac.h
-    include/cyng/obj/intrinsics/pid.h
-    include/cyng/obj/intrinsics/obis.h
-    include/cyng/obj/intrinsics/edis.h
-    include/cyng/obj/intrinsics/null.h
-    include/cyng/obj/intrinsics/op.h
-    include/cyng/obj/intrinsics/severity.h
-    include/cyng/obj/intrinsics/version.h
-    include/cyng/obj/intrinsics/color.hpp
-    include/cyng/obj/intrinsics/raw.h
-    include/cyng/obj/intrinsics/program.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/aes_key.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/buffer.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/container.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/digest.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/eod.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/mac.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/pid.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/obis.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/edis.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/null.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/op.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/severity.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/version.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/color.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/raw.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/program.h
 )
 
 set (object_core 
-    include/cyng/obj/core/object_interface.h
-    include/cyng/obj/core/type.hpp
-    include/cyng/obj/core/wrapper.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/core/object_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/core/type.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/core/wrapper.hpp
 )
 
 set (object_cast 
-    include/cyng/obj/function_cast.hpp
-    include/cyng/obj/numeric_cast.hpp
-    include/cyng/obj/object_cast.hpp
-    include/cyng/obj/tuple_cast.hpp
-    include/cyng/obj/value_cast.hpp
-    include/cyng/obj/vector_cast.hpp
-    include/cyng/obj/set_cast.hpp
-    include/cyng/obj/container_cast.hpp
-    include/cyng/obj/array_cast.hpp
-    include/cyng/obj/buffer_cast.hpp
-    src/obj/value_cast.cpp
-    src/obj/buffer_cast.cpp
-    src/obj/container_cast.cpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/function_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/numeric_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/object_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/tuple_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/value_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/vector_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/set_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/container_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/array_cast.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/buffer_cast.hpp
+    src/value_cast.cpp
+    src/buffer_cast.cpp
+    src/container_cast.cpp
 )
 
 set (object_algorithm 
-    include/cyng/obj/algorithm/find.h
-    include/cyng/obj/algorithm/reader.hpp
-    include/cyng/obj/algorithm/dom_walker.h
-    include/cyng/obj/algorithm/merge.h
-    include/cyng/obj/algorithm/add.hpp
-    include/cyng/obj/algorithm/swap_bytes.h
-    src/obj/find.cpp
-    src/obj/reader.cpp
-    src/obj/dom_walker.cpp
-    src/obj/merge.cpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/find.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/reader.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_walker.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/merge.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/add.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/swap_bytes.h
+    src/find.cpp
+    src/reader.cpp
+    src/dom_walker.cpp
+    src/merge.cpp
 )
 
 

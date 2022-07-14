@@ -4,44 +4,44 @@
 set (log_lib)
 
 set (log_cpp
-    src/log/log.cpp
-    src/log/record.cpp
-    src/log/logger.cpp
-    src/log/conv.cpp
+    src/log.cpp
+    src/record.cpp
+    src/logger.cpp
+    src/conv.cpp
 )
     
 set (log_h
-    include/cyng/log/log.h
-    include/cyng/log/record.h
-    include/cyng/log/logger.h
-    include/cyng/log/conv.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/log.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/record.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/logger.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/conv.h
 )
 
 set (log_appender
-    include/cyng/log/appender.h
-    include/cyng/log/appender/console.h
-    include/cyng/log/appender/rolling_file.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/appender.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/appender/console.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/log/appender/rolling_file.h
     
-    src/log/appender/appender.cpp
-    src/log/appender/console.cpp
-    src/log/appender/rolling_file.cpp   
-    src/log/appender/rolling_file.cpp
+    src/appender/appender.cpp
+    src/appender/console.cpp
+    src/appender/rolling_file.cpp   
+    src/appender/rolling_file.cpp
     
 )
 
 if (UNIX)
-    list(APPEND log_appender "include/cyng/log/appender/sys_log.h")
-    list(APPEND log_appender "src/log/appender/sys_log.cpp")
+    list(APPEND log_appender "${CMAKE_SOURCE_DIR}/include/cyng/log/appender/sys_log.h")
+    list(APPEND log_appender "src/appender/sys_log.cpp")
 endif()
 
 if (WITH_SYSTEMD)
-    list(APPEND log_appender "include/cyng/log/appender/journald.h")
-    list(APPEND log_appender "src/log/appender/journald.cpp")
+    list(APPEND log_appender "${CMAKE_SOURCE_DIR}/include/cyng/log/appender/journald.h")
+    list(APPEND log_appender "src/appender/journald.cpp")
 endif()
 
 if (WIN32)
-    list(APPEND log_appender "src/log/appender/event_log.cpp")
-    list(APPEND log_appender "include/cyng/log/appender/event_log.h")
+    list(APPEND log_appender "src/appender/event_log.cpp")
+    list(APPEND log_appender "${CMAKE_SOURCE_DIR}/include/cyng/log/appender/event_log.h")
 endif()
 
 

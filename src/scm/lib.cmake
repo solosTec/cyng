@@ -4,15 +4,15 @@
 set (scm_lib)
 
 set (scm_cpp
- 	src/scm/service.cpp
- 	src/scm/mgr.cpp
- 	src/scm/win_registry.cpp
+ 	src/service.cpp
+ 	src/mgr.cpp
+ 	src/win_registry.cpp
 )
     
 set (scm_h
-	include/cyng/scm/win_registry.h
-    include/cyng/scm/service.hpp
-    include/cyng/scm/mgr.h
+	${CMAKE_SOURCE_DIR}/include/cyng/scm/win_registry.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/scm/service.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/scm/mgr.h
 )
 
 # define the scm lib

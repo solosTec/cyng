@@ -4,26 +4,26 @@
 set (vm_lib)
 
 set (vm_cpp
-    src/vm/vm.cpp
-    src/vm/mesh.cpp
-    src/vm/proxy.cpp
-    src/vm/memory.cpp
-    src/vm/stack.cpp
-    src/vm/context.cpp
-    src/vm/generator.cpp
-    src/vm/linearize.cpp
+    src/vm.cpp
+    src/mesh.cpp
+    src/proxy.cpp
+    src/memory.cpp
+    src/stack.cpp
+    src/context.cpp
+    src/generator.cpp
+    src/linearize.cpp
 )
     
 set (vm_h
-    include/cyng/vm/context.h
-    include/cyng/vm/memory.h
-    include/cyng/vm/mesh.h
-    include/cyng/vm/proxy.h
-    include/cyng/vm/stack.h
-    include/cyng/vm/vm.h
-    include/cyng/vm/vm_fwd.h
-    include/cyng/vm/generator.hpp
-    include/cyng/vm/linearize.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/context.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/memory.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/mesh.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/proxy.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/stack.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/vm.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/vm_fwd.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/generator.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/vm/linearize.hpp
 )
 
 # define the docscript lib

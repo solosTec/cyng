@@ -4,15 +4,15 @@
 set (xml_lib)
 
 set (xml_cpp
-    src/xml/xml.cpp
-    src/xml/reader.cpp
-    src/xml/node.cpp
+    src/xml.cpp
+    src/reader.cpp
+    src/node.cpp
 )
     
 set (xml_h
-    include/cyng/xml/xml.h
-    include/cyng/xml/reader.hpp
-    include/cyng/xml/node.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/xml/xml.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/xml/reader.hpp
+    ${CMAKE_SOURCE_DIR}/include/cyng/xml/node.h
 )
 
 

@@ -4,54 +4,54 @@
 set (db_lib)
 
 set (db_cpp
-    src/db/session.cpp
-    src/db/connection_types.cpp
-    src/db/session_pool.cpp
-    src/db/storage.cpp
+    src/session.cpp
+    src/connection_types.cpp
+    src/session_pool.cpp
+    src/storage.cpp
 )
     
 set (db_h
-    include/cyng/db/session.h
-    include/cyng/db/connection_types.h
-    include/cyng/db/session_pool.h
-    include/cyng/db/storage.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/session.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/connection_types.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/session_pool.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/storage.h
 )
 
 set (db_details
-    include/cyng/db/details/session_interface.h
-    include/cyng/db/details/statement_interface.h
-    include/cyng/db/details/result_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/details/session_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/details/statement_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/details/result_interface.h
 )
 
 set (db_sqlite3
-    src/db/sqlite3/sqlite_defs.h
-    src/db/sqlite3/sqlite_session.h
-    src/db/sqlite3/sqlite_session.cpp
-    src/db/sqlite3/sqlite_connection.h
-    src/db/sqlite3/sqlite_connection.cpp
-    src/db/sqlite3/sqlite_error.hpp
-    src/db/sqlite3/sqlite_error.cpp
-    src/db/sqlite3/sqlite_result.h
-    src/db/sqlite3/sqlite_result.cpp
-    src/db/sqlite3/sqlite_statement.h
-    src/db/sqlite3/sqlite_statement.cpp
+    src/sqlite3/sqlite_defs.h
+    src/sqlite3/sqlite_session.h
+    src/sqlite3/sqlite_session.cpp
+    src/sqlite3/sqlite_connection.h
+    src/sqlite3/sqlite_connection.cpp
+    src/sqlite3/sqlite_error.hpp
+    src/sqlite3/sqlite_error.cpp
+    src/sqlite3/sqlite_result.h
+    src/sqlite3/sqlite_result.cpp
+    src/sqlite3/sqlite_statement.h
+    src/sqlite3/sqlite_statement.cpp
 )
 
 set (db_odbc
-    src/db/odbc/odbc_defs.h
-    src/db/odbc/odbc_diag.hpp
-    src/db/odbc/odbc_error.cpp
-    src/db/odbc/odbc_error.hpp
-    src/db/odbc/odbc_handle.hpp
-    src/db/odbc/odbc_exception.hpp
-    src/db/odbc/odbc_connection.h
-    src/db/odbc/odbc_connection.cpp
-    src/db/odbc/odbc_result.h
-    src/db/odbc/odbc_result.cpp
-    src/db/odbc/odbc_session.h
-    src/db/odbc/odbc_session.cpp
-    src/db/odbc/odbc_statement.h
-    src/db/odbc/odbc_statement.cpp
+    src/odbc/odbc_defs.h
+    src/odbc/odbc_diag.hpp
+    src/odbc/odbc_error.cpp
+    src/odbc/odbc_error.hpp
+    src/odbc/odbc_handle.hpp
+    src/odbc/odbc_exception.hpp
+    src/odbc/odbc_connection.h
+    src/odbc/odbc_connection.cpp
+    src/odbc/odbc_result.h
+    src/odbc/odbc_result.cpp
+    src/odbc/odbc_session.h
+    src/odbc/odbc_session.cpp
+    src/odbc/odbc_statement.h
+    src/odbc/odbc_statement.cpp
 )
 
 source_group("details" FILES ${db_details})
