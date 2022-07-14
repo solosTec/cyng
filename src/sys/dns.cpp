@@ -51,7 +51,7 @@ namespace cyng
 		{
             std::vector<boost::asio::ip::address> dns;
 			//
-			//	alpine linux <resolv.h> (musl) doen't implement these functions
+			//	alpine linux <resolv.h> (musl) doesn't implement these functions
 			//
 #if !defined(__MUSL__)
 			struct __res_state rs;
