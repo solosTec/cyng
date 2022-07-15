@@ -258,6 +258,7 @@ namespace cyng
 				std::stringstream ss;
 				ss
 					<< std::hex
+					//	FixMe: possible loss of data
 					<< std::string(sub.begin(), sub.end());
 
 				std::uint32_t n{ 0 };
