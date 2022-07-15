@@ -189,6 +189,67 @@ namespace cyng {
 			return cs;
 		}
 
+		std::size_t serializer <prop_t, JSON>::write(std::ostream& os, prop_t const& prop) {
+
+			calc_size const cs(os);
+
+			os
+				<< '"'
+				<< to_string(prop.first)
+				<< '"'
+				<< ':'
+				<< ' '
+				;
+
+			auto const tag = prop.second.tag();
+			switch (tag)
+			{
+			case TC_ATTR:
+			case TC_PARAM:
+				os << '{';
+				serialize_json(os, prop.second);
+				os << '}';
+				break;
+			default:
+				serialize_json(os, prop.second);
+			}
+
+			return cs;
+		}
+
+		std::size_t serializer <prop_map_t, JSON>::write(std::ostream& os, prop_map_t const& pm) {
+
+			calc_size const cs(os);
+
+			if (pm.empty()) {
+				os << "null";
+			}
+			else {
+				os << '{';
+
+				bool flag = false;
+				for (auto const& p : pm) {
+					if (flag) {
+						os << ',';
+					}
+					else {
+						flag = true;
+					}
+
+					os
+						<< '"'
+						<< p.first
+						<< '"'
+						<< ':'
+						;
+
+					serialize_json(os, p.second);
+				}
+				os << '}';
+			}
+
+			return cs;
+		}
 
 		std::size_t serializer <std::int8_t, JSON>::write(std::ostream& os, std::int8_t v)
 		{

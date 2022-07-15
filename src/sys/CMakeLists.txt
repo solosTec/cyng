@@ -47,6 +47,7 @@ target_include_directories(cyng_sys
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
+        $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -76,6 +77,5 @@ target_link_libraries(cyng_sys
     PRIVATE 
         "$<$<PLATFORM_ID:Linux>:cyng_parse>"
         "$<$<PLATFORM_ID:Linux>:${Boost_LOCALE_LIBRARY}>"
-#        Boost::boost 
 )
   

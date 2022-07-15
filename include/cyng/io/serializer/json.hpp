@@ -77,6 +77,18 @@ namespace cyng {
 		};
 
 		template <>
+		struct serializer <prop_t, JSON>
+		{
+			static std::size_t write(std::ostream& os, prop_t const&);
+		};
+
+		template <>
+		struct serializer <prop_map_t, JSON>
+		{
+			static std::size_t write(std::ostream& os, prop_map_t const&);
+		};
+
+		template <>
 		struct serializer <std::int8_t, JSON>
 		{
 			static std::size_t write(std::ostream& os, std::int8_t v);

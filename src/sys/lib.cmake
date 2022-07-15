@@ -16,6 +16,7 @@ set (sys_cpp
     src/info.cpp
     src/cpu.cpp
     src/net.cpp
+    src/clock.cpp
 )
     
 set (sys_h
@@ -31,6 +32,7 @@ set (sys_h
     ${CMAKE_SOURCE_DIR}/include/cyng/sys/info.h
     ${CMAKE_SOURCE_DIR}/include/cyng/sys/cpu.h
     ${CMAKE_SOURCE_DIR}/include/cyng/sys/net.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/sys/clock.h
 )
 
 if(WIN32)
