@@ -17,7 +17,7 @@ namespace cyng
 	{
 		std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) {
 			auto const this_day = date::floor<date::days>(tp);
-			return date::year_month_day{ this_day }.operator std::chrono::sys_days();
+			return date::year_month_day{ this_day }.operator date::sys_days();
 		}
 
 		std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) {
@@ -27,12 +27,12 @@ namespace cyng
 		std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point tp) {
 			auto const this_day = date::floor<date::days>(tp);
 			auto const ymd = date::year_month_day{ this_day };
-			return date::year_month_day{ ymd.year(), ymd.month(), date::day{ 1 } }.operator std::chrono::sys_days();
+			return date::year_month_day{ ymd.year(), ymd.month(), date::day{ 1 } }.operator date::sys_days();
 		}
 		std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point tp) {
 			auto const this_day = date::floor<date::days>(tp);
 			auto const ymd = date::year_month_day{ this_day };
-			return date::year_month_day_last{ ymd.year(), date::month_day_last{ ymd.month()} }.operator std::chrono::sys_days();
+			return date::year_month_day_last{ ymd.year(), date::month_day_last{ ymd.month()} }.operator date::sys_days();
 		}
 
 		std::uint64_t get_length_of_month(std::chrono::system_clock::time_point tp) {
@@ -44,13 +44,13 @@ namespace cyng
 		std::chrono::system_clock::time_point get_end_of_year(std::chrono::system_clock::time_point tp) {
 			auto const this_day = date::floor<date::days>(tp);
 			auto const ymd = date::year_month_day{ this_day };
-			return  date::year_month_day_last{ ymd.year(), date::month_day_last{ date::December } }.operator std::chrono::sys_days();
+			return  date::year_month_day_last{ ymd.year(), date::month_day_last{ date::December } }.operator date::sys_days();
 		}
 
 		std::chrono::system_clock::time_point get_start_of_year(std::chrono::system_clock::time_point tp) {
 			auto const this_day = date::floor<date::days>(tp);
 			auto const ymd = date::year_month_day{ this_day };
-			return date::year_month_day{ ymd.year(), date::January, date::day{ 1 } }.operator std::chrono::sys_days();
+			return date::year_month_day{ ymd.year(), date::January, date::day{ 1 } }.operator date::sys_days();
 		}
 
 		std::uint64_t get_length_of_year(std::chrono::system_clock::time_point tp) {
