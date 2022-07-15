@@ -154,9 +154,9 @@ BOOST_AUTO_TEST_CASE(clock)
 	BOOST_REQUIRE_EQUAL(v3, 27);
 
 	auto const v4 = cyng::sys::get_length_of_month(now);
-	//	31
+	//	744h
 	std::cout << v4 << std::endl;
-	BOOST_REQUIRE_EQUAL(v4, 31);
+	BOOST_REQUIRE_EQUAL(v4.count(), 31 * 24);
 
 	auto const v5 = cyng::sys::get_end_of_year(now);
 	//	2022-12-31 00:00:00.0000000
@@ -167,9 +167,9 @@ BOOST_AUTO_TEST_CASE(clock)
 	std::cout << v6 << std::endl;
 
 	auto const v7 = cyng::sys::get_length_of_year(now);
-	//	364
+	//	8736h (364d)
 	std::cout << v7 << std::endl;
-	BOOST_REQUIRE_EQUAL(v7, 364);
+	BOOST_REQUIRE_EQUAL(v7.count(), 364 * 24);
 
 	auto const v8 = cyng::sys::get_day_of_week(now);
 	//	7 (= Sunday)

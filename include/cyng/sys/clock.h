@@ -24,17 +24,17 @@ namespace cyng
 		[[nodiscard]] std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point);
 
 		/**
-		 * @return length of month in days
+		 * @return length of month in hours
 		 */
-		[[nodiscard]] std::uint64_t get_length_of_month(std::chrono::system_clock::time_point);
+		[[nodiscard]] std::chrono::hours get_length_of_month(std::chrono::system_clock::time_point);
 
 		[[nodiscard]] std::chrono::system_clock::time_point get_end_of_year(std::chrono::system_clock::time_point);	
 		[[nodiscard]] std::chrono::system_clock::time_point get_start_of_year(std::chrono::system_clock::time_point);
 
 		/**
-		 * @return length of year in days
+		 * @return length of year in hours
 		 */
-		[[nodiscard]] std::uint64_t get_length_of_year(std::chrono::system_clock::time_point);
+		[[nodiscard]] std::chrono::hours get_length_of_year(std::chrono::system_clock::time_point);
 
 		/**
 		 * @return ISO week number of the specified time point
