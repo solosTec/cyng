@@ -338,8 +338,10 @@ else()
 
     set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 
-    if (${CYNG_HOST_ID_NAME} STREQUAL "openSUSE")
-        set(CPACK_GENERATOR "RPM")
+    if (DEFINED CYNG_HOST_ID_NAME)
+        if (${CYNG_HOST_ID_NAME} STREQUAL "openSUSE")
+            set(CPACK_GENERATOR "RPM")
+        endif()
     else()    
         #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-all-dev (>= 1.76), openssl (>= 1.1.0)")
 
