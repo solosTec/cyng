@@ -170,7 +170,7 @@ namespace cyng
 		return tpl;
 	}
 
-	object restore(std::string const& val, std::uint32_t code)
+	object restore(std::string const& val, std::uint16_t code)
 	{
 		switch (code) {
 		case TC_BOOL:
@@ -184,21 +184,37 @@ namespace cyng
 		case TC_FLOAT80:
 			return make_object(std::stold(val));
 		case TC_UINT8:
-			return make_object(static_cast<std::uint8_t>(std::stoul(val, nullptr, 16)));
+			return (val.empty()) 
+				? make_object(static_cast<std::uint8_t>(0u)) 
+				: make_object(static_cast<std::uint8_t>(std::stoul(val, nullptr, 16)));
 		case TC_UINT16:
-			return make_object(static_cast<std::uint16_t>(std::stoul(val, nullptr, 16)));
+			return (val.empty())
+				? make_object(static_cast<std::uint16_t>(0u))
+				: make_object(static_cast<std::uint16_t>(std::stoul(val, nullptr, 16)));
 		case TC_UINT32:
-			return make_object(static_cast<std::uint32_t>(std::stoul(val, nullptr, 16)));
+			return (val.empty())
+				? make_object(static_cast<std::uint32_t>(0u))
+				: make_object(static_cast<std::uint32_t>(std::stoul(val, nullptr, 16)));
 		case TC_UINT64:
-			return make_object(static_cast<std::uint64_t>(std::stoull(val, nullptr, 16)));
+			return (val.empty())
+				? make_object(static_cast<std::uint64_t>(0u))
+				: make_object(static_cast<std::uint64_t>(std::stoull(val, nullptr, 16)));
 		case TC_INT8:
-			return make_object(static_cast<std::int8_t>(std::stoi(val)));
+			return (val.empty())
+				? make_object(static_cast<std::int8_t>(0))
+				: make_object(static_cast<std::int8_t>(std::stoi(val)));
 		case TC_INT16:
-			return make_object(static_cast<std::int16_t>(std::stoi(val)));
+			return (val.empty())
+				? make_object(static_cast<std::int16_t>(0))
+				: make_object(static_cast<std::int16_t>(std::stoi(val)));
 		case TC_INT32:
-			return make_object(static_cast<std::int32_t>(std::stoi(val)));
+			return (val.empty())
+				? make_object(static_cast<std::int32_t>(0))
+				: make_object(static_cast<std::int32_t>(std::stoi(val)));
 		case TC_INT64:
-			return make_object(static_cast<std::int64_t>(std::stoi(val)));
+			return (val.empty())
+				? make_object(static_cast<std::int64_t>(0))
+				: make_object(static_cast<std::int64_t>(std::stoi(val)));
 		//case TC_STRING:	//	default
 		case TC_FS_PATH:		return make_object(std::filesystem::path(val));
 			//case TC_TIME_POINT: 

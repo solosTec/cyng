@@ -65,7 +65,7 @@ namespace cyng
 	 * restore a data type from a string and a type code
 	 * Note: could throw
 	 */
-	object restore(std::string const&, std::uint32_t);
+	object restore(std::string const&, std::uint16_t);
 
 }
 
