@@ -39,8 +39,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     message(STATUS "** CMake              : ${CMAKE_VERSION}")
    
-    if (NOT WIN32) 
+    if (NOT WIN32 AND (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.22.5")) 
         # Alpine Linux v3.16/alpine
+        # CMake 3.22.5 required
         cmake_host_system_information(RESULT CYNG_HOST_PRETTY_NAME QUERY DISTRIB_PRETTY_NAME)
         cmake_host_system_information(RESULT CYNG_HOST_ID_NAME QUERY DISTRIB_ID)
         message(STATUS "** Host System        : ${CYNG_HOST_PRETTY_NAME}/${CYNG_HOST_ID_NAME} - (${CMAKE_SYSTEM_NAME})")
