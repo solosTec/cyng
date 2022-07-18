@@ -81,8 +81,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         set(GLOBAL_LIBRARY_TYPE SHARED)
 
         #
-        #   This is used by PugiXML
+        #   This is used by Date and PugiXML
         #
+#        set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build a shared version of library")
         set(BUILD_SHARED_AND_STATIC_LIBS ON CACHE INTERNAL "Build SHARED and STATIC libraries")
     endif()
 
@@ -167,59 +168,94 @@ else()
 message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : not installed")
 endif()
 
-if (PTXDIST_BUILD)
+#
+#   List of all targets that will be installed
+#
+set(REQUESTED_LIBS "cyng_db;cyng_io;cyng_log;cyng_obj;cyng_parse;cyng_rnd;cyng_sql;cyng_store;cyng_sys;cyng_task;cyng_vm;cyng_net;cyng_sqlite3")
+
+#
+# external libraries
+#
+
+# FetchContent added in CMake 3.11, downloads during the configure step
+# FetchContent_MakeAvailable was not added until CMake 3.14
+include(FetchContent)
+
+#
+#   PTXdist makes this modules available.
+#   The "date" library is header only and doesn't require
+#   additional steps.
+#
+find_package(PugiXML)
+
+if (${PUGIXML_FOUND})
+    message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
+    message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
 
     #
-    #   PTXdist makes this modules available.
-    #   The "date" library is header only and doesn't require
-    #   additional steps.
+    #   Define the target
     #
-    find_package(PugiXML)
+    message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
+    add_library(pugixml SHARED IMPORTED)
+    set_target_properties(pugixml 
+        PROPERTIES 
+            IMPORTED_LOCATION 
+                ${PUGIXML_LIBRARY}
+            INTERFACE_INCLUDE_DIRECTORIES
+                ${PUGIXML_INCLUDE_DIR}
 
-	if (${PUGIXML_FOUND})
-        message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
-        message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
+)  
 
-        #
-        #   Define the target
-        #
-        add_library(pugixml SHARED IMPORTED)
-        set_property(TARGET pugixml PROPERTY IMPORTED_LOCATION ${PUGIXML_LIBRARY})  
+else()
 
-    else()
-        message(WARNING "** PugiXML not found")
-	endif()
-
-else(PTXDIST_BUILD)
-
-    # FetchContent added in CMake 3.11, downloads during the configure step
-    # FetchContent_MakeAvailable was not added until CMake 3.14
-    include(FetchContent)
-
+    #
     # XML library
+    # Could be integrated with find_package() but then the information got lost
+    # how PugiXML was build/found.
     #
     FetchContent_Declare(
-    pugixml
-    GIT_REPOSITORY https://github.com/zeux/pugixml
-    GIT_TAG v1.11.4)
+        pugixml
+        GIT_REPOSITORY https://github.com/zeux/pugixml
+        GIT_TAG v1.11.4)
     FetchContent_MakeAvailable(pugixml)
     # Adds pugixml
     # use ${pugixml_SOURCE_DIR}/src
     message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
 
+    #
+    #   install pugixml
+    #
+    list(APPEND REQUESTED_LIBS "pugixml")
+
+endif()
+
+#
+# Find Howard Hinnant's date library.
+#
+find_package(Date)
+if (DATE_FOUND)
+    message(STATUS "** Date source           : ${date_SOURCE_DIR}")
+
+    add_library(date_src INTERFACE)
+    add_library(date::date ALIAS "date_src")
+    target_include_directories(date_src 
+        INTERFACE 
+            ${date_SOURCE_DIR})
+
+else(DATE_FOUND)
 
     # chrono library
     #
     FetchContent_Declare(
-    date_src 
-    GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-    GIT_TAG v3.0.1)
+        date_src 
+        GIT_REPOSITORY https://github.com/HowardHinnant/date.git
+        GIT_TAG v3.0.1)
     FetchContent_MakeAvailable(date_src)
     # Adds date 
     # use ${date_SOURCE_DIR}/include
     message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 
-endif(PTXDIST_BUILD)
+endif(DATE_FOUND)
 
 #
 # add libraries
@@ -277,7 +313,8 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
 
 # export target to a cyng_coreTargets.cmake
 
-install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql cyng_sqlite3 cyng_store cyng_sys cyng_task cyng_vm cyng_xml cyng_net pugixml
+#install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql cyng_sqlite3 cyng_store cyng_sys cyng_task cyng_vm cyng_xml cyng_net
+install(TARGETS ${REQUESTED_LIBS}
     EXPORT "${CMAKE_PROJECT_NAME}targets"
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

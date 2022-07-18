@@ -56,10 +56,10 @@ set (io_iso
     src/iso_3166_1.cpp
 )
 
-set (io_xml
-    ${pugixml_SOURCE_DIR}/src/pugixml.hpp
-    ${pugixml_SOURCE_DIR}/src/pugixml.cpp
-)
+#set (io_xml
+#    ${pugixml_SOURCE_DIR}/src/pugixml.hpp
+#    ${pugixml_SOURCE_DIR}/src/pugixml.cpp
+#)
 
 source_group("serializer" FILES ${io_serializer})
 source_group("parser" FILES ${io_parser})

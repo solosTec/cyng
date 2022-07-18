@@ -1,6 +1,6 @@
 #include <cyng/sys/clock.h>
 
-//	From Howard Hinnants data library.
+//	From Howard Hinnant's awesome data library.
 //	Used here since not all compilers C++20 compliant yet
 #include <date/iso_week.h>
 #include <date/date.h>
