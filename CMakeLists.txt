@@ -75,7 +75,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         #   This is used by PugiXML
         #   Build only a static library
         #
-        #set(BUILD_SHARED_LIBS OFF)
+        set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build only STATIC libraries")
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
         set(GLOBAL_LIBRARY_TYPE SHARED)
@@ -234,10 +234,12 @@ else()
         # Could be integrated with find_package() but then the information got lost
         # how PugiXML was build/found.
         #
+        message(STATUS "** clone PugiXML ...")
         FetchContent_Declare(
             pugixml
             GIT_REPOSITORY https://github.com/zeux/pugixml
-            GIT_TAG v1.11.4)
+            GIT_TAG v1.11.4
+            GIT_PROGRESS TRUE)
         FetchContent_MakeAvailable(pugixml)
         # Adds pugixml
         # use ${pugixml_SOURCE_DIR}/src
@@ -269,10 +271,12 @@ else(DATE_FOUND)
     #
     # date library
     #
+    message(STATUS "** clone date ...")
     FetchContent_Declare(
         date_src 
         GIT_REPOSITORY https://github.com/HowardHinnant/date.git
         GIT_TAG v3.0.1
+        GIT_PROGRESS TRUE
         CMAKE_CACHE_ARGS -DBUILD_TZ_LIB=OFF)
     FetchContent_MakeAvailable(date_src)
     # Adds date 
