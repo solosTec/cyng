@@ -182,51 +182,73 @@ set(REQUESTED_LIBS "cyng_db;cyng_io;cyng_log;cyng_obj;cyng_parse;cyng_rnd;cyng_s
 include(FetchContent)
 
 #
-#   PTXdist makes this modules available.
-#   The "date" library is header only and doesn't require
-#   additional steps.
+# check FIND_PACKAGE_ARGS keyword
 #
-find_package(PugiXML)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24") 
 
-if (${PUGIXML_FOUND})
-    message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
-    message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
-
-    #
-    #   Define the target
-    #
-    message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
-    add_library(pugixml SHARED IMPORTED)
-    set_target_properties(pugixml 
-        PROPERTIES 
-            IMPORTED_LOCATION 
-                ${PUGIXML_LIBRARY}
-            INTERFACE_INCLUDE_DIRECTORIES
-                ${PUGIXML_INCLUDE_DIR}
-
-)  
-
-else()
+    #   OPT_IN
+    message(STATUS "** FetchConten mode      : ${FETCHCONTENT_TRY_FIND_PACKAGE_MODE}")
 
     #
-    # XML library
-    # Could be integrated with find_package() but then the information got lost
-    # how PugiXML was build/found.
+    #   Clone the git repository only if FindPackage() comes up empty
     #
     FetchContent_Declare(
         pugixml
         GIT_REPOSITORY https://github.com/zeux/pugixml
-        GIT_TAG v1.11.4)
+        GIT_TAG v1.11.4
+        GIT_PROGRESS TRUE
+        FIND_PACKAGE_ARGS NAMES PugiXML)
     FetchContent_MakeAvailable(pugixml)
-    # Adds pugixml
-    # use ${pugixml_SOURCE_DIR}/src
-    message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
+    FetchContent_GetProperties(pugixml)
 
-    #
-    #   install pugixml
-    #
-    list(APPEND REQUESTED_LIBS "pugixml")
+else()
 
+
+    # PTXdist makes this modules available.
+    # The "date" library is header only and doesn't require
+    # additional steps.
+
+    find_package(PugiXML)
+
+    if (${PUGIXML_FOUND})
+        message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
+        message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
+
+        #
+        #   Define the target
+        #
+        message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
+        add_library(pugixml SHARED IMPORTED)
+        set_target_properties(pugixml 
+            PROPERTIES 
+                IMPORTED_LOCATION 
+                    ${PUGIXML_LIBRARY}
+                INTERFACE_INCLUDE_DIRECTORIES
+                    ${PUGIXML_INCLUDE_DIR}
+        )  
+
+    else()
+
+        #
+        # XML library
+        # Could be integrated with find_package() but then the information got lost
+        # how PugiXML was build/found.
+        #
+        FetchContent_Declare(
+            pugixml
+            GIT_REPOSITORY https://github.com/zeux/pugixml
+            GIT_TAG v1.11.4)
+        FetchContent_MakeAvailable(pugixml)
+        # Adds pugixml
+        # use ${pugixml_SOURCE_DIR}/src
+        message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
+
+        #
+        #   install pugixml
+        #
+        list(APPEND REQUESTED_LIBS "pugixml")
+
+    endif()
 endif()
 
 #
@@ -244,12 +266,14 @@ if (DATE_FOUND)
 
 else(DATE_FOUND)
 
-    # chrono library
+    #
+    # date library
     #
     FetchContent_Declare(
         date_src 
         GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-        GIT_TAG v3.0.1)
+        GIT_TAG v3.0.1
+        CMAKE_CACHE_ARGS -DBUILD_TZ_LIB=OFF)
     FetchContent_MakeAvailable(date_src)
     # Adds date 
     # use ${date_SOURCE_DIR}/include
