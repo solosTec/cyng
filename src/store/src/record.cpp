@@ -93,11 +93,19 @@ namespace cyng {
 
 	std::string record::to_string() const {
 		std::stringstream ss;
+		bool has_pk = false;
 		meta_.loop([&](std::size_t idx, column const& col, bool pk) {
 			if (pk) {
-				ss << '<' << col.name_ << ": " << key_.at(idx) << '>';
+				if (!has_pk) {
+					has_pk = true;
+				}
+				ss << '<' << col.name_ << ":" << key_.at(idx) << '>';
 			}
 			else {
+				if (has_pk) {
+					ss << ' ';
+					has_pk = false;
+				}
 				ss << '[' << col.name_ << ": " << data_.at(idx) << ']';
 			}
 		});
