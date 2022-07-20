@@ -50,6 +50,15 @@ target_include_directories(cyng_io
 
 target_compile_features(cyng_io PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 
+#
+#   debug i/o library
+#
+target_compile_definitions(cyng_io 
+    PRIVATE 
+        $<$<CONFIG:Debug>:_DEBUG_IO>
+        $<$<BOOL:${CYNG_USE_FEATURE_TESTING}>:__CYNG_USE_FEATURE_TESTING>
+)
+
 target_link_libraries(cyng_io 
     PRIVATE 
         Boost::boost 

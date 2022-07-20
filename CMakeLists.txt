@@ -90,6 +90,13 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
         endif()
 
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.22") 
+            message(STATUS "Feature testing available in MSVC ${CMAKE_CXX_COMPILER_VERSION}")
+            set(CYNG_USE_FEATURE_TESTING ON CACHE BOOL "use feature testing")
+        else()
+            message(STATUS "Feature testing not available")
+            set(CYNG_USE_FEATURE_TESTING OFF CACHE BOOL "use feature testing")
+        endif()
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
         set(GLOBAL_LIBRARY_TYPE SHARED)
@@ -109,9 +116,18 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
         endif()
 
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0") 
+            message(STATUS "Feature testing available")
+            set(CYNG_USE_FEATURE_TESTING ON CACHE BOOL "use feature testing")
+        else()
+            message(STATUS "Feature testing not available")
+            set(CYNG_USE_FEATURE_TESTING OFF CACHE BOOL "use feature testing")
+        endif()
+
     else()
             message(STATUS "unsupported compiler")
             set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
+            set(CYNG_USE_FEATURE_TESTING OFF CACHE BOOL "use feature testing")
     endif()
 
     #

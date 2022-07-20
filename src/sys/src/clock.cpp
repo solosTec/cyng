@@ -1,11 +1,31 @@
 #include <cyng/sys/clock.h>
 
+#if defined(__CYNG_USE_FEATURE_TESTING)
+
+//
+//	feature testing is possible
+//
+#include <version> 
+
 #if __cpp_lib_chrono >= 201907L
+//
+//	chrono library with date/calendar support available
+//
 #pragma message("__cpp_lib_chrono >= 201907L")
 #include <chrono>
 #else
+#define CYNG_USE_DATE_LIBRARY
+#endif
+
+#else
+// Prior to C++20, including <ciso646> is sometimes used for this purpose.
+#include <ciso646>
+#endif
+
+#if defined(CYNG_USE_DATE_LIBRARY)
 //	From Howard Hinnant's awesome data library.
 //	Used here since not all compilers C++20 compliant yet
+#pragma message("include date library")
 //#include <date/iso_week.h>	requirements relaxed
 #include <date/date.h>
 #endif
@@ -17,10 +37,13 @@
 
 namespace cyng
 {
-#if __cpp_lib_chrono >= 201907L
-	namespace chrono = std::chrono;
-#else
+	//
+	//	select namespace
+	//
+#if defined(CYNG_USE_DATE_LIBRARY)
 	namespace chrono = date;
+#else
+	namespace chrono = std::chrono;
 #endif
 
 	namespace sys

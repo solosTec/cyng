@@ -55,6 +55,7 @@ target_compile_definitions(cyng_sys
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_SYS>
         $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
+        $<$<BOOL:${CYNG_USE_FEATURE_TESTING}>:__CYNG_USE_FEATURE_TESTING>
 )
 
 # -Wno-psabi if gcc 8.x
