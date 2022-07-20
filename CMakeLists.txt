@@ -180,8 +180,8 @@ set(SMF_BOOST_COMPONENTS regex iostreams program_options system thread random lo
 
 if(${CAPITAL_NAME}_UNIT_TEST)
 
+    message(STATUS "** Generate a Unit-Test")
     list(APPEND SMF_BOOST_COMPONENTS unit_test_framework)
-    add_subdirectory(unit_test)
 
 endif()
 
@@ -194,9 +194,9 @@ find_package(Boost 1.75
 # note: https://github.com/chriskohlhoff/asio/issues/585
 add_compile_definitions(BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE BOOST_BIND_NO_PLACEHOLDERS BOOST_SPIRIT_UNICODE BOOST_MPL_LIMIT_LIST_SIZE=50)
 
-message(STATUS "** Boost Version    : ${Boost_VERSION}")
-message(STATUS "** Boost Include    : ${Boost_INCLUDE_DIRS}")
-message(STATUS "** Boost Path       : ${Boost_LIBRARY_DIRS}")
+message(STATUS "** Boost Version                : ${Boost_VERSION}")
+message(STATUS "** Boost Include                : ${Boost_INCLUDE_DIRS}")
+message(STATUS "** Boost Path                   : ${Boost_LIBRARY_DIRS}")
 	
 message(STATUS "** Boost_LIBRARIES              : ${Boost_LIBRARIES}")
 message(STATUS "** Boost_THREAD_LIBRARY         : ${Boost_THREAD_LIBRARY}")
@@ -299,7 +299,7 @@ endif()
 #
 # Find Howard Hinnant's date library.
 #
-if (CYNG_USE_DATE_LIBRARY)
+#if (CYNG_USE_DATE_LIBRARY)
     message(STATUS "** search/download date library...")
 
     find_package(Date)
@@ -330,7 +330,7 @@ if (CYNG_USE_DATE_LIBRARY)
         message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 
     endif(DATE_FOUND)
-endif(CYNG_USE_DATE_LIBRARY)
+#endif(CYNG_USE_DATE_LIBRARY)
 
 #
 # add libraries
@@ -358,7 +358,11 @@ if (WIN32)
 
 endif()
 
+if(${CAPITAL_NAME}_UNIT_TEST)
 
+    add_subdirectory(unit_test)
+
+endif()
 
 #
 # generate config file

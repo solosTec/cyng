@@ -1,5 +1,31 @@
-# Dependencies
-find_package(Boost 1.75 REQUIRED COMPONENTS unit_test_framework)
+project(UnitTest)
+
+message(STATUS "                                                                ,----,                                ")
+message(STATUS "                                                              ,/   .`|                                ")
+message(STATUS "                                       ___                  ,`   .'  :                      ___       ")
+message(STATUS "           ,--,               ,--,   ,--.'|_              ;    ;     /                    ,--.'|_     ")
+message(STATUS "         ,'_ /|       ,---, ,--.'|   |  | :,'     ,---,..'___,/    ,'                     |  | :,'    ")
+message(STATUS "    .--. |  | :   ,-+-. /  ||  |,    :  : ' :   ,'  .' ||    :     |            .--.--.   :  : ' :    ")
+message(STATUS "  ,'_ /| :  . |  ,--.'|'   |`--'_  .;__,'  /  ,---.'   ,;    |.';  ;   ,---.   /  /    '.;__,'  /     ")
+message(STATUS "  |  ' | |  . . |   |  ,\"' |,' ,'| |  |   |   |   |    |`----'  |  |  /     \\ |  :  /`./|  |   |    ")
+message(STATUS "  |  | ' |  | | |   | /  | |'  | | :__,'| :   :   :  .'     '   :  ; /    /  ||  :  ;_  :__,'| :      ")
+message(STATUS "  :  | | :  ' ; |   | |  | ||  | :   '  : |__ :   |.'       |   |  '.    ' / | \\  \\    `. '  : |__  ")
+message(STATUS "  |  ; ' |  | ' |   | |  |/ '  : |__ |  | '.'|`---'         '   :  |'   ;   /|  `----.   \\|  | '.'|  ")
+message(STATUS "  :  | : ;  ; | |   | |--'  |  | '.'|;  :    ;              ;   |.' '   |  / | /  /`--'  /;  :    ;   ")
+message(STATUS "  '  :  `--'   \\|   |/      ;  :    ;|  ,   /               '---'   |   :    |'--'.     / |  ,   /   ")
+message(STATUS "  :  ,      .-./'---'       |  ,   /  ---`-'                         \\   \\  /   `--'---'   ---`-'   ")
+message(STATUS "   `--`----'                 ---`-'                                   `----'                          ")
+                                                                                                  
+message(STATUS "** CMAKE_SOURCE_DIR   : ${CMAKE_SOURCE_DIR}")
+message(STATUS "** CMAKE_BINARY_DIR   : ${CMAKE_BINARY_DIR}")
+message(STATUS "** PROJECT_SOURCE_DIR : ${PROJECT_SOURCE_DIR}")
+message(STATUS "** PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
+message(STATUS "** CURRENT_SOURCE_DIR : ${CMAKE_CURRENT_SOURCE_DIR}")
+message(STATUS "** ${PROJECT_NAME}_SOURCE_DIR: ${${PROJECT_NAME}_SOURCE_DIR}")
+message(STATUS "** ${PROJECT_NAME}_BINARY_DIR: ${${PROJECT_NAME}_BINARY_DIR}")
+message(STATUS "** Boost_LIBRARIES              : ${Boost_LIBRARIES}")
+message(STATUS "** Boost_LOCALE_LIBRARY         : ${Boost_LOCALE_LIBRARY}")
+message(STATUS "** Boost_UNIT_TEST_FRAMEWORK    : ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}")
 
 add_executable(unit_test 
     main.cpp

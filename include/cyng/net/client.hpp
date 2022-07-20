@@ -33,6 +33,7 @@ namespace cyng {
 		template < typename S, std::size_t N >
 		class client {
 
+			public:
 			using endpoint_t = typename S::endpoint_type;
 			using protocol_t = typename S::protocol_type;
 			using resolver_t = typename boost::asio::ip::basic_resolver<protocol_t>;
@@ -296,8 +297,9 @@ namespace cyng {
 				}
 			}
 
-		private:
+		public:
 			signatures_t sigs_;
+		private:
 			channel_weak channel_;
 			boost::asio::io_context& ctx_;
 			S socket_;

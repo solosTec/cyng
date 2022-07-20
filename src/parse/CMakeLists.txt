@@ -2,10 +2,6 @@ cmake_minimum_required (VERSION 3.14)
 project(PARSE)
 
 message(STATUS "")                                                           
-
-                                                     
-                                                     
-                                                     
 message(STATUS "  ,-.----.                                             ")
 message(STATUS "  \\    /  \\              __  ,-.                       ")
 message(STATUS "  |   :    |           ,' ,'/ /|  .--.--.              ")
@@ -19,7 +15,6 @@ message(STATUS "  |   | :  ;  :   .'   \\---'    '--'.     / |   :    | ")
 message(STATUS "  `---'.|  |  ,     .-./          `--'---'   \\   \\  /  ")
 message(STATUS "    `---`   `--`---'                          `----'   ")
 message(STATUS "                                                       ")
-
 message(STATUS "")
                                                            
 

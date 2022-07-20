@@ -32,6 +32,7 @@ namespace cyng {
 			template <typename T >
 			friend class task;
 
+		public:
 			using signatures_t = std::tuple<
 				std::function<void()>,	//	start
 				std::function<void(boost::system::error_code)>,	//	accept
@@ -72,7 +73,7 @@ namespace cyng {
 					boost::system::error_code ec;
 					acceptor_.open(ep_.protocol(), ec);
 					if (!ec) {
-						acceptor_.set_option(socket_t::reuse_address(true));
+						acceptor_.set_option(typename socket_t::reuse_address(true));
 					}
 					if (!ec) {
 						acceptor_.bind(ep_, ec);
@@ -139,8 +140,9 @@ namespace cyng {
 				return std::is_same_v<protocol_t, boost::asio::ip::icmp>;
 			}
 
-		private:
+		public:
 			signatures_t sigs_;
+		private:
 			channel_weak channel_;
 			boost::asio::io_context& ctx_;
 			endpoint_t const ep_;

@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE(slot)
 }
 
 bool test_loop(std::uint64_t ui, std::string s, std::chrono::system_clock::time_point tp) {
-	std::cout << ui << ", " << s << ", " << tp << std::endl;
+	//std::cout << ui << ", " << s << ", " << tp << std::endl;
 	BOOST_REQUIRE(ui == 12U || ui == 42);
 	return ui == 42U;
 }
@@ -269,11 +269,11 @@ BOOST_AUTO_TEST_CASE(loop)
 
 	std::function<bool(std::uint64_t, std::string, std::chrono::system_clock::time_point)> f = test_loop;
 	tbl.loop(f);
-	tbl.loop<std::uint64_t, std::string, std::chrono::system_clock::time_point>([](std::uint64_t ui, std::string s, std::chrono::system_clock::time_point tp) {
-		//std::cout << ui << ", " << s << ", " << tp << std::endl;
-		BOOST_REQUIRE(ui == 12U || ui == 42);
-		return true;
-		});
+	// tbl.loop<std::uint64_t, std::string, std::chrono::system_clock::time_point>([](std::uint64_t ui, std::string s, std::chrono::system_clock::time_point tp) {
+	// 	//std::cout << ui << ", " << s << ", " << tp << std::endl;
+	// 	BOOST_REQUIRE(ui == 12U || ui == 42);
+	// 	return true;
+	// 	});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

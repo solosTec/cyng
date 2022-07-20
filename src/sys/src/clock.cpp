@@ -7,11 +7,11 @@
 //
 #include <version> 
 
-#if __cpp_lib_chrono >= 201907L
+#if defined(__cpp_lib_chrono) && (__cpp_lib_chrono >= 201611L)
 //
 //	chrono library with date/calendar support available
 //
-#pragma message("__cpp_lib_chrono >= 201907L")
+#pragma message("__cpp_lib_chrono >= 201611L")
 #include <chrono>
 #else
 #define CYNG_USE_DATE_LIBRARY
