@@ -1,33 +1,28 @@
 #include <cyng/sys/clock.h>
 
-#if defined(__CYNG_USE_FEATURE_TESTING)
-
-//
-//	feature testing is possible
-//
-#include <version> 
-
-#if defined(__cpp_lib_chrono) && (__cpp_lib_chrono >= 201611L)
-//
-//	chrono library with date/calendar support available
-//
-#pragma message("__cpp_lib_chrono >= 201611L")
-#include <chrono>
+#if defined(__CYNG_USE_DATE_LIBRARY)
+	//	From Howard Hinnant's awesome data library.
+	//	Used here since not all compilers C++20 compliant yet
+	#pragma message("include date library")
+	//#include <date/iso_week.h>	requirements relaxed
+	#include <date/date.h>
 #else
-#define CYNG_USE_DATE_LIBRARY
-#endif
 
-#else
-// Prior to C++20, including <ciso646> is sometimes used for this purpose.
-#include <ciso646>
-#endif
+	#if defined(__CYNG_USE_FEATURE_TESTING)
+	//	feature testing is possible
+		#include <version> 
+		#if defined(__cpp_lib_chrono) && (__cpp_lib_chrono >= 201611L)
+			#pragma message("__cpp_lib_chrono >= 201611L")
+		#else
+			#pragma warning("__cpp_lib_chrono < 201611L")
+		#endif
+	#else
+		// Prior to C++20, including <ciso646> is sometimes used for this purpose.
+		#include <ciso646>
+	#endif
 
-#if defined(CYNG_USE_DATE_LIBRARY)
-//	From Howard Hinnant's awesome data library.
-//	Used here since not all compilers C++20 compliant yet
-#pragma message("include date library")
-//#include <date/iso_week.h>	requirements relaxed
-#include <date/date.h>
+	#include <chrono>
+
 #endif
 
 #include <boost/predef.h>

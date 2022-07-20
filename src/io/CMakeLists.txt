@@ -3,21 +3,21 @@ project(IO)
 
 
 message(STATUS "")                                                           
-message(STATUS "              ,----..         ")
-message(STATUS "     ,---,   /   /   \\       ")
-message(STATUS "  ,`--.' |  /   .     :       ")
-message(STATUS "  |   :  : .   /   ;.  \\     ")
-message(STATUS "  :   |  '.   ;   /  ` ;      ")
-message(STATUS "  |   :  |;   |  ; \\ ; |     ")
-message(STATUS "  '   '  ;|   :  | ; | '      ")
-message(STATUS "  |   |  |.   |  ' ' ' :      ")
-message(STATUS "  '   :  ;'   ;  \\; /  |     ")
-message(STATUS "  |   |  ' \\   \\  ',  /     ")
-message(STATUS "  '   :  |  ;   :    /        ")
-message(STATUS "  ;   |.'    \\   \\ .'       ")
-message(STATUS "  '---'       `---`           ")
-message(STATUS "                              ")                       
-message(STATUS "")
+message(STATUS "                            ,----..     ")
+message(STATUS "     ,---,          ,--,   /   /   \\   ")
+message(STATUS "  ,`--.' |         / .`|  /   .     :   ")
+message(STATUS "  |   :  :        /' / ; .   /   ;.  \\ ")
+message(STATUS "  :   |  '       /  / .'.   ;   /  ` ;  ")
+message(STATUS "  |   :  |      /  / ./ ;   |  ; \\ ; | ")
+message(STATUS "  '   '  ;     / ./  /  |   :  | ; | '  ")
+message(STATUS "  |   |  |    /  /  /   .   |  ' ' ' :  ")
+message(STATUS "  '   :  ;   /  /  /    '   ;  \\; /  | ")
+message(STATUS "  |   |  '  ;  /  /      \\   \\  ',  / ")
+message(STATUS "  '   :  |./__;  /        ;   :    /    ")
+message(STATUS "  ;   |.' |   : /          \\   \\ .'   ")
+message(STATUS "  '---'   ;   |/            `---`       ")
+message(STATUS "          `---'                         ")
+message(STATUS "")                                                           
                                                            
 
 message(STATUS "** CMAKE_SOURCE_DIR   : ${CMAKE_SOURCE_DIR}")
@@ -57,6 +57,7 @@ target_compile_definitions(cyng_io
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_IO>
         $<$<BOOL:${CYNG_USE_FEATURE_TESTING}>:__CYNG_USE_FEATURE_TESTING>
+        $<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:__CYNG_USE_DATE_LIBRARY>     
 )
 
 target_link_libraries(cyng_io 

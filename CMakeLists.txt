@@ -299,7 +299,7 @@ endif()
 #
 # Find Howard Hinnant's date library.
 #
-#if (CYNG_USE_DATE_LIBRARY)
+if (CYNG_USE_DATE_LIBRARY)
     message(STATUS "** search/download date library...")
 
     find_package(Date)
@@ -330,7 +330,7 @@ endif()
         message(STATUS "** date library source          : ${date_SOURCE_DIR}")
 
     endif(DATE_FOUND)
-#endif(CYNG_USE_DATE_LIBRARY)
+endif(CYNG_USE_DATE_LIBRARY)
 
 #
 # add libraries
