@@ -1,6 +1,7 @@
 #include <cyng/sys/clock.h>
 
 #if __cpp_lib_chrono >= 201907L
+#pragma message("__cpp_lib_chrono >= 201907L")
 #include <chrono>
 #else
 //	From Howard Hinnant's awesome data library.
@@ -14,9 +15,6 @@
 
 #include <iostream>
 
-
-
-
 namespace cyng
 {
 #if __cpp_lib_chrono >= 201907L
@@ -27,14 +25,8 @@ namespace cyng
 
 	namespace sys
 	{
-//#if __cpp_lib_chrono >= 201907L
-//		using namespace std::chrono;
-//#else
-//		using namespace date;
-//#endif
-
 		std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) {
-			auto const this_day = floor<chrono::days>(tp);
+			auto const this_day = chrono::floor<chrono::days>(tp);
 			return chrono::year_month_day{ this_day }.operator chrono::sys_days();
 		}
 
@@ -43,13 +35,13 @@ namespace cyng
 		}
 
 		std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point tp) {
-			auto const this_day = floor<chrono::days>(tp);
+			auto const this_day = chrono::floor<chrono::days>(tp);
 			auto const ymd = chrono::year_month_day{ this_day };
 			return chrono::year_month_day{ ymd.year(), ymd.month(), chrono::day{ 1 } }.operator chrono::sys_days();
 		}
 
 		std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point tp) {
-			auto const this_day = floor<chrono::days>(tp);
+			auto const this_day = chrono::floor<chrono::days>(tp);
 			auto const ymd = chrono::year_month_day{ this_day };
 			return chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ ymd.month()} }.operator chrono::sys_days();
 		}
