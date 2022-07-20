@@ -76,5 +76,5 @@ target_compile_definitions(cyng_obj
 
 target_link_libraries(cyng_obj 
     PRIVATE 
-        date::date
+        $<BUILD_INTERFACE:date::date>
 )

@@ -77,6 +77,6 @@ target_link_libraries(cyng_sys
     PRIVATE 
         "$<$<PLATFORM_ID:Linux>:cyng_parse>"
         "$<$<PLATFORM_ID:Linux>:${Boost_LOCALE_LIBRARY}>"
-        date::date
+        $<BUILD_INTERFACE:date::date>
 )
   
