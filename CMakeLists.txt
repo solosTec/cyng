@@ -214,7 +214,7 @@ include(FetchContent)
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24") 
 
     #   OPT_IN
-    message(STATUS "** FetchConten mode      : ${FETCHCONTENT_TRY_FIND_PACKAGE_MODE}")
+    message(STATUS "** FetchContent mode     : ${FETCHCONTENT_TRY_FIND_PACKAGE_MODE}")
 
     #
     #   Clone the git repository only if FindPackage() comes up empty
@@ -363,6 +363,8 @@ if(UNIX)
 include(GNUInstallDirs)
 endif()
 
+message(STATUS "** install targets              : ${REQUESTED_LIBS}")
+ 
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
         FILES_MATCHING # install only matched files
@@ -372,7 +374,6 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
 
 # export target to a cyng_coreTargets.cmake
 
-#install(TARGETS cyng_db cyng_io cyng_log cyng_obj cyng_parse cyng_rnd cyng_sql cyng_sqlite3 cyng_store cyng_sys cyng_task cyng_vm cyng_xml cyng_net
 install(TARGETS ${REQUESTED_LIBS}
     EXPORT "${CMAKE_PROJECT_NAME}targets"
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
