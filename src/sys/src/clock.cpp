@@ -35,22 +35,24 @@ namespace cyng
 	//
 	//	select namespace - doesn't work 
 	//
-// #if defined(CYNG_USE_DATE_LIBRARY)
-// 	namespace chrono = date;
-// #else
-// 	namespace chrono = std::chrono;
-// #endif
+#if defined(__CYNG_USE_DATE_LIBRARY)
+ 	namespace chrono = date;
+#else
+ 	namespace chrono = std::chrono;
+#endif
 
 	namespace sys
 	{
 		std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) {
-#if defined(__CYNG_USE_DATE_LIBRARY)
-			auto const this_day = date::floor<date::days>(tp);
-			return date::year_month_day{ this_day }.operator date::sys_days();
-#else			
-			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
-			return std::chrono::year_month_day{ this_day }.operator std::chrono::sys_days();
-#endif
+			auto const this_day = chrono::floor<chrono::days>(tp);
+			return chrono::year_month_day{ this_day }.operator chrono::sys_days();
+// #if defined(__CYNG_USE_DATE_LIBRARY)
+// 			auto const this_day = date::floor<date::days>(tp);
+// 			return date::year_month_day{ this_day }.operator date::sys_days();
+// #else			
+// 			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+// 			return std::chrono::year_month_day{ this_day }.operator std::chrono::sys_days();
+// #endif
 		}
 
 		std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) {
