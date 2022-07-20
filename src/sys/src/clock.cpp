@@ -67,7 +67,7 @@ namespace cyng
 		std::chrono::hours get_length_of_month(std::chrono::system_clock::time_point tp) {
 			auto const this_day = chrono::floor<chrono::days>(tp);
 			auto const ymd = chrono::year_month_day{ this_day };
-			return chrono::hours(chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ ymd.month()} }.day().operator unsigned int() * 24u);
+			return std::chrono::hours(chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ ymd.month()} }.day().operator unsigned int() * 24u);
 		}
 
 		std::chrono::system_clock::time_point get_end_of_year(std::chrono::system_clock::time_point tp) {
@@ -83,7 +83,7 @@ namespace cyng
 		}
 
 		std::chrono::hours get_length_of_year(std::chrono::system_clock::time_point tp) {
-			return chrono::duration_cast<chrono::hours>(get_end_of_year(tp) - get_start_of_year(tp));
+			return std::chrono::duration_cast<std::chrono::hours>(get_end_of_year(tp) - get_start_of_year(tp));
 		}
 
 		//std::uint64_t get_iso_week_number(std::chrono::system_clock::time_point tp) {
