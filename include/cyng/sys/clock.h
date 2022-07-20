@@ -39,12 +39,12 @@ namespace cyng
 		/**
 		 * @return ISO week number of the specified time point
 		 */
-		[[nodiscard]] std::uint64_t get_iso_week_number(std::chrono::system_clock::time_point);
+		//[[nodiscard]] std::uint64_t get_iso_week_number(std::chrono::system_clock::time_point);
 
 		/**
 		 * @return the day of the week with Monday = 0.
 		 */
-		[[nodiscard]] std::uint64_t get_day_of_week(std::chrono::system_clock::time_point);
+		//[[nodiscard]] std::uint64_t get_day_of_week(std::chrono::system_clock::time_point);
 
 	}
 }

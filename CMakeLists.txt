@@ -36,6 +36,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     message(STATUS "** Version numeral    : ${${PROJECT_NAME}_VERSION_NUMERAL}")
 
     message(STATUS "** Compiler           : ${CMAKE_CXX_COMPILER_ID} v${CMAKE_CXX_COMPILER_VERSION}")
+    foreach(feature ${CMAKE_CXX_COMPILE_FEATURES})
+        message(STATUS "** ${feature}")
+    endforeach()
 
     message(STATUS "** CMake              : ${CMAKE_VERSION}")
    
