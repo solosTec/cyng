@@ -33,19 +33,24 @@
 namespace cyng
 {
 	//
-	//	select namespace
+	//	select namespace - doesn't work 
 	//
-#if defined(CYNG_USE_DATE_LIBRARY)
-	namespace chrono = date;
-#else
-	namespace chrono = std::chrono;
-#endif
+// #if defined(CYNG_USE_DATE_LIBRARY)
+// 	namespace chrono = date;
+// #else
+// 	namespace chrono = std::chrono;
+// #endif
 
 	namespace sys
 	{
 		std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) {
-			auto const this_day = chrono::floor<chrono::days>(tp);
-			return chrono::year_month_day{ this_day }.operator chrono::sys_days();
+#if defined(CYNG_USE_DATE_LIBRARY)
+			auto const this_day = date::floor<date::days>(tp);
+			return date::year_month_day{ this_day }.operator date::sys_days();
+#else			
+			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+			return std::chrono::year_month_day{ this_day }.operator std::chrono::sys_days();
+#endif
 		}
 
 		std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) {
@@ -53,33 +58,63 @@ namespace cyng
 		}
 
 		std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point tp) {
-			auto const this_day = chrono::floor<chrono::days>(tp);
-			auto const ymd = chrono::year_month_day{ this_day };
-			return chrono::year_month_day{ ymd.year(), ymd.month(), chrono::day{ 1 } }.operator chrono::sys_days();
+#if defined(CYNG_USE_DATE_LIBRARY)
+			auto const this_day = date::floor<date::days>(tp);
+			auto const ymd = date::year_month_day{ this_day };
+			return date::year_month_day{ ymd.year(), ymd.month(), date::day{ 1 } }.operator date::sys_days();
+#else
+			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+			auto const ymd = std::chrono::year_month_day{ this_day };
+			return std::chrono::year_month_day{ ymd.year(), ymd.month(), std::chrono::day{ 1 } }.operator std::chrono::sys_days();
+#endif
 		}
 
 		std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point tp) {
-			auto const this_day = chrono::floor<chrono::days>(tp);
-			auto const ymd = chrono::year_month_day{ this_day };
-			return chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ ymd.month()} }.operator chrono::sys_days();
+#if defined(CYNG_USE_DATE_LIBRARY)
+			auto const this_day = date::floor<date::days>(tp);
+			auto const ymd = date::year_month_day{ this_day };
+			return date::year_month_day_last{ ymd.year(), date::month_day_last{ ymd.month()} }.operator date::sys_days();
+#else
+			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+			auto const ymd = std::chrono::year_month_day{ this_day };
+			return std::chrono::year_month_day_last{ ymd.year(), std::chrono::month_day_last{ ymd.month()} }.operator std::chrono::sys_days();
+#endif
 		}
 
 		std::chrono::hours get_length_of_month(std::chrono::system_clock::time_point tp) {
-			auto const this_day = chrono::floor<chrono::days>(tp);
-			auto const ymd = chrono::year_month_day{ this_day };
-			return std::chrono::hours(chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ ymd.month()} }.day().operator unsigned int() * 24u);
+#if defined(CYNG_USE_DATE_LIBRARY)
+			auto const this_day = date::floor<date::days>(tp);
+			auto const ymd = date::year_month_day{ this_day };
+			return std::chrono::hours(date::year_month_day_last{ ymd.year(), date::month_day_last{ ymd.month()} }.day().operator unsigned int() * 24u);
+#else
+			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+			auto const ymd = std::chrono::year_month_day{ this_day };
+			return std::chrono::hours(std::chrono::year_month_day_last{ ymd.year(), std::chrono::month_day_last{ ymd.month()} }.day().operator unsigned int() * 24u);
+#endif
 		}
 
 		std::chrono::system_clock::time_point get_end_of_year(std::chrono::system_clock::time_point tp) {
-			auto const this_day = chrono::floor<chrono::days>(tp);
-			auto const ymd = chrono::year_month_day{ this_day };
-			return chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ chrono::December } }.operator chrono::sys_days();
+#if defined(CYNG_USE_DATE_LIBRARY)
+			auto const this_day = date::floor<date::days>(tp);
+			auto const ymd = date::year_month_day{ this_day };
+			return  date::year_month_day_last{ ymd.year(), date::month_day_last{ date::December } }.operator date::sys_days();
+#else
+			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+			auto const ymd = std::chrono::year_month_day{ this_day };
+			return std::chrono::year_month_day_last{ ymd.year(), std::chrono::month_day_last{ std::chrono::December } }.operator std::chrono::sys_days();
+#endif
 		}
 
 		std::chrono::system_clock::time_point get_start_of_year(std::chrono::system_clock::time_point tp) {
-			auto const this_day = chrono::floor<chrono::days>(tp);
-			auto const ymd = chrono::year_month_day{ this_day };
-			return chrono::year_month_day{ ymd.year(), chrono::January, chrono::day{ 1 } }.operator chrono::sys_days();
+#if defined(CYNG_USE_DATE_LIBRARY)
+			auto const this_day = date::floor<date::days>(tp);
+			auto const ymd = date::year_month_day{ this_day };
+			return date::year_month_day{ ymd.year(), date::January, date::day{ 1 } }.operator date::sys_days();
+#else
+			auto const this_day = std::chrono::floor<std::chrono::days>(tp);
+			auto const ymd = std::chrono::year_month_day{ this_day };
+			return std::chrono::year_month_day{ ymd.year(), std::chrono::January, std::chrono::day{ 1 } }.operator std::chrono::sys_days();
+#endif
 		}
 
 		std::chrono::hours get_length_of_year(std::chrono::system_clock::time_point tp) {
