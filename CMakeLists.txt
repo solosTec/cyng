@@ -101,13 +101,17 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         set(BUILD_SHARED_AND_STATIC_LIBS ON CACHE INTERNAL "Build SHARED and STATIC libraries")
 
         #   Check if date library is required
-        if (CMAKE_CXX_COMPILER_VERSION LESS "10.1")
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.1")
             message(STATUS "Date library required")
             set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
         else()
+            message(STATUS "Date library not required")
             set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
         endif()
 
+    else()
+            message(STATUS "unsupported compiler")
+            set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
     endif()
 
     #
