@@ -66,11 +66,14 @@ target_compile_options(cyng_sys
 #
 #   There is a dependency to parse library
 #   dependencies: cyng_parse
-#
+#   CYNG_USE_DATE_LIBRARY
 target_link_libraries(cyng_sys 
     PRIVATE 
         "$<$<PLATFORM_ID:Linux>:cyng_parse>"
         "$<$<PLATFORM_ID:Linux>:${Boost_LOCALE_LIBRARY}>"
-        $<BUILD_INTERFACE:date::date>
+#        "$<BUILD_INTERFACE:date::date>"
+#        "$<$<AND:0,${CYNG_USE_DATE_LIBRARY}>:date::date>"
+#        "$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>"
+        "$<BUILD_INTERFACE:$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>>"
 )
   

@@ -65,6 +65,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     endif()
 
     if (MSVC)
+        message(STATUS "** MSVC_VERSION       : ${MSVC_VERSION}")
         message(STATUS "Use static libraries")
         set(GLOBAL_LIBRARY_TYPE STATIC)
         #set(Boost_USE_STATIC_LIBS ON)
@@ -80,14 +81,33 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         #
         set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build only STATIC libraries")
 
+        #
+        #   Check if date library is required
+        if (MSVC_VERSION LESS 1933)
+            message(STATUS "Date library required")
+            set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
+        else()
+            set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
+        endif()
+
+
     elseif(CMAKE_COMPILER_IS_GNUCXX)
         set(GLOBAL_LIBRARY_TYPE SHARED)
 
         #
-        #   This is used by Date and PugiXML
+        #   This is used by PugiXML
         #
 #        set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build a shared version of library")
         set(BUILD_SHARED_AND_STATIC_LIBS ON CACHE INTERNAL "Build SHARED and STATIC libraries")
+
+        #   Check if date library is required
+        if (CMAKE_CXX_COMPILER_VERSION LESS "10.1")
+            message(STATUS "Date library required")
+            set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
+        else()
+            set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
+        endif()
+
     endif()
 
     #
@@ -259,34 +279,38 @@ endif()
 #
 # Find Howard Hinnant's date library.
 #
-find_package(Date)
-if (DATE_FOUND)
-    message(STATUS "** Date source           : ${date_SOURCE_DIR}")
+if (CYNG_USE_DATE_LIBRARY)
+    message(STATUS "** search/download date library...")
 
-    add_library(date_src INTERFACE)
-    add_library(date::date ALIAS "date_src")
-    target_include_directories(date_src 
-        INTERFACE 
-            ${date_SOURCE_DIR})
+    find_package(Date)
+    if (DATE_FOUND)
+        message(STATUS "** Date source           : ${date_SOURCE_DIR}")
 
-else(DATE_FOUND)
+        add_library(date_src INTERFACE)
+        add_library(date::date ALIAS "date_src")
+        target_include_directories(date_src 
+            INTERFACE 
+                ${date_SOURCE_DIR})
 
-    #
-    # date library
-    #
-    message(STATUS "** clone date ...")
-    FetchContent_Declare(
-        date_src 
-        GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-        GIT_TAG v3.0.1
-        GIT_PROGRESS TRUE
-        CMAKE_CACHE_ARGS -DBUILD_TZ_LIB=OFF)
-    FetchContent_MakeAvailable(date_src)
-    # Adds date 
-    # use ${date_SOURCE_DIR}/include
-    message(STATUS "** date library source          : ${date_SOURCE_DIR}")
+    else(DATE_FOUND)
 
-endif(DATE_FOUND)
+        #
+        # date library
+        #
+        message(STATUS "** clone date ...")
+        FetchContent_Declare(
+            date_src 
+            GIT_REPOSITORY https://github.com/HowardHinnant/date.git
+            GIT_TAG v3.0.1
+            GIT_PROGRESS TRUE
+            CMAKE_CACHE_ARGS -DBUILD_TZ_LIB=OFF)
+        FetchContent_MakeAvailable(date_src)
+        # Adds date 
+        # use ${date_SOURCE_DIR}/include
+        message(STATUS "** date library source          : ${date_SOURCE_DIR}")
+
+    endif(DATE_FOUND)
+endif(CYNG_USE_DATE_LIBRARY)
 
 #
 # add libraries
@@ -414,7 +438,6 @@ else()
         #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-all-dev (>= 1.76), openssl (>= 1.1.0)")
 
         #   architecture: amd64
-        message(STATUS "** architecture                 : ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")  
         set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
 	    set(CPACK_GENERATOR "DEB")
     endif()
