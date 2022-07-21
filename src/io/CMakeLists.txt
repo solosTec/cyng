@@ -28,6 +28,7 @@ message(STATUS "** CURRENT_SOURCE_DIR : ${CMAKE_CURRENT_SOURCE_DIR}")
 message(STATUS "** ${PROJECT_NAME}_SOURCE_DIR :      ${${PROJECT_NAME}_SOURCE_DIR}")
 message(STATUS "** ${PROJECT_NAME}_BINARY_DIR :      ${${PROJECT_NAME}_BINARY_DIR}")
 message(STATUS "** Library type       : ${GLOBAL_LIBRARY_TYPE}")
+message(STATUS "** PUGIXML_INCLUDE_DIR: ${PUGIXML_INCLUDE_DIR}")
 
 
 #
@@ -43,9 +44,12 @@ target_include_directories(cyng_io
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${pugixml_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${PUGIXML_INCLUDE_DIR}>
+        "/usr/include"
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+    INTERFACE
+        "/usr/include"
 )
 
 target_compile_features(cyng_io PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)

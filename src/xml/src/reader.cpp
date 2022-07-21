@@ -7,10 +7,7 @@
 #include <cyng/parse/timestamp.h>
 #include <cyng/parse/version.h>
 #include <cyng/log/conv.h>
-//#include <cyng/parser/buffer_parser.h>
 #include <cyng/parse/mac.h>
-//#include <cyng/intrinsics/eod.h>
-//#include <cyng/factory.h>
 
 #include <boost/uuid/string_generator.hpp>
 #include <boost/algorithm/string.hpp>

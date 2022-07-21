@@ -10,22 +10,26 @@ find_path(PUGIXML_INCLUDE_DIR
     NAMES 
         pugixml.hpp 
         pugiconfig.hpp
+    PATHS
+        "/usr"
+        "/usr/local"
     PATH_SUFFIXES
         include
-    HINTS 
-        "/usr"
+    NO_CMAKE_FIND_ROOT_PATH
 )
 
 
 find_library(PUGIXML_LIBRARY 
     NAMES 
         pugixml 
+    PATHS
+        "/usr"
+        "/usr/local"
     PATH_SUFFIXES
-        "/usr/lib/x86_64-linux-gnu/"
-        "lib64"
         "lib"
-    HINTS 
-        "/usr/lib/x86_64-linux-gnu/"
+        "lib64"
+        "x86_64-linux-gnu"
+    NO_CMAKE_FIND_ROOT_PATH
 )
 
 # Support the REQUIRED and QUIET arguments, and set PUGIXML_FOUND if found.

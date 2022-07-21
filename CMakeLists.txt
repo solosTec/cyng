@@ -248,8 +248,8 @@ else()
 
 
     # PTXdist makes this modules available.
-    # The "date" library is header only and doesn't require
-    # additional steps.
+    # This could be **critical during cross compilation**. Make sure
+    # that not a local installed library will be found.
 
     find_package(PugiXML)
 
@@ -266,7 +266,11 @@ else()
             PROPERTIES 
                 IMPORTED_LOCATION 
                     ${PUGIXML_LIBRARY}
+                INCLUDE_DIRECTORIES
+                    ${PUGIXML_INCLUDE_DIR}
                 INTERFACE_INCLUDE_DIRECTORIES
+                    ${PUGIXML_INCLUDE_DIR}
+                INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
                     ${PUGIXML_INCLUDE_DIR}
         )  
 
@@ -284,9 +288,16 @@ else()
             GIT_TAG v1.11.4
             GIT_PROGRESS TRUE)
         FetchContent_MakeAvailable(pugixml)
+        #FetchContent_Populate(pugixml)
         # Adds pugixml
         # use ${pugixml_SOURCE_DIR}/src
+        # /home/.../develop/cyng/aarch64-v8/_deps/pugixml-src
+        message(STATUS "** pugixml found                : ${pugixml_POPULATED}")
         message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
+        message(STATUS "** pugixml build directory      : ${pugixml_BINARY_DIR}")
+        set(PUGIXML_FOUND "${pugixml_POPULATED}")
+        set(PUGIXML_INCLUDE_DIR "${pugixml_SOURCE_DIR}/src")
+        set(PUGIXML_LIBRARY "${pugixml_BINARY_DIR}")
 
         #
         #   install pugixml
