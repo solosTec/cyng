@@ -9,6 +9,7 @@
 
 #include <cyng/obj/object.h>
 #include <cyng/obj/algorithm/find.h>
+#include <cyng/obj/algorithm/size.h>
 #include <cyng/obj/value_cast.hpp>
 #include <cyng/obj/intrinsics/obis.h>
 
@@ -74,7 +75,7 @@ namespace cyng {
 		 * @return size of the container
 		 */
 		std::size_t size() const noexcept {
-			return container_.size();
+			return cyng::size(container_);
 		}
 
 		/**

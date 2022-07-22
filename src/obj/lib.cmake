@@ -78,12 +78,14 @@ set (object_cast
 
 set (object_algorithm 
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/find.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/size.h
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/reader.hpp
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_walker.h
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/merge.h
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/add.hpp
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/swap_bytes.h
     src/find.cpp
+    src/size.cpp
     src/reader.cpp
     src/dom_walker.cpp
     src/merge.cpp
