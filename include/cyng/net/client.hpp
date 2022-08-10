@@ -9,9 +9,11 @@
 
 #include <boost/asio.hpp>
 
+#include <cyng/net/resolver.hpp>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/intrinsics/eod.h>
 #include <cyng/task/channel.h>
+#include <cyng/task/controller.h>
 
 #include <tuple>
 #include <deque>
@@ -53,34 +55,10 @@ namespace cyng {
 			using endpoint_list_t = typename resolver_t::results_type;
 			using endpoint_iterator = typename endpoint_list_t::iterator;
 
-			/**
-			 * manage state during resolving/connecting
-			 */
-			struct connect_state
-			{
-				std::string host_;
-				std::string service_;
-				endpoint_list_t epl_;
-				endpoint_iterator pos_;
-
-				connect_state(std::string host, std::string service)
-					: host_(host)
-					, service_(service)
-				{}
-
-				inline void init() {
-					pos_ = epl_.begin();
-				}
-				inline bool is_complete() const {
-					return pos_ == epl_.end();
-				}
-
-			};
-
 		public:
 
 			client(channel_weak wp
-				, boost::asio::io_context& ctx
+				, cyng::controller& ctl
 				, std::function<void(endpoint_t)> cb_connect
 				, std::function<void(boost::system::error_code)> cb_reconnect
 				, std::function<void(cyng::buffer_t)> cb_receive)
@@ -93,8 +71,9 @@ namespace cyng {
 					std::bind(&client::stop, this, std::placeholders::_1)	//	eod
 				}
 				, channel_(wp)
-				, ctx_(ctx)
-				, socket_(ctx)
+				, resolver_()
+				, ctl_(ctl)
+				, socket_(ctl.get_ctx())
 				, rec_({0})
 				, snd_()
 			{
@@ -104,8 +83,7 @@ namespace cyng {
 				}
 			}
 
-			~client()
-			{}
+			~client() = default;
 
 		private:
 			/**
@@ -113,21 +91,34 @@ namespace cyng {
 			 */
 			void connect(std::string host, std::string service) {
 
-				//	resolver generate a list of endpoint entries
-				resolver_t r(ctx_);
-				boost::system::error_code ec;	//	indicates an error
-				connect_state cs(host, service);		//	empty connect state
-				cs.epl_ = r.resolve(host, service, ec);
-				if (!ec) {
-					cs.init();	//	init connect state
-					connect_to_ep(std::move(cs));
-				}
-				else {
-					//	timer
-					auto sp = channel_.lock();
-					if (sp) {
-						//	reconnect
-						sp->dispatch(3, ec);
+				auto sp = channel_.lock();
+				if (sp) {
+					resolver_ = ctl_.create_channel_with_ref<cyng::net::resolver<S>>(ctl_.get_ctx(), [=, this](S&& s) {
+						if (s.is_open()) {
+							socket_ = std::move(s);
+							std::cout << socket_.remote_endpoint() << std::endl;
+							sp->dispatch(2, socket_.remote_endpoint());	//	connect callback
+							this->do_read();
+							resolver_->stop();
+							resolver_.reset();
+						}
+						else {
+							//
+							//	reconnect after 30 seconds
+							//
+							sp->suspend(std::chrono::seconds(30), "connect", host, service);
+
+						}
+					});
+
+					//
+					//	connect
+					//
+					if (resolver_->is_open()) {
+						resolver_->dispatch("connect", host, service);
+					}
+					else {
+						//	internal error
 					}
 				}
 			}
@@ -177,7 +168,7 @@ namespace cyng {
 					reset();
 					auto sp = channel_.lock();
 					if (sp) {
-						//	reconnect
+						//	"on_reconnect"
 						sp->dispatch(3, ec);
 					}
 
@@ -190,57 +181,6 @@ namespace cyng {
 				socket_.shutdown(S::shutdown_receive, ignored_ec);
 				socket_.close(ignored_ec);
 				snd_.clear();
-			}
-
-
-			void connect_to_ep(connect_state cs) {
-				//	check if more endpoints available
-				auto sp = channel_.lock();
-				if (sp) {
-					if (!cs.is_complete()) {
-
-					//
-					//	It's valid to pass the parameter connect_state (cs) per value since the iterator
-					//	internally uses a index. So the same iterator can work on a copy of the 
-					//  endpoint list.
-					//
-					socket_.async_connect(
-						cs.pos_->endpoint(), expose_dispatcher(*sp).wrap(std::bind(&client::on_connect, this, cs, std::placeholders::_1)));
-					
-					}
-					else {
-						reset();
-
-						//	start reconnect timer
-						auto sp = channel_.lock();
-						//	ToDo: switch to other host/service
-						sp->dispatch(3, boost::system::error_code());
-					}
-				}
-			}
-
-			void on_connect(connect_state cs, boost::system::error_code const& ec) {
-				if (!socket_.is_open()) {
-					//	timeout
-					//	next try
-					++cs.pos_;
-					connect_to_ep(std::move(cs));
-				}
-				else if (ec) {
-					// We need to close the socket used in the previous connection attempt
-					// before starting a new one.
-					socket_.close();
-					++cs.pos_;
-					connect_to_ep(std::move(cs));
-				}
-				else {
-					//	connected
-					auto sp = channel_.lock();
-					if (sp) {
-						sp->dispatch(2, socket_.remote_endpoint());	//	connect callback
-						do_read();
-					}
-				}
 			}
 
 			/**
@@ -299,9 +239,11 @@ namespace cyng {
 
 		public:
 			signatures_t sigs_;
+
 		private:
 			channel_weak channel_;
-			boost::asio::io_context& ctx_;
+			channel_ptr resolver_;
+			cyng::controller& ctl_;
 			S socket_;
 
 			/**

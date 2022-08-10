@@ -10,6 +10,7 @@ set (net_cpp
     src/server.cpp
     src/server_factory.cpp
     src/server_proxy.cpp
+    src/resolver.cpp
 )
     
 set (net_h
@@ -19,6 +20,7 @@ set (net_h
     ${CMAKE_SOURCE_DIR}/include/cyng/net/server.hpp
     ${CMAKE_SOURCE_DIR}/include/cyng/net/server_factory.hpp
     ${CMAKE_SOURCE_DIR}/include/cyng/net/server_proxy.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/net/resolver.hpp
 )
 
 

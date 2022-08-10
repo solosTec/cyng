@@ -6,6 +6,7 @@
 #include <cyng/net/client.hpp>
 #include <cyng/net/client_factory.hpp>
 #include <cyng/net/server_factory.hpp>
+#include <cyng/net/resolver.hpp>
 #include <cyng/io/ostream.h>
 
 #include <iostream>
@@ -70,6 +71,21 @@ BOOST_AUTO_TEST_CASE(server)
 	proxy.start();	//	start
 	std::this_thread::sleep_for(std::chrono::seconds(20));
 	proxy.stop();
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	ctl.shutdown();
+	ctl.stop();
+
+}
+
+BOOST_AUTO_TEST_CASE(resolver)
+{
+	cyng::controller ctl(2);
+	auto cp = ctl.create_channel_with_ref<cyng::net::resolver<boost::asio::ip::tcp::socket>>(ctl.get_ctx(), [](boost::asio::ip::tcp::socket&& s) {
+		std::cout << s.remote_endpoint() << std::endl;
+		});
+	cp->dispatch("connect", "google.com", "80");
+	std::this_thread::sleep_for(std::chrono::seconds(20));
+	cp->stop();
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	ctl.shutdown();
 	ctl.stop();

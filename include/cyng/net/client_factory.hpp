@@ -57,8 +57,8 @@ namespace cyng {
 
 				channel_ptr cp;
 				using client_t = client<S, N>;
-				boost::asio::io_context & ctx = ctl_.get_ctx();
-				return ctl_.create_named_channel_with_ref<client_t>(tag, ctx, cb_connect, cb_reconnect, cb_receive);
+				//boost::asio::io_context & ctx = ctl_.get_ctx();
+				return ctl_.create_named_channel_with_ref<client_t>(tag, ctl_, cb_connect, cb_reconnect, cb_receive);
 
 			}
 

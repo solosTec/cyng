@@ -134,6 +134,10 @@ BOOST_AUTO_TEST_CASE(weak)	//	with weak pointer
 
  BOOST_AUTO_TEST_CASE(future)
  {
+	 //
+	 //	Don't use futures in conjunction with asio strands
+	 //
+
 	 boost::asio::io_service ios;
 	 boost::asio::io_service::work work(ios);
 
