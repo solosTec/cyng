@@ -96,7 +96,6 @@ namespace cyng {
 					resolver_ = ctl_.create_channel_with_ref<cyng::net::resolver<S>>(ctl_.get_ctx(), [=, this](S&& s) {
 						if (s.is_open()) {
 							socket_ = std::move(s);
-							std::cout << socket_.remote_endpoint() << std::endl;
 							sp->dispatch(2, socket_.remote_endpoint());	//	connect callback
 							this->do_read();
 							resolver_->stop();
