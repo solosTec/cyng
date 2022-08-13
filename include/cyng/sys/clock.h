@@ -9,6 +9,7 @@
 
 #include <string>
 #include <chrono>
+#include <iostream>
 
 namespace cyng 
 {
@@ -37,14 +38,21 @@ namespace cyng
 		[[nodiscard]] std::chrono::hours get_length_of_year(std::chrono::system_clock::time_point);
 
 		/**
+		 * Requires the <date/iso_week.h> header
 		 * @return ISO week number of the specified time point
 		 */
 		//[[nodiscard]] std::uint64_t get_iso_week_number(std::chrono::system_clock::time_point);
 
 		/**
+		 * Requires the <date/iso_week.h> header
 		 * @return the day of the week with Monday = 0.
 		 */
 		//[[nodiscard]] std::uint64_t get_day_of_week(std::chrono::system_clock::time_point);
+
+		/**
+		 * Helper function to format a time point.
+		 */
+		void to_string(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format);
 
 	}
 }

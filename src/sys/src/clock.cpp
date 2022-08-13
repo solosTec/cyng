@@ -28,7 +28,9 @@
 #include <boost/predef.h>
 #include <boost/assert.hpp>
 
-#include <iostream>
+#include <iomanip>
+#include <ctime>
+
 
 namespace cyng
 {
@@ -101,5 +103,18 @@ namespace cyng
 		//	auto const this_day_iso = iso_week::year_weeknum_weekday{ this_day };
 		//	return this_day_iso.weekday().operator unsigned int();
 		//}
+
+		void to_string(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format)
+		{
+			try {
+				std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+				auto tm = *std::localtime(&tt);
+				os << std::put_time(&tm, format.c_str());
+			}
+			catch (std::exception const& ex) {
+				os << ex.what();
+			}
+		}
+
 	}
 }
