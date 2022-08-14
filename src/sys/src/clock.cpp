@@ -158,7 +158,7 @@ namespace cyng
 			}
 			BOOST_ASSERT_MSG(e == 0, "to_localtime");
 #else
-			const struct tm* ptr = ::localtime_s(&tt, r);
+			const struct tm* ptr = ::localtime_r(&tt, r);
 			BOOST_ASSERT_MSG(ptr != nullptr, "to_localtime");
 			boost::ignore_unused(ptr);
 #endif
