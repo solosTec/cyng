@@ -53,6 +53,7 @@ namespace cyng
 		 * Helper function to format a time point.
 		 */
 		void to_string(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format);
+		void to_string_utc(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format);
 
 	}
 }

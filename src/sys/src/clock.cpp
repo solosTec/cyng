@@ -108,13 +108,35 @@ namespace cyng
 		{
 			try {
 				std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+#ifdef _MSC_VER
+				struct tm tm;
+				localtime_s(&tm, &tt);
+#else
 				auto tm = *std::localtime(&tt);
+#endif
 				os << std::put_time(&tm, format.c_str());
 			}
 			catch (std::exception const& ex) {
 				os << ex.what();
 			}
 		}
+
+		void to_string_utc(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format) {
+			try {
+				std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+#ifdef _MSC_VER
+				struct tm tm;
+				gmtime_s(&tm, &tt);
+#else
+				auto tm = *std::gmtime(&tt);
+#endif
+				os << std::put_time(&tm, format.c_str());
+			}
+			catch (std::exception const& ex) {
+				os << ex.what();
+			}
+		}
+
 
 	}
 }
