@@ -55,6 +55,16 @@ namespace cyng
 		void to_string(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format);
 		void to_string_utc(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format);
 
+		std::tm to_utc(std::time_t);
+		std::tm to_localtime(std::time_t);
+
+		/**
+		 * DST is not considered in this calculation.
+		 *
+		 * @return difference between UTC and localtime in minutes.
+		 */
+		std::chrono::minutes delta_utc(std::chrono::system_clock::time_point now);
+		std::chrono::minutes delta_utc();
 	}
 }
 

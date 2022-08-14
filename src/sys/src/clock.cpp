@@ -108,12 +108,7 @@ namespace cyng
 		{
 			try {
 				std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
-#ifdef _MSC_VER
-				struct tm tm;
-				localtime_s(&tm, &tt);
-#else
-				auto tm = *std::localtime(&tt);
-#endif
+				auto const tm = to_localtime(tt);
 				os << std::put_time(&tm, format.c_str());
 			}
 			catch (std::exception const& ex) {
@@ -124,17 +119,73 @@ namespace cyng
 		void to_string_utc(std::ostream& os, std::chrono::system_clock::time_point const& tp, std::string format) {
 			try {
 				std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
-#ifdef _MSC_VER
-				struct tm tm;
-				gmtime_s(&tm, &tt);
-#else
-				auto tm = *std::gmtime(&tt);
-#endif
+				auto const tm = to_utc(tt);
 				os << std::put_time(&tm, format.c_str());
 			}
 			catch (std::exception const& ex) {
 				os << ex.what();
 			}
+		}
+
+		std::tm to_utc(std::time_t tt) {
+			std::tm r{ 0 };
+
+#ifdef _MSC_VER
+			auto const e = ::gmtime_s(&r, &tt);
+			if (e != 0) {
+				char msg[128];
+				::strerror_s(msg, 128, e);
+				std::cerr << msg << std::endl;
+			}
+			BOOST_ASSERT_MSG(e == 0, "to_utc");
+#else
+			//	POSIX API
+			const struct tm* ptr = ::gmtime_r(&tt, &r);
+			BOOST_ASSERT_MSG(ptr != nullptr, "to_utc");
+			boost::ignore_unused(ptr);
+#endif
+			return r;
+
+		}
+		std::tm to_localtime(std::time_t tt) {
+			std::tm r {0};
+#ifdef _MSC_VER
+			auto const e = ::localtime_s(&r, &tt);
+			if (e != 0) {
+				char msg[128];
+				::strerror_s(msg, 128, e);
+				std::cerr << msg << std::endl;
+			}
+			BOOST_ASSERT_MSG(e == 0, "to_localtime");
+#else
+			const struct tm* ptr = ::localtime_s(&tt, r);
+			BOOST_ASSERT_MSG(ptr != nullptr, "to_localtime");
+			boost::ignore_unused(ptr);
+#endif
+			return r;
+		}
+
+		std::chrono::minutes delta_utc(std::chrono::system_clock::time_point now)
+		{
+			//
+			//	get a time point
+			//
+			auto const now_tt = std::chrono::system_clock::to_time_t(now);
+
+			//
+			//	get UTC and local time
+			//
+			auto const utc_tt = to_utc(now_tt);
+			auto const local_tt = to_localtime(now_tt);
+
+			//
+			//	calculate offset
+			//
+			return std::chrono::minutes(60 * (utc_tt.tm_hour - local_tt.tm_hour) + (utc_tt.tm_min - local_tt.tm_min));
+		}
+
+		std::chrono::minutes delta_utc() {
+			return delta_utc(std::chrono::system_clock::now());
 		}
 
 
