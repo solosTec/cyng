@@ -27,6 +27,7 @@
 
 #include <boost/predef.h>
 #include <boost/assert.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 #include <iomanip>
 #include <ctime>
@@ -158,7 +159,7 @@ namespace cyng
 			}
 			BOOST_ASSERT_MSG(e == 0, "to_localtime");
 #else
-			const struct tm* ptr = ::localtime_r(&tt, r);
+			const struct tm* ptr = ::localtime_r(&tt, 6r);
 			BOOST_ASSERT_MSG(ptr != nullptr, "to_localtime");
 			boost::ignore_unused(ptr);
 #endif
