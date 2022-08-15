@@ -110,9 +110,10 @@ namespace cyng
 				return dbp_ != nullptr;
 			}
 
-			bool connection::open(std::string const& filename )	
+			bool connection::open(std::string const& filename, int flags)
 			{
-				int rc = ::sqlite3_open(filename.c_str(), &dbp_);
+				//	use default sqlite3_vfs
+				int rc = ::sqlite3_open_v2(filename.c_str(), &dbp_, flags, NULL);
 				return 	(is_ok(rc) && is_open());
 			}
 

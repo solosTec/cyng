@@ -41,8 +41,9 @@ namespace cyng
 				//	read database file name from configuration
 				auto const file_name = find_value(config, std::string("file-name"), std::string("sqlite.database"));
 				auto const busy_timeout = find_value(config, std::string("busy-timeout"), busy_timeout_);
-				
-				if (connection_->open(file_name))	{
+				auto const readonly = find_value(config, std::string("readonly"), false);
+
+				if (connection_->open(file_name, readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE))	{
 					connection_->set_busy_timeout(busy_timeout);
 					connection_->set_update_handler(std::bind(&session::busy_monitor, this, std::placeholders::_1));
 					return std::make_pair(file_name, true);

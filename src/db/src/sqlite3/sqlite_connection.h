@@ -47,7 +47,7 @@ namespace cyng
 				virtual ~connection();
 
 				bool is_open() const;
-				bool open( std::string const& );
+				bool open(std::string const&, int flags);
 				bool close();
 
 				int execute(std::string const& sql);

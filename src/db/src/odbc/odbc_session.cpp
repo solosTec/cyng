@@ -33,10 +33,14 @@ namespace cyng
 			std::pair<std::string, bool> session::connect(param_map_t const& config)
 			{
 
-				const std::string connect = cyng::find_value(config, std::string("connect"), std::string("DSN=db;Uid=uid;Pwd=pwd;AUTO_RECONNECT=0;"));
-				const SQLUINTEGER login_timeout = cyng::find_value(config, std::string("login-timeout"), login_timeout_);
-				const SQLUINTEGER connect_timeout = cyng::find_value(config, std::string("connect-timeout"), connect_timeout_);
-				const std::string dialect_name = cyng::find_value(config, std::string("dialect"), std::string("MYSQL"));
+				std::string connect = cyng::find_value(config, std::string("connect"), std::string("DSN=db;Uid=uid;Pwd=pwd;AUTO_RECONNECT=0;"));
+				auto const readonly = find_value(config, std::string("readonly"), false);
+				if (readonly && (connect.find("READONLY") == std::string::npos)) {
+					connect.append("READONLY=1;");
+				}
+				SQLUINTEGER const login_timeout = cyng::find_value(config, std::string("login-timeout"), login_timeout_);
+				SQLUINTEGER const connect_timeout = cyng::find_value(config, std::string("connect-timeout"), connect_timeout_);
+				std::string const dialect_name = cyng::find_value(config, std::string("dialect"), std::string("MYSQL"));
 				sql_dialect_ = cyng::sql::get_dialect(dialect_name);
 			
 				{
