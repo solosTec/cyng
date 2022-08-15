@@ -36,7 +36,7 @@
 namespace cyng
 {
 	//
-	//	select namespace - doesn't work 
+	//	select namespace
 	//
 #if defined(__CYNG_USE_DATE_LIBRARY)
  	namespace chrono = date;
@@ -46,22 +46,22 @@ namespace cyng
 
 	namespace sys
 	{
-		std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) {
+		std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) noexcept {
 			auto const this_day = chrono::floor<chrono::days>(tp);
 			return chrono::year_month_day{ this_day }.operator chrono::sys_days();
 		}
 
-		std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) {
+		std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) noexcept {
 			return get_start_of_day(tp) + std::chrono::hours(24);
 		}
 
-		std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point tp) {
+		std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point tp) noexcept {
 			auto const this_day = chrono::floor<chrono::days>(tp);
 			auto const ymd = chrono::year_month_day{ this_day };
 			return chrono::year_month_day{ ymd.year(), ymd.month(), chrono::day{ 1 } }.operator chrono::sys_days();
 		}
 
-		std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point tp) {
+		std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point tp) noexcept {
 			auto const this_day = chrono::floor<chrono::days>(tp);
 			auto const ymd = chrono::year_month_day{ this_day };
 			return chrono::year_month_day_last{ ymd.year(), chrono::month_day_last{ ymd.month()} }.operator chrono::sys_days();
@@ -182,7 +182,7 @@ namespace cyng
 			//
 			//	calculate offset
 			//
-			return std::chrono::minutes(60 * (utc_tt.tm_hour - local_tt.tm_hour) + (utc_tt.tm_min - local_tt.tm_min));
+			return std::chrono::minutes(60 * (local_tt.tm_hour - utc_tt.tm_hour) + (local_tt.tm_min - utc_tt.tm_min));
 		}
 
 		std::chrono::minutes delta_utc() {

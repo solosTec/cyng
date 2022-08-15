@@ -18,11 +18,11 @@ namespace cyng
 		/**
 		 * @return the start time of the days relative to tp
 		 */
-		[[nodiscard]] std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp);
-		[[nodiscard]] std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp);
+		[[nodiscard]] std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) noexcept;
+		[[nodiscard]] std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) noexcept;
 
-		[[nodiscard]] std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point);
-		[[nodiscard]] std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point);
+		[[nodiscard]] std::chrono::system_clock::time_point get_start_of_month(std::chrono::system_clock::time_point) noexcept;
+		[[nodiscard]] std::chrono::system_clock::time_point get_end_of_month(std::chrono::system_clock::time_point) noexcept;
 
 		/**
 		 * @return length of month in hours
