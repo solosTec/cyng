@@ -50,13 +50,15 @@ target_compile_features(cyng_sys PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 
 #
 #   debug sys library
+#   __CYNG_ARCHITECTURE contains the target architecture
 #
 target_compile_definitions(cyng_sys 
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_SYS>
         $<IF:$<BOOL:${CMAKE_CROSSCOMPILING}>,__CROSS_PLATFORM,__NATIVE_PLATFORM>
         $<$<BOOL:${CYNG_USE_FEATURE_TESTING}>:__CYNG_USE_FEATURE_TESTING>
-        $<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:__CYNG_USE_DATE_LIBRARY>     
+        $<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:__CYNG_USE_DATE_LIBRARY> 
+        "__CYNG_ARCHITECTURE=${CMAKE_SYSTEM_PROCESSOR}"
 )
 
 # -Wno-psabi if gcc 8.x

@@ -52,6 +52,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         message(STATUS "** Host System        : ${CMAKE_SYSTEM_NAME}")
     endif()
 
+    message(STATUS "** Architecture       : ${CMAKE_SYSTEM_PROCESSOR}")
+    
+
     # Let's ensure -std=c++xx instead of -std=g++xx
     set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -198,6 +201,14 @@ message(STATUS "** Boost Version                : ${Boost_VERSION}")
 message(STATUS "** Boost Include                : ${Boost_INCLUDE_DIRS}")
 message(STATUS "** Boost Path                   : ${Boost_LIBRARY_DIRS}")
 	
+if (WIN32 AND ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24.0")
+    #
+    # looks like a regression in CMake 3.24.0
+    #
+    string(REPLACE "debug;" "Debug;" Boost_LOCALE_LIBRARY "${Boost_LOCALE_LIBRARY}")
+    string(REPLACE "optimized;" "Release;" Boost_LOCALE_LIBRARY "${Boost_LOCALE_LIBRARY}")
+endif()
+
 message(STATUS "** Boost_LIBRARIES              : ${Boost_LIBRARIES}")
 message(STATUS "** Boost_THREAD_LIBRARY         : ${Boost_THREAD_LIBRARY}")
 message(STATUS "** Boost_SYSTEM_LIBRARY         : ${Boost_SYSTEM_LIBRARY}")
@@ -224,87 +235,64 @@ set(REQUESTED_LIBS "cyng_db;cyng_io;cyng_log;cyng_obj;cyng_parse;cyng_rnd;cyng_s
 # FetchContent_MakeAvailable was not added until CMake 3.14
 include(FetchContent)
 
-#
-# check FIND_PACKAGE_ARGS keyword
-#
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24") 
+# PTXdist makes this modules available.
+# This could be **critical during cross compilation**. Make sure
+# that not a local installed library will be found.
 
-    #   OPT_IN
-    message(STATUS "** FetchContent mode     : ${FETCHCONTENT_TRY_FIND_PACKAGE_MODE}")
+find_package(PugiXML)
+
+if (${PUGIXML_FOUND})
+    message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
+    message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
 
     #
-    #   Clone the git repository only if FindPackage() comes up empty
+    #   Define the target
     #
+    message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
+    add_library(pugixml SHARED IMPORTED)
+    set_target_properties(pugixml 
+        PROPERTIES 
+            IMPORTED_LOCATION 
+                ${PUGIXML_LIBRARY}
+            INCLUDE_DIRECTORIES
+                ${PUGIXML_INCLUDE_DIR}
+            INTERFACE_INCLUDE_DIRECTORIES
+                ${PUGIXML_INCLUDE_DIR}
+            INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
+                ${PUGIXML_INCLUDE_DIR}
+    )  
+
+else()
+
+    #
+    # XML library
+    # Could be integrated with find_package() but then the information got lost
+    # how PugiXML was build/found.
+    #
+    message(STATUS "** clone PugiXML ...")
     FetchContent_Declare(
         pugixml
         GIT_REPOSITORY https://github.com/zeux/pugixml
         GIT_TAG v1.11.4
-        GIT_PROGRESS TRUE
-        FIND_PACKAGE_ARGS NAMES PugiXML)
+        GIT_PROGRESS TRUE)
+    # New in version 3.14
     FetchContent_MakeAvailable(pugixml)
-    FetchContent_GetProperties(pugixml)
+    #FetchContent_Populate(pugixml)
+    # Adds pugixml
+    # use ${pugixml_SOURCE_DIR}/src
+    # /home/.../develop/cyng/aarch64-v8/_deps/pugixml-src
+    message(STATUS "** pugixml found                : ${pugixml_POPULATED}")
+    message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
+    message(STATUS "** pugixml build directory      : ${pugixml_BINARY_DIR}")
+    set(PUGIXML_FOUND "${pugixml_POPULATED}")
+    set(PUGIXML_INCLUDE_DIR "${pugixml_SOURCE_DIR}/src")
+    set(PUGIXML_LIBRARY "${pugixml_BINARY_DIR}")
 
-else()
+    #
+    #   install pugixml
+    #
+    list(APPEND REQUESTED_LIBS "pugixml")
 
-
-    # PTXdist makes this modules available.
-    # This could be **critical during cross compilation**. Make sure
-    # that not a local installed library will be found.
-
-    find_package(PugiXML)
-
-    if (${PUGIXML_FOUND})
-        message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
-        message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
-
-        #
-        #   Define the target
-        #
-        message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
-        add_library(pugixml SHARED IMPORTED)
-        set_target_properties(pugixml 
-            PROPERTIES 
-                IMPORTED_LOCATION 
-                    ${PUGIXML_LIBRARY}
-                INCLUDE_DIRECTORIES
-                    ${PUGIXML_INCLUDE_DIR}
-                INTERFACE_INCLUDE_DIRECTORIES
-                    ${PUGIXML_INCLUDE_DIR}
-                INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
-                    ${PUGIXML_INCLUDE_DIR}
-        )  
-
-    else()
-
-        #
-        # XML library
-        # Could be integrated with find_package() but then the information got lost
-        # how PugiXML was build/found.
-        #
-        message(STATUS "** clone PugiXML ...")
-        FetchContent_Declare(
-            pugixml
-            GIT_REPOSITORY https://github.com/zeux/pugixml
-            GIT_TAG v1.11.4
-            GIT_PROGRESS TRUE)
-        FetchContent_MakeAvailable(pugixml)
-        #FetchContent_Populate(pugixml)
-        # Adds pugixml
-        # use ${pugixml_SOURCE_DIR}/src
-        # /home/.../develop/cyng/aarch64-v8/_deps/pugixml-src
-        message(STATUS "** pugixml found                : ${pugixml_POPULATED}")
-        message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
-        message(STATUS "** pugixml build directory      : ${pugixml_BINARY_DIR}")
-        set(PUGIXML_FOUND "${pugixml_POPULATED}")
-        set(PUGIXML_INCLUDE_DIR "${pugixml_SOURCE_DIR}/src")
-        set(PUGIXML_LIBRARY "${pugixml_BINARY_DIR}")
-
-        #
-        #   install pugixml
-        #
-        list(APPEND REQUESTED_LIBS "pugixml")
-
-    endif()
 endif()
 
 #
