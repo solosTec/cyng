@@ -34,3 +34,6 @@
 /build
 /out/build
 /CMakeSettings.json
+*.md5
+*.bz2
+*.zip
