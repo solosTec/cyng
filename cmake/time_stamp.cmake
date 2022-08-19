@@ -9,7 +9,8 @@ string(TIMESTAMP _THIS_YEAR "%Y")
 
 # Patch level as year + day of the year
 string(TIMESTAMP _TWEAK_ID "%j")	# day of the year
-math(EXPR _TWEAK_ID "((${_THIS_YEAR} - 2022) * 1000) + ${_TWEAK_ID} - 122")
+#math(EXPR _TWEAK_ID "((${_THIS_YEAR} - 2022) * 1000) + ${_TWEAK_ID} - 122")
+math(EXPR _TWEAK_ID "((${_THIS_YEAR} - 2022) * 1000) + ${_TWEAK_ID}")
 
 #
 #	get a UTC timestamp

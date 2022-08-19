@@ -23,6 +23,11 @@ project(
 #
 string(TOUPPER ${PROJECT_NAME} CAPITAL_NAME)
 
+#
+#   convert to false/true that can be used in C/C++ code
+#
+string(TOLOWER ${CMAKE_CROSSCOMPILING} ${PROJECT_NAME}_CROSSCOMPILING)
+
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -111,20 +116,20 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         set(BUILD_SHARED_AND_STATIC_LIBS ON CACHE INTERNAL "Build SHARED and STATIC libraries")
 
         #   Check if date library is required
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.1")
-            message(STATUS "Date library required")
-            set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
-        else()
-            message(STATUS "Date library not required")
-            set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
-        endif()
-
         if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0") 
             message(STATUS "Feature testing available")
             set(CYNG_USE_FEATURE_TESTING ON CACHE BOOL "use feature testing")
         else()
             message(STATUS "Feature testing not available")
             set(CYNG_USE_FEATURE_TESTING OFF CACHE BOOL "use feature testing")
+        endif()
+
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.1")
+            message(STATUS "Date library required")
+            set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
+        else()
+            message(STATUS "Date library not required")
+            set(CYNG_USE_DATE_LIBRARY OFF CACHE BOOL "use date library")
         endif()
 
     else()
@@ -167,10 +172,7 @@ include (cmake/address_model.cmake)
 #
 include (cmake/db_connectors.cmake)
 
-#
-#   convert to false/true that can be used in C/C++ code
-#
-string(TOLOWER ${CMAKE_CROSSCOMPILING} ${PROJECT_NAME}_CROSSCOMPILING)
+
 
 # Find packages ...
 
@@ -180,12 +182,9 @@ set(SMF_BOOST_COMPONENTS regex iostreams program_options system thread random lo
 # unit tests
 # call CMake with -DCYNG_UNIT_TEST:BOOL=TRUE to generate unit tests 
 #
-
 if(${CAPITAL_NAME}_UNIT_TEST)
-
     message(STATUS "** Generate a Unit-Test")
     list(APPEND SMF_BOOST_COMPONENTS unit_test_framework)
-
 endif()
 
 # Find Boost
@@ -239,30 +238,33 @@ include(FetchContent)
 # This could be **critical during cross compilation**. Make sure
 # that not a local installed library will be found.
 
-find_package(PugiXML)
+find_package(PUGIXML QUIET)
 
-if (${PUGIXML_FOUND})
-    message(STATUS "** PugiXML include       : ${PUGIXML_INCLUDE_DIR}")
-    message(STATUS "** PugiXML library       : ${PUGIXML_LIBRARY}") 
+if (PUGIXML_FOUND)
+    message(STATUS "** PugiXML          : found") 
+    message(STATUS "** PugiXML include  : ${PUGIXML_INCLUDE_DIRS}")
+    message(STATUS "** PugiXML library  : ${PUGIXML_LIBRARIES}") 
 
-    #
-    #   Define the target
-    #
-    message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
-    add_library(pugixml SHARED IMPORTED)
-    set_target_properties(pugixml 
-        PROPERTIES 
-            IMPORTED_LOCATION 
-                ${PUGIXML_LIBRARY}
-            INCLUDE_DIRECTORIES
-                ${PUGIXML_INCLUDE_DIR}
-            INTERFACE_INCLUDE_DIRECTORIES
-                ${PUGIXML_INCLUDE_DIR}
-            INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
-                ${PUGIXML_INCLUDE_DIR}
-    )  
-
-else()
+    if(NOT PTX_BUILD)
+        #
+        #   Define the target
+        #
+        message(STATUS "** not building from PTXDist, thus adding pugixml")
+        message(STATUS "** add target 'pugixml' ${PUGIXML_LIBRARY}") 
+        add_library(pugixml SHARED IMPORTED)
+        set_target_properties(pugixml 
+            PROPERTIES 
+                IMPORTED_LOCATION 
+                    ${PUGIXML_LIBRARY}
+                INCLUDE_DIRECTORIES
+                    ${PUGIXML_INCLUDE_DIRS}
+                INTERFACE_INCLUDE_DIRECTORIES
+                    ${PUGIXML_INCLUDE_DIRS}
+                INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
+                    ${PUGIXML_INCLUDE_DIRS}
+        )  
+    endif(NOT PTX_BUILD)    
+else(PUGIXML_FOUND)
 
     #
     # XML library
@@ -285,7 +287,7 @@ else()
     message(STATUS "** pugixml library source       : ${pugixml_SOURCE_DIR}")
     message(STATUS "** pugixml build directory      : ${pugixml_BINARY_DIR}")
     set(PUGIXML_FOUND "${pugixml_POPULATED}")
-    set(PUGIXML_INCLUDE_DIR "${pugixml_SOURCE_DIR}/src")
+    set(PUGIXML_INCLUDE_DIRS "${pugixml_SOURCE_DIR}/src")
     set(PUGIXML_LIBRARY "${pugixml_BINARY_DIR}")
 
     #
@@ -293,7 +295,8 @@ else()
     #
     list(APPEND REQUESTED_LIBS "pugixml")
 
-endif()
+endif(PUGIXML_FOUND)
+
 
 #
 # Find Howard Hinnant's date library.
@@ -305,11 +308,13 @@ if (CYNG_USE_DATE_LIBRARY)
     if (DATE_FOUND)
         message(STATUS "** Date source           : ${date_SOURCE_DIR}")
 
-        add_library(date_src INTERFACE)
-        add_library(date::date ALIAS "date_src")
-        target_include_directories(date_src 
-            INTERFACE 
-                ${date_SOURCE_DIR})
+        if(NOT PTX_BUILD)
+            add_library(date_src INTERFACE)
+            add_library(date::date ALIAS "date_src")
+            target_include_directories(date_src 
+                INTERFACE 
+                    ${date_SOURCE_DIR})
+        endif(NOT PTX_BUILD)
 
     else(DATE_FOUND)
 
@@ -352,15 +357,11 @@ add_subdirectory(src/net)
 #	platform specific libraries
 #
 if (WIN32)
-
     add_subdirectory(src/scm)
-
 endif()
 
 if(${CAPITAL_NAME}_UNIT_TEST)
-
     add_subdirectory(unit_test)
-
 endif()
 
 #
@@ -379,7 +380,7 @@ configure_file (
 # install
 #
 if(UNIX)
-include(GNUInstallDirs)
+    include(GNUInstallDirs)
 endif()
 
 message(STATUS "** install targets              : ${REQUESTED_LIBS}")
@@ -392,7 +393,6 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
 )
 
 # export target to a cyng_coreTargets.cmake
-
 install(TARGETS ${REQUESTED_LIBS}
     EXPORT "${CMAKE_PROJECT_NAME}targets"
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
