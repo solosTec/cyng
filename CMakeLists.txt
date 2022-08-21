@@ -224,7 +224,10 @@ endif()
 #
 #   List of all targets that will be installed
 #
-set(REQUESTED_LIBS "cyng_db;cyng_io;cyng_log;cyng_obj;cyng_parse;cyng_rnd;cyng_sql;cyng_store;cyng_sys;cyng_task;cyng_vm;cyng_net;cyng_sqlite3")
+set(REQUESTED_LIBS "cyng_db;cyng_io;cyng_log;cyng_net;cyng_obj;cyng_parse;cyng_rnd;cyng_sql;cyng_store;cyng_sys;cyng_task;cyng_vm;cyng_sqlite3;cyng_xml")
+if(WIN32)
+    list(APPEND REQUESTED_LIBS "cyng_scm")
+endif(WIN32)
 
 #
 # external libraries

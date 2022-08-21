@@ -21,7 +21,7 @@ PROJECTSTORE="cyng"
 echo "[INFO] Projectstore: ${PROJECTSTORE}"
 ########################################
 # amrd
-pkgdir=${outputPath}/smf
+pkgdir=${outputPath}/cyng
 srcdir=$(pwd)
 docdir="${srcdir}/docs"
 mkdir -p ${pkgdir}
