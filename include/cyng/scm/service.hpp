@@ -72,8 +72,8 @@ public:
 	 *	@li SERVICE_ACCEPT_SESSIONCHANGE           0x00000080
 	 *
 	 */
-	service(SRV_T&& srv, const std::string& service_name)
-		: service_(std::move(srv))
+	service(SRV_T* srv, const std::string& service_name)
+		: service_(srv)
 		, handle_(NULL)
 		, status_()
 		, service_name_()
@@ -130,7 +130,7 @@ public:
 		//	create service shell on stack
 		//
 
-		if (register_control_handler(std::bind(& SRV_T::control_handler, &service_, std::placeholders::_1)))
+		if (register_control_handler(std::bind(& SRV_T::control_handler, service_, std::placeholders::_1)))
 		{
 			::OutputDebugString("update status: SERVICE-START-PENDING\n");
 			update_status(SERVICE_START_PENDING);
@@ -139,7 +139,7 @@ public:
 			update_status(SERVICE_RUNNING);
 
 			//	startup server
-			service_.run(false);
+			service_->run();
 
 			while (!shutdown_)
 			{
@@ -366,7 +366,7 @@ private:
 
 
 private:
-	SRV_T	service_;
+	SRV_T*	service_;
 
 	SERVICE_STATUS_HANDLE	handle_;
 	SERVICE_STATUS			status_;
