@@ -125,6 +125,9 @@ public:
 		//	now we have 30 sec. to startup
 		//::DebugBreak();
 #endif
+		for (auto idx = 0; idx < argc; ++idx) {
+			::OutputDebugString(argv[ idx ]);
+		}
 
 		//
 		//	create service shell on stack
@@ -139,13 +142,19 @@ public:
 			update_status(SERVICE_RUNNING);
 
 			//	startup server
-			service_->run();
+			if (service_ != nullptr) {
+				service_->run();
 
-			while (!shutdown_)
-			{
-				//	Wait for all threads in the pool to exit.
-				::Sleep(500);	//	1/2 second
+				while (!shutdown_)
+				{
+					//	Wait for all threads in the pool to exit.
+					::Sleep(500);	//	1/2 second
+				}
 			}
+			else {
+				::OutputDebugString("***error: no service\n");
+			}
+
 			::OutputDebugString("update status: SERVICE-STOP-PENDING\n");
 			update_status(SERVICE_STOP_PENDING);
 		}
