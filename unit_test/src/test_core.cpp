@@ -17,6 +17,7 @@
 #include <cyng/obj/algorithm/reader.hpp>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/parse/buffer.h>
+#include <cyng/parse/string.h>
 #include <cyng/io/ostream.h>
 
 #include <cyng.h>
@@ -340,6 +341,10 @@ BOOST_AUTO_TEST_CASE(obis)
     auto const o2 = cyng::make_obis(i);
     BOOST_CHECK_EQUAL(o2, cyng::make_obis(0x81, 0x81, 0xC7, 0x86, 0x12, 0xFF));
 
+    auto const p = cyng::to_obis_path("8149633c0101:8181C78612FF");
+    BOOST_REQUIRE_EQUAL(p.size(), 2);
+    BOOST_CHECK_EQUAL(p.front(), cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01));
+    BOOST_CHECK_EQUAL(p.back(), cyng::make_obis(0x81, 0x81, 0xC7, 0x86, 0x12, 0xFF));
 
 }
 
