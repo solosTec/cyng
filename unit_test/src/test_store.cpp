@@ -276,4 +276,32 @@ BOOST_AUTO_TEST_CASE(loop)
 	// 	});
 }
 
+BOOST_AUTO_TEST_CASE(compute)
+{
+	cyng::meta_store const m("demo"
+		, {
+			cyng::column("id", cyng::TC_UINT64),
+			cyng::column("name", cyng::TC_STRING),
+			cyng::column("age", cyng::TC_TIME_POINT)
+		}
+	, 1);
+
+	cyng::table tbl(m);
+
+	auto const key = cyng::key_generator(static_cast<std::uint64_t>(12u));
+	tbl.insert(cyng::key_generator(static_cast<std::uint64_t>(12u))
+		, cyng::data_generator("A", std::chrono::system_clock::now())
+		, 1u	//	gen
+		, boost::uuids::nil_uuid());
+
+	auto const b = tbl.compute<std::string>(key, "name", [](std::string s)->std::string {
+		return s+s;
+		},  boost::uuids::nil_uuid());
+
+	BOOST_REQUIRE(b);
+	auto const rec = tbl.lookup(key);
+	auto const s = rec.value("name", "");
+	BOOST_REQUIRE_EQUAL(s, "AA");
+
+}
 BOOST_AUTO_TEST_SUITE_END()
