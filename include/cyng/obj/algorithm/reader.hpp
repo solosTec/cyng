@@ -38,7 +38,10 @@ namespace cyng {
 
 		template< typename U>
 		auto get(std::string const& name, U&& def) const -> decltype(value_cast<U>(get(name), def)) {
-			return value_cast<U>(get(name), def);
+			if constexpr (std::is_arithmetic_v<U>) {
+				return numeric_cast<U>(get(name), std::forward<U>(def));
+			}
+			return value_cast<U>(get(name), std::forward<U>(def));
 		}
 
 		/**
@@ -54,7 +57,10 @@ namespace cyng {
 
 		template< typename U>
 		auto get(std::size_t idx, U&& def) const -> decltype(value_cast<U>(get(idx), def)) {
-			return value_cast<U>(get(idx), def);
+			if constexpr (std::is_arithmetic_v<U>) {
+				return numeric_cast<U>(get(idx), std::forward<U>(def));
+			}
+			return value_cast<U>(get(idx), std::forward<U>(def));
 		}
 
 		/**
@@ -68,6 +74,9 @@ namespace cyng {
 
 		template< typename U>
 		auto get(obis const& code, U&& def) const -> decltype(value_cast<U>(get(code), def)) {
+			if constexpr (std::is_arithmetic_v<U>) {
+				return numeric_cast<U>(get(code), std::forward<U>(def));
+			}
 			return value_cast<U>(get(code), def);
 		}
 

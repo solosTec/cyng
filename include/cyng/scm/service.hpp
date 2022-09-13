@@ -72,8 +72,8 @@ public:
 	 *	@li SERVICE_ACCEPT_SESSIONCHANGE           0x00000080
 	 *
 	 */
-	service(SRV_T&& srv, const std::string& service_name)
-		: service_(std::move(srv))
+	service(SRV_T* srv, const std::string& service_name)
+		: service_(srv)
 		, handle_(NULL)
 		, status_()
 		, service_name_()
@@ -103,18 +103,23 @@ public:
 		BOOST_ASSERT_MSG(broker::this_service == nullptr, "wrong service broker");
 		broker::this_service = this;
 
-		std::stringstream ss;
-		ss
-			<< "service base class("
-			<< service_name_
-			<< ") successful constructed"
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
+		{
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] service base class successful constructed"
+				<< std::endl
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
 	}
 
 	/**
-	 *	This parameters are not from the command line.
+	 *	This parameters are NOT from the command line.
+	 *	The property dialog of the service manager allows to specify 
+	 *	additional "Start Parameters" that will passed here.
 	 *
 	 *	@param argc argument count
 	 *	@param argv argument vector
@@ -125,34 +130,85 @@ public:
 		//	now we have 30 sec. to startup
 		//::DebugBreak();
 #endif
+		for (auto idx = 0; idx < argc; ++idx) {
+			::OutputDebugString(argv[ idx ]);
+		}
 
 		//
 		//	create service shell on stack
 		//
 
-		if (register_control_handler(std::bind(& SRV_T::control_handler, &service_, std::placeholders::_1)))
+		if (register_control_handler(std::bind(& SRV_T::control_handler, service_, std::placeholders::_1)))
 		{
-			::OutputDebugString("update status: SERVICE-START-PENDING\n");
+			{
+				std::stringstream ss;
+				ss
+					<< "["
+					<< service_name_
+					<< "] update status: SERVICE-START-PENDING"
+					<< std::endl
+					;
+				auto const msg = ss.str();
+				::OutputDebugString(msg.c_str());
+			}
 			update_status(SERVICE_START_PENDING);
 
-			::OutputDebugString("update status: SERVICE-RUNNING\n");
-			update_status(SERVICE_RUNNING);
 
 			//	startup server
-			service_.run(false);
+			if (service_ != nullptr) {
 
-			while (!shutdown_)
-			{
-				//	Wait for all threads in the pool to exit.
-				::Sleep(500);	//	1/2 second
+				{
+					std::stringstream ss;
+					ss
+						<< "["
+						<< service_name_
+						<< "] update status: SERVICE-RUNNING"
+						;
+					auto const msg = ss.str();
+					::OutputDebugString(msg.c_str());
+				}
+				update_status(SERVICE_RUNNING);
+
+				//
+				//	start service
+				//
+				service_->run();
+
+				while (!shutdown_) {
+					//	Wait for all threads in the pool to exit.
+					::Sleep(500);	//	1/2 second
+				}
+				service_ = nullptr;
 			}
-			::OutputDebugString("update status: SERVICE-STOP-PENDING\n");
+			else {
+				::OutputDebugString("***error: no service\n");
+			}
+
+			{
+				std::stringstream ss;
+				ss
+					<< "["
+					<< service_name_
+					<< "] update status: SERVICE-STOP-PENDING"
+					;
+				auto const msg = ss.str();
+				::OutputDebugString(msg.c_str());
+			}
 			update_status(SERVICE_STOP_PENDING);
 		}
 
 		::Sleep(1500);	//	1+1/2 second more to calm down
 		update_status(SERVICE_STOPPED);
-		::OutputDebugString("update status: SERVICE-STOPPED\n");
+		{
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] update status: SERVICE-STOPPED"
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
 	}
 
 	/**
@@ -171,30 +227,40 @@ public:
 			{ NULL, NULL }
 		};
 
-		std::stringstream ss;
-		ss
-			<< "StartServiceCtrlDispatcher("
-			<< service_name_
-			<< ")"
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
-
-		if (broker::this_service != this)
 		{
-			::OutputDebugString("***Error: wrong service broker");
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] StartServiceCtrlDispatcher"
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
+
+		if (broker::this_service != this) {
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] ***Error: wrong service broker"
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
 		}
 		BOOST_ASSERT_MSG(broker::this_service == this, "wrong service broker");
 
-		ss.str("");
-		ss
-			<< "main function address of "
-			<< service_name_
-			<< ": "
-			<< (void*)&broker::service_main
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
+		{
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] main function address = "
+				<< (void*)&broker::service_main
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
 
 		if (0 == ::StartServiceCtrlDispatcher(service_table))
 		{
@@ -208,15 +274,17 @@ private:
 
 	void control_handler(DWORD code)
 	{
-		std::stringstream ss;
-		ss
-			<< "service "
-			<< service_name_
-			<< " received control code: "
-			<< code
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
+		{
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] received control code: "
+				<< code
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
 
 		//	Just switch on the control code sent to 
 		//	us and call the relavent virtual function
@@ -234,29 +302,28 @@ private:
 			}
 			catch (std::exception const& ex)
 			{
-				ss.str("");
+				std::stringstream ss;
 				ss
-					<< "service "
+					<< "["
 					<< service_name_
-					<< " got an exception: "
+					<< "] received an exception: "
 					<< ex.what()
-					<< std::endl
 					;
-
-				::OutputDebugString(ss.str().c_str());
+				auto const msg = ss.str();
+				::OutputDebugString(msg.c_str());
 
 			}
 			catch (...)
 			{
-				ss.str("");
+				std::stringstream ss;
 				ss
-					<< "service "
+					<< "["
 					<< service_name_
-					<< " got an exception "
-					<< std::endl
+					<< "] received an exception: "
+					<< ::GetLastError()
 					;
-
-				::OutputDebugString(ss.str().c_str());
+				auto const msg = ss.str();
+				::OutputDebugString(msg.c_str());
 			}
 
 #ifdef _SRV_DEBUG
@@ -280,9 +347,6 @@ private:
 			ctrl_handler_cb(code);
 			break;
 		}
-
-		//	Any request from the SCM will be acked by this service
-		//update_status();
 	}
 
 
@@ -306,67 +370,76 @@ private:
 
 	bool register_control_handler(ctrl_handler_f cb)
 	{
-
-		//::DebugBreak();
-		std::stringstream ss;
-		ss
-			<< "RegisterServiceCtrlHandler("
-			<< service_name_
-			<< ")"
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
-
-		if (broker::this_service != this)
 		{
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] RegisterServiceCtrlHandler"
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
+
+		if (broker::this_service != this) {
 			::OutputDebugString("***Error: wrong service broker");
 		}
 		BOOST_ASSERT_MSG(broker::this_service == this, "wrong service broker");
 
-		ss.str("");
-		ss
-			<< "control handler address of "
-			<< service_name_
-			<< ": "
-			<< (void*)&broker::control_handler_
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
+		{
+			std::stringstream ss;
+			ss
+				<< "control handler address of "
+				<< service_name_
+				<< ": "
+				<< (void*)&broker::control_handler_
+				<< std::endl
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
 
 		handle_ = ::RegisterServiceCtrlHandler(service_name_, (LPHANDLER_FUNCTION)&broker::control_handler_);
 		if (handle_ == 0)
 		{
 			status_.dwWin32ExitCode = ::GetLastError();
 
-			ss.str("");
+			std::stringstream ss;
 			ss
-				<< "RegisterServiceCtrlHandler("
+				<< "["
+				<< service_name_
+				<< "] RegisterServiceCtrlHandler failed: "
 				<< status_.dwWin32ExitCode
-				<< ") failed"
-				<< std::endl
 				;
-			::OutputDebugString(ss.str().c_str());
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
 
 			return false;
 		}
 
 		ctrl_handler_cb.swap(cb);
 
-		ss.str("");
-		ss
-			<< "RegisterServiceCtrlHandler("
-			<< service_name_
-			<< ") successful registered"
-			<< std::endl
-			;
-		::OutputDebugString(ss.str().c_str());
+		{
+			std::stringstream ss;
+			ss
+				<< "["
+				<< service_name_
+				<< "] RegisterServiceCtrlHandler - successful registered"
+				<< std::endl
+				;
+			auto const msg = ss.str();
+			::OutputDebugString(msg.c_str());
+		}
 		return true;
 	}
 
 
 
 private:
-	SRV_T	service_;
+	/**
+	 * implementation class (controller_base)
+	 */
+	SRV_T*	service_;
 
 	SERVICE_STATUS_HANDLE	handle_;
 	SERVICE_STATUS			status_;

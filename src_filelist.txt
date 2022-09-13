@@ -1,0 +1,10 @@
+3party/*
+cmake/*
+docs/*
+include/*
+src/*
+tools/*
+unit_test/*
+CMakeLists.txt
+LICENSE
+README.md

@@ -29,7 +29,7 @@ message(STATUS "** CURRENT_SOURCE_DIR : ${CMAKE_CURRENT_SOURCE_DIR}")
 message(STATUS "** ${PROJECT_NAME}_SOURCE_DIR     : ${${PROJECT_NAME}_SOURCE_DIR}")
 message(STATUS "** ${PROJECT_NAME}_BINARY_DIR     : ${${PROJECT_NAME}_BINARY_DIR}")
 message(STATUS "** Library type       : ${GLOBAL_LIBRARY_TYPE}")
-message(STATUS "** PUGIXML_INCLUDE_DIR: ${PUGIXML_INCLUDE_DIR}")
+message(STATUS "** PUGIXML_INCLUDE_DIRS: ${PUGIXML_INCLUDE_DIRS}")
 
 
 #
@@ -42,7 +42,7 @@ add_library(cyng::xml ALIAS "cyng_xml")
 target_include_directories(cyng_xml
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${PUGIXML_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${PUGIXML_INCLUDE_DIRS}>
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
     PRIVATE

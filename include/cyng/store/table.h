@@ -275,6 +275,55 @@ namespace cyng {
 		 */
 		vector_t to_vector(bool col_names) const;
 
+		/**
+		 * update a value by a function.
+		 */
+		template <typename T>
+		bool compute(key_t const& key, std::size_t idx, std::function<T(T)> calc, boost::uuids::uuid source) {
+
+			auto pos = data_.find(key);
+			if (pos != data_.end()) {
+
+				//
+				//	write lock this record
+				//
+				std::unique_lock<std::shared_mutex> ulock(pos->second.m_);
+
+				auto attr = make_attr(idx, calc(value_cast<T>(pos->second.data_.at(idx), T{})));
+
+				if (pos->second.data_.at(idx) != attr.second) {
+
+					//
+					//	publish
+					//
+					this->pub::forward(this, key, attr, pos->second.data_, pos->second.generation_, source);
+
+					//
+					//	apply
+					//
+					swap(pos->second.data_.at(attr.first), attr.second);
+
+					//
+					//	update generation
+					//
+					++pos->second.generation_;
+
+					return true;
+
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * update a value by a function.
+		 */
+		template <typename T>
+		bool compute(key_t const& key, std::string name, std::function<T(T)> calc, boost::uuids::uuid source) {
+			auto const idx = meta().get_body_index_by_name(name);
+			return compute(key, idx, calc, source);
+		}
+
 	private:
 
 		/**
