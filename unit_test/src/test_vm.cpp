@@ -1,5 +1,5 @@
 #ifdef STAND_ALONE
-#   define BOOST_TEST_MODULE unit_test
+#define BOOST_TEST_MODULE unit_test
 #endif
 
 #include <boost/test/unit_test.hpp>

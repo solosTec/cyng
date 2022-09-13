@@ -196,9 +196,6 @@ namespace cyng {
 			void do_read() {
 
 				// Start an asynchronous operation to read a newline-delimited message.
-				//socket_.async_read_some(
-				//	boost::asio::buffer(rec_),
-				//	std::bind(&client::handle_read, this, std::placeholders::_1, std::placeholders::_2));
 
 				auto sp = channel_.lock();
 				if (sp) {
