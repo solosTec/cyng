@@ -1,5 +1,5 @@
 #ifdef STAND_ALONE
-#   define BOOST_TEST_MODULE unit_test
+#define BOOST_TEST_MODULE unit_test
 #endif
 
 #include <boost/test/unit_test.hpp>
@@ -24,7 +24,11 @@ BOOST_AUTO_TEST_CASE(client)
 {
 	cyng::controller ctl(2);
 	cyng::net::client_factory cf(ctl);
-	auto proxy = cf.create_proxy<boost::asio::ip::tcp::socket, 2048>([&](boost::asio::ip::tcp::endpoint ep) {
+	auto proxy = cf.create_proxy<boost::asio::ip::tcp::socket, 2048>(
+		[](std::size_t) -> std::pair<std::chrono::seconds, bool> {
+			return { std::chrono::seconds(0), false };
+		},
+		[&](boost::asio::ip::tcp::endpoint ep) {
 				std::cout << "on connect " << ep << std::endl;
 			},
 		[&](boost::system::error_code ec) {

@@ -30,10 +30,17 @@
 *.exe
 *.out
 *.app
-/.vs
-/build
-/out/build
-/CMakeSettings.json
 *.md5
 *.bz2
 *.zip
+
+# Build
+build
+out/build
+x64
+aarch64-v8
+
+# IDE
+.vs
+.vscode
+CMakeSettings.json

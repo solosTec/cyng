@@ -59,6 +59,7 @@ namespace cyng {
 
 			client(channel_weak wp
 				, cyng::controller& ctl
+				, std::function<std::pair<std::chrono::seconds,bool>(std::size_t)> cb_failed // connect failed
 				, std::function<void(endpoint_t)> cb_connect
 				, std::function<void(boost::system::error_code)> cb_reconnect
 				, std::function<void(cyng::buffer_t)> cb_receive)
@@ -73,6 +74,7 @@ namespace cyng {
 				, channel_(wp)
 				, resolver_()
 				, ctl_(ctl)
+				, cb_failed_(cb_failed)
 				, socket_(ctl.get_ctx())
 				, rec_({0})
 				, snd_()
@@ -103,10 +105,12 @@ namespace cyng {
 						}
 						else {
 							//
-							//	reconnect after 30 seconds
+							//	optional reconnect 
 							//
-							sp->suspend(std::chrono::seconds(30), "connect", host, service);
-
+							auto const [timeout, reconnect] = cb_failed_(sp->get_id());
+							if (reconnect) {								
+								sp->suspend(std::chrono::seconds(30), "connect", host, service);
+							}
 						}
 					});
 
@@ -192,9 +196,6 @@ namespace cyng {
 			void do_read() {
 
 				// Start an asynchronous operation to read a newline-delimited message.
-				//socket_.async_read_some(
-				//	boost::asio::buffer(rec_),
-				//	std::bind(&client::handle_read, this, std::placeholders::_1, std::placeholders::_2));
 
 				auto sp = channel_.lock();
 				if (sp) {
@@ -243,6 +244,7 @@ namespace cyng {
 			channel_weak channel_;
 			channel_ptr resolver_;
 			cyng::controller& ctl_;
+			std::function<std::pair<std::chrono::seconds, bool>(std::size_t) > cb_failed_;
 			S socket_;
 
 			/**

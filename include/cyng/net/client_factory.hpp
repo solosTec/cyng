@@ -30,11 +30,12 @@ namespace cyng {
 			 * @tparam P parser
 			 */
 			template <typename S, std::size_t N>
-			client_proxy create_proxy(std::function<void(typename S::endpoint_type)> cb_connect
+			client_proxy create_proxy(std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed
+				, std::function<void(typename S::endpoint_type)> cb_connect
 				, std::function<void(boost::system::error_code)> cb_reconnect
 				, std::function<void(cyng::buffer_t)> cb_receive) {
 
-				return { create_channel<S, N >(cb_connect, cb_reconnect, cb_receive) };
+				return { create_channel<S, N >(cb_failed, cb_connect, cb_reconnect, cb_receive) };
 			}
 
 		private:
@@ -46,7 +47,8 @@ namespace cyng {
 			 * @tparam P parser
 			 */
 			template <typename S, std::size_t N>
-			channel_ptr create_channel(std::function<void(typename S::endpoint_type)> cb_connect
+			channel_ptr create_channel(std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed
+				, std::function<void(typename S::endpoint_type)> cb_connect
 				, std::function<void(boost::system::error_code)> cb_reconnect
 				, std::function<void(cyng::buffer_t)> cb_receive) {
 
@@ -58,7 +60,7 @@ namespace cyng {
 				channel_ptr cp;
 				using client_t = client<S, N>;
 				//boost::asio::io_context & ctx = ctl_.get_ctx();
-				return ctl_.create_named_channel_with_ref<client_t>(tag, ctl_, cb_connect, cb_reconnect, cb_receive);
+				return ctl_.create_named_channel_with_ref<client_t>(tag, ctl_, cb_failed, cb_connect, cb_reconnect, cb_receive);
 
 			}
 

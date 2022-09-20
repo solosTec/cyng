@@ -49,7 +49,7 @@ target_compile_definitions(unit_test
     PRIVATE 
         BOOST_TEST_DYN_LINK 
         BOOST_ASIO_HAS_MOVE 
-        $<$<CONFIG:Debug>:_DEBUG_TEST>
+        $<$<CONFIG:Debug>:_DEBUG_UNIT_TEST>
 )
 
 #
