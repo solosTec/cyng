@@ -426,6 +426,11 @@ install(EXPORT "${CMAKE_PROJECT_NAME}targets"
     ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
 )
 
+# install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+#               "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigConfigVersion.cmake"
+#     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake
+# )
+
 #
 # CPack configuration
 #
@@ -458,7 +463,13 @@ else()
     set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 
     if (DEFINED CYNG_HOST_ID_NAME)
-        if (${CYNG_HOST_ID_NAME} STREQUAL "openSUSE")
+        # opensuse-tumbleweed
+        if (${CYNG_HOST_ID_NAME} MATCHES "opensuse*")
+            set(CPACK_RPM_PACKAGE_NAME ${PROJECT_NAME})
+            set(CPACK_RPM_PACKAGE_SUMMARY "${PROJECT_NAME} - dynamic data types for C++")
+            set(CPACK_RPM_PACKAGE_MAINTAINER "S. Olzscher")
+            set(CPACK_PACKAGE_VENDOR "solosTec")
+            set(CPACK_RPM_PACKAGE_URL "solostec.com")
             set(CPACK_GENERATOR "RPM")
         endif()
     else()    
@@ -466,6 +477,7 @@ else()
 
         #   architecture: amd64
         set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+        SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "solosTec") 
 	    set(CPACK_GENERATOR "DEB")
     endif()
 endif()
