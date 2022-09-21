@@ -41,21 +41,24 @@ namespace cyng {
     template <typename T, std::size_t N> buffer_t make_buffer(T const (&v)[N]) { return buffer_t(std::begin(v), std::end(v)); }
 
     /**
+     * @brief In theory this could be a constexpr function, but g++ 11.2.0 give weird error message
+     * with "invalid return type"
+     * 
      * @return an empty buffer
      */
-    constexpr buffer_t make_buffer() { return {}; }
+    inline buffer_t make_buffer() noexcept { return {}; }
 
     /**
      * @return true if all elements are printable ascii codes
      */
-    constexpr bool is_ascii(buffer_t const &v) {
+    inline bool is_ascii(buffer_t const &v) {
         return std::all_of(v.cbegin(), v.cend(), [](char c) { return (c > 31) && (c < 126); });
     }
 
     /**
      * @return true if all elements are 0.
      */
-    constexpr bool is_null(buffer_t const &v) {
+    inline bool is_null(buffer_t const &v) {
         return std::all_of(v.cbegin(), v.cend(), [](char c) { return c == 0; });
     }
 
