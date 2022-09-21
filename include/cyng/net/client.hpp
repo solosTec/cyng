@@ -39,11 +39,12 @@ namespace cyng {
             using protocol_t = typename S::protocol_type;
             using resolver_t = typename boost::asio::ip::basic_resolver<protocol_t>;
 
-            template <typename T> friend class task;
+          private:
+            friend class task<client<S,N>>;
 
             using signatures_t = std::tuple<
-                std::function<void(std::string, std::string)>,  // connect
-                std::function<void(cyng::buffer_t)>,            // send
+                std::function<void(std::string, std::string)>,  // [0] connect
+                std::function<void(cyng::buffer_t)>,            // [1] send
                 std::function<void(cyng::buffer_t)>,            // on receive
                 std::function<void(boost::system::error_code)>, // disconnect
                 std::function<void(eod)>                        // stop
@@ -55,7 +56,7 @@ namespace cyng {
           public:
             client(channel_weak wp
 				, cyng::controller& ctl
-				, std::function<std::pair<std::chrono::seconds,bool>(std::size_t)> cb_failed // connect failed
+				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed // connect failed
 				, std::function<void(endpoint_t, channel_ptr)> cb_connect // successful connected
                 , std::function<void(cyng::buffer_t)> cb_receive
                 , std::function<void(boost::system::error_code)> cb_disconnect
@@ -63,7 +64,7 @@ namespace cyng {
 			: sigs_ {
 					std::bind(&client::connect, this, std::placeholders::_1, std::placeholders::_2),	//	[0] connect
 					std::bind(&client::send, this, std::placeholders::_1),	// [1] 	send (write to socket)
-                    cb_receive, // [2] 	send (read from socket)
+                    cb_receive, // [2] 	on_receive (read from socket)
                     cb_disconnect, // [3] 	on_disconnect (socket was closed)
 					std::bind(&client::stop, this, std::placeholders::_1)	//	eod
 				}

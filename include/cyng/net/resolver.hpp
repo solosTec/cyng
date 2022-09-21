@@ -12,6 +12,7 @@
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/intrinsics/eod.h>
 #include <cyng/task/channel.h>
+#include <cyng/task/task_fwd.h>
 
 #include <tuple>
 #include <deque>
@@ -31,8 +32,7 @@ namespace cyng {
 			using endpoint_iterator = typename endpoints_t::iterator;
 
 		private:
-			template <typename T >
-			friend class task;
+			friend class task<resolver<S>>;
 
 			using signatures_t = std::tuple<
 				std::function<void(std::string, std::string)>,	//	connect
