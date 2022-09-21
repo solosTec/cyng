@@ -7,78 +7,78 @@
 #ifndef CYNG_OBJ_INTRINSCIS_BUFFER_H
 #define CYNG_OBJ_INTRINSCIS_BUFFER_H
 
-#include <vector>
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace cyng {
 
-	/**
-	 * Declare a buffer with contiguous memory
-	 */
-	using buffer_t = std::vector<char>;
+    /**
+     * Declare a buffer with contiguous memory
+     */
+    using buffer_t = std::vector<char>;
 
-	/**
-	 * helper function to build a buffer from hex values
-	 */
-	buffer_t make_buffer(std::initializer_list<std::uint8_t> ilist);
+    /**
+     * helper function to build a buffer from hex values
+     */
+    buffer_t make_buffer(std::initializer_list<std::uint8_t> ilist);
 
-	/**
-	 * helper function to build a buffer from string
-	 */
-	buffer_t make_buffer(std::string const&);
+    /**
+     * helper function to build a buffer from string
+     */
+    buffer_t make_buffer(std::string const &);
 
-	/**
-	 * helper function to build a buffer from an array
-	 */
-	template <typename T, std::size_t N>
-	buffer_t make_buffer(std::array<T, N> const& a)
-	{
-		return buffer_t(a.begin(), a.end());
-	}
+    /**
+     * helper function to build a buffer from an array
+     */
+    template <typename T, std::size_t N> buffer_t make_buffer(std::array<T, N> const &a) { return buffer_t(a.begin(), a.end()); }
 
-	/**
-	 * helper function to build a buffer from an array
-	 */
-	template <typename T, std::size_t N>
-	buffer_t make_buffer(T const(&v)[N])
-	{
-		return buffer_t(std::begin(v), std::end(v));
-	}
+    /**
+     * helper function to build a buffer from an array
+     */
+    template <typename T, std::size_t N> buffer_t make_buffer(T const (&v)[N]) { return buffer_t(std::begin(v), std::end(v)); }
 
-	/** 
-	 * @return true if all elements are printable ascii codes
-	 */
-	bool is_ascii(buffer_t const&);
+    /**
+     * @return an empty buffer
+     */
+    constexpr buffer_t make_buffer() { return {}; }
 
-	/**
-	 * @return true if all elements are 0.
-	 */
-	bool is_null(buffer_t const& v);
+    /**
+     * @return true if all elements are printable ascii codes
+     */
+    constexpr bool is_ascii(buffer_t const &v) {
+        return std::all_of(v.cbegin(), v.cend(), [](char c) { return (c > 31) && (c < 126); });
+    }
 
-	/**
-	 * @return hash of the buffer content
-	 */
-	std::size_t hash(buffer_t const& buffer);
+    /**
+     * @return true if all elements are 0.
+     */
+    constexpr bool is_null(buffer_t const &v) {
+        return std::all_of(v.cbegin(), v.cend(), [](char c) { return c == 0; });
+    }
 
-	/**
-	 * Generate a duplicate
-	 */
-	buffer_t clone(buffer_t const& buffer);
+    /**
+     * @return hash of the buffer content
+     */
+    std::size_t hash(buffer_t const &buffer);
 
-}
+    /**
+     * Generate a duplicate
+     */
+    buffer_t clone(buffer_t const &buffer);
+
+} // namespace cyng
 
 #include <functional>
 
 namespace std {
 
-	template <>
-	class hash<cyng::buffer_t> {
-	public:
-		size_t operator()(cyng::buffer_t const& v) const;
-	};
-}
+    template <> class hash<cyng::buffer_t> {
+      public:
+        size_t operator()(cyng::buffer_t const &v) const;
+    };
+} // namespace std
 
-#endif 
-
+#endif
