@@ -81,6 +81,8 @@ set (object_algorithm
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/size.h
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/reader.hpp
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_walker.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_transform.h
+#    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_extract.h
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/merge.h
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/add.hpp
     ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/swap_bytes.h
@@ -88,6 +90,8 @@ set (object_algorithm
     src/size.cpp
     src/reader.cpp
     src/dom_walker.cpp
+    src/dom_transform.cpp
+#    src/dom_extract.cpp
     src/merge.cpp
 )
 
