@@ -62,6 +62,9 @@ for archive in *.bz2; do
 			continue
 		fi
 
+		echo "Remove old copies"
+		find ${TARGETDIR}/.. -type f -name "cyng_v*" -delete
+
 		echo "Copying ${archive} to ${TARGETDIR}"
 		cp ${archive} ${TARGETDIR}
 
