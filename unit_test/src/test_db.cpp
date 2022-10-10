@@ -64,6 +64,7 @@ BOOST_AUTO_TEST_CASE(SQLite) {
                 stmt->clear();
             }
         }
+        stmt->close();
     }
 
     //
@@ -82,10 +83,13 @@ BOOST_AUTO_TEST_CASE(SQLite) {
             while (auto res = stmt->get_result()) {
                 auto obj = res->get(1, cyng::TC_TIME_POINT, 0);
                 auto const tpr = cyng::value_cast(obj, std::chrono::system_clock::now());
-                std::cout << cyng::sys::to_string(tpr, "%F %T%z") << std::endl;
+                auto const str = cyng::sys::to_string(tpr, "%F %T%z");
+                std::cout << str << std::endl;
                 std::cout << cyng::sys::to_string_utc(tpr, "%F %T%z (UTC)") << std::endl;
+                BOOST_REQUIRE_EQUAL(str, "2011-02-18 23:12:34+0100");
             }
         }
+        stmt->close();
     }
 
     s.close();

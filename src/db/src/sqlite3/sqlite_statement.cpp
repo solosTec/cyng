@@ -5,8 +5,9 @@
  *
  */
 
-#include <sqlite3/sqlite_result.h>
 #include <sqlite3/sqlite_statement.h>
+
+#include <sqlite3/sqlite_result.h>
 
 #include <cyng/io/ostream.h>
 
@@ -15,7 +16,7 @@
 namespace cyng {
     namespace db {
         namespace sqlite {
-            namespace detail {
+            namespace {
 
                 template <typename T> bool bind_value(sqlite3_stmt *stmt, int index, T const *ptr) {
                     return (ptr != nullptr) ? is_ok(::sqlite3_bind_int(stmt, index, *ptr))
@@ -272,7 +273,7 @@ namespace cyng {
                     return is_ok(::sqlite3_bind_null(stmt, index));
                 }
 
-            } // namespace detail
+            } // namespace
 
             statement::statement(connection *con)
                 : connection_(con)
@@ -281,6 +282,8 @@ namespace cyng {
                 , state_(INITIAL)
                 , bind_counter_(1) //	starts with 1
                 , static_data_() {}
+
+            statement::~statement() { close(); }
 
             bool statement::execute() {
                 BOOST_ASSERT_MSG(is_valid(), "SQLite statement invalid");
@@ -372,7 +375,8 @@ namespace cyng {
 
                 BOOST_ASSERT_MSG(is_valid(), "SQLite statement invalid");
 
-                if (!detail::bind_value(stmt_, bind_counter_, object_cast<type>(obj))) {
+                //  see anonymous namespace
+                if (!/*detail::*/ bind_value(stmt_, bind_counter_, object_cast<type>(obj))) {
                     connection_->show_diagnostics();
                     return false;
                 }
@@ -381,7 +385,8 @@ namespace cyng {
 
             bool statement::bind(int index, object &obj, std::size_t column_size) {
                 switch (obj.tag()) {
-                case TC_NULL: return detail::bind_null_value(stmt_, column_size);
+                    //  see anonymous namespace
+                case TC_NULL: return /*detail::*/ bind_null_value(stmt_, column_size);
 
                 case TC_BOOL: return bind_value_by_code<TC_BOOL>(obj, column_size);
                 case TC_INT8: return bind_value_by_code<TC_INT8>(obj, column_size);
