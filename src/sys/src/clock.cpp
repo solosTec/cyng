@@ -182,13 +182,21 @@ namespace cyng {
             //
             //	get UTC and local time
             //
-            auto const utc_tt = to_utc(now_tt);
-            auto const local_tt = to_localtime(now_tt);
+            auto utc_tt = to_utc(now_tt);
+            auto local_tt = to_localtime(now_tt);
 
             //
             //	calculate offset
             //
-            return std::chrono::minutes(60 * (local_tt.tm_hour - utc_tt.tm_hour) + (local_tt.tm_min - utc_tt.tm_min));
+            auto const minutes = utc_tt.tm_min - local_tt.tm_min; //  mostly zero
+            if (local_tt.tm_mday == utc_tt.tm_mday) {
+                return std::chrono::minutes(60 * (utc_tt.tm_hour - local_tt.tm_hour) + minutes);
+            }
+            BOOST_ASSERT(std::abs(local_tt.tm_mday - utc_tt.tm_mday) == 1);
+            auto const hours = (local_tt.tm_hour > utc_tt.tm_hour) ? (local_tt.tm_hour - utc_tt.tm_hour)
+                                                                   : (utc_tt.tm_hour - (local_tt.tm_hour + 24));
+
+            return std::chrono::minutes(60 * hours + minutes);
         }
 
         std::chrono::minutes delta_utc() { return delta_utc(std::chrono::system_clock::now()); }

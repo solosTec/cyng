@@ -65,6 +65,26 @@ namespace cyng {
          */
         std::chrono::minutes delta_utc(std::chrono::system_clock::time_point now);
         std::chrono::minutes delta_utc();
+
+        /**
+         * Support for type deduction (the old way)
+         * Example:
+         * @code
+         * duration_t<std::chrono::minutes>::_Period p;
+         * @endcode
+         */
+        template <typename T> struct duration_t {
+            using type = void;
+            using _Rep = void;
+            using _Period = void;
+        };
+
+        template <typename R, typename P> struct duration_t<std::chrono::duration<R, P>> {
+            using type = std::chrono::duration<R, P>;
+            using _Rep = R;
+            using _Period = P;
+        };
+
     } // namespace sys
 } // namespace cyng
 
