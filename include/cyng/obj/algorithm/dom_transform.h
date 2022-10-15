@@ -30,6 +30,11 @@ namespace cyng {
      */
     void transform(param_map_t &, std::function<std::pair<object, action>(object const &, std::vector<std::string> const &path)>);
 
+    /**
+     * Allows to rename path sections
+     */
+    void rename(param_map_t &, std::vector<std::string> path, std::vector<std::string> const &rep);
+
 } // namespace cyng
 
 #endif

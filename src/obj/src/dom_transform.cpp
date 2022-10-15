@@ -6,8 +6,12 @@
  */
 #include <cyng/obj/algorithm/dom_transform.h>
 
+#include <cyng/io/serialize.h>
 #include <cyng/obj/algorithm/add.hpp>
 #include <cyng/obj/container_cast.hpp>
+#include <cyng/obj/container_factory.hpp>
+
+#include <iostream>
 
 namespace cyng {
 
@@ -115,10 +119,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
+                default: {
                     auto tpl = object_cast<tuple_t>(obj);
                     transform(object_cast<tuple_t>(obj), depth, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_VECTOR: {
@@ -127,10 +131,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
+                default: {
                     auto tpl = object_cast<tuple_t>(obj);
                     transform(object_cast<vector_t>(obj), depth, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_DEQUE: {
@@ -139,10 +143,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
+                default: {
                     auto tpl = object_cast<tuple_t>(obj);
                     transform(object_cast<deque_t>(obj), depth, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_ATTR_MAP: {
@@ -151,10 +155,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
+                default: {
                     auto tpl = object_cast<tuple_t>(obj);
                     transform(object_cast<attr_map_t>(obj), depth, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_PARAM_MAP: {
@@ -163,10 +167,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
+                default: {
                     auto tpl = object_cast<tuple_t>(obj);
                     transform(object_cast<param_map_t>(obj), depth, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_PROP_MAP: {
@@ -175,10 +179,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
+                default: {
                     auto tpl = object_cast<tuple_t>(obj);
                     transform(object_cast<prop_map_t>(obj), depth, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_ATTR: transform(object_cast<attr_t>(obj), depth, f); break;
@@ -316,10 +320,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
-                    auto tpl = object_cast<tuple_t>(obj);
+                default: {
+                    decltype(auto) tpl = object_cast<tuple_t>(obj);
                     transform(*tpl, path, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_VECTOR: {
@@ -328,10 +332,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
-                    auto vec = object_cast<vector_t>(obj);
+                default: {
+                    decltype(auto) vec = object_cast<vector_t>(obj);
                     transform(*vec, path, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_DEQUE: {
@@ -340,10 +344,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
-                    auto deq = object_cast<deque_t>(obj);
+                default: {
+                    decltype(auto) deq = object_cast<deque_t>(obj);
                     transform(*deq, path, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_ATTR_MAP: {
@@ -352,10 +356,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
-                    auto amap = object_cast<attr_map_t>(obj);
+                default: {
+                    decltype(auto) amap = object_cast<attr_map_t>(obj);
                     transform(*amap, path, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_PARAM_MAP: {
@@ -364,10 +368,10 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
-                    auto pmap = object_cast<param_map_t>(obj);
+                default: {
+                    decltype(auto) pmap = object_cast<param_map_t>(obj);
                     transform(*pmap, path, f);
-                    break;
+                } break;
                 }
             } break;
             case TC_PROP_MAP: {
@@ -376,23 +380,23 @@ namespace cyng {
                 case action::REMOVE: return true;
                 case action::REPLACE: obj = std::move(r); break;
                 case action::NONE:
-                default:
-                    auto pmap = object_cast<prop_map_t>(obj);
+                default: {
+                    decltype(auto) pmap = object_cast<prop_map_t>(obj);
                     transform(*pmap, path, f);
-                    break;
+                } break;
                 }
             } break;
 
             case TC_ATTR: {
-                auto attr = object_cast<attr_t>(obj);
+                decltype(auto) attr = object_cast<attr_t>(obj);
                 transform(*attr, path, f);
             } break;
             case TC_PARAM: {
-                auto param = object_cast<param_t>(obj);
+                decltype(auto) param = object_cast<param_t>(obj);
                 transform(*param, path, f);
             } break;
             case TC_PROP: {
-                auto prop = object_cast<prop_t>(obj);
+                decltype(auto) prop = object_cast<prop_t>(obj);
                 transform(*prop, path, f);
             } break;
             default: {
@@ -415,6 +419,104 @@ namespace cyng {
     transform(param_map_t &pmap, std::function<std::pair<object, action>(object const &, std::vector<std::string> const &path)> f) {
         std::vector<std::string> path;
         transform(pmap, path, f);
+    }
+
+    namespace {
+
+        void insert(
+            param_map_t *pmap,
+            std::vector<std::string>::const_iterator pos,
+            std::vector<std::string>::const_iterator end,
+            param_t param) {
+            if (pos == end) {
+                //
+                //  insert
+                //
+#ifdef _DEBUG
+                std::cout << "insert: " << param.first << std::endl;
+#endif
+                pmap->insert(param);
+            } else {
+                auto const name = *pos++;
+                auto idx = pmap->find(name);
+                if (idx != pmap->end()) {
+                    //
+                    //  walk down
+                    //
+                    decltype(auto) pm = object_cast<param_map_t>(idx->second);
+                    if (pm != nullptr) {
+                        insert(pm, pos, end, param);
+                    } else {
+                        // error: name already assigned
+                    }
+                } else {
+                    //
+                    //  create entry
+                    //
+                    auto r = pmap->emplace(name, cyng::param_map_factory()());
+                    insert(object_cast<param_map_t>(r.first->second), pos, end, param);
+                }
+            }
+        }
+        void insert(param_map_t &pmap, std::vector<std::string> const &path, param_t param) {
+            if (!path.empty()) {
+                insert(&pmap, path.begin(), path.end(), param);
+            }
+        }
+
+        std::pair<param_t, bool>
+        extract(param_map_t *pmap, std::vector<std::string>::const_iterator pos, std::vector<std::string>::const_iterator end) {
+            if (pos != end) {
+#ifdef _DEBUG
+                std::cout << "lookup: " << *pos << std::endl;
+#endif
+                auto idx = pmap->find(*pos);
+                if (idx != pmap->end()) {
+                    ++pos;
+                    if (pos == end) {
+#ifdef _DEBUG
+                        std::cout << "found: " << cyng::io::to_typed(idx->second) << std::endl;
+#endif
+                        //  make a copy
+                        auto param = *idx;
+                        //  remove node if found
+                        pmap->erase(idx);
+                        //  return copy
+                        return {param, true};
+                    }
+
+                    //
+                    //  We're looking only for parameter maps not params
+                    //
+                    decltype(auto) pm = object_cast<param_map_t>(idx->second);
+                    if (pm != nullptr) {
+                        return extract(pm, pos, end);
+                    }
+                } else {
+#ifdef _DEBUG
+                    std::cout << *pos << " not found" << std::endl;
+#endif
+                }
+            }
+            return {param_t{}, false};
+        }
+        /**
+         * extract the object with the specified path
+         */
+        std::pair<param_t, bool> extract(param_map_t &pmap, std::vector<std::string> const &path) {
+            return extract(&pmap, path.begin(), path.end());
+        }
+
+    } // namespace
+    void rename(param_map_t &pmap, std::vector<std::string> path, std::vector<std::string> const &rep) {
+        decltype(auto) r = extract(pmap, path);
+        if (r.second) {
+            insert(pmap, rep, r.first);
+#ifdef _DEBUG
+            // std::cout << cyng::io::to_plain(cyng::make_object(pmap)) << std::endl;
+            //  std::cout << cyng::io::to_typed(cyng::make_object(pmap)) << std::endl;
+#endif
+        }
     }
 
 } // namespace cyng

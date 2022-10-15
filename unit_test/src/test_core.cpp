@@ -3,22 +3,24 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
-#include <cyng/obj/object.h>
-#include <cyng/obj/object_cast.hpp>
-#include <cyng/obj/container_factory.hpp>
-#include <cyng/obj/buffer_cast.hpp>
-#include <cyng/obj/numeric_cast.hpp>
-#include <cyng/obj/tuple_cast.hpp>
-#include <cyng/obj/vector_cast.hpp>
-#include <cyng/obj/set_cast.hpp>
-#include <cyng/obj/function_cast.hpp>
-#include <cyng/obj/container_cast.hpp>
+#include <cyng/io/ostream.h>
+#include <cyng/io/serialize.h>
+#include <cyng/obj/algorithm/dom_transform.h>
 #include <cyng/obj/algorithm/find.h>
 #include <cyng/obj/algorithm/reader.hpp>
+#include <cyng/obj/buffer_cast.hpp>
+#include <cyng/obj/container_cast.hpp>
+#include <cyng/obj/container_factory.hpp>
+#include <cyng/obj/function_cast.hpp>
 #include <cyng/obj/intrinsics/buffer.h>
+#include <cyng/obj/numeric_cast.hpp>
+#include <cyng/obj/object.h>
+#include <cyng/obj/object_cast.hpp>
+#include <cyng/obj/set_cast.hpp>
+#include <cyng/obj/tuple_cast.hpp>
+#include <cyng/obj/vector_cast.hpp>
 #include <cyng/parse/buffer.h>
 #include <cyng/parse/string.h>
-#include <cyng/io/ostream.h>
 
 #include <cyng.h>
 
@@ -26,20 +28,19 @@
 
 BOOST_AUTO_TEST_SUITE(core_suite)
 
-BOOST_AUTO_TEST_CASE(constructor)
-{
+BOOST_AUTO_TEST_CASE(constructor) {
     cyng::object obj;
     BOOST_REQUIRE_EQUAL(obj.hash(), CYNG_NULL_HASH);
-    //std::cout << obj.hash() << std::endl;
+    // std::cout << obj.hash() << std::endl;
     {
         auto const o = obj.clone();
-        //std::cout << o.hash() << std::endl;
+        // std::cout << o.hash() << std::endl;
         BOOST_REQUIRE_EQUAL(o.hash(), CYNG_NULL_HASH);
     }
-    //std::cout << obj.rtti().extend() << std::endl;
+    // std::cout << obj.rtti().extend() << std::endl;
     BOOST_REQUIRE_EQUAL(obj.rtti().extend(), 0);
 
-    //std::cout << obj.tag() << std::endl;
+    // std::cout << obj.tag() << std::endl;
     BOOST_REQUIRE_EQUAL(obj.tag(), cyng::TC_NULL);
     BOOST_REQUIRE_EQUAL(obj.rtti().type_name(), "null");
 
@@ -50,7 +51,7 @@ BOOST_AUTO_TEST_CASE(constructor)
     BOOST_REQUIRE_EQUAL(o3.tag(), cyng::TC_STRING);
     BOOST_REQUIRE_EQUAL(cyng::value_cast(o3, ""), "hello");
 
-    auto o4 = cyng::make_object(o3);   //  move
+    auto o4 = cyng::make_object(o3); //  move
     BOOST_REQUIRE_EQUAL(o4.tag(), cyng::TC_STRING);
     BOOST_REQUIRE_EQUAL(cyng::value_cast(o4, ""), "hello");
     BOOST_REQUIRE_EQUAL(o3.tag(), cyng::TC_NULL);
@@ -64,7 +65,7 @@ BOOST_AUTO_TEST_CASE(constructor)
     auto o7 = cyng::make_object<cyng::buffer_t>(std::string("string"));
     BOOST_REQUIRE_EQUAL(o7.rtti().type_name(), "binary");
 
-    auto i = cyng::to_numeric<int>(cyng::buffer_t{ 1,2,3,4 });
+    auto i = cyng::to_numeric<int>(cyng::buffer_t{1, 2, 3, 4});
     BOOST_REQUIRE_EQUAL(i, 0x01020304);
 
     auto const buf = cyng::to_buffer(0x01020304);
@@ -77,10 +78,10 @@ BOOST_AUTO_TEST_CASE(constructor)
     //
     //  produce a vector of objects
     //
-    std::vector<std::uint16_t> const v16 = { 2, 0, 2, 1 };
+    std::vector<std::uint16_t> const v16 = {2, 0, 2, 1};
     auto o8 = cyng::make_object<std::vector<std::uint16_t>>(v16);
     BOOST_REQUIRE_EQUAL(o8.rtti().type_name(), "vec");
-    auto * p = cyng::object_cast<cyng::vector_t>(o8);
+    auto *p = cyng::object_cast<cyng::vector_t>(o8);
     BOOST_CHECK(p);
     BOOST_REQUIRE_EQUAL(p->size(), 4);
 
@@ -96,7 +97,7 @@ BOOST_AUTO_TEST_CASE(constructor)
     auto o10 = cyng::make_object(cyng::broadcast_address());
     BOOST_REQUIRE_EQUAL(o10.rtti().type_name(), "mac48");
 
-    //std::cout << o10.rtti().type_name();
+    // std::cout << o10.rtti().type_name();
 
     //
     //  chrono
@@ -112,7 +113,8 @@ BOOST_AUTO_TEST_CASE(constructor)
     //  Boost
     //
     {
-        auto const type_name = cyng::make_object(boost::system::errc::make_error_code(boost::system::errc::success)).rtti().type_name();
+        auto const type_name =
+            cyng::make_object(boost::system::errc::make_error_code(boost::system::errc::success)).rtti().type_name();
         BOOST_REQUIRE_EQUAL(type_name, "ec");
     }
     {
@@ -125,7 +127,7 @@ BOOST_AUTO_TEST_CASE(constructor)
     //
     auto addr = cyng::make_object(boost::asio::ip::make_address("1.1.1.1"));
     BOOST_REQUIRE_EQUAL(addr.rtti().type_name(), "ip:address");
-    auto* paddr = cyng::object_cast<boost::asio::ip::address>(addr);
+    auto *paddr = cyng::object_cast<boost::asio::ip::address>(addr);
     BOOST_CHECK(paddr);
     BOOST_REQUIRE_EQUAL(paddr->to_string(), "1.1.1.1");
 
@@ -147,8 +149,7 @@ BOOST_AUTO_TEST_CASE(constructor)
     BOOST_REQUIRE_EQUAL(eod.tag(), cyng::TC_EOD);
 }
 
-BOOST_AUTO_TEST_CASE(type_name_test)
-{
+BOOST_AUTO_TEST_CASE(type_name_test) {
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::null>(), "null");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<bool>(), "bool");
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<char>(), "char");
@@ -202,40 +203,35 @@ BOOST_AUTO_TEST_CASE(type_name_test)
     BOOST_REQUIRE_EQUAL(cyng::intrinsic_name<cyng::object>(), "obj");
 }
 
-struct dummy
-{
-    inline void foo() {
-
-    }
+struct dummy {
+    inline void foo() {}
     inline int bar(int a, std::string b, float c) {
         std::cout << a + 1 << ", " << b << ": " << c << std::endl;
         return 1 + a;
     }
 };
 
-
-BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
-{
-    //std::cout << _MSC_VER << std::endl;
+BOOST_AUTO_TEST_CASE(cast, *boost::unit_test::tolerance(0.00001)) {
+    // std::cout << _MSC_VER << std::endl;
     dummy d;
 
     auto o6 = cyng::make_object(new int(42));
-    auto* ptr = cyng::object_cast<int>(o6);
+    auto *ptr = cyng::object_cast<int>(o6);
     BOOST_REQUIRE(ptr != nullptr);
     BOOST_REQUIRE_EQUAL(*ptr, 42);
 
     auto n16 = cyng::numeric_cast<std::uint16_t>(o6, 16);
     BOOST_REQUIRE_EQUAL(n16, 42);
 
-    BOOST_REQUIRE(o6); 
+    BOOST_REQUIRE(o6);
     //  has to be the same type
     auto ptr1 = cyng::object_release<int>(o6);
     BOOST_REQUIRE(!o6); //  empty
     BOOST_REQUIRE_EQUAL(*ptr1.first, 42);
-    delete ptr1.second;    //  prevent memory leak
+    delete ptr1.second; //  prevent memory leak
 
     auto tpl = cyng::make_tuple(1, "hello", 2.3f);
-    BOOST_REQUIRE_EQUAL(tpl.size(), 3); 
+    BOOST_REQUIRE_EQUAL(tpl.size(), 3);
     {
         auto pos = std::begin(tpl);
         BOOST_REQUIRE_EQUAL(pos->tag(), cyng::TC_INT32);
@@ -246,7 +242,7 @@ BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
     }
 
     using ft = std::function<int(int, std::string, float)>;
-    ft f = [](int a, std::string b, float c)->int {
+    ft f = [](int a, std::string b, float c) -> int {
         // std::cout << a << b << c << std::endl;
         return a + 1;
     };
@@ -287,7 +283,7 @@ BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
     //  tuple cast
     //
     auto tplc1 = cyng::make_tuple(42, "hello", 3.4);
-    auto const[v1, v2, v3] = tuple_cast<int, std::string, double>(tplc1);
+    auto const [v1, v2, v3] = tuple_cast<int, std::string, double>(tplc1);
     BOOST_CHECK_EQUAL(v1, 42);
     BOOST_CHECK_EQUAL(v2, "hello");
     BOOST_CHECK_EQUAL(v3, 3.4);
@@ -312,20 +308,19 @@ BOOST_AUTO_TEST_CASE(cast, * boost::unit_test::tolerance(0.00001))
     BOOST_CHECK_EQUAL(vec2.at(2), 44);
 }
 
-BOOST_AUTO_TEST_CASE(obis)
-{
+BOOST_AUTO_TEST_CASE(obis) {
     cyng::obis o(1, 2, 3, 4, 5, 6);
-    //std::cout << cyng::to_string(o) << std::endl;
+    // std::cout << cyng::to_string(o) << std::endl;
     BOOST_REQUIRE_EQUAL(cyng::to_string(o), "010203040506");
-    //std::cout << std::hex << o.to_uint64() << std::endl;
+    // std::cout << std::hex << o.to_uint64() << std::endl;
     BOOST_REQUIRE_EQUAL(o.to_uint64(), 0x010203040506);
 
     o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01);
-    auto b = o.starts_with(cyng::make_buffer({ 0x81, 0x49, 0x63, 0x3C, 0x01 }));
+    auto b = o.starts_with(cyng::make_buffer({0x81, 0x49, 0x63, 0x3C, 0x01}));
     BOOST_CHECK(b);
 
     o = cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01);
-    b = o.starts_with(cyng::make_buffer({ 0x81, 0x49, 0x63, 0x3C, 0x02 }));
+    b = o.starts_with(cyng::make_buffer({0x81, 0x49, 0x63, 0x3C, 0x02}));
     BOOST_CHECK(!b);
 
     o = cyng::make_obis_2(o, 0x0406);
@@ -345,17 +340,11 @@ BOOST_AUTO_TEST_CASE(obis)
     BOOST_REQUIRE_EQUAL(p.size(), 2);
     BOOST_CHECK_EQUAL(p.front(), cyng::make_obis(0x81, 0x49, 0x63, 0x3c, 0x01, 0x01));
     BOOST_CHECK_EQUAL(p.back(), cyng::make_obis(0x81, 0x81, 0xC7, 0x86, 0x12, 0xFF));
-
 }
 
-BOOST_AUTO_TEST_CASE(algorithm)
-{
+BOOST_AUTO_TEST_CASE(algorithm) {
     auto o1 = cyng::tuple_factory(
-        cyng::make_param("one", 1), 
-        cyng::make_param("two", 2), 
-        cyng::make_param("three", 3),
-        cyng::make_param("four", 4)
-    );
+        cyng::make_param("one", 1), cyng::make_param("two", 2), cyng::make_param("three", 3), cyng::make_param("four", 4));
     auto const o2 = cyng::find(o1, "two");
     auto n2 = cyng::numeric_cast<std::int32_t>(o2, 0);
     BOOST_REQUIRE_EQUAL(n2, 2);
@@ -370,14 +359,11 @@ BOOST_AUTO_TEST_CASE(algorithm)
     auto const o4 = cyng::tuple_factory(
         cyng::make_attr(1, "one"),
         cyng::make_attr(2, "two"),
-        cyng::make_attr(3, cyng::tuple_factory(
-            cyng::make_param("one", 1),
-            cyng::make_param("two", 2),
-            cyng::make_param("three", 3),
-            cyng::make_param("four", 4)
-        )),
-        cyng::make_attr(4, "four")
-    );
+        cyng::make_attr(
+            3,
+            cyng::tuple_factory(
+                cyng::make_param("one", 1), cyng::make_param("two", 2), cyng::make_param("three", 3), cyng::make_param("four", 4))),
+        cyng::make_attr(4, "four"));
     auto const r4 = cyng::make_reader(o4);
     BOOST_REQUIRE(o4); //  not empty
     BOOST_REQUIRE(!r4.is_owner());
@@ -387,8 +373,119 @@ BOOST_AUTO_TEST_CASE(algorithm)
     auto const o6 = r4[3]["two"].get();
     auto n6 = cyng::numeric_cast<std::int32_t>(o6, 0);
     BOOST_REQUIRE_EQUAL(n6, 2);
+}
 
+BOOST_AUTO_TEST_CASE(dom) {
+    //
+    //  create a DOM
+    //  1   2   3   4   5
+    //              +-  1   2   3   4
+    //                          +-  1   2   3   4
+    //                              +-   1   2   3   4
+    //
 
+    auto pmap = cyng::param_map_factory("1", 1) //
+                ("2", 2)                        //
+                ("3", 3)                        //
+                ("4",
+                 cyng::param_map_factory("1", 1) //
+                 ("2", 2)                        //
+                 ("3",
+                  cyng::param_map_factory(
+                      "1",
+                      cyng::param_map_factory("1", 1) //
+                      ("2", 2)                        //
+                      ("3", 3)                        //
+                      ("4",
+                       cyng::param_map_factory("1", 1) //
+                       ("2",
+                        cyng::param_map_factory("1", 1) //
+                        ("2", 2)                        //
+                        ("3", 3)                        //
+                        ("4", 4)                        //
+                        ())                             //
+                       ("3", 3)                         //
+                       ("4", 4)                         //
+                       ())                              //
+                      ())                               //
+                  ("2", 2)                              //
+                  ("3", 3)                              //
+                  ("4", 4)                              //
+                  ())                                   //
+                 ("4", 4)                               //
+                 ())                                    //
+                ("5", 5)                                //
+                    .
+                    operator cyng::param_map_t();
+
+#ifdef _DEBUG
+    // std::cout << cyng::io::to_typed(cyng::make_object(pmap)) << std::endl;
+#endif
+    //
+    //  %(
+    //      ("1":1),
+    //      ("2":2),
+    //      ("3":3),
+    //      ("4":%( <-
+    //          ("1":1),
+    //          ("2":2),
+    //          ("3":%( <-
+    //              ("1":%( <-
+    //                  ("1":1),
+    //                  ("2":2),
+    //                  ("3":3),
+    //                  ("4":%(
+    //                      ("1":1),
+    //                      ("2":%(
+    //                          ("1":1),
+    //                          ("2":2),
+    //                          ("3":3),
+    //                          ("4":4)
+    //                          )
+    //                      ),
+    //                      ("3":3),
+    //                      ("4":4)
+    //                      )
+    //                  )
+    //              )
+    //          ),
+    //          ("2":2),
+    //          ("3":3),
+    //          ("4":4)
+    //          )
+    //      ),
+    //      ("4":4)
+    //      )
+    // ),
+    // ("5":5)
+    // ):pmap
+    //
+
+    cyng::rename(pmap, {"4", "3", "1"}, {"4", "B", "C"});
+    auto const s = cyng::io::to_plain(cyng::make_object(pmap));
+    //  "%(("1":1),("2":2),("3":3),("4":%(("1":1),("2":2),("3":%(("2":2),("3":3),("4":4))),("4":4),("B":%(("C":%(("1":%(("1":1),("2":2),("3":3),("4":%(("1":1),("2":%(("1":1),("2":2),("3":3),("4":4))),("3":3),("4":4))))))))))),("5":5))"
+    BOOST_REQUIRE_EQUAL(
+        s,
+        "%((\"1\":1),(\"2\":2),(\"3\":3),(\"4\":%((\"1\":1),(\"2\":2),(\"3\":%((\"2\":2),(\"3\":3),(\"4\":4))),(\"4\":4),(\"B\":%((\"C\":%((\"1\":%((\"1\":1),(\"2\":2),(\"3\":3),(\"4\":%((\"1\":1),(\"2\":%((\"1\":1),(\"2\":2),(\"3\":3),(\"4\":4))),(\"3\":3),(\"4\":4))))))))))),(\"5\":5))");
+
+    //  %(
+    //      ("1":1),
+    //      ("2":2),
+    //      ("3":3),
+    //      ("4":%(
+    //          ("1":1),
+    //          ("2":%(
+    //              ("1":1),
+    //              ("2":2),
+    //              ("3":3),
+    //              ("4":4)
+    //              )
+    //          ),
+    //          ("3":3),
+    //          ("4":4)
+    //          )
+    //      )
+    //  ):pmap
 }
 
 BOOST_AUTO_TEST_SUITE_END()
