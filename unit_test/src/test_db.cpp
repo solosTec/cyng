@@ -38,15 +38,19 @@ BOOST_AUTO_TEST_CASE(SQLite) {
     s.execute("CREATE TABLE demo (id int, age float)");
 
     //
-    //  generate a time stamp
+    //  generate a UTC time stamp
     //
-    std::tm tm = {};
-    std::istringstream ss("2011-Februar-18 23:12:34");
-    ss.imbue(std::locale("de_DE.utf-8"));
-    ss >> std::get_time(&tm, "%Y-%b-%d %H:%M:%S");
+    // std::tm tm = {};
+    // std::istringstream ss("2011-Februar-18 23:12:34");
+    // ss.imbue(std::locale("de_DE.utf-8"));
+    // ss >> std::get_time(&tm, "%Y-%b-%d %H:%M:%S");
 
-    auto const t = std::mktime(&tm);
-    auto const tp = std::chrono::system_clock::from_time_t(t);
+    // auto const t = std::mktime(&tm);
+    // auto const tp = std::chrono::system_clock::from_time_t(t);
+
+    std::string const inp = "2011-02-18 23:12:34";
+    std::string const fmt = "%Y-%m-%d %H:%M:%S";
+    auto const tp = cyng::sys::to_time_point(inp, fmt);
 
     std::cout << cyng::sys::to_string(tp, "%F %T%z") << std::endl;
     std::cout << cyng::sys::to_string_utc(tp, "%F %T%z (UTC)") << std::endl;
@@ -80,13 +84,17 @@ BOOST_AUTO_TEST_CASE(SQLite) {
         if (r.second) {
             stmt->push(cyng::make_object(1), 0); //	id
 
-            while (auto res = stmt->get_result()) {
+            if (auto res = stmt->get_result()) {
+                //  UTC
                 auto obj = res->get(1, cyng::TC_TIME_POINT, 0);
                 auto const tpr = cyng::value_cast(obj, std::chrono::system_clock::now());
-                auto const str = cyng::sys::to_string(tpr, "%F %T%z");
-                std::cout << str << std::endl;
-                std::cout << cyng::sys::to_string_utc(tpr, "%F %T%z (UTC)") << std::endl;
-                BOOST_REQUIRE_EQUAL(str, "2011-02-18 23:12:34+0100");
+#ifdef _DEBUG
+                cyng::sys::to_string(std::cout, tpr, "%F %T%z");
+#endif
+                // std::cout << str << std::endl;
+                auto const str = cyng::sys::to_string_utc(tpr, "%F %T");
+                // "2011-02-18 23:12:34"
+                BOOST_REQUIRE_EQUAL(str, inp);
             }
         }
         stmt->close();

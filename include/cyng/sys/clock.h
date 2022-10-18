@@ -56,6 +56,10 @@ namespace cyng {
         std::string to_string_utc(std::chrono::system_clock::time_point const &tp, std::string format);
 
         std::tm to_utc(std::time_t);
+
+        /**
+         * Corrects for the local time zone
+         */
         std::tm to_localtime(std::time_t);
 
         /**
@@ -84,6 +88,12 @@ namespace cyng {
             using _Rep = R;
             using _Period = P;
         };
+
+        /**
+         * Convert a string to a UTC timestamp with the specified format.
+         */
+        [[nodiscard]] std::chrono::system_clock::time_point
+        to_time_point(std::string const &, std::string format = "%Y-%m-%d %H:%M:%S");
 
     } // namespace sys
 } // namespace cyng

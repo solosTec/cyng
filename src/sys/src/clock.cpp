@@ -44,11 +44,18 @@ namespace cyng {
 #endif
 
     namespace sys {
+
+        /**
+         * @return Start of this day in UTC
+         */
         std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) noexcept {
             auto const this_day = chrono::floor<chrono::days>(tp);
             return chrono::year_month_day{this_day}.operator chrono::sys_days();
         }
 
+        /**
+         * @return End of this day in UTC
+         */
         std::chrono::system_clock::time_point get_end_of_day(std::chrono::system_clock::time_point tp) noexcept {
             return get_start_of_day(tp) + std::chrono::hours(24);
         }
@@ -200,6 +207,13 @@ namespace cyng {
         }
 
         std::chrono::minutes delta_utc() { return delta_utc(std::chrono::system_clock::now()); }
+
+        std::chrono::system_clock::time_point to_time_point(std::string const &str, std::string format) {
+            std::chrono::system_clock::time_point tp;
+            std::istringstream ss{str};
+            ss >> chrono::parse("%Y-%m-%d %H:%M:%S", tp);
+            return tp;
+        }
 
     } // namespace sys
 } // namespace cyng
