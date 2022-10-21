@@ -124,7 +124,11 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             set(CYNG_USE_FEATURE_TESTING OFF CACHE BOOL "use feature testing")
         endif()
 
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.1")
+        #
+        #   Support for chrono library is a mess. Even gcc 12.2.1 doesn't implement
+        #   std::chrono::parse()
+        #
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "12.3")
             message(STATUS "Date library required")
             set(CYNG_USE_DATE_LIBRARY ON CACHE BOOL "use date library")
         else()
