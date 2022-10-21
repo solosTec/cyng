@@ -125,7 +125,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         endif()
 
         #
-        #   Support for chrono library is a mess. Even gcc 12.2.1 doesn't implement
+        #   Support for chrono library is a mess. Even gcc 12.2.1 doesn't implements
         #   std::chrono::parse()
         #
         if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "12.3")

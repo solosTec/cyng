@@ -19,25 +19,25 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
 * parser
     * Parsing all intrinsic data types
     * Extensible
-* [JSON](http://json.org/)
-    * Handling JSON objects like CYNG/C++ objects
-    * Smooth integration of parsing and serialization 
+    * [JSON](http://json.org/)
+        * Handling JSON objects like CYNG/C++ objects
+        * Smooth integration of parsing and serialization 
+    * CSV (comma separated values)
+    * XML
 * store
     * Simple key-value store
     * Threadsafe
     * Provides a lock hierarchy
 * vm
     * A tiny VM extends dynamic data types by dynamic code execution
-    * Comes with an assembler
     * Extensible by a library manager
     * Complete asynchronously
-* async
+* task
     * Managing of single and periodic tasks
     * Load distribution to all available CPUs
     * Ease the burden of implementing thread safe tasks (The scheduler takes care for you)
     * Support of the [active object pattern](http://accu.org/index.php/journals/1956)
     * [Signal handling](http://solosTec.de/anchor/index.php/posts/a-unique-singleton)
-    * new task library
 * SQL
     * Generate SQL queries at runtime
 	* C++ compiler checks SQL syntax
@@ -45,20 +45,22 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
 	* Generalized interface to access databases
 	* Support for ODBC and SQLite3
 * and more
-    * logging
-    * crypto
+    * An asynchronous logging framework optimized for using with cyng
+    * Generate random data and statistics
+    * Query system data (memory, process, network, ...)
+    * SCM support on windows
     
 ## Introduction ##
 
 * Current version is 0.9. Interfaces are stable now. 
 * Linux (32/64 bit) are supported
-* Windows 7/10 (64 bit) or higher are supported.
+* Windows 7/11 (64 bit) or higher are supported.
 * Crosscompiling for Raspberry 3/4 is supported
-* Requires [g++](https://gcc.gnu.org/) >= 8.x or cl 19.00.24215.1 (this is VS 14.0) and [boost](http://www.boost.org/) >= 1.75.0
+* Requires [g++](https://gcc.gnu.org/) >= 8.x or cl 19.34.31823.3 (this is VS 17.4) and [boost](http://www.boost.org/) >= 1.78.0
 
 ## How do I get set up? ##
 
-* Buildsystem is based on [cmake](http://www.cmake.org/) >= 3.12
+* Buildsystem is based on [cmake](http://www.cmake.org/) >= 3.14
 * Download or clone from [github](https://github.com/solosTec/cyng.git)
 
 To build CYNG, run:
@@ -68,12 +70,9 @@ To build CYNG, run:
 #!shell
 
 git clone https://github.com/solosTec/cyng.git
-mkdir build
-cd build
-cmake ..
-make -j4 all
-sudo make install
-
+cmake -S . -B build -G Ninja
+cmake --build build
+sudo cmake --install build
 ```
 
 To run a test, type
@@ -85,13 +84,13 @@ To run a test, type
 
 ```
 
-To build with Visual Studion on Windows:
+To build with Visual Studio on Windows:
 
 ```
 #!shell
 mkdir projects
 cd projects
-cmake -Wno-dev -G "Visual Studio 15 2017 Win64" ..
+cmake -Wno-dev -G "Visual Studio 17 2022 Win64" ..
 
 ```
 
@@ -106,12 +105,12 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 
 ### Boost ###
 
-(1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.bz2)
+(1) download and extract latest [Boost library](https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2)
 
 ```
-wget https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.bz2/download
-tar xjvf boost_1_77_0.tar.bz2
-cd boost_1_77_0
+wget https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
+tar xjvf boost_1_80_0.tar.bz2
+cd boost_1_80_0
 ```
 
 (2) bootstrap
@@ -167,40 +166,6 @@ export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4
 ./b2 install toolset=gcc-arm --prefix=${HOME}/projects/install
 ```
 
-### OpenSLL ###
-
-(1) download and extract latest [OpenSSL library](http://www.openssl.org/source/openssl-1.1.1.tar.gz)
-
-```
-wget http://www.openssl.org/source/openssl-1.1.1.tar.gz
-tar -xvzf openssl-1.1.1.tar.gz
-cd openssl-1.1.1
-```
-
-
-(2) config (examples)
-
-```
-./Configure linux-generic32 shared --prefix=${HOME}/projects/install/openssl --openssldir=${HOME}/projects/install/openssl  --cross-compile-prefix=arm-rpi-linux-gnueabihf- PROCESSOR=ARM
-
-./Configure linux-generic32 shared --prefix=${HOME}/projects/install/openssl --openssldir=${HOME}/projects/install/openssl  --cross-compile-prefix=arm-v5te-linux-gnueabi- PROCESSOR=ARM
-```
-
-
-(3) set path (examples - take the appropriate):
-
-```
-export PATH=$PATH:${HOME}/projects/rpi-newer-crosstools/x64-gcc-6.3.1/arm-rpi-linux-gnueabihf/bin/
-export PATH=$PATH:/opt/OSELAS.Toolchain-2016.06.1/arm-v5te-linux-gnueabi/gcc-5.4.0-glibc-2.23-binutils-2.26-kernel-3.16.57-sanitized/bin/
-```
-
-
-(4) start generating
-
-```
-make
-make install
-```
 
 ### Set up cross compilation with CMake ###
 
