@@ -1,0 +1,9 @@
+#pragma once
+
+//
+//  @PROJECT_NAME@_VERSION % 100 is the patch level
+//  @PROJECT_NAME@_VERSION / 100 % 1000 is the minor version
+//  @PROJECT_NAME@_VERSION / 100000 is the major version
+//
+
+#define @CAPITAL_NAME@_VERSION ${${PROJECT_NAME}_VERSION_NUMERAL}

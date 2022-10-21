@@ -1,4 +1,3 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/282b117236244ea2b9c4752b29cb05f8)](https://www.codacy.com/app/solosTec/cyng?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=solosTec/cyng&amp;utm_campaign=Badge_Grade)
 ![GitHub](https://img.shields.io/github/license/solosTec/cyng.svg)
 
 # CYNG C++ Library #
@@ -51,15 +50,15 @@ The CYNG library (pronunciation: /tʃɪŋ/) is mostly about support of dynamical
     
 ## Introduction ##
 
-* Current version is 0.6. Interfaces are stable now. 
+* Current version is 0.9. Interfaces are stable now. 
 * Linux (32/64 bit) are supported
-* Windows 7 (64 bit) or higher are supported.
-* Crosscompiling for Raspberry 3 is supported
-* Requires [g++](https://gcc.gnu.org/) >= 4.8 or cl 19.00.24215.1 (this is VS 14.0) and [boost](http://www.boost.org/) >= 1.61.0
+* Windows 7/10 (64 bit) or higher are supported.
+* Crosscompiling for Raspberry 3/4 is supported
+* Requires [g++](https://gcc.gnu.org/) >= 8.x or cl 19.00.24215.1 (this is VS 14.0) and [boost](http://www.boost.org/) >= 1.75.0
 
 ## How do I get set up? ##
 
-* Buildsystem is based on [cmake](http://www.cmake.org/) >= 3.5
+* Buildsystem is based on [cmake](http://www.cmake.org/) >= 3.12
 * Download or clone from [github](https://github.com/solosTec/cyng.git)
 
 To build CYNG, run:
@@ -110,9 +109,9 @@ To cross compile on Linux for [Raspberry Pi 3](https://www.raspberrypi.org/) use
 (1) download and extract latest [Boost library](https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.bz2)
 
 ```
-wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_69_0.tar.bz2
-tar xjvf boost_1_69_0.tar.bz2
-cd boost_1_69_0
+wget https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.bz2/download
+tar xjvf boost_1_77_0.tar.bz2
+cd boost_1_77_0
 ```
 
 (2) bootstrap
@@ -297,3 +296,9 @@ CYNG C++ library is free software under the terms of the [MIT License](https://g
 ## Contact ##
 
 Your pull requests are welcomed or you can post an [issue](https://github.com/solosTec/cyng/pulls)
+
+## Structure ##
+
+![Structure](https://images.repography.com/23255267/solosTec/cyng/structure/fb81572cf36d44c1278d8e54ea2926bd.svg)
+
+
