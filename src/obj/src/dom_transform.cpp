@@ -236,11 +236,16 @@ namespace cyng {
         }
 
         void transform(vector_t &vec, std::vector<std::string> const &path, fun_pmap_t f) {
+            std::size_t idx = 0;
             for (auto pos = vec.begin(); pos != vec.end();) {
-                if (transform(*pos, path, f)) {
+                //  extend path by index
+                auto p = path;
+                p.push_back("#" + std::to_string(idx));
+                if (transform(*pos, p, f)) {
                     pos = vec.erase(pos);
                 } else {
                     ++pos;
+                    ++idx;
                 }
             }
         }
@@ -270,7 +275,7 @@ namespace cyng {
 
         void transform(param_map_t &pmap, std::vector<std::string> const &path, fun_pmap_t f) {
             for (auto pos = pmap.begin(); pos != pmap.end();) {
-                //  extend path
+                //  extend path by name
                 auto p = path;
                 p.push_back(pos->first);
                 if (transform(pos->second, p, f)) {
@@ -508,6 +513,7 @@ namespace cyng {
         }
 
     } // namespace
+
     void rename(param_map_t &pmap, std::vector<std::string> path, std::vector<std::string> const &rep) {
         decltype(auto) r = extract(pmap, path);
         if (r.second) {
