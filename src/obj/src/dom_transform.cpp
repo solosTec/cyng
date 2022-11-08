@@ -428,7 +428,7 @@ namespace cyng {
 
     namespace {
 
-        void insert(
+        bool insert(
             param_map_t *pmap,
             std::vector<std::string>::const_iterator pos,
             std::vector<std::string>::const_iterator end,
@@ -440,33 +440,27 @@ namespace cyng {
 #ifdef _DEBUG
                 std::cout << "insert: " << param.first << std::endl;
 #endif
-                pmap->insert(param);
-            } else {
-                auto const name = *pos++;
-                auto idx = pmap->find(name);
-                if (idx != pmap->end()) {
-                    //
-                    //  walk down
-                    //
-                    decltype(auto) pm = object_cast<param_map_t>(idx->second);
-                    if (pm != nullptr) {
-                        insert(pm, pos, end, param);
-                    } else {
-                        // error: name already assigned
-                    }
+                return pmap->insert(param).second;
+            }
+            auto const name = *pos++;
+            auto idx = pmap->find(name);
+            if (idx != pmap->end()) {
+                //
+                //  walk down
+                //
+                decltype(auto) pm = object_cast<param_map_t>(idx->second);
+                if (pm != nullptr) {
+                    return insert(pm, pos, end, param);
                 } else {
-                    //
-                    //  create entry
-                    //
-                    auto r = pmap->emplace(name, cyng::param_map_factory()());
-                    insert(object_cast<param_map_t>(r.first->second), pos, end, param);
+                    // error: name already assigned
+                    return false;
                 }
             }
-        }
-        void insert(param_map_t &pmap, std::vector<std::string> const &path, param_t param) {
-            if (!path.empty()) {
-                insert(&pmap, path.begin(), path.end(), param);
-            }
+            //
+            //  create entry
+            //
+            auto r = pmap->emplace(name, cyng::param_map_factory()());
+            return insert(object_cast<param_map_t>(r.first->second), pos, end, param);
         }
 
         std::pair<param_t, bool>
@@ -482,8 +476,8 @@ namespace cyng {
 #ifdef _DEBUG
                         std::cout << "found: " << cyng::io::to_typed(idx->second) << std::endl;
 #endif
-                        //  make a copy
-                        auto param = *idx;
+                        //  move value
+                        auto param = std::move(*idx);
                         //  remove node if found
                         pmap->erase(idx);
                         //  return copy
@@ -505,14 +499,32 @@ namespace cyng {
             }
             return {param_t{}, false};
         }
-        /**
-         * extract the object with the specified path
-         */
-        std::pair<param_t, bool> extract(param_map_t &pmap, std::vector<std::string> const &path) {
-            return extract(&pmap, path.begin(), path.end());
-        }
 
     } // namespace
+
+    /**
+     * extract the object with the specified path
+     */
+    std::pair<param_t, bool> extract(param_map_t &pmap, std::vector<std::string> const &path) {
+        return extract(&pmap, path.begin(), path.end());
+    }
+
+    cyng::vector_t extract_vector(cyng::param_map_t &&pmap) {
+        cyng::vector_t vec;
+        std::transform(
+            pmap.begin(), pmap.end(), std::back_inserter(vec), [](cyng::param_map_t::value_type const &val) { return val.second; });
+        return vec;
+    }
+
+    /**
+     * Insert a parameter at the specified path
+     */
+    bool insert(param_map_t &pmap, std::vector<std::string> const &path, param_t param) {
+        if (!path.empty()) {
+            return insert(&pmap, path.begin(), path.end(), param);
+        }
+        return false;
+    }
 
     void rename(param_map_t &pmap, std::vector<std::string> path, std::vector<std::string> const &rep) {
         decltype(auto) r = extract(pmap, path);
@@ -523,6 +535,15 @@ namespace cyng {
             //  std::cout << cyng::io::to_typed(cyng::make_object(pmap)) << std::endl;
 #endif
         }
+    }
+
+    // void insert(param_map_t &, std::vector<std::string> const &path, param_t) {}
+    bool move(param_map_t &pmap, std::vector<std::string> const &source, std::vector<std::string> const &target) {
+        std::pair<param_t, bool> r = extract(pmap, source);
+        if (r.second) {
+            return insert(pmap, target, r.first);
+        }
+        return r.second;
     }
 
 } // namespace cyng

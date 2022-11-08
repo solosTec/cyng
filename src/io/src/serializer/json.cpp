@@ -325,8 +325,19 @@ namespace cyng {
         std::size_t serializer<std::filesystem::path, JSON>::write(std::ostream &os, std::filesystem::path const &v) {
 
             calc_size const cs(os);
-            //			os << '"' << v.string() << '"';
-            os << v.string();
+            auto const str = v.string();
+            if (str.empty()) {
+                os << std::string(2, '"');
+            } else {
+                //
+                //  This solves a problem with different conversions of native and generic paths
+                //
+                if (str.at(0) == '"') {
+                    os << v.string();
+                } else {
+                    os << '"' << v.string() << '"';
+                }
+            }
             return cs;
         }
 

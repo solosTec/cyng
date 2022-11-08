@@ -12,6 +12,8 @@
 
 #include <cyng/obj/algorithm/find.h>
 #include <cyng/sql/dialect.h>
+#include <cyng/io/serialize.h>
+#include <cyng/parse/duration.h>
 
 #ifdef _DEBUG_DB
 #include <iostream>
@@ -40,11 +42,14 @@ namespace cyng {
                                            ? find_value(config, std::string("file.name"), std::string("sqlite.database"))
                                            : find_value(config, std::string("file-name"), std::string("sqlite.database"));
 #endif
-                auto const busy_timeout = find_value(config, std::string("busy.timeout"), busy_timeout_);
+                //  use generic format "hh:mm:ss.fraction"
+                auto const def_busy_timeout = io::to_plain(make_object(busy_timeout_));
+                auto const busy_timeout_str = find_value(config, std::string("busy.timeout"), def_busy_timeout);
+                auto const busy_timeout = to_milliseconds(busy_timeout_str);
                 auto const readonly = find_value(config, std::string("readonly"), false);
 
                 if (connection_->open(file_name, readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE)) {
-                    connection_->set_busy_timeout(busy_timeout);
+                    connection_->set_busy_timeout(busy_timeout.count());
                     connection_->set_update_handler(std::bind(&session::busy_monitor, this, std::placeholders::_1));
                     return std::make_pair(file_name, true);
                 }

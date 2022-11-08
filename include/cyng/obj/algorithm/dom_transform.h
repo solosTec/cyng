@@ -35,6 +35,34 @@ namespace cyng {
      */
     void rename(param_map_t &, std::vector<std::string> path, std::vector<std::string> const &rep);
 
+    /**
+     * Extract the object with the specified path.
+     * The boolean value is true, if the specified path was found.
+     */
+    [[nodiscard]] std::pair<param_t, bool> extract(param_map_t &pmap, std::vector<std::string> const &path);
+
+    /**
+     * Take a parameter map and extract all object values into a vactor.
+     * Example:
+     * "pin": {
+          "1": 46,
+          "2": 47,
+          "3": 50,
+          "4": 53
+        } => [46,47,50,53]
+     */
+    [[nodiscard]] cyng::vector_t extract_vector(cyng::param_map_t &&pmap);
+
+    /**
+     * Insert a parameter at the specified path
+     */
+    bool insert(param_map_t &pmap, std::vector<std::string> const &path, param_t param);
+
+    /**
+     * Move an object to a different path
+     */
+    bool move(param_map_t &, std::vector<std::string> const &source, std::vector<std::string> const &target);
+
 } // namespace cyng
 
 #endif

@@ -10,6 +10,8 @@
 #include <odbc/odbc_statement.h>
 
 #include <cyng/obj/algorithm/find.h>
+#include <cyng/io/serialize.h>
+#include <cyng/parse/duration.h>
 
 namespace cyng {
     namespace db {
@@ -31,8 +33,17 @@ namespace cyng {
                 if (readonly && (connect.find("READONLY") == std::string::npos)) {
                     connect.append("READONLY=1;");
                 }
-                SQLUINTEGER const login_timeout = cyng::find_value(config, std::string("login.timeout"), login_timeout_);
-                SQLUINTEGER const connect_timeout = cyng::find_value(config, std::string("connect.timeout"), connect_timeout_);
+
+                //  expecting "hh:mm:ss.ffff" format
+                auto const def_login_timeout = io::to_plain(make_object(login_timeout_));
+                auto const login_timeout_str = find_value(config, std::string("busy.timeout"), def_login_timeout);
+                SQLUINTEGER const login_timeout = to_seconds(login_timeout_str).count();
+
+                //  expecting "hh:mm:ss.ffff" format
+                auto const def_connect_timeout = io::to_plain(make_object(connect_timeout_));
+                auto const connect_timeout_str = find_value(config, std::string("connect.timeout"), def_login_timeout);
+                SQLUINTEGER const connect_timeout = to_seconds(connect_timeout_str).count();
+
                 std::string const dialect_name = cyng::find_value(config, std::string("dialect"), std::string("MYSQL"));
                 sql_dialect_ = cyng::sql::get_dialect(dialect_name);
 
@@ -59,18 +70,16 @@ namespace cyng {
                     }
                 }
 
-                SQLCHAR out_str[1024] = {0};
+                constexpr static std::size_t out_str_size = 1024;
+                SQLCHAR out_str[out_str_size] = {0};
                 SQLSMALLINT str_length = 0; //	string length of out_str
                 {
 
                     const SQLRETURN rc = ::SQLDriverConnect(
-                        connection_ // hdbc_
-                        ,
-                        NULL //	window handle
-                        ,
+                        connection_, // hdbc_
+                        NULL, //	window handle
                         (SQLCHAR *)connect.c_str(),
-                        connect.length() //	or SQL_NTS
-                        ,
+                        connect.length(), //	or SQL_NTS
                         out_str,
                         static_cast<SQLSMALLINT>(sizeof(out_str)),
                         &str_length,
@@ -82,8 +91,8 @@ namespace cyng {
                         return std::make_pair(std::string(), false);
                     } else {
                         //	set NULL termination
-                        BOOST_ASSERT_MSG(str_length < 1024, "str_length out of range");
-                        out_str[str_length] = '\0';
+                        BOOST_ASSERT_MSG(str_length < out_str_size, "str_length out of range");
+                        out_str[str_length < out_str_size ? str_length : (out_str_size - 1)] = '\0';
                     }
                 }
 
