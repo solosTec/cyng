@@ -70,7 +70,7 @@ namespace cyng {
             return os;
         }
 
-        template <typename T> std::string [[nodiscard]] to_pretty(T const &value) {
+        template <typename T> [[nodiscard]] std::string to_pretty(T const &value) {
             std::stringstream ss;
             serialize_pretty<T>(ss, value);
             return ss.str();
