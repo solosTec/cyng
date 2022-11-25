@@ -39,12 +39,10 @@ add_library(cyng::db ALIAS "cyng_db")
 target_include_directories(cyng_db
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
-#        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/${SQLite3_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
     PRIVATE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
-#    "${CMAKE_CSOURCE_DIR}/src/db"
 )
 
 target_compile_features(cyng_db PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)

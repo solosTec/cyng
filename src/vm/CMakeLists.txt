@@ -42,8 +42,8 @@ add_library(cyng::vm ALIAS "cyng_vm")
 target_include_directories(cyng_vm
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
         $<BUILD_INTERFACE:${pugixml_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
     PRIVATE

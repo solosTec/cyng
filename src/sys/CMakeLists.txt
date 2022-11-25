@@ -38,8 +38,8 @@ add_library(cyng::sys ALIAS "cyng_sys")
 target_include_directories(cyng_sys
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
         $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
         $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
     PRIVATE

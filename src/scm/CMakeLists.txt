@@ -36,8 +36,8 @@ add_library(cyng::scm ALIAS "cyng_scm")
 target_include_directories(cyng_scm
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )

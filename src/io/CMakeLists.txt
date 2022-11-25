@@ -41,8 +41,8 @@ add_library(cyng::io ALIAS "cyng_io")
 target_include_directories(cyng_io
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
         $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${PUGIXML_INCLUDE_DIRS}>
         "/usr/include"
