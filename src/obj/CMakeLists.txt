@@ -39,8 +39,8 @@ add_library(cyng::obj ALIAS "cyng_obj")
 target_include_directories(cyng_obj
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
         $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -66,6 +66,9 @@ target_compile_features(cyng_obj PRIVATE
 target_compile_definitions(cyng_obj 
     PRIVATE 
         $<$<CONFIG:Debug>:__DEBUG_OBJECT>
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 
 target_link_libraries(cyng_obj 

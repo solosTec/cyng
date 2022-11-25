@@ -62,6 +62,9 @@ target_compile_definitions(cyng_io
         $<$<CONFIG:Debug>:_DEBUG_IO>
         $<$<BOOL:${CYNG_USE_FEATURE_TESTING}>:__CYNG_USE_FEATURE_TESTING>
         $<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:__CYNG_USE_DATE_LIBRARY>     
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 
 target_link_libraries(cyng_io 

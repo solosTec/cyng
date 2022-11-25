@@ -11,7 +11,7 @@
 #
 include (${PROJECT_SOURCE_DIR}/3party/sqlite.cmake)
 add_library(cyng_sqlite3 ${GLOBAL_LIBRARY_TYPE} ${sqlite_lib})
-add_library(cyng::sqlite3 ALIAS "cyng_sqlite3")
+#add_library(cyng::sqlite3 ALIAS "cyng_sqlite3")
 
 target_link_libraries(cyng_sqlite3 
     PRIVATE

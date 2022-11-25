@@ -39,6 +39,9 @@ target_compile_features(cyng_net PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 target_compile_definitions(cyng_net
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_NET>
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 
 #

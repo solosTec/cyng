@@ -55,9 +55,14 @@ target_compile_definitions(cyng_task
     PRIVATE 
         $<$<CONFIG:Debug>:__DEBUG_TASK>
         $<$<AND:$<VERSION_LESS_EQUAL:${CMAKE_CXX_COMPILER_VERSION},9.0>,$<CXX_COMPILER_ID:GNU>>:BOOST_ASIO_HAS_STD_FUTURE>       
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 
 target_compile_options(cyng_task 
     PRIVATE 
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
+        $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
+        $<$<CXX_COMPILER_ID:MSVC>:/MP>
 )

@@ -66,6 +66,9 @@ target_compile_definitions(cyng_log
         "$<$<PLATFORM_ID:Linux>:APPENDER_SYS_LOG>"
         "$<$<BOOL:${WITH_SYSTEMD}>:APPENDER_JOURNALD>"
 		"$<$<PLATFORM_ID:Windows>:APPENDER_EVENT_LOG>"
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 
 target_link_libraries(cyng_log 

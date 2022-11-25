@@ -61,4 +61,14 @@ target_compile_definitions(cyng_vm
     PRIVATE 
         $<$<CONFIG:Debug>:__DEBUG_OBJECT>
         $<$<CONFIG:Debug>:__DEBUG_VM>
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
+)
+
+
+target_compile_options(cyng_vm 
+    PRIVATE 
+        $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
+        $<$<CXX_COMPILER_ID:MSVC>:/MP>
 )

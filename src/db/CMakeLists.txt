@@ -53,6 +53,9 @@ target_compile_features(cyng_db PRIVATE cxx_std_20 cxx_constexpr cxx_lambdas)
 target_compile_definitions(cyng_db 
     PRIVATE 
         $<$<CONFIG:Debug>:_DEBUG_DB>
+        $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
+        $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
+        $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 #
 # -Wno-psabi for gcc > 7.1
@@ -60,6 +63,8 @@ target_compile_definitions(cyng_db
 target_compile_options(cyng_db 
     PRIVATE 
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
+        $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
+        $<$<CXX_COMPILER_ID:MSVC>:/MP>
 )
 
 #
