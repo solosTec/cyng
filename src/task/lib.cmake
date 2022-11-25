@@ -12,14 +12,14 @@ set (task_cpp
 )
     
 set (tsk_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/task_fwd.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/channel.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/controller.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/registry.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/stash.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/scheduler.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/task.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/task/task_interface.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/task_fwd.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/channel.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/controller.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/registry.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/stash.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/scheduler.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/task.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/task/task_interface.h
 )
 
 # define the docscript lib

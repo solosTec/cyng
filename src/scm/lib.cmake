@@ -10,9 +10,9 @@ set (scm_cpp
 )
     
 set (scm_h
-	${CMAKE_SOURCE_DIR}/include/cyng/scm/win_registry.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/scm/service.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/scm/mgr.h
+	${PROJECT_SOURCE_DIR}/../../include/cyng/scm/win_registry.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/scm/service.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/scm/mgr.h
 )
 
 # define the scm lib

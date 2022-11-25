@@ -13,19 +13,19 @@ set (store_cpp
 )
     
 set (store_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/key.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/meta.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/table.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/auto_table.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/pub.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/record.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/db.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/key.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/meta.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/table.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/auto_table.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/pub.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/record.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/db.h
 )
 
 set (store_signal
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/pub.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/slot.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/store/slot_interface.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/pub.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/slot.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/store/slot_interface.h
     src/pub.cpp
     src/slot.cpp
 )

@@ -11,16 +11,16 @@ set (log_cpp
 )
     
 set (log_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/log.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/record.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/logger.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/conv.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/log.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/record.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/logger.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/conv.h
 )
 
 set (log_appender
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/appender.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/appender/console.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/log/appender/rolling_file.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/appender.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/appender/console.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/log/appender/rolling_file.h
     
     src/appender/appender.cpp
     src/appender/console.cpp
@@ -30,18 +30,18 @@ set (log_appender
 )
 
 if (UNIX)
-    list(APPEND log_appender "${CMAKE_SOURCE_DIR}/include/cyng/log/appender/sys_log.h")
+    list(APPEND log_appender "${PROJECT_SOURCE_DIR}/../../include/cyng/log/appender/sys_log.h")
     list(APPEND log_appender "src/appender/sys_log.cpp")
 endif()
 
 if (WITH_SYSTEMD)
-    list(APPEND log_appender "${CMAKE_SOURCE_DIR}/include/cyng/log/appender/journald.h")
+    list(APPEND log_appender "${PROJECT_SOURCE_DIR}/../../include/cyng/log/appender/journald.h")
     list(APPEND log_appender "src/appender/journald.cpp")
 endif()
 
 if (WIN32)
     list(APPEND log_appender "src/appender/event_log.cpp")
-    list(APPEND log_appender "${CMAKE_SOURCE_DIR}/include/cyng/log/appender/event_log.h")
+    list(APPEND log_appender "${PROJECT_SOURCE_DIR}/../../include/cyng/log/appender/event_log.h")
 endif()
 
 

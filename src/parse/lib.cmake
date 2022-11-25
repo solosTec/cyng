@@ -18,25 +18,25 @@ set (parse_cpp
 )
     
 set (parse_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/hex.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/mac.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/version.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/duration.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/timestamp.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/color.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/buffer.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/string.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/json.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/csv.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/net.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/raw.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/op.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/hex.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/mac.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/version.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/duration.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/timestamp.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/color.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/buffer.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/string.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/json.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/csv.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/net.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/raw.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/op.h
 )
 
 set (parse_json
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/json/json_parser.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/json/json_symbol.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/json/json_tokenizer.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/json/json_parser.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/json/json_symbol.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/json/json_tokenizer.h
     src/json/json_parser.cpp
     src/json/json_symbol.cpp
     src/json/json_tokenizer.cpp
@@ -44,10 +44,10 @@ set (parse_json
 )
 
 set (parse_csv
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/csv/csv_parser.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/csv/csv_symbol.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/csv/csv_tokenizer.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/parse/csv/line_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/csv/csv_parser.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/csv/csv_symbol.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/csv/csv_tokenizer.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/parse/csv/line_cast.hpp
     src/csv/csv_parser.cpp
     src/csv/csv_symbol.cpp
     src/csv/csv_tokenizer.cpp

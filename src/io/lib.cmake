@@ -9,24 +9,24 @@ set (io_cpp
 )
     
 set (io_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/hex_dump.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/io.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/io_buffer.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/ostream.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/hex_dump.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/io.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/io_buffer.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/ostream.h
 )
 
 set (io_serializer
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serialize.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serialize.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/binary.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/csv.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/json.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/json_walker.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/plain.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/typed.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/xml.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/cpp.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/serializer/pretty_walker.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serialize.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serialize.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/binary.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/csv.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/json.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/json_walker.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/plain.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/typed.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/xml.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/cpp.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/serializer/pretty_walker.h
     src/serialize.cpp
     src/serializer/io.cpp
     src/serializer/binary.cpp
@@ -41,17 +41,17 @@ set (io_serializer
 )
 
 set (io_parser
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/parser/parser.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/parser/utf-8.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/parser/stream.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/parser/parser.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/parser/utf-8.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/parser/stream.hpp
     src/parser/parser.cpp
     src/parser/utf-8.cpp
     src/parser/stream.cpp
 )
 
 set (io_iso
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/iso_639_1.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/io/iso_3166_1.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/iso_639_1.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/io/iso_3166_1.h
     src/iso_639_1.cpp
     src/iso_3166_1.cpp
 )

@@ -13,16 +13,16 @@ set (object_cpp
 )
     
 set (object_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/container_factory.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/factory.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/object.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/tag.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/tracker.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/type_interface.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/util.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/compare.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/clone.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/container_factory.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/factory.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/object.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/tag.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/tracker.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/type_interface.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/util.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/compare.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/clone.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics.h
 )
 
 set (object_intrinscis
@@ -36,56 +36,56 @@ set (object_intrinscis
     src/intrinsics/raw.cpp
     src/intrinsics/program.cpp
 
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/aes_key.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/buffer.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/container.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/digest.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/eod.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/mac.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/pid.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/obis.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/edis.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/null.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/op.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/severity.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/version.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/color.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/raw.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/intrinsics/program.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/aes_key.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/buffer.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/container.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/digest.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/eod.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/mac.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/pid.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/obis.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/edis.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/null.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/op.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/severity.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/version.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/color.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/raw.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/program.h
 )
 
 set (object_core 
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/core/object_interface.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/core/type.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/core/wrapper.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/core/object_interface.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/core/type.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/core/wrapper.hpp
 )
 
 set (object_cast 
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/function_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/numeric_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/object_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/tuple_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/value_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/vector_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/set_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/container_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/array_cast.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/buffer_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/function_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/numeric_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/object_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/tuple_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/value_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/vector_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/set_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/container_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/array_cast.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/buffer_cast.hpp
     src/value_cast.cpp
     src/buffer_cast.cpp
     src/container_cast.cpp
 )
 
 set (object_algorithm 
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/find.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/size.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/reader.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_walker.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_transform.h
-#    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/dom_extract.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/merge.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/add.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/obj/algorithm/swap_bytes.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/find.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/size.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/reader.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/dom_walker.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/dom_transform.h
+#    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/dom_extract.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/merge.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/add.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/algorithm/swap_bytes.h
     src/find.cpp
     src/size.cpp
     src/reader.cpp

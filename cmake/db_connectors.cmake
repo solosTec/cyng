@@ -9,7 +9,7 @@
 #   the version shipped with the repository 3rd library path.
 #   SQLite3 library is part of this project
 #
-include (${CMAKE_SOURCE_DIR}/3party/sqlite.cmake)
+include (${PROJECT_SOURCE_DIR}/3party/sqlite.cmake)
 add_library(cyng_sqlite3 ${GLOBAL_LIBRARY_TYPE} ${sqlite_lib})
 add_library(cyng::sqlite3 ALIAS "cyng_sqlite3")
 
@@ -26,7 +26,7 @@ message(STATUS "** SQLite3 Version    : ${SQLite3_VERSION}")
 message(STATUS "** SQLite3 Include    : ${SQLite3_INCLUDE_DIR}")
 message(STATUS "** SQLite3 Libraries  : ${SQLite3_LIBRARY}")
 
-if(NOT ${PROJECT_NAME}_CROSS_COMPILE)
+if(NOT ${PROJECT_NAME}_CROSS_COMPILE AND NOT WIN32)
 	#
 	#	SQLite3 shell works better with readline support,
 	# 	but to tricky on OECP platform
@@ -42,7 +42,7 @@ endif()
 #
 #
 #	SQLite3 shell
-include (${CMAKE_SOURCE_DIR}/3party/shell.cmake)
+include (${PROJECT_SOURCE_DIR}/3party/shell.cmake)
 add_executable(sqlite3 ${shell})
 
 set_property(TARGET sqlite3 PROPERTY LINKER_LANGUAGE C)

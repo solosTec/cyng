@@ -14,13 +14,13 @@ set (net_cpp
 )
     
 set (net_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/client.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/client_factory.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/client_proxy.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/server.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/server_factory.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/server_proxy.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/net/resolver.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/client.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/client_factory.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/client_proxy.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/server.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/server_factory.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/server_proxy.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/resolver.hpp
 )
 
 

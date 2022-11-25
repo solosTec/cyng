@@ -20,29 +20,29 @@ set (sys_cpp
 )
     
 set (sys_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/host.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/process.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/memory.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/mac.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/port.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/locale.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/filesystem.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/dns.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/ntp.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/info.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/cpu.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/net.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/clock.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/host.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/process.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/memory.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/mac.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/port.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/locale.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/filesystem.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/dns.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/ntp.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/info.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/cpu.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/net.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/clock.h
 )
 
 if(WIN32)
     set(sys_platform
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/windows.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/windows.h
     src/windows.cpp
     )
 else()
     set(sys_platform
-    ${CMAKE_SOURCE_DIR}/include/cyng/sys/linux.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/linux.hpp
     src/linux.cpp
     )
 endif()

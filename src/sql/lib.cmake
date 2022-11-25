@@ -9,23 +9,23 @@ set (sql_cpp
 )
     
 set (sql_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/sql.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dialect.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/convert.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/sql.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dialect.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/convert.hpp
 )
 
 set (sql_dsl
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl.h
-#    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/aggregate.hpp
-#    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/assign.hpp
-#    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/column.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/constant.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/expr_binary.hpp
-#    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/expr_list.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/expr_operator.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/operators.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/placeholder.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/sql/dsl/variable.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl.h
+#    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/aggregate.hpp
+#    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/assign.hpp
+#    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/column.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/constant.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/expr_binary.hpp
+#    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/expr_list.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/expr_operator.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/operators.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/placeholder.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/sql/dsl/variable.hpp
 
 #    src/aggregate.cpp
 #    src/column.cpp

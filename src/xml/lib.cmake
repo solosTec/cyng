@@ -10,9 +10,9 @@ set (xml_cpp
 )
     
 set (xml_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/xml/xml.h
-    ${CMAKE_SOURCE_DIR}/include/cyng/xml/reader.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/xml/node.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/xml/xml.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/xml/reader.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/xml/node.h
 )
 
 

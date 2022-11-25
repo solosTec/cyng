@@ -9,8 +9,8 @@ set (rnd_cpp
 )
     
 set (rnd_h
-    ${CMAKE_SOURCE_DIR}/include/cyng/rnd/rnd.hpp
-    ${CMAKE_SOURCE_DIR}/include/cyng/rnd/statistics.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/rnd/rnd.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/rnd/statistics.h
 )
 
 # define the docscript lib
