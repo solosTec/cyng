@@ -160,6 +160,15 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
 endif()
 
+if(NOT GLOBAL_LIBRARY_TYPE)
+     if (MSVC)
+        set(GLOBAL_LIBRARY_TYPE STATIC)
+     else()
+        set(GLOBAL_LIBRARY_TYPE SHARED)
+     endif()
+endif()
+
+
 #
 #   extend search path for CMake modules
 #
