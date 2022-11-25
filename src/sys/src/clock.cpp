@@ -49,8 +49,18 @@ namespace cyng {
          * @return Start of this day in UTC
          */
         std::chrono::system_clock::time_point get_start_of_day(std::chrono::system_clock::time_point tp) noexcept {
-            auto const this_day = chrono::floor<chrono::days>(tp);
-            return chrono::year_month_day{this_day}.operator chrono::sys_days();
+            // sorry Howard Hinnant but I don't get it.
+            // auto const this_day = chrono::floor<chrono::days>(tp);
+            // return chrono::year_month_day{this_day}.operator chrono::sys_days();
+
+            std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
+            auto tm = to_localtime(tt);
+            tm.tm_hour = 0;
+            tm.tm_min = 0;
+            tm.tm_sec = 0;
+            //  https://stackoverflow.com/questions/28880849/convert-struct-tm-to-time-t
+            // tm.tm_isdst = -1;
+            return std::chrono::system_clock::from_time_t(std::mktime(&tm));
         }
 
         /**

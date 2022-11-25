@@ -96,8 +96,10 @@ namespace cyng {
     obis_path_t to_obis_path(std::string const &str) {
         //	"obis:obis:obis"
         obis_path_t r;
-        auto const v = split(str, ":");
-        std::transform(std::begin(v), std::end(v), std::inserter(r, r.end()), [](std::string const &s) { return to_obis(s); });
+        if (!str.empty()) {
+            auto const v = split(str, ":");
+            std::transform(std::begin(v), std::end(v), std::inserter(r, r.end()), [](std::string const &s) { return to_obis(s); });
+        }
         return r;
     }
 
