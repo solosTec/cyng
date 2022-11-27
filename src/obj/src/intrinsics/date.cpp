@@ -23,7 +23,8 @@ namespace cyng {
             BOOST_ASSERT(ec == 0); // Zero if successful.
 #else
             //	POSIX API
-            ::gmtime_s(&tt, &buf);
+//            ::gmtime_s(&tt, &buf);
+            ::gmtime_r(&tt, &buf);
 #endif
             return buf;
         }
@@ -33,7 +34,8 @@ namespace cyng {
             decltype(auto) ec = ::localtime_s(&buf, &tt);
             BOOST_ASSERT(ec == 0); // Zero if successful.
 #else
-            ::localtime_s(&tt, &buf);
+//            ::localtime_s(&tt, &buf);
+            ::localtime_r(&tt, &buf);
 #endif
             return buf;
         }

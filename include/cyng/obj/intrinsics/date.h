@@ -10,6 +10,8 @@
 #include <chrono>
 #include <cstdint>
 #include <ctime>
+#include <string>
+#include <ostream>
 
 namespace cyng {
 
