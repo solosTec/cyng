@@ -10,7 +10,8 @@
 #include <sqlite3/sqlite_result.h>
 
 #include <cyng/io/ostream.h>
-#include <cyng/sys/clock.h>
+// #include <cyng/sys/clock.h>
+#include <cyng/obj/intrinsics/date.h>
 
 #include <boost/uuid/uuid_io.hpp>
 
@@ -76,12 +77,8 @@ namespace cyng {
                         //	the content before returning.
                         //	If well prepared this statement call the SQLite julianday() function and converts
                         //	the string into a float value.
-                        std::time_t const tt = std::chrono::system_clock::to_time_t(*ptr);
-                        auto const tm = cyng::sys::to_utc(tt); //  no conversion!
-                        std::stringstream ss;
-                        ss << std::put_time(&tm, "%Y-%m-%d %T");
-                        auto const str = ss.str();
-
+                        auto const d = make_date_from_local_time(*ptr);
+                        auto const str = as_string(d, "%Y-%m-%d %T");
                         BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
                         return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
                     }

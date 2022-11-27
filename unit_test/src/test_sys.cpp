@@ -4,7 +4,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <cyng/parse/net.h>
-#include <cyng/sys/clock.h>
+// #include <cyng/sys/clock.h>
 #include <cyng/sys/cpu.h>
 #include <cyng/sys/host.h>
 #include <cyng/sys/locale.h>
@@ -125,99 +125,92 @@ BOOST_AUTO_TEST_CASE(net) {
 #endif
 }
 
-BOOST_AUTO_TEST_CASE(clock) {
-
-    {
-        /*
-        auto const now = std::chrono::system_clock::now();
-        cyng::sys::to_string(std::cout, now, "%Y-%m-%dT%H:%M%z\n");
-        cyng::sys::to_string_utc(std::cout, now, "%Y-%m-%dT%H:%M%z\n");
-        */
-    }
-
-    {
-        //  convert to UTC
-        std::string const inp = "2022-07-10 16:56:32";
-        std::string const fmt = "%Y-%m-%d %H:%M:%S";
-        auto const ts = cyng::sys::to_time_point(inp, fmt);
-        BOOST_REQUIRE_EQUAL(inp, cyng::sys::to_string_utc(ts, fmt));
-    }
-
-    // 2022-07-10 16:56:32 (UTC)
-    auto const now = std::chrono::time_point<std::chrono::system_clock>(std::chrono::seconds(1657472192));
-
-    auto const v0 = cyng::sys::get_start_of_day(now);
-    //	2022-07-10 00:00:00.0000000
-    // std::cout << v0 << std::endl;
-    // cyng::sys::to_string(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
-    // cyng::sys::to_string_utc(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
-
-    {
-        /*
-
-        std::istringstream ss("2022-September-10 16:56:32");
-        ss.imbue(std::locale("de_DE.utf-8"));
-        std::tm tm = {};
-        ss >> std::get_time(&tm, "%Y-%b-%d %H:%M:%S");
-        tm.tm_isdst = 1; //  DST is in effect
-
-        auto const t = std::mktime(&tm);
-        auto tp = std::chrono::system_clock::from_time_t(t);
-
-        auto const v0 = cyng::sys::get_start_of_day(now);
-        cyng::sys::to_string(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
-        cyng::sys::to_string_utc(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
-
-        */
-    }
-
-    auto const v1 = cyng::sys::get_start_of_month(now);
-    //	2022-07-01 00:00:00.0000000
-    // std::cout << v1 << std::endl;
-
-    auto const v2 = cyng::sys::get_end_of_month(now);
-    //	2022-07-31 00:00:00.0000000
-    // std::cout << v2 << std::endl;
-
-    // auto const v3 = cyng::sys::get_iso_week_number(now);
-    ////	27
-    // std::cout << v3 << std::endl;
-    // BOOST_REQUIRE_EQUAL(v3, 27);
-
-    auto const v4 = cyng::sys::get_length_of_month(now);
-    //	744h
-    // std::cout << v4 << std::endl;
-    BOOST_REQUIRE_EQUAL(v4.count(), 31 * 24);
-
-    auto const v5 = cyng::sys::get_end_of_year(now);
-    //	2022-12-31 00:00:00.0000000
-    // std::cout << v5 << std::endl;
-
-    auto const v6 = cyng::sys::get_start_of_year(now);
-    //	2022-01-01 00:00:00.0000000
-    // std::cout << v6 << std::endl;
-
-    auto const v7 = cyng::sys::get_length_of_year(now);
-    //	8736h (364d)
-    // std::cout << v7 << std::endl;
-    BOOST_REQUIRE_EQUAL(v7.count(), 364 * 24);
-
-    // auto const v8 = cyng::sys::get_day_of_week(now);
-    ////	7 (= Sunday)
-    // std::cout << v8 << std::endl;
-    // BOOST_REQUIRE_EQUAL(v8, 7);
-}
-
-BOOST_AUTO_TEST_CASE(compiler) {
-    std::cout << "__cpp_lib_chrono\t\t: " << __cpp_lib_chrono << std::endl;
-#if defined(__cpp_lib_chrono) && (__cpp_lib_chrono >= 201611L)
-    std::cout << "chrono available" << std::endl;
-#endif
-
-    // std::cout << "__cpp_lib_adaptor_iterator_pair_constructor\t: " << __cpp_lib_adaptor_iterator_pair_constructor << std::endl;
-    std::cout << "__cpp_lib_addressof_constexpr\t: " << __cpp_lib_addressof_constexpr << std::endl;
-    std::cout << "__cpp_lib_any\t\t\t: " << __cpp_lib_any << std::endl;
-    std::cout << "__cpp_lib_apply\t\t\t: " << __cpp_lib_apply << std::endl;
-}
+// BOOST_AUTO_TEST_CASE(clock) {
+//
+//
+//     {
+//         //  convert to UTC
+//         std::string const inp = "2022-07-10 16:56:32";
+//         std::string const fmt = "%Y-%m-%d %H:%M:%S";
+//         auto const ts = cyng::sys::to_time_point(inp, fmt);
+//         BOOST_REQUIRE_EQUAL(inp, cyng::sys::to_string_utc(ts, fmt));
+//     }
+//
+//     // 2022-07-10 16:56:32 (UTC)
+//     auto const now = std::chrono::time_point<std::chrono::system_clock>(std::chrono::seconds(1657472192));
+//
+//     auto const v0 = cyng::sys::get_start_of_day(now);
+//     //	2022-07-10 00:00:00.0000000
+//     // std::cout << v0 << std::endl;
+//     // cyng::sys::to_string(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
+//     // cyng::sys::to_string_utc(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
+//
+//     {
+//         /*
+//
+//         std::istringstream ss("2022-September-10 16:56:32");
+//         ss.imbue(std::locale("de_DE.utf-8"));
+//         std::tm tm = {};
+//         ss >> std::get_time(&tm, "%Y-%b-%d %H:%M:%S");
+//         tm.tm_isdst = 1; //  DST is in effect
+//
+//         auto const t = std::mktime(&tm);
+//         auto tp = std::chrono::system_clock::from_time_t(t);
+//
+//         auto const v0 = cyng::sys::get_start_of_day(now);
+//         cyng::sys::to_string(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
+//         cyng::sys::to_string_utc(std::cout, v0, "%Y-%m-%dT%H:%M%z\n");
+//
+//         */
+//     }
+//
+//     auto const v1 = cyng::sys::get_start_of_month(now);
+//     //	2022-07-01 00:00:00.0000000
+//     // std::cout << v1 << std::endl;
+//
+//     auto const v2 = cyng::sys::get_end_of_month(now);
+//     //	2022-07-31 00:00:00.0000000
+//     // std::cout << v2 << std::endl;
+//
+//     // auto const v3 = cyng::sys::get_iso_week_number(now);
+//     ////	27
+//     // std::cout << v3 << std::endl;
+//     // BOOST_REQUIRE_EQUAL(v3, 27);
+//
+//     auto const v4 = cyng::sys::get_length_of_month(now);
+//     //	744h
+//     // std::cout << v4 << std::endl;
+//     BOOST_REQUIRE_EQUAL(v4.count(), 31 * 24);
+//
+//     auto const v5 = cyng::sys::get_end_of_year(now);
+//     //	2022-12-31 00:00:00.0000000
+//     // std::cout << v5 << std::endl;
+//
+//     auto const v6 = cyng::sys::get_start_of_year(now);
+//     //	2022-01-01 00:00:00.0000000
+//     // std::cout << v6 << std::endl;
+//
+//     auto const v7 = cyng::sys::get_length_of_year(now);
+//     //	8736h (364d)
+//     // std::cout << v7 << std::endl;
+//     BOOST_REQUIRE_EQUAL(v7.count(), 364 * 24);
+//
+//     // auto const v8 = cyng::sys::get_day_of_week(now);
+//     ////	7 (= Sunday)
+//     // std::cout << v8 << std::endl;
+//     // BOOST_REQUIRE_EQUAL(v8, 7);
+// }
+//
+// BOOST_AUTO_TEST_CASE(compiler) {
+//     std::cout << "__cpp_lib_chrono\t\t: " << __cpp_lib_chrono << std::endl;
+// #if defined(__cpp_lib_chrono) && (__cpp_lib_chrono >= 201611L)
+//     std::cout << "chrono available" << std::endl;
+// #endif
+//
+//     // std::cout << "__cpp_lib_adaptor_iterator_pair_constructor\t: " << __cpp_lib_adaptor_iterator_pair_constructor <<
+//     std::endl; std::cout << "__cpp_lib_addressof_constexpr\t: " << __cpp_lib_addressof_constexpr << std::endl; std::cout <<
+//     "__cpp_lib_any\t\t\t: " << __cpp_lib_any << std::endl; std::cout << "__cpp_lib_apply\t\t\t: " << __cpp_lib_apply <<
+//     std::endl;
+// }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -58,7 +58,7 @@ namespace cyng {
 
         std::tm tm = {};
         std::stringstream ss(str);
-        ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+        ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
         return std::chrono::system_clock::from_time_t(std::mktime(&tm));
     }
 

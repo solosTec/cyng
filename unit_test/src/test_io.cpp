@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE(json) {
     // std::cout << cyng::io::to_json(cyng::make_object(tp));
     BOOST_REQUIRE_EQUAL(
         cyng::io::to_json(cyng::make_object(std::chrono::system_clock::time_point(std::chrono::hours(36000)))),
-        "\"1974-02-09T00:00:00+0100\"");
+        "\"1974-02-09T00:00:00\"");
 
     //	the generic "Jan. 1 1970" is null
     BOOST_REQUIRE_EQUAL(cyng::io::to_json(cyng::make_object(std::chrono::system_clock::time_point(std::chrono::hours(0)))), "null");
@@ -534,7 +534,8 @@ BOOST_AUTO_TEST_CASE(path) {
 
 BOOST_AUTO_TEST_CASE(xml) {
     // Thu Jan 20 2022 07:41:27 GMT+0000
-    auto const tp = std::chrono::system_clock::from_time_t(1642664487);
+    // auto const tp = std::chrono::system_clock::from_time_t(1642664487);
+    auto const tp = std::chrono::system_clock::from_time_t(1642660887);
     boost::uuids::uuid tag{{0x7c, 0xa6, 0xb0, 0x5c, 0x2a, 0x02, 0x47, 0x55, 0x9e, 0xc5, 0xe6, 0xd0, 0x6a, 0x45, 0x89, 0xdd}};
     auto const vec = cyng::make_vector({cyng::make_tuple(
         cyng::make_param("generated", tp),
@@ -554,7 +555,7 @@ BOOST_AUTO_TEST_CASE(xml) {
     std::string r = R"xml(<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <root xmlns:xsi="w3.org/2001/XMLSchema-instance" type="vec" size="1">
 	<element index="0" type="tpl" size="7">
-		<param name="generated" type="chrono:tp">2022-01-20T07:41:27+0100</param>
+		<param name="generated" type="chrono:tp">2022-01-20T07:41:27</param>
 		<param name="version" type="v">1.2</param>
 		<param name="log-dir" type="s">/tmp</param>
 		<param name="tag" type="uuid">7ca6b05c-2a02-4755-9ec5-e6d06a4589dd</param>

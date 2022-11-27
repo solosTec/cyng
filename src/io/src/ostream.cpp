@@ -1,7 +1,8 @@
 #include <cyng/io/ostream.h>
 #include <cyng/io/serialize.h>
 #include <cyng/obj/object.h>
-#include <cyng/sys/clock.h>
+// #include <cyng/sys/clock.h>
+#include <cyng/obj/intrinsics/date.h>
 
 #include <boost/uuid/uuid_io.hpp>
 
@@ -200,10 +201,8 @@ namespace cyng {
 
     std::ostream &operator<<(std::ostream &os, std::chrono::system_clock::time_point const &tp) {
         try {
-            std::time_t const tt = std::chrono::system_clock::to_time_t(tp);
-            auto tm = sys::to_utc(tt);
-            // auto tm = to_localtime(tt);
-            return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+            auto const d = make_date_from_local_time(tp);
+            return os << as_string(d, "%Y-%m-%dT%H:%M:%S");
         } catch (std::exception const &ex) {
             return os << ex.what();
         }
@@ -215,7 +214,7 @@ namespace cyng {
                 std::chrono::system_clock::now() +
                 std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - std::chrono::steady_clock::now()));
             auto tm = *std::localtime(&tt);
-            return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S%z");
+            return os << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
         } catch (std::exception const &ex) {
             return os << ex.what();
         }

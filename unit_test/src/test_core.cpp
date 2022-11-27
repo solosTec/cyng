@@ -643,7 +643,7 @@ BOOST_AUTO_TEST_CASE(date) {
         cyng::date const ref(cyng::calendar::tz_type::LOCAL, 2022, 7, 10, 16, 56, 32);
         auto const d = ref.get_start_of_year();
         auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S%z");
-        std::cout << s << std::endl;
+        //std::cout << s << std::endl;
         BOOST_REQUIRE_EQUAL(s, "2022-01-01 00:00:00+0200");
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JANUARY);

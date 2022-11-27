@@ -12,7 +12,8 @@
 #include <cyng/parse/buffer.h>
 #include <cyng/parse/mac.h>
 #include <cyng/parse/string.h>
-#include <cyng/sys/clock.h>
+// #include <cyng/sys/clock.h>
+#include <cyng/obj/intrinsics/date.h>
 
 #include <filesystem>
 #include <iomanip>
@@ -165,7 +166,8 @@ namespace cyng {
                         //	format is "%Y-%m-%d %H:%M:%S"
                         //  example "2014-11-28 11:06:44"
                         //	parse time stamp as UTC
-                        return make_object(cyng::sys::to_time_point(result, "%Y-%m-%d %H:%M:%S"));
+                        auto const d = make_local_date(result, "%Y-%m-%d %H:%M:%S");
+                        return make_object(d.to_time_point());
                         // return make_object(to_tp_datetime(result));
                     }
                     return make_object();

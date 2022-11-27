@@ -10,8 +10,8 @@
 #include <chrono>
 #include <cstdint>
 #include <ctime>
-#include <string>
 #include <ostream>
+#include <string>
 
 namespace cyng {
 
@@ -44,8 +44,6 @@ namespace cyng {
         /**
          * Specify the type of timezone
          */
-        // class local_tz {};
-        // class utc_tz {};
         enum class tz_type { LOCAL, UTC };
     } // namespace calendar
 
@@ -54,6 +52,12 @@ namespace cyng {
      */
     date make_date_from_local_time(std::time_t tt);
     date make_date_from_local_time(std::chrono::system_clock::time_point);
+
+    /**
+     * @return a date with the given time since epoch as UTC
+     */
+    date make_date_from_utc_time(std::time_t tt);
+    date make_date_from_utc_time(std::chrono::system_clock::time_point);
 
     /**
      * This class represents a date with a resolution of 1 second.
@@ -118,10 +122,12 @@ namespace cyng {
         [[nodiscard]] date get_start_of_month() const noexcept;
         [[nodiscard]] date get_end_of_month() const noexcept;
         [[nodiscard]] std::size_t days_in_month() const noexcept;
+        [[nodiscard]] std::chrono::hours hours_in_month() const noexcept;
 
         [[nodiscard]] date get_start_of_year() const noexcept;
         [[nodiscard]] date get_end_of_year() const noexcept;
         [[nodiscard]] std::size_t days_in_year() const noexcept;
+        [[nodiscard]] std::chrono::hours hours_in_year() const noexcept;
 
         /**
          * @return a date with the given time since epoch as local time
@@ -153,12 +159,6 @@ namespace cyng {
         std::tm tm_;
         calendar::tz_type tz_type_;
     };
-
-    /**
-     * @return a date with the given time since epoch as UTC
-     */
-    date make_date_from_utc_time(std::time_t tt);
-    date make_date_from_utc_time(std::chrono::system_clock::time_point);
 
     /**
      * Read a string according to format string and produces a date.
@@ -220,10 +220,8 @@ namespace cyng {
      */
     constexpr int second(date const &d) { return d.operator const tm &().tm_sec; }
 
-    void as_string(std::ostream &os, date const &d, std::string format = "%Y-%m-%d %H:%M:%S%z");
-    // void as_utc_string(std::ostream &os, date const &d, std::string format = "%Y-%m-%d %H:%M:%S%z");
-    std::string as_string(date const &d, std::string format = "%Y-%m-%d %H:%M:%S%z");
-    // std::string as_utc_string(date const &d, std::string format = "%Y-%m-%d %H:%M:%S%z");
+    void as_string(std::ostream &os, date const &d, std::string format = "%Y-%m-%d %H:%M:%S");
+    std::string as_string(date const &d, std::string format = "%Y-%m-%d %H:%M:%S");
 
 } // namespace cyng
 

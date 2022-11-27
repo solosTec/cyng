@@ -316,7 +316,7 @@ namespace cyng {
                 auto tm = *std::gmtime(&tt);
                 //	example: 1995-12-04T00:12:00-0430
                 // ISO 8601
-                os << '"' << std::put_time(&tm, "%FT%T%z") << '"';
+                os << '"' << std::put_time(&tm, "%FT%T") << '"';
             }
 
             return cs;

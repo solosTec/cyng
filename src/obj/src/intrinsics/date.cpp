@@ -23,7 +23,7 @@ namespace cyng {
             BOOST_ASSERT(ec == 0); // Zero if successful.
 #else
             //	POSIX API
-//            ::gmtime_s(&tt, &buf);
+            //            ::gmtime_s(&tt, &buf);
             ::gmtime_r(&tt, &buf);
 #endif
             return buf;
@@ -34,7 +34,7 @@ namespace cyng {
             decltype(auto) ec = ::localtime_s(&buf, &tt);
             BOOST_ASSERT(ec == 0); // Zero if successful.
 #else
-//            ::localtime_s(&tt, &buf);
+            //            ::localtime_s(&tt, &buf);
             ::localtime_r(&tt, &buf);
 #endif
             return buf;
@@ -166,9 +166,13 @@ namespace cyng {
 
     std::size_t date::days_in_month() const noexcept {
         //
+        auto const h = hours_in_month();
+        return h.count() / 24 + 1;
+    }
+
+    std::chrono::hours date::hours_in_month() const noexcept {
         auto const s = get_start_of_month();
-        auto const diff = get_end_of_month().sub<std::chrono::hours>(s);
-        return diff.count() / 24 + 1;
+        return get_end_of_month().sub<std::chrono::hours>(s);
     }
 
     date date::get_start_of_year() const noexcept {
@@ -183,10 +187,14 @@ namespace cyng {
         return date(tz_type_, tmp);
     }
 
-    std::size_t date::days_in_year() const noexcept {
+    std::chrono::hours date::hours_in_year() const noexcept {
         auto const s = get_start_of_year();
-        auto const diff = get_end_of_year().sub<std::chrono::hours>(s);
-        return diff.count() / 24 + 1;
+        return get_end_of_year().sub<std::chrono::hours>(s);
+    }
+
+    std::size_t date::days_in_year() const noexcept {
+        auto const h = hours_in_year();
+        return h.count() / 24 + 1;
     }
 
     date make_date_from_local_time(std::time_t tt) {

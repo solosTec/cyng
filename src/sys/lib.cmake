@@ -16,7 +16,7 @@ set (sys_cpp
     src/info.cpp
     src/cpu.cpp
     src/net.cpp
-    src/clock.cpp
+#    src/clock.cpp
 )
     
 set (sys_h
@@ -32,7 +32,7 @@ set (sys_h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/info.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/cpu.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/net.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/clock.h
+#    ${PROJECT_SOURCE_DIR}/../../include/cyng/sys/clock.h
 )
 
 if(WIN32)

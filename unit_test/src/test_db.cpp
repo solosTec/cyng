@@ -10,7 +10,8 @@
 
 #include <cyng/db/details/statement_interface.h>
 #include <cyng/obj/util.hpp>
-#include <cyng/sys/clock.h>
+// #include <cyng/sys/clock.h>
+#include <cyng/obj/intrinsics/date.h>
 
 #include <iostream>
 
@@ -50,10 +51,11 @@ BOOST_AUTO_TEST_CASE(SQLite) {
 
     std::string const inp = "2011-02-18 23:12:34";
     std::string const fmt = "%Y-%m-%d %H:%M:%S";
-    auto const tp = cyng::sys::to_time_point(inp, fmt);
+    auto const date = cyng::make_local_date(inp, fmt);
+    auto const tp = date.to_time_point();
 
-    std::cout << cyng::sys::to_string(tp, "%F %T%z") << std::endl;
-    std::cout << cyng::sys::to_string_utc(tp, "%F %T%z (UTC)") << std::endl;
+    // std::cout << cyng::sys::to_string(tp, "%F %T%z") << std::endl;
+    // std::cout << cyng::sys::to_string_utc(tp, "%F %T%z (UTC)") << std::endl;
 
     //
     //  store into database
@@ -89,10 +91,11 @@ BOOST_AUTO_TEST_CASE(SQLite) {
                 auto obj = res->get(1, cyng::TC_TIME_POINT, 0);
                 auto const tpr = cyng::value_cast(obj, std::chrono::system_clock::now());
 #ifdef _DEBUG
-                cyng::sys::to_string(std::cout, tpr, "%F %T%z");
+                // cyng::sys::to_string(std::cout, tpr, "%F %T%z");
 #endif
                 // std::cout << str << std::endl;
-                auto const str = cyng::sys::to_string_utc(tpr, "%F %T");
+                auto const d = cyng::make_date_from_local_time(tpr);
+                auto const str = cyng::as_string(d, "%F %T");
                 // "2011-02-18 23:12:34"
                 BOOST_REQUIRE_EQUAL(str, inp);
             }
