@@ -89,7 +89,8 @@ target_link_libraries(unit_test
         cyng::log
         cyng::sql
         cyng::db
-        cyng::sqlite3
+#        cyng::sqlite3
+        cyng_sqlite3
         cyng::store
         cyng::sys
         cyng::parse
