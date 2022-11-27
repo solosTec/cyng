@@ -142,8 +142,8 @@ namespace cyng {
             return std::chrono::duration_cast<std::chrono::duration<R, P>>(to_time_point() - other.to_time_point());
         }
         template <typename T> T sub(date const &other) const {
-            using R = duration_t<T>::_Rep;
-            using P = duration_t<T>::_Period;
+            using R = typename duration_t<T>::_Rep;
+            using P = typename duration_t<T>::_Period;
             return sub<R, P>(other);
         }
 
@@ -176,7 +176,7 @@ namespace cyng {
     }
     template <typename R, typename P> date operator-(date const &tp, std::chrono::duration<R, P> d) {
         //  sub timespan
-        return tp.sub(d);
+        return tp.sub<R, P>(d);
     }
 
     // template <typename R, typename P> std::chrono::duration<R, P> operator-(date const &tpl, date const &tpr) {
