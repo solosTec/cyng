@@ -54,7 +54,7 @@ namespace cyng {
 
     } // namespace
 
-    date::date()
+    date::date() noexcept
         : date{1900, 1, 0, 0, 0, 0} {}
 
     date::date(int year, int month, int day, int hour, int minute, int second)
@@ -71,7 +71,7 @@ namespace cyng {
         std::mktime(&tm_);
     }
 
-    date::date(std::tm const &tm)
+    date::date(std::tm const &tm) noexcept
         : tm_(tm) {}
 
     date &date::operator=(date const &other) {
@@ -79,11 +79,6 @@ namespace cyng {
         if (this != &other) {
             tm_ = other.tm_;
         }
-        return *this;
-    }
-
-    date &date::operator=(date other) {
-        std::swap(tm_, other.tm_);
         return *this;
     }
 
@@ -107,8 +102,13 @@ namespace cyng {
         return to_utc(tmp);
     }
 
-    std::chrono::system_clock::time_point date::to_time_point() const {
+    std::chrono::system_clock::time_point date::to_local_time_point() const {
         auto const tt = to_local_time();
+        return std::chrono::system_clock::from_time_t(tt);
+    }
+
+    std::chrono::system_clock::time_point date::to_utc_time_point() const {
+        auto const tt = to_utc_time();
         return std::chrono::system_clock::from_time_t(tt);
     }
 
@@ -186,6 +186,34 @@ namespace cyng {
         return h.count() / 24 + 1;
     }
 
+    bool date::is_less(date const &other) const noexcept {
+        return (tm_.tm_year == other.tm_.tm_year)
+                   ? ((tm_.tm_mon == other.tm_.tm_mon)
+                          ? ((tm_.tm_mday == other.tm_.tm_mday)
+                                 ? ((tm_.tm_hour == other.tm_.tm_hour)
+                                        ? ((tm_.tm_min == other.tm_.tm_min) ? (tm_.tm_sec < other.tm_.tm_sec)
+                                                                            : (tm_.tm_min < other.tm_.tm_min))
+                                        : (tm_.tm_hour < other.tm_.tm_hour))
+                                 : (tm_.tm_mday < other.tm_.tm_mday))
+                          : (tm_.tm_mon < other.tm_.tm_mon))
+                   : (tm_.tm_year < other.tm_.tm_year);
+    }
+    bool date::is_equal(date const &other) const noexcept {
+        return tm_.tm_year == other.tm_.tm_year && //
+               tm_.tm_mon == other.tm_.tm_mon &&   //
+               tm_.tm_mday == other.tm_.tm_mday && //
+               tm_.tm_hour == other.tm_.tm_hour && //
+               tm_.tm_min == other.tm_.tm_min &&   //
+               tm_.tm_sec == other.tm_.tm_sec;
+    }
+
+    bool operator==(date const &tpl, date const &tpr) { return tpl.is_equal(tpr); }
+    bool operator!=(date const &tpl, date const &tpr) { return !(tpl == tpr); }
+    bool operator<(date const &tpl, date const &tpr) { return tpl.is_less(tpr); }
+    bool operator>(date const &tpl, date const &tpr) { return tpr < tpl; }
+    bool operator>=(date const &tpl, date const &tpr) { return !(tpl < tpr); }
+    bool operator<=(date const &tpl, date const &tpr) { return !(tpl > tpr); }
+
     date make_date_from_local_time(std::time_t tt) {
         auto const tm = to_localtime(tt);
         return date(tm);
@@ -213,6 +241,9 @@ namespace cyng {
         return {tm};
     }
 
+    date make_local_date() { return make_date_from_local_time(std::chrono::system_clock::now()); }
+    date make_utc_date() { return make_date_from_utc_time(std::chrono::system_clock::now()); }
+
     bool is_valid(date const &d) { return d.to_local_time() != -1; }
 
     void as_string(std::ostream &os, date const &d, std::string format) {
@@ -231,6 +262,22 @@ namespace cyng {
         as_string(ss, d, format);
         return ss.str();
     }
+
+    namespace detail {
+        std::time_t selector<std::time_t>::cast_to_local(date const &d) noexcept { return d.to_local_time(); };
+        std::time_t selector<std::time_t>::cast_to_utc(date const &d) noexcept { return d.to_utc_time(); };
+        std::chrono::system_clock::time_point
+        selector<std::chrono::system_clock::time_point>::cast_to_local(date const &d) noexcept {
+            return d.to_local_time_point();
+        };
+        std::chrono::system_clock::time_point selector<std::chrono::system_clock::time_point>::cast_to_utc(date const &d) noexcept {
+            return d.to_utc_time_point();
+        };
+    } // namespace detail
+
+    std::pair<date, date> get_range_of_day(date const &d) { return {d.get_start_of_day(), d.get_end_of_day()}; }
+    std::pair<date, date> get_range_of_month(date const &d) { return {d.get_start_of_month(), d.get_end_of_month()}; }
+    std::pair<date, date> get_range_of_year(date const &d) { return {d.get_start_of_year(), d.get_end_of_year()}; }
 
     std::size_t hash(date const &d) {
         std::size_t h{0};

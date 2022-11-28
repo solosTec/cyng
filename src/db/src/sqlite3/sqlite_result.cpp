@@ -8,19 +8,17 @@
 #include "sqlite_result.h"
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/factory.hpp>
+#include <cyng/obj/intrinsics/date.h>
 #include <cyng/obj/tag.hpp>
 #include <cyng/parse/buffer.h>
 #include <cyng/parse/mac.h>
 #include <cyng/parse/string.h>
-// #include <cyng/sys/clock.h>
-#include <cyng/obj/intrinsics/date.h>
 
 #include <filesystem>
 #include <iomanip>
 #include <utility>
 
 #include <boost/numeric/conversion/converter.hpp>
-// #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/nil_generator.hpp>
 
 #ifdef _DEBUG_DB
@@ -167,8 +165,7 @@ namespace cyng {
                         //  example "2014-11-28 11:06:44"
                         //	parse time stamp as UTC
                         auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
-                        return make_object(d.to_time_point());
-                        // return make_object(to_tp_datetime(result));
+                        return make_object(d.to_utc_time_point());
                     }
                     return make_object();
                 }

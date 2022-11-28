@@ -77,7 +77,8 @@ namespace cyng {
                         //	the content before returning.
                         //	If well prepared this statement call the SQLite julianday() function and converts
                         //	the string into a float value.
-                        auto const d = make_date_from_local_time(*ptr);
+                        // auto const d = make_date_from_local_time(*ptr);
+                        auto const d = make_date_from_utc_time(*ptr); // using UTC timestamp
                         auto const str = as_string(d, "%Y-%m-%d %T");
                         BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
                         return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));

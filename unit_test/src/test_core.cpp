@@ -666,6 +666,8 @@ BOOST_AUTO_TEST_CASE(date) {
         auto const d = ref + offset;
         auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S%z");
         std::cout << s << std::endl;
+
+        auto const ltp = cyng::local_time_cast<std::chrono::system_clock::time_point>(d);
     }
 }
 

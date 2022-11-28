@@ -68,17 +68,16 @@ namespace cyng {
         friend std::size_t hash(date const &);
 
       public:
-        date();
+        date() noexcept;
         date(int year, int month, int day, int hour, int minute, int second);
-        date(std::tm const &);
-        date(date const &) = default;
-        date(date &&) = default;
+        date(std::tm const &) noexcept;
+        date(date const &) noexcept = default;
+        date(date &&) noexcept = default;
 
         /**
          * copy assignment
          */
         date &operator=(date const &);
-        date &operator=(date);
 
         /**
          * move assignment
@@ -97,7 +96,15 @@ namespace cyng {
 
         explicit constexpr operator std::tm const &() const { return tm_; }
 
-        std::chrono::system_clock::time_point to_time_point() const;
+        /**
+         * Create a time point as local time
+         */
+        std::chrono::system_clock::time_point to_local_time_point() const;
+
+        /**
+         * Create a time point as UTC
+         */
+        std::chrono::system_clock::time_point to_utc_time_point() const;
 
         /**
          * DST is not considered in this calculation.
@@ -119,31 +126,28 @@ namespace cyng {
         [[nodiscard]] std::size_t days_in_year() const noexcept;
         [[nodiscard]] std::chrono::hours hours_in_year() const noexcept;
 
-        /**
-         * @return a date with the given time since epoch as local time
-         */
-        // friend date make_date_from_local_time(std::time_t tt);
-        // friend date make_date_from_local_time(std::chrono::system_clock::time_point);
-
         template <typename R, typename P> date add(std::chrono::duration<R, P> d) const {
             //  use implementation of chrono library
-            return make_date_from_local_time(to_time_point() + d);
+            return make_date_from_local_time(to_local_time_point() + d);
         }
 
         template <typename R, typename P> date sub(std::chrono::duration<R, P> d) const {
             //  use implementation of chrono library
-            return make_date_from_local_time(to_time_point() - d);
+            return make_date_from_local_time(to_local_time_point() - d);
         }
 
         template <typename R, typename P> std::chrono::duration<R, P> sub(date const &other) const {
             //  use implementation of chrono library
-            return std::chrono::duration_cast<std::chrono::duration<R, P>>(to_time_point() - other.to_time_point());
+            return std::chrono::duration_cast<std::chrono::duration<R, P>>(to_local_time_point() - other.to_local_time_point());
         }
         template <typename T> T sub(date const &other) const {
             using R = typename duration_t<T>::_Rep;
             using P = typename duration_t<T>::_Period;
             return sub<R, P>(other);
         }
+
+        bool is_less(date const &) const noexcept;
+        bool is_equal(date const &) const noexcept;
 
       private:
         std::tm tm_;
@@ -152,8 +156,15 @@ namespace cyng {
     /**
      * Read a string according to format string and produces a date.
      * Uses the std::get_time() function.
+     * Note: The produced date object is neither local time nor UTC.
      */
     date make_date(std::string const &s, std::string fmt = "%Y-%m-%d %H:%M:%S");
+
+    /**
+     * Shortcut for make_date_from_local_time(std::chrono::system_clock::now())
+     */
+    date make_local_date();
+    date make_utc_date();
 
     /**
      * @return true if object contains a valid time.
@@ -172,6 +183,13 @@ namespace cyng {
     // template <typename R, typename P> std::chrono::duration<R, P> operator-(date const &tpl, date const &tpr) {
     //     return tpl.sub<R, P>(tpr);
     // }
+
+    bool operator==(date const &tpl, date const &tpr);
+    bool operator!=(date const &tpl, date const &tpr);
+    bool operator<(date const &tpl, date const &tpr);
+    bool operator>(date const &tpl, date const &tpr);
+    bool operator>=(date const &tpl, date const &tpr);
+    bool operator<=(date const &tpl, date const &tpr);
 
     /**
      * @return gregorian year
@@ -208,8 +226,41 @@ namespace cyng {
      */
     constexpr int second(date const &d) { return d.operator const tm &().tm_sec; }
 
+    /**
+     * Convert the date object into a string according to the given format specification.
+     * For the available format specifieres see std::put_time().
+     */
     void as_string(std::ostream &os, date const &d, std::string format = "%Y-%m-%d %H:%M:%S");
     std::string as_string(date const &d, std::string format = "%Y-%m-%d %H:%M:%S");
+
+    namespace detail {
+        template <typename T> struct selector {};
+
+        template <> struct selector<std::time_t> {
+            static std::time_t cast_to_local(date const &d) noexcept;
+            static std::time_t cast_to_utc(date const &d) noexcept;
+        };
+        template <> struct selector<std::chrono::system_clock::time_point> {
+            static std::chrono::system_clock::time_point cast_to_local(date const &d) noexcept;
+            static std::chrono::system_clock::time_point cast_to_utc(date const &d) noexcept;
+        };
+    } // namespace detail
+
+    /**
+     * example:
+     * @code
+     * auto const ltp = cyng::local_time_cast<std::chrono::system_clock::time_point>(d);
+     * @endcode
+     */
+    template <typename T> [[nodiscard]] T local_time_cast(date const &d) noexcept { return detail::selector<T>::cast_to_local(d); }
+    template <typename T> [[nodiscard]] T utc_cast(date const &d) noexcept { return detail::selector<T>::cast_to_utc(d); }
+
+    /**
+     * Shortcuts to get the start and end of a time frame
+     */
+    std::pair<date, date> get_range_of_day(date const &d);
+    std::pair<date, date> get_range_of_month(date const &d);
+    std::pair<date, date> get_range_of_year(date const &d);
 
 } // namespace cyng
 
