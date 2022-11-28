@@ -43,6 +43,8 @@ namespace cyng {
     } // namespace calendar
 
     /**
+     * Converts a time_t time value to a date object, and corrects for the local time zone.
+     *
      * @return a date with the given time since epoch as local time
      */
     date make_date_from_local_time(std::time_t tt);
@@ -243,6 +245,10 @@ namespace cyng {
         template <> struct selector<std::chrono::system_clock::time_point> {
             static std::chrono::system_clock::time_point cast_to_local(date const &d) noexcept;
             static std::chrono::system_clock::time_point cast_to_utc(date const &d) noexcept;
+        };
+        template <> struct selector<date> {
+            static date cast_to_local(date const &d) noexcept;
+            static date cast_to_utc(date const &d) noexcept;
         };
     } // namespace detail
 

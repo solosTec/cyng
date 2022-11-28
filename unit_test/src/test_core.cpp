@@ -546,21 +546,66 @@ BOOST_AUTO_TEST_CASE(dom) {
 }
 
 BOOST_AUTO_TEST_CASE(date) {
+    //  UTC: Sun Jul 10 2022 14:56:32 GMT+0000
+    //  CET: Sun Jul 10 2022 16:56:32 GMT+0200 (summer time)
+    constexpr std::int64_t ref_time = 1657464992;
+    // 1657472192 as UTC
+    //  UTC
+    constexpr auto ref_ts = std::chrono::time_point<std::chrono::system_clock>(std::chrono::seconds(ref_time));
+    constexpr char s_local[] = "2022-07-10 16:56:32";
+    constexpr char s_utc[] = "2022-07-10 14:56:32";
+
+    {
+        auto const dl = cyng::make_date_from_local_time(ref_time);
+        auto const sl = cyng::as_string(dl, "%Y-%m-%d %H:%M:%S");
+        std::cout << sl << std::endl;
+        BOOST_REQUIRE_EQUAL(sl, s_local);
+        auto const rdl = dl.to_local_time();
+        BOOST_REQUIRE_EQUAL(rdl, ref_time);
+        auto const rutc = dl.to_utc_time();
+        // BOOST_REQUIRE_EQUAL(dl.to_utc_time(), 1657472192);
+        auto const diff = dl.delta_utc(); //  minutes
+        auto ref_time_utc = ref_time - (diff.count() * 60);
+        BOOST_REQUIRE_EQUAL(dl.to_utc_time(), ref_time_utc);
+
+        auto const dlutc = cyng::utc_cast<cyng::date>(dl);
+        std::cout << cyng::as_string(dlutc, "%Y-%m-%d %H:%M:%S") << std::endl;
+
+        auto const dutc = cyng::make_date_from_utc_time(ref_time);
+        auto const sutc = cyng::as_string(dutc, "%Y-%m-%d %H:%M:%S");
+        std::cout << sutc << std::endl;
+        BOOST_REQUIRE_EQUAL(sutc, s_utc);
+        auto const rutc2 = dutc.to_utc_time();
+        BOOST_REQUIRE_EQUAL(rutc2, ref_time);
+        std::cout << dutc.to_local_time() << std::endl;
+        std::cout << dutc.to_local_time() - ref_time << std::endl;
+        auto ref_time_utc1 = ref_time - 7200;
+        BOOST_REQUIRE_EQUAL(dutc.to_local_time(), ref_time_utc1);
+
+        auto const dutcl = cyng::local_time_cast<cyng::date>(dutc);
+        std::cout << cyng::as_string(dutcl, "%Y-%m-%d %H:%M:%S") << std::endl;
+    }
+
     {
         //  convert to date
-        std::string const inp = "2022-07-10 16:56:32";
+        std::string const inp = s_local;
         std::string const fmt = "%Y-%m-%d %H:%M:%S";
         auto const d = cyng::make_date(inp, fmt);
-        // BOOST_REQUIRE_EQUAL(inp, cyng::sys::to_string_utc(ts, fmt));
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), 7);
         BOOST_REQUIRE_EQUAL(cyng::day(d), 10);
         BOOST_REQUIRE_EQUAL(cyng::hour(d), 16);
         BOOST_REQUIRE_EQUAL(cyng::minute(d), 56);
         BOOST_REQUIRE_EQUAL(cyng::second(d), 32);
-        std::cout << cyng::as_string(d, "%Y-%m-%d %H:%M:%S%Z") << std::endl;
-        // auto const s = cyng::as_utc_string(d, "%Y-%m-%d %H:%M:%S%Z");
-        // std::cout << s << std::endl;
+        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S");
+        std::cout << s << std::endl;
+        BOOST_REQUIRE_EQUAL(s, inp);
+
+        //  UNIX timestamp: 1657464992
+        //  UTC: Sun Jul 10 2022 14:56:32 GMT+0000
+        //  CET: Sun Jul 10 2022 16:56:32 GMT+0200 (summer time)
+        // auto const tt = d.to_utc_time();
+        // BOOST_REQUIRE_EQUAL(tt, ref_time);
     }
     {
         // int year, int month, int day, int hour, int minute, int second
@@ -583,12 +628,6 @@ BOOST_AUTO_TEST_CASE(date) {
         BOOST_REQUIRE_EQUAL(cyng::second(d), 32);
         // std::cout << cyng::as_string(d, "%Y-%m-%d %H:%M:%S%Z") << std::endl;
     }
-
-    // 2022-07-10 16:56:32 (UTC)
-    // Sun Jul 10 2022 18:56:32 GMT+0200 (Central European Summer Time)
-    constexpr std::int64_t ref_time = 1657472192;
-    // constexpr std::int64_t ref_time = 1657464992;
-    constexpr auto ref_ts = std::chrono::time_point<std::chrono::system_clock>(std::chrono::seconds(ref_time));
 
     {
         // auto const d = cyng::make_date_from_utc_time(now);

@@ -17,6 +17,8 @@ namespace cyng {
             std::tm buf{0};
             //
             //  https://stackoverflow.com/questions/69992446/c-location-of-localtime-s-in-gcc
+            // Converts a time value to a tm structure.
+            // tt is expected to be UTC.
             //
 #ifdef _MSC_VER
             decltype(auto) ec = ::gmtime_s(&buf, &tt);
@@ -30,6 +32,7 @@ namespace cyng {
         }
         std::tm to_localtime(std::time_t tt) {
             std::tm buf{0};
+            // Converts a time_t time value to a tm structure, and corrects for the local time zone.
 #ifdef _MSC_VER
             decltype(auto) ec = ::localtime_s(&buf, &tt);
             BOOST_ASSERT(ec == 0); // Zero if successful.
@@ -45,6 +48,8 @@ namespace cyng {
          * a UTC timestamp.
          */
         std::time_t to_utc(std::tm &time) {
+            //  Expects that std::tm value is in UTC.
+            //  All fields of tm_ are updated to fit their proper ranges
 #ifdef _MSC_VER
             return _mkgmtime(&time);
 #else
@@ -92,8 +97,9 @@ namespace cyng {
 
     std::time_t date::to_local_time() const {
         auto tmp = tm_; // copy
-        //  convert to localtime!
+        //  expects tm_ contains a local time
         // tmp.tm_isdst = 0; //  Not daylight saving
+        tmp.tm_isdst = -1; //  guess
         return std::mktime(&tmp);
     }
 
@@ -266,6 +272,7 @@ namespace cyng {
     namespace detail {
         std::time_t selector<std::time_t>::cast_to_local(date const &d) noexcept { return d.to_local_time(); };
         std::time_t selector<std::time_t>::cast_to_utc(date const &d) noexcept { return d.to_utc_time(); };
+
         std::chrono::system_clock::time_point
         selector<std::chrono::system_clock::time_point>::cast_to_local(date const &d) noexcept {
             return d.to_local_time_point();
@@ -273,6 +280,10 @@ namespace cyng {
         std::chrono::system_clock::time_point selector<std::chrono::system_clock::time_point>::cast_to_utc(date const &d) noexcept {
             return d.to_utc_time_point();
         };
+
+        date selector<date>::cast_to_local(date const &d) noexcept { return make_date_from_local_time(d.to_utc_time()); };
+        date selector<date>::cast_to_utc(date const &d) noexcept { return make_date_from_utc_time(d.to_local_time()); };
+
     } // namespace detail
 
     std::pair<date, date> get_range_of_day(date const &d) { return {d.get_start_of_day(), d.get_end_of_day()}; }
