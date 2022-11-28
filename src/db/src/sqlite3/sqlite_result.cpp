@@ -166,7 +166,7 @@ namespace cyng {
                         //	format is "%Y-%m-%d %H:%M:%S"
                         //  example "2014-11-28 11:06:44"
                         //	parse time stamp as UTC
-                        auto const d = make_local_date(result, "%Y-%m-%d %H:%M:%S");
+                        auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
                         return make_object(d.to_time_point());
                         // return make_object(to_tp_datetime(result));
                     }

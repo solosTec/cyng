@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(SQLite) {
 
     std::string const inp = "2011-02-18 23:12:34";
     std::string const fmt = "%Y-%m-%d %H:%M:%S";
-    auto const date = cyng::make_local_date(inp, fmt);
+    auto const date = cyng::make_date(inp, fmt);
     auto const tp = date.to_time_point();
 
     // std::cout << cyng::sys::to_string(tp, "%F %T%z") << std::endl;

@@ -40,11 +40,6 @@ namespace cyng {
     namespace calendar {
         enum month { JANUARY = 1, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER };
         enum day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY };
-
-        /**
-         * Specify the type of timezone
-         */
-        enum class tz_type { LOCAL, UTC };
     } // namespace calendar
 
     /**
@@ -73,9 +68,9 @@ namespace cyng {
         friend std::size_t hash(date const &);
 
       public:
-        date(calendar::tz_type);
-        date(calendar::tz_type, int year, int month, int day, int hour, int minute, int second);
-        date(calendar::tz_type, std::tm const &);
+        date();
+        date(int year, int month, int day, int hour, int minute, int second);
+        date(std::tm const &);
         date(date const &) = default;
         date(date &&) = default;
 
@@ -89,11 +84,6 @@ namespace cyng {
          * move assignment
          */
         date &operator=(date &&) noexcept;
-
-        /**
-         * @return true if timestamp is utc.
-         */
-        constexpr bool is_utc() { return tz_type_ == calendar::tz_type::UTC; }
 
         /**
          * To convert to a UNIX timestamp the function std::mktime() is used.
@@ -157,15 +147,13 @@ namespace cyng {
 
       private:
         std::tm tm_;
-        calendar::tz_type tz_type_;
     };
 
     /**
      * Read a string according to format string and produces a date.
      * Uses the std::get_time() function.
      */
-    date make_local_date(std::string const &s, std::string fmt = "%Y-%m-%d %H:%M:%S");
-    date make_utc_date(std::string const &s, std::string fmt = "%Y-%m-%d %H:%M:%S");
+    date make_date(std::string const &s, std::string fmt = "%Y-%m-%d %H:%M:%S");
 
     /**
      * @return true if object contains a valid time.
