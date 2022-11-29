@@ -546,6 +546,20 @@ BOOST_AUTO_TEST_CASE(dom) {
 }
 
 BOOST_AUTO_TEST_CASE(date) {
+
+#ifdef _DEBUG
+    {
+        auto const d = cyng::make_local_date();
+        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S");
+        std::cout << s << std::endl;
+    }
+    {
+        auto const d = cyng::make_utc_date();
+        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S");
+        std::cout << s << std::endl;
+    }
+#endif
+
     //  UTC: Sun Jul 10 2022 14:56:32 GMT+0000
     //  CET: Sun Jul 10 2022 16:56:32 GMT+0200 (summer time)
     constexpr std::int64_t ref_time = 1657464992;

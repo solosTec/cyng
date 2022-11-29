@@ -129,12 +129,12 @@ namespace cyng {
     }
 
     date date::get_start_of_day() const noexcept {
-        std::tm const tmp = {0, 0, 0, tm_.tm_wday, tm_.tm_mon, tm_.tm_year, tm_.tm_wday, tm_.tm_yday, tm_.tm_isdst};
+        std::tm const tmp = {0, 0, 0, tm_.tm_mday, tm_.tm_mon, tm_.tm_year, tm_.tm_wday, tm_.tm_yday, tm_.tm_isdst};
         return date(tmp);
     }
     date date::get_end_of_day() const noexcept {
         //    return get_start_of_day().add(std::chrono::hours(24));
-        std::tm const tmp = {0, 0, 0, tm_.tm_wday + 1, tm_.tm_mon, tm_.tm_year, tm_.tm_wday, tm_.tm_yday, tm_.tm_isdst};
+        std::tm const tmp = {0, 0, 0, tm_.tm_mday + 1, tm_.tm_mon, tm_.tm_year, tm_.tm_wday, tm_.tm_yday, tm_.tm_isdst};
         return date(tmp);
     }
 
@@ -146,14 +146,14 @@ namespace cyng {
         //  [0, 11]
         if (tm_.tm_mon < 11) {
             //  same year
-            std::tm tmp = {-1, 0, 0, 1, tm_.tm_mon + 1, tm_.tm_year, 0, 0, -1};
+            std::tm tmp = {0, 0, 0, 1, tm_.tm_mon + 1, tm_.tm_year, 0, 0, -1};
 
             //  All fields of tm are updated to fit their proper ranges
             std::mktime(&tmp); // localtime!
 
             return date(tmp);
         }
-        std::tm tmp = {-1, 0, 0, 1, 0, tm_.tm_year + 1, 0, 0, -1};
+        std::tm tmp = {0, 0, 0, 1, 0, tm_.tm_year + 1, 0, 0, -1};
         //  All fields of tm are updated to fit their proper ranges
         std::mktime(&tmp); // localtime!
         return date(tmp);
@@ -213,6 +213,8 @@ namespace cyng {
                tm_.tm_sec == other.tm_.tm_sec;
     }
 
+    void date::swap(date &other) { std::swap(tm_, other.tm_); }
+
     bool operator==(date const &tpl, date const &tpr) { return tpl.is_equal(tpr); }
     bool operator!=(date const &tpl, date const &tpr) { return !(tpl == tpr); }
     bool operator<(date const &tpl, date const &tpr) { return tpl.is_less(tpr); }
@@ -247,8 +249,8 @@ namespace cyng {
         return {tm};
     }
 
-    date make_local_date() { return make_date_from_local_time(std::chrono::system_clock::now()); }
-    date make_utc_date() { return make_date_from_utc_time(std::chrono::system_clock::now()); }
+    date make_local_date() { return make_date_from_local_time(std::time(nullptr)); }
+    date make_utc_date() { return make_date_from_utc_time(std::time(nullptr)); }
 
     bool is_valid(date const &d) { return d.to_local_time() != -1; }
 

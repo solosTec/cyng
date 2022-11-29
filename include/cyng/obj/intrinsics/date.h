@@ -116,9 +116,17 @@ namespace cyng {
         std::chrono::minutes delta_utc() const;
 
         [[nodiscard]] date get_start_of_day() const noexcept;
+
+        /**
+         * This is 00:00 of the next day.
+         */
         [[nodiscard]] date get_end_of_day() const noexcept;
 
         [[nodiscard]] date get_start_of_month() const noexcept;
+
+        /**
+         * This is the first day 00:00 of the next month.
+         */
         [[nodiscard]] date get_end_of_month() const noexcept;
         [[nodiscard]] std::size_t days_in_month() const noexcept;
         [[nodiscard]] std::chrono::hours hours_in_month() const noexcept;
@@ -131,6 +139,15 @@ namespace cyng {
         template <typename R, typename P> date add(std::chrono::duration<R, P> d) const {
             //  use implementation of chrono library
             return make_date_from_local_time(to_local_time_point() + d);
+            //  possible other implementation:
+            //  return make_date_from_utc(to_utc_time_point() + d);
+        }
+
+        template <typename R, typename P> date &add(std::chrono::duration<R, P> d) {
+            //  use implementation of chrono library
+            auto tp = make_date_from_local_time(to_local_time_point() + d);
+            swap(tp);
+            return *this;
         }
 
         template <typename R, typename P> date sub(std::chrono::duration<R, P> d) const {
@@ -138,10 +155,18 @@ namespace cyng {
             return make_date_from_local_time(to_local_time_point() - d);
         }
 
+        template <typename R, typename P> date &sub(std::chrono::duration<R, P> d) {
+            //  use implementation of chrono library
+            auto tp = make_date_from_local_time(to_local_time_point() - d);
+            swap(tp);
+            return *this;
+        }
+
         template <typename R, typename P> std::chrono::duration<R, P> sub(date const &other) const {
             //  use implementation of chrono library
             return std::chrono::duration_cast<std::chrono::duration<R, P>>(to_local_time_point() - other.to_local_time_point());
         }
+
         template <typename T> T sub(date const &other) const {
             using R = typename duration_t<T>::_Rep;
             using P = typename duration_t<T>::_Period;
@@ -150,6 +175,11 @@ namespace cyng {
 
         bool is_less(date const &) const noexcept;
         bool is_equal(date const &) const noexcept;
+
+        /**
+         * swap tm
+         */
+        void swap(date &);
 
       private:
         std::tm tm_;
@@ -181,11 +211,18 @@ namespace cyng {
         //  sub timespan
         return tp.sub<R, P>(d);
     }
+    template <typename R, typename P> date &operator+=(date &tp, std::chrono::duration<R, P> d) {
+        //  add timespan
+        return tp.add<R, P>(d);
+    }
 
     // template <typename R, typename P> std::chrono::duration<R, P> operator-(date const &tpl, date const &tpr) {
     //     return tpl.sub<R, P>(tpr);
     // }
 
+    /**
+     * Comparison operators
+     */
     bool operator==(date const &tpl, date const &tpr);
     bool operator!=(date const &tpl, date const &tpr);
     bool operator<(date const &tpl, date const &tpr);
