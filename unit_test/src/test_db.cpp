@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(SQLite) {
     auto const d = s.get_dialect();
     BOOST_REQUIRE(d == cyng::sql::dialect::SQLITE);
     s.execute("DROP TABLE demo");
-    s.execute("CREATE TABLE demo (id int, age float)");
+    s.execute("CREATE TABLE demo (id int, age float, created float)");
 
     //
     //  generate a UTC time stamp
@@ -62,10 +62,11 @@ BOOST_AUTO_TEST_CASE(SQLite) {
     //
     {
         auto stmt = s.create_statement();
-        auto const r = stmt->prepare("INSERT INTO demo VALUES (?, julianday(?))");
+        auto const r = stmt->prepare("INSERT INTO demo VALUES (?, julianday(?), julianday(?))");
         if (r.second) {
-            stmt->push(cyng::make_object(1), 0);  //	id
-            stmt->push(cyng::make_object(tp), 0); //	age => 1|2011-02-18 22:12:34
+            stmt->push(cyng::make_object(1), 0);    //	id
+            stmt->push(cyng::make_object(tp), 0);   //	age => 1|2011-02-18 22:12:34
+            stmt->push(cyng::make_object(date), 0); //	created => 1|2011-02-18 22:12:34
             if (stmt->execute()) {
                 stmt->clear();
             }
@@ -78,7 +79,7 @@ BOOST_AUTO_TEST_CASE(SQLite) {
     //
     {
         // auto const ms = config::get_table_sml_readout();
-        std::string const sql = "SELECT datetime(age) "
+        std::string const sql = "SELECT datetime(age), datetime(created) "
                                 "FROM demo "
                                 "WHERE id = ? ";
         auto stmt = s.create_statement();
@@ -88,16 +89,22 @@ BOOST_AUTO_TEST_CASE(SQLite) {
 
             if (auto res = stmt->get_result()) {
                 //  UTC
-                auto obj = res->get(1, cyng::TC_TIME_POINT, 0);
-                auto const tpr = cyng::value_cast(obj, std::chrono::system_clock::now());
+                auto obj_1 = res->get(1, cyng::TC_TIME_POINT, 0);
+                auto const tpr = cyng::value_cast(obj_1, std::chrono::system_clock::now());
 #ifdef _DEBUG
                 // cyng::sys::to_string(std::cout, tpr, "%F %T%z");
 #endif
                 // std::cout << str << std::endl;
                 auto const d = cyng::date::make_date_from_local_time(tpr);
-                auto const str = cyng::as_string(d, "%F %T");
+                auto const str_1 = cyng::as_string(d, "%F %T");
                 // "2011-02-18 23:12:34"
-                BOOST_REQUIRE_EQUAL(str, inp);
+                BOOST_REQUIRE_EQUAL(str_1, inp);
+
+                auto obj_2 = res->get(2, cyng::TC_DATE, 0);
+                auto const dr = cyng::value_cast(obj_2, cyng::date());
+                auto const str_2 = cyng::as_string(d, "%F %T");
+                // "2011-02-18 23:12:34"
+                BOOST_REQUIRE_EQUAL(str_2, inp);
             }
         }
         stmt->close();

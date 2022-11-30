@@ -162,10 +162,24 @@ namespace cyng {
                         const std::string result((const char *)ptr, size);
                         BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
                         //	format is "%Y-%m-%d %H:%M:%S"
-                        //  example "2014-11-28 11:06:44"
+                        //  example "2022-11-30 12:41:00"
                         //	parse time stamp as UTC
                         auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
                         return make_object(d.to_utc_time_point());
+                    }
+                    return make_object();
+                }
+
+                template <> object get_value<date>(sqlite3_stmt *stmt, int index) {
+                    const unsigned char *ptr = ::sqlite3_column_text(stmt, index);
+                    if (ptr != NULL) {
+                        int size = ::sqlite3_column_bytes(stmt, index);
+                        const std::string result((const char *)ptr, size);
+                        BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
+                        //	format is "%Y-%m-%d %H:%M:%S"
+                        //  example "2022-11-28 11:06:44"
+                        auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
+                        return make_object(d);
                     }
                     return make_object();
                 }
@@ -549,9 +563,10 @@ namespace cyng {
 
                     case TC_AES128: return get_value_by_code<TC_AES128>(*statement_, index);
                     case TC_AES192: return get_value_by_code<TC_AES192>(*statement_, index);
-                    case TC_AES256:
-                        return get_value_by_code<TC_AES256>(*statement_, index);
+                    case TC_AES256: return get_value_by_code<TC_AES256>(*statement_, index);
 
+                    case TC_DATE:
+                        return get_value_by_code<TC_DATE>(*statement_, index);
                         //
                         //	std::map< std::size_t, object >
                     case TC_ATTR_MAP: return get_value_by_code<TC_ATTR_MAP>(*statement_, index);

@@ -10,7 +10,6 @@
 #include <sqlite3/sqlite_result.h>
 
 #include <cyng/io/ostream.h>
-// #include <cyng/sys/clock.h>
 #include <cyng/obj/intrinsics/date.h>
 
 #include <boost/uuid/uuid_io.hpp>
@@ -69,6 +68,19 @@ namespace cyng {
                                : is_ok(::sqlite3_bind_null(stmt, index));
                 }
 
+                bool bind_value(sqlite3_stmt *stmt, int index, date const *ptr) {
+                    //	julianday() converts string representation into float
+                    //	yyyy-mm-dd hh:mm:ss
+                    if (ptr != nullptr) {
+                        //	The SQLITE_TRANSIENT value means that SQLite should make its own private copy of
+                        //	the content before returning.
+                        auto const str = as_string(*ptr, "%Y-%m-%d %T");
+                        BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
+                        return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+                    }
+                    return is_ok(::sqlite3_bind_null(stmt, index));
+                }
+
                 bool bind_value(sqlite3_stmt *stmt, int index, std::chrono::system_clock::time_point const *ptr) {
                     //	julianday() converts string representation into float
                     //	yyyy-mm-dd hh:mm:ss
@@ -77,11 +89,8 @@ namespace cyng {
                         //	the content before returning.
                         //	If well prepared this statement call the SQLite julianday() function and converts
                         //	the string into a float value.
-                        // auto const d = make_date_from_local_time(*ptr);
                         auto const d = date::make_date_from_utc_time(*ptr); // using UTC timestamp
-                        auto const str = as_string(d, "%Y-%m-%d %T");
-                        BOOST_ASSERT_MSG(str.size() == 19, "invalid time format");
-                        return is_ok(::sqlite3_bind_text(stmt, index, str.c_str(), static_cast<int>(str.size()), SQLITE_TRANSIENT));
+                        return bind_value(stmt, index, &d);
                     }
                     return is_ok(::sqlite3_bind_null(stmt, index));
                 }
@@ -373,7 +382,7 @@ namespace cyng {
                 BOOST_ASSERT_MSG(is_valid(), "SQLite statement invalid");
 
                 //  see anonymous namespace
-                if (!/*detail::*/ bind_value(stmt_, bind_counter_, object_cast<type>(obj))) {
+                if (!bind_value(stmt_, bind_counter_, object_cast<type>(obj))) {
                     connection_->show_diagnostics();
                     return false;
                 }
@@ -429,6 +438,8 @@ namespace cyng {
                 case TC_DIGEST_SHA1: return bind_value_by_code<TC_DIGEST_SHA1>(obj, column_size);
                 case TC_DIGEST_SHA256: return bind_value_by_code<TC_DIGEST_SHA256>(obj, column_size);
                 case TC_DIGEST_SHA512: return bind_value_by_code<TC_DIGEST_SHA512>(obj, column_size);
+
+                case TC_DATE: return bind_value_by_code<TC_DATE>(obj, column_size);
 
                 case TC_AES128: return bind_value_by_code<TC_AES128>(obj, column_size);
                 case TC_AES192: return bind_value_by_code<TC_AES192>(obj, column_size);
