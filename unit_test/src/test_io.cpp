@@ -518,6 +518,14 @@ BOOST_AUTO_TEST_CASE(parser) {
     p.read(std::begin(inp), std::end(inp));
 
     //
+    //	date
+    //
+    obj = cyng::make_object(cyng::date(2022, 7, 10, 16, 56, 32));
+    cmp = cyng::io::to_typed(obj); //
+    inp = convert(obj);
+    p.read(std::begin(inp), std::end(inp));
+
+    //
     //	param_t
     //
     // obj = cyng::pair_factory("abc", "hello");

@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE(date) {
     constexpr char s_utc[] = "2022-07-10 14:56:32";
 
     {
-        auto const dl = cyng::make_date_from_local_time(ref_time);
+        auto const dl = cyng::date::make_date_from_local_time(ref_time);
         auto const sl = cyng::as_string(dl, "%Y-%m-%d %H:%M:%S");
         std::cout << sl << std::endl;
         BOOST_REQUIRE_EQUAL(sl, s_local);
@@ -585,7 +585,7 @@ BOOST_AUTO_TEST_CASE(date) {
         auto const dlutc = cyng::utc_cast<cyng::date>(dl);
         std::cout << cyng::as_string(dlutc, "%Y-%m-%d %H:%M:%S") << std::endl;
 
-        auto const dutc = cyng::make_date_from_utc_time(ref_time);
+        auto const dutc = cyng::date::make_date_from_utc_time(ref_time);
         auto const sutc = cyng::as_string(dutc, "%Y-%m-%d %H:%M:%S");
         std::cout << sutc << std::endl;
         BOOST_REQUIRE_EQUAL(sutc, s_utc);
@@ -645,7 +645,7 @@ BOOST_AUTO_TEST_CASE(date) {
 
     {
         // auto const d = cyng::make_date_from_utc_time(now);
-        auto const d = cyng::make_date_from_utc_time(ref_time);
+        auto const d = cyng::date::make_date_from_utc_time(ref_time);
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JULY);
         BOOST_REQUIRE_EQUAL(cyng::day(d), 10);
@@ -654,7 +654,7 @@ BOOST_AUTO_TEST_CASE(date) {
         BOOST_REQUIRE_EQUAL(cyng::second(d), 32);
     }
     {
-        auto const d = cyng::make_date_from_utc_time(ref_ts);
+        auto const d = cyng::date::make_date_from_utc_time(ref_ts);
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JULY);
         BOOST_REQUIRE_EQUAL(cyng::day(d), 10);

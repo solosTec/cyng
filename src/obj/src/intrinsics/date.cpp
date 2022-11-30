@@ -76,6 +76,20 @@ namespace cyng {
         std::mktime(&tm_);
     }
 
+    date::date(unified_date const &ud)
+        : tm_{ud.at(5), // [0, 60] second
+              ud.at(4), // [0, 59] minute
+              ud.at(3), // [0, 23] hour
+              ud.at(2), // [1, 31] day
+              ud.at(1), // [0, 11] month
+              ud.at(0), // years since 1900
+              0,
+              0,
+              -1} {
+        //  All fields of tm_ are updated to fit their proper ranges
+        std::mktime(&tm_);
+    }
+
     date::date(std::tm const &tm) noexcept
         : tm_(tm) {}
 
@@ -222,22 +236,22 @@ namespace cyng {
     bool operator>=(date const &tpl, date const &tpr) { return !(tpl < tpr); }
     bool operator<=(date const &tpl, date const &tpr) { return !(tpl > tpr); }
 
-    date make_date_from_local_time(std::time_t tt) {
+    date date::make_date_from_local_time(std::time_t tt) {
         auto const tm = to_localtime(tt);
         return date(tm);
     }
 
-    date make_date_from_utc_time(std::time_t tt) {
+    date date::make_date_from_utc_time(std::time_t tt) {
         auto const tm = to_utc(tt);
         return date(tm);
     }
 
-    date make_date_from_local_time(std::chrono::system_clock::time_point tp) {
+    date date::make_date_from_local_time(std::chrono::system_clock::time_point tp) {
         auto const tt = std::chrono::system_clock::to_time_t(tp);
         return make_date_from_local_time(tt);
     }
 
-    date make_date_from_utc_time(std::chrono::system_clock::time_point tp) {
+    date date::make_date_from_utc_time(std::chrono::system_clock::time_point tp) {
         auto const tt = std::chrono::system_clock::to_time_t(tp);
         return make_date_from_utc_time(tt);
     }
@@ -249,8 +263,8 @@ namespace cyng {
         return {tm};
     }
 
-    date make_local_date() { return make_date_from_local_time(std::time(nullptr)); }
-    date make_utc_date() { return make_date_from_utc_time(std::time(nullptr)); }
+    date make_local_date() { return date::make_date_from_local_time(std::time(nullptr)); }
+    date make_utc_date() { return date::make_date_from_utc_time(std::time(nullptr)); }
 
     bool is_valid(date const &d) { return d.to_local_time() != -1; }
 
@@ -283,8 +297,8 @@ namespace cyng {
             return d.to_utc_time_point();
         };
 
-        date selector<date>::cast_to_local(date const &d) noexcept { return make_date_from_local_time(d.to_utc_time()); };
-        date selector<date>::cast_to_utc(date const &d) noexcept { return make_date_from_utc_time(d.to_local_time()); };
+        date selector<date>::cast_to_local(date const &d) noexcept { return date::make_date_from_local_time(d.to_utc_time()); };
+        date selector<date>::cast_to_utc(date const &d) noexcept { return date::make_date_from_utc_time(d.to_local_time()); };
 
     } // namespace detail
 

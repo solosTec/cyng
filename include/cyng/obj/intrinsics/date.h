@@ -7,6 +7,7 @@
 #ifndef CYNG_OBJ_INTRINSCIS_DATE_H
 #define CYNG_OBJ_INTRINSCIS_DATE_H
 
+#include <array>
 #include <chrono>
 #include <cstdint>
 #include <ctime>
@@ -14,9 +15,6 @@
 #include <string>
 
 namespace cyng {
-
-    class date;
-    std::size_t hash(date const &d);
 
     /**
      * Support for type deduction (the old way)
@@ -43,20 +41,6 @@ namespace cyng {
     } // namespace calendar
 
     /**
-     * Converts a time_t time value to a date object, and corrects for the local time zone.
-     *
-     * @return a date with the given time since epoch as local time
-     */
-    date make_date_from_local_time(std::time_t tt);
-    date make_date_from_local_time(std::chrono::system_clock::time_point);
-
-    /**
-     * @return a date with the given time since epoch as UTC
-     */
-    date make_date_from_utc_time(std::time_t tt);
-    date make_date_from_utc_time(std::chrono::system_clock::time_point);
-
-    /**
      * This class represents a date with a resolution of 1 second.
      * This class is a small wrapper for the C/C++ time routines that were used before the calendar functions were introduced in
      * C++20. But even with the calendar features available there, it can be tedious to use. The clock class from the cyng_sys
@@ -70,8 +54,13 @@ namespace cyng {
         friend std::size_t hash(date const &);
 
       public:
+        using SIZE = std::integral_constant<std::size_t, 6>;
+        using unified_date = std::array<std::int32_t, SIZE::value>;
+
+      public:
         date() noexcept;
         date(int year, int month, int day, int hour, int minute, int second);
+        date(unified_date const &);
         date(std::tm const &) noexcept;
         date(date const &) noexcept = default;
         date(date &&) noexcept = default;
@@ -85,6 +74,20 @@ namespace cyng {
          * move assignment
          */
         date &operator=(date &&) noexcept;
+
+        /**
+         * Converts a time_t time value to a date object, and corrects for the local time zone.
+         *
+         * @return a date with the given time since epoch as local time
+         */
+        static date make_date_from_local_time(std::time_t tt);
+        static date make_date_from_local_time(std::chrono::system_clock::time_point);
+
+        /**
+         * @return a date with the given time since epoch as UTC
+         */
+        static date make_date_from_utc_time(std::time_t tt);
+        static date make_date_from_utc_time(std::chrono::system_clock::time_point);
 
         /**
          * To convert to a UNIX timestamp the function std::mktime() is used.
@@ -181,9 +184,27 @@ namespace cyng {
          */
         void swap(date &);
 
+        /**
+         * @return platform independed date
+         */
+        constexpr unified_date get_raw() const {
+            // int tm_sec;  // seconds after the minute - [0, 60] including leap second
+            // int tm_min;  // minutes after the hour - [0, 59]
+            // int tm_hour; // hours since midnight - [0, 23]
+            // int tm_mday; // day of the month - [1, 31]
+            // int tm_mon;  // months since January - [0, 11]
+            // int tm_year; // years since 1900
+            return {tm_.tm_year, tm_.tm_mon, tm_.tm_mday, tm_.tm_hour, tm_.tm_min, tm_.tm_sec};
+        }
+
       private:
         std::tm tm_;
     };
+
+    /**
+     * calculate a hash value
+     */
+    std::size_t hash(date const &d);
 
     /**
      * Read a string according to format string and produces a date.

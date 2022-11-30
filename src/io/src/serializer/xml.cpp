@@ -191,6 +191,12 @@ namespace cyng {
             return node.append_child(pugi::node_pcdata).set_value(str.c_str());
         }
 
+        bool serializer<date, XML>::write(pugi::xml_node node, date const &d) {
+            node.append_attribute("type").set_value(cyng::intrinsic_name<revision>());
+            auto const str = as_string(d, "%Y-%m-%dT%H:%M:%S");
+            return node.append_child(pugi::node_pcdata).set_value(str.c_str());
+        }
+
         bool serializer<vector_t, XML>::write(pugi::xml_node node, vector_t const &v) {
             node.append_attribute("type").set_value(cyng::intrinsic_name<vector_t>());
             node.append_attribute("size").set_value(std::to_string(v.size()).c_str());

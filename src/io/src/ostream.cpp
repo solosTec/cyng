@@ -201,7 +201,7 @@ namespace cyng {
 
     std::ostream &operator<<(std::ostream &os, std::chrono::system_clock::time_point const &tp) {
         try {
-            auto const d = make_date_from_local_time(tp);
+            auto const d = date::make_date_from_local_time(tp);
             return os << as_string(d, "%Y-%m-%dT%H:%M:%S");
         } catch (std::exception const &ex) {
             return os << ex.what();
@@ -223,6 +223,8 @@ namespace cyng {
     std::ostream &operator<<(std::ostream &os, boost::uuids::uuid const &tag) { return os << boost::uuids::to_string(tag); }
 
     std::ostream &operator<<(std::ostream &os, raw const &r) { return os << '<' << r.get_code() << ':' << r.get_literal() << '>'; }
+
+    std::ostream &operator<<(std::ostream &os, date const &d) { return os << as_string(d, "%Y-%m-%d %H:%M:%S"); }
 
     std::ostream &operator<<(std::ostream &os, tuple_t const &tpl) {
 #ifdef _DEBUG
