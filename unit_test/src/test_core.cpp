@@ -649,7 +649,7 @@ BOOST_AUTO_TEST_CASE(date) {
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JULY);
         BOOST_REQUIRE_EQUAL(cyng::day(d), 10);
-        BOOST_REQUIRE_EQUAL(cyng::hour(d), 16);
+        BOOST_REQUIRE_EQUAL(cyng::hour(d), 14); // UTC: Sun Jul 10 2022 14:56:32 GMT+0000
         BOOST_REQUIRE_EQUAL(cyng::minute(d), 56);
         BOOST_REQUIRE_EQUAL(cyng::second(d), 32);
     }
@@ -658,7 +658,7 @@ BOOST_AUTO_TEST_CASE(date) {
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JULY);
         BOOST_REQUIRE_EQUAL(cyng::day(d), 10);
-        BOOST_REQUIRE_EQUAL(cyng::hour(d), 16);
+        BOOST_REQUIRE_EQUAL(cyng::hour(d), 14); // UTC: Sun Jul 10 2022 14:56:32 GMT+0000
         BOOST_REQUIRE_EQUAL(cyng::minute(d), 56);
         BOOST_REQUIRE_EQUAL(cyng::second(d), 32);
     }
@@ -682,22 +682,22 @@ BOOST_AUTO_TEST_CASE(date) {
     {
         cyng::date const ref(2022, 7, 10, 16, 56, 32);
         auto const d = ref.get_end_of_month();
-        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S%z");
+        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S");
         // std::cout << s << std::endl;
-        BOOST_REQUIRE_EQUAL(s, "2022-07-31 23:59:59+0200");
+        BOOST_REQUIRE_EQUAL(s, "2022-08-01 00:00:00");
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
-        BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JULY);
-        BOOST_REQUIRE_EQUAL(cyng::day(d), 31); // [1, 31]
-        BOOST_REQUIRE_EQUAL(cyng::hour(d), 23);
-        BOOST_REQUIRE_EQUAL(cyng::minute(d), 59);
-        BOOST_REQUIRE_EQUAL(cyng::second(d), 59);
+        BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::AUGUST);
+        BOOST_REQUIRE_EQUAL(cyng::day(d), 1); // [1, 31]
+        BOOST_REQUIRE_EQUAL(cyng::hour(d), 0);
+        BOOST_REQUIRE_EQUAL(cyng::minute(d), 0);
+        BOOST_REQUIRE_EQUAL(cyng::second(d), 0);
     }
     {
         cyng::date const ref(2022, 7, 10, 16, 56, 32);
         auto const d = ref.get_start_of_year();
-        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S%z");
-        // std::cout << s << std::endl;
-        BOOST_REQUIRE_EQUAL(s, "2022-01-01 00:00:00+0200");
+        auto const s = cyng::as_string(d, "%Y-%m-%d %H:%M:%S");
+        std::cout << s << std::endl;
+        BOOST_REQUIRE_EQUAL(s, "2022-01-01 00:00:00");
         BOOST_REQUIRE_EQUAL(cyng::year(d), 2022);
         BOOST_REQUIRE_EQUAL(cyng::month(d), cyng::calendar::JANUARY);
         BOOST_REQUIRE_EQUAL(cyng::day(d), 1); // [1, 31]
@@ -721,6 +721,13 @@ BOOST_AUTO_TEST_CASE(date) {
         std::cout << s << std::endl;
 
         auto const ltp = cyng::local_time_cast<std::chrono::system_clock::time_point>(d);
+    }
+
+    {
+        cyng::date const ref(2022, 7, 10, 16, 56, 32);
+        auto const diff = cyng::date::time_since_epoch<std::chrono::seconds>(ref);
+        std::cout << diff << std::endl;
+        BOOST_REQUIRE_EQUAL(diff.count(), 1657472192u); // GMT: Sunday, 10. July 2022 16:56:32
     }
 }
 

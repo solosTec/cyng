@@ -8,6 +8,7 @@
 #define CYNG_OBJ_INTRINSCIS_DATE_H
 
 #include <array>
+#include <boost/assert.hpp>
 #include <chrono>
 #include <cstdint>
 #include <ctime>
@@ -141,33 +142,33 @@ namespace cyng {
 
         template <typename R, typename P> date add(std::chrono::duration<R, P> d) const {
             //  use implementation of chrono library
-            return make_date_from_local_time(to_local_time_point() + d);
+            return make_date_from_utc_time(to_utc_time_point() + d);
             //  possible other implementation:
-            //  return make_date_from_utc(to_utc_time_point() + d);
+            //  return make_date_from_local(to_local_time_point() + d);
         }
 
         template <typename R, typename P> date &add(std::chrono::duration<R, P> d) {
             //  use implementation of chrono library
-            auto tp = make_date_from_local_time(to_local_time_point() + d);
+            auto tp = make_date_from_utc_time(to_utc_time_point() + d);
             swap(tp);
             return *this;
         }
 
         template <typename R, typename P> date sub(std::chrono::duration<R, P> d) const {
             //  use implementation of chrono library
-            return make_date_from_local_time(to_local_time_point() - d);
+            return make_date_from_utc_time(to_utc_time_point() - d);
         }
 
         template <typename R, typename P> date &sub(std::chrono::duration<R, P> d) {
             //  use implementation of chrono library
-            auto tp = make_date_from_local_time(to_local_time_point() - d);
+            auto tp = make_date_from_utc_time(to_utc_time_point() - d);
             swap(tp);
             return *this;
         }
 
         template <typename R, typename P> std::chrono::duration<R, P> sub(date const &other) const {
             //  use implementation of chrono library
-            return std::chrono::duration_cast<std::chrono::duration<R, P>>(to_local_time_point() - other.to_local_time_point());
+            return std::chrono::duration_cast<std::chrono::duration<R, P>>(to_utc_time_point() - other.to_utc_time_point());
         }
 
         template <typename T> T sub(date const &other) const {
@@ -197,6 +198,30 @@ namespace cyng {
             return {tm_.tm_year, tm_.tm_mon, tm_.tm_mday, tm_.tm_hour, tm_.tm_min, tm_.tm_sec};
         }
 
+        /**
+         * @ref a date after 1970-01-01
+         * @return the time span between the specified time ref and the UNIX epoche (1970-01-01)
+         */
+        template <typename R, typename P> static std::chrono::duration<R, P> time_since_epoch(date const &ref) {
+            date const epoch(1970, 1, 1, 0, 0, 0);
+            // auto const epoch = d.to_utc_time(); // epoch
+            BOOST_ASSERT(!ref.is_less(epoch));
+            return ref.sub<std::chrono::duration<R, P>>(epoch);
+        }
+
+        template <typename T> static T time_since_epoch(date const &ref) {
+            using R = typename duration_t<T>::_Rep;
+            using P = typename duration_t<T>::_Period;
+            return time_since_epoch<R, P>(ref);
+        }
+
+        template <typename R, typename P> std::uint64_t calculate_slot(std::chrono::duration<R, P> const &raster) const {
+            //
+            using duration_t = std::chrono::duration<R, P>;
+            auto const diff = date::time_since_epoch<R, P>(*this);
+            return diff.count() / raster.count();
+        }
+
       private:
         std::tm tm_;
     };
@@ -212,6 +237,11 @@ namespace cyng {
      * Note: The produced date object is neither local time nor UTC.
      */
     date make_date(std::string const &s, std::string fmt = "%Y-%m-%d %H:%M:%S");
+
+    /**
+     * @return UNIX epoch (1970-1-1)
+     */
+    date make_epoch_date();
 
     /**
      * Shortcut for make_date_from_local_time(std::chrono::system_clock::now())

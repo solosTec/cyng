@@ -53,6 +53,7 @@ namespace cyng {
 #ifdef _MSC_VER
             return _mkgmtime(&time);
 #else
+            //  doesn't subtract local timezone
             return timegm(&time);
 #endif
         }
@@ -114,6 +115,7 @@ namespace cyng {
         //  expects tm_ contains a local time
         // tmp.tm_isdst = 0; //  Not daylight saving
         tmp.tm_isdst = -1; //  guess
+        //  substract local timezone
         return std::mktime(&tmp);
     }
 
@@ -176,7 +178,7 @@ namespace cyng {
     std::size_t date::days_in_month() const noexcept {
         //
         auto const h = hours_in_month();
-        return h.count() / 24 + 1;
+        return h.count() / 24;
     }
 
     std::chrono::hours date::hours_in_month() const noexcept {
@@ -265,6 +267,8 @@ namespace cyng {
 
     date make_local_date() { return date::make_date_from_local_time(std::time(nullptr)); }
     date make_utc_date() { return date::make_date_from_utc_time(std::time(nullptr)); }
+
+    date make_epoch_date() { return date(1970, 1, 1, 0, 0, 0); }
 
     bool is_valid(date const &d) { return d.to_local_time() != -1; }
 
