@@ -11,6 +11,9 @@ set (net_cpp
     src/server_factory.cpp
     src/server_proxy.cpp
     src/resolver.cpp
+    src/http_client.cpp
+    src/http_client_factory.cpp
+    src/http_client_proxy.cpp
 )
     
 set (net_h
@@ -21,6 +24,9 @@ set (net_h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/net/server_factory.hpp
     ${PROJECT_SOURCE_DIR}/../../include/cyng/net/server_proxy.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/net/resolver.hpp
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/http_client.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/http_client_factory.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/http_client_proxy.h
 )
 
 
