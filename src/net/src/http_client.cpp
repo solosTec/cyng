@@ -170,15 +170,13 @@ namespace cyng {
                     //
                     //  get de-obfuscated data
                     //
-                    std::cout << res_ << std::endl;
-                    //        // auto const data = parser_.read(input_buffer_.begin(),
-                    //        // input_buffer_.begin() + n); std::cout << std::string(rec_.begin(),
-                    //        // rec_.begin() + n) << std::endl;
-                    //        sp->dispatch("on_receive", cyng::buffer_t(rec_.begin(), rec_.begin() + n));
+                    // std::cout << res_ << std::endl;
+                    auto const body = res_.body();
+                    sp->dispatch("on_receive", cyng::buffer_t(body.begin(), body.end()));
 
-                    //        //
-                    //        //	continue reading
-                    //        //
+                    //
+                    //	continue reading
+                    //
                     do_read();
 
                 } else {
