@@ -9,6 +9,7 @@
 #include <cyng/net/http_client_factory.h>
 #include <cyng/net/resolver.hpp>
 #include <cyng/net/server_factory.hpp>
+#include <cyng/obj/container_factory.hpp>
 
 #include <iostream>
 
@@ -72,7 +73,8 @@ BOOST_AUTO_TEST_CASE(http) {
         },
         [&](boost::asio::ip::tcp::endpoint ep, cyng::channel_ptr sp) {
             std::cout << "connected to " << ep << " #" << sp->get_id() << std::endl;
-            sp->dispatch("get", "/", "localhost");
+            auto const header = cyng::param_map_factory("key", "value").operator cyng::param_map_t();
+            sp->dispatch("get", "/", "localhost", header);
             // sp->dispatch("post", "/", "localhost", "hello, world!");
         },
         [&](cyng::buffer_t data) {

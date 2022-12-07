@@ -40,12 +40,12 @@ namespace cyng {
             friend class task<http_client>;
 
             using signatures_t = std::tuple<
-                std::function<void(std::string, std::string)>,              // [0] connect
-                std::function<void(std::string, std::string)>,              // [1] GET
-                std::function<void(std::string, std::string, std::string)>, // [1] POST
-                std::function<void(cyng::buffer_t)>,                        // on receive
-                std::function<void(boost::system::error_code)>,             // disconnect
-                std::function<void(eod)>                                    // stop
+                std::function<void(std::string, std::string)>,                                 // [0] connect
+                std::function<void(std::string, std::string, cyng::param_map_t)>,              // [1] GET
+                std::function<void(std::string, std::string, cyng::param_map_t, std::string)>, // [1] POST
+                std::function<void(cyng::buffer_t)>,                                           // on receive
+                std::function<void(boost::system::error_code)>,                                // disconnect
+                std::function<void(eod)>                                                       // stop
                 >;
 
           public:
@@ -77,8 +77,8 @@ namespace cyng {
             /**
              * lazy
              */
-            void get(std::string target, std::string host);
-            void post(std::string target, std::string host, std::string body);
+            void get(std::string target, std::string host, cyng::param_map_t header);
+            void post(std::string target, std::string host, cyng::param_map_t header, std::string body);
 
             void handle_write(channel_ptr, boost::system::error_code const &ec, std::size_t bytes_transferred);
             void reset();

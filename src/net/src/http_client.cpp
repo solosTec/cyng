@@ -1,5 +1,8 @@
 #include <cyng/net/http_client.h>
 
+#include <cyng.h>
+#include <cyng/obj/container_cast.hpp>
+
 namespace cyng {
     namespace net {
 
@@ -12,8 +15,8 @@ namespace cyng {
             )
 			: sigs_ {
 					std::bind(&http_client::connect, this, std::placeholders::_1, std::placeholders::_2),	//	[0] connect
-					std::bind(&http_client::get, this, std::placeholders::_1, std::placeholders::_2),	// [1] 	GET (write to socket)
-					std::bind(&http_client::post, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),	// [2] 	POST (write to socket)
+					std::bind(&http_client::get, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),	// [1] 	GET (write to socket)
+					std::bind(&http_client::post, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4),	// [2] 	POST (write to socket)
                     cb_receive, // [2] 	on_receive (read from socket)
                     cb_disconnect, // [3] 	on_disconnect (socket was closed)
 					std::bind(&http_client::stop, this, std::placeholders::_1)	//	eod
@@ -98,23 +101,35 @@ namespace cyng {
         /**
          * lazy
          */
-        void http_client::get(std::string target, std::string host) {
+        void http_client::get(std::string target, std::string host, cyng::param_map_t header) {
 
             req_empty_.version(11);
             req_empty_.method(boost::beast::http::verb::get);
             req_empty_.target(target);
             req_empty_.set(boost::beast::http::field::host, "host");
-            // req_empty_.set(boost::beast::http::field::user_agent, "cyng");
+            req_empty_.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
+
+            auto const map = cyng::to_map<std::string>(header, "");
+            for (auto const &p : map) {
+                req_string_.insert(p.first, p.second); //  custom field
+            }
+
             do_write<boost::beast::http::empty_body>(req_empty_);
         }
 
-        void http_client::post(std::string target, std::string host, std::string body) {
+        void http_client::post(std::string target, std::string host, cyng::param_map_t header, std::string body) {
             req_string_.version(11);
             req_string_.method(boost::beast::http::verb::post);
             req_string_.target(target);
             req_string_.set(boost::beast::http::field::host, "host");
-            req_string_.insert("Custom", "Header"); //  custom field
-            // req_string_.set(boost::beast::http::field::user_agent, "cyng");
+
+            // req_string_.insert("Custom", "Header"); //  custom field
+            auto const map = cyng::to_map<std::string>(header, "");
+            for (auto const &p : map) {
+                req_string_.insert(p.first, p.second); //  custom field
+            }
+
+            req_string_.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
             req_string_.body() = body;
             do_write<boost::beast::http::string_body>(req_string_);
         }
