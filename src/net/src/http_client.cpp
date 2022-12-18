@@ -30,8 +30,7 @@ namespace cyng {
                 , buffer_()
                 , res_()
 			{
-            auto sp = channel_.lock();
-            if (sp) {
+            if (auto sp = channel_.lock(); sp) {
                 sp->set_channel_names({"connect", "get", "post", "on_receive", "on_disconnect"});
             }
         }
@@ -132,11 +131,13 @@ namespace cyng {
             req_string_.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
             req_string_.body() = body;
             do_write<boost::beast::http::string_body>(req_string_);
+            //  ToDo: here is a problem with the life-time of the req_string_ object
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
 
         void http_client::handle_write(channel_ptr sp, boost::system::error_code const &ec, std::size_t bytes_transferred) {
             BOOST_ASSERT(sp);
-            if (ec) {
+            if (ec && sp) {
                 //
                 //  connection lost
                 //

@@ -212,8 +212,7 @@ namespace cyng {
         /** @brief Loop over all table entries.
          *
          * Construct for each data row a record and fires a callback.
-         * If callback function return false the loop will be
-         * terminated.
+         * If callback function return false the loop is exited.
          *
          * @return count of invalid/skipped records
          */

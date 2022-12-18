@@ -64,7 +64,7 @@ namespace cyng {
                 if (auto sp = channel_.lock(); sp && sp->is_open()) {
 
                     boost::beast::http::async_write(
-                        stream_, req, boost::beast::bind_front_handler(&http_client::handle_write, this, sp));
+                        stream_, req, boost::beast::bind_front_handler(&http_client::handle_write, this, sp->shared_from_this()));
                 }
             }
 
@@ -80,7 +80,10 @@ namespace cyng {
             void get(std::string target, std::string host, cyng::param_map_t header);
             void post(std::string target, std::string host, cyng::param_map_t header, std::string body);
 
-            void handle_write(channel_ptr, boost::system::error_code const &ec, std::size_t bytes_transferred);
+            void handle_write(
+                channel_ptr, // reference
+                boost::system::error_code const &ec,
+                std::size_t bytes_transferred);
             void reset();
 
             /**
