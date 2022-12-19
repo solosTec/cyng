@@ -10,7 +10,7 @@ namespace cyng {
 				, cyng::controller& ctl
 				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::beast::error_code)> cb_failed // connect failed
 				, std::function<void(endpoint_t, channel_ptr)> cb_connect // successful connected
-                , std::function<void(cyng::buffer_t)> cb_receive
+                , std::function<void(std::uint32_t, cyng::buffer_t)> cb_receive
                 , std::function<void(boost::system::error_code)> cb_disconnect
             )
 			: sigs_ {
@@ -50,10 +50,7 @@ namespace cyng {
             std::string host,
             std::string service,
             boost::beast::error_code ec,
-            boost::asio::ip::tcp::resolver::results_type results
-            // channel_ptr sp ,
-            // std::string service)
-        ) {
+            boost::asio::ip::tcp::resolver::results_type results) {
             if (!ec) {
                 // Set a timeout on the operation
                 stream_.expires_after(std::chrono::seconds(30));
@@ -61,7 +58,6 @@ namespace cyng {
                 // Make the connection on the IP address we get from a lookup
                 stream_.async_connect(results, boost::beast::bind_front_handler(&http_client::on_connect, this, sp, host, service));
             } else {
-                // return fail(ec, "resolve");
                 //
                 //	optional reconnect
                 //
@@ -102,59 +98,61 @@ namespace cyng {
          */
         void http_client::get(std::string target, std::string host, cyng::param_map_t header) {
 
-            req_empty_.version(11);
-            req_empty_.method(boost::beast::http::verb::get);
-            req_empty_.target(target);
-            req_empty_.set(boost::beast::http::field::host, "host");
-            req_empty_.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
-
+            auto const b = req_get_.empty();
             auto const map = cyng::to_map<std::string>(header, "");
-            for (auto const &p : map) {
-                req_string_.insert(p.first, p.second); //  custom field
+            req_get_.push_back(make_get_req(target, host, map));
+            if (b) {
+                do_write_get();
             }
+        }
 
-            do_write<boost::beast::http::empty_body>(req_empty_);
+        void http_client::do_write_get() {
+            if (auto sp = channel_.lock(); sp && sp->is_open()) {
+
+                BOOST_ASSERT(!req_get_.empty());
+                boost::beast::http::async_write(
+                    stream_,
+                    req_get_.front(),
+                    boost::beast::bind_front_handler(&http_client::handle_write_get, this, sp->shared_from_this()));
+            }
         }
 
         void http_client::post(std::string target, std::string host, cyng::param_map_t header, std::string body) {
-            req_string_.version(11);
-            req_string_.method(boost::beast::http::verb::post);
-            req_string_.target(target);
-            req_string_.set(boost::beast::http::field::host, "host");
 
-            // req_string_.insert("Custom", "Header"); //  custom field
+            auto const b = req_post_.empty();
             auto const map = cyng::to_map<std::string>(header, "");
-            for (auto const &p : map) {
-                req_string_.insert(p.first, p.second); //  custom field
-            }
+            req_post_.push_back(make_post_req(target, host, map, body));
 
-            req_string_.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
-            req_string_.body() = body;
-            do_write<boost::beast::http::string_body>(req_string_);
-            //  ToDo: here is a problem with the life-time of the req_string_ object
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            if (b) {
+                do_write_post();
+            }
         }
 
-        void http_client::handle_write(channel_ptr sp, boost::system::error_code const &ec, std::size_t bytes_transferred) {
-            BOOST_ASSERT(sp);
-            if (ec && sp) {
-                //
-                //  connection lost
-                //
-                reset();
-                if (sp) {
-                    //	"on_disconnect"
-                    sp->dispatch("on_disconnect", ec);
-                }
+        void http_client::do_write_post() {
+            if (auto sp = channel_.lock(); sp && sp->is_open()) {
+
+                BOOST_ASSERT(!req_post_.empty());
+                boost::beast::http::async_write(
+                    stream_,
+                    req_post_.front(),
+                    boost::beast::bind_front_handler(&http_client::handle_write_post, this, sp->shared_from_this()));
             }
         }
 
         void http_client::reset() {
-            // std::cout << "reset" << std::endl;
-            boost::system::error_code ignored_ec;
-            // socket_.shutdown(S::shutdown_receive, ignored_ec);
-            // socket_.close(ignored_ec);
-            // snd_.clear();
+            //
+            //  close socket
+            //
+            stream_.close();
+
+            //
+            //  clear receive buffer
+            //
+            buffer_.clear();
+            res_.clear();
+
+            req_get_.clear();
+            req_post_.clear();
         }
 
         /**
@@ -166,9 +164,16 @@ namespace cyng {
 
             if (auto sp = channel_.lock(); sp) {
 
+                // auto h = boost::beast::bind_front_handler(&http_client::on_read, this, sp);
+                // using wrapper_t = boost::beast::detail::bind_front_wrapper<
+                //     void (cyng::net::http_client::*)(std::shared_ptr<cyng::channel>, boost::system::error_code, unsigned
+                //     __int64), cyng::net::http_client *, std::shared_ptr<cyng::channel>>;
+                // expose_dispatcher(*sp).wrap<wrapper_t>(h);
+
                 // Receive the HTTP response
                 boost::beast::http::async_read(
                     stream_, buffer_, res_, boost::beast::bind_front_handler(&http_client::on_read, this, sp));
+
                 // socket_.async_read_some(
                 //     boost::asio::buffer(rec_),
                 //     expose_dispatcher(*sp).wrap(
@@ -187,20 +192,22 @@ namespace cyng {
                     //  get de-obfuscated data
                     //
                     // std::cout << res_ << std::endl;
+                    std::uint32_t const result = res_.result_int();
                     auto const body = res_.body();
-                    sp->dispatch("on_receive", cyng::buffer_t(body.begin(), body.end()));
+                    sp->dispatch("on_receive", result, cyng::buffer_t(body.begin(), body.end()));
 
                     //
                     //	continue reading
                     //
                     do_read();
 
-                } else {
+                } else if (sp->is_open()) {
 
                     //
                     //  cleanup
                     //
                     // Gracefully close the socket
+
                     stream_.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
                     reset();
                     sp->dispatch("on_disconnect", ec);
@@ -208,5 +215,88 @@ namespace cyng {
             }
         }
 
+        boost::beast::http::request<boost::beast::http::empty_body>
+        make_get_req(std::string target, std::string host, std::map<std::string, std::string> map) {
+
+            boost::beast::http::request<boost::beast::http::empty_body> req;
+            req.version(11);
+            req.method(boost::beast::http::verb::get);
+            req.target(target);
+            req.set(boost::beast::http::field::host, "host");
+            req.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
+
+            for (auto const &p : map) {
+                req.insert(p.first, p.second); //  custom field
+            }
+            return req;
+        }
+
+        boost::beast::http::request<boost::beast::http::string_body>
+        make_post_req(std::string target, std::string host, std::map<std::string, std::string> map, std::string body) {
+
+            boost::beast::http::request<boost::beast::http::string_body> req;
+
+            req.version(11);
+            req.method(boost::beast::http::verb::post);
+            req.target(target);
+            req.set(boost::beast::http::field::host, "host");
+
+            // req_string_.insert("Custom", "Header"); //  custom field
+            for (auto const &p : map) {
+                req.insert(p.first, p.second); //  custom field
+            }
+
+            req.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
+            req.body() = body;
+            return req;
+        }
+
+        void http_client::handle_write_get(channel_ptr sp, boost::system::error_code const &ec, std::size_t bytes_transferred) {
+            BOOST_ASSERT(sp);
+            if (ec) {
+                //
+                //  connection lost
+                //
+                reset();
+                if (sp) {
+                    //	"on_disconnect"
+                    sp->dispatch("on_disconnect", ec);
+                }
+            } else if (sp) {
+                //
+                //  prevents data race on req_get_
+                //
+                expose_dispatcher(*sp).wrap([this, sp]() {
+                    req_get_.pop_front();
+                    if (!req_get_.empty()) {
+                        do_write_get();
+                    }
+                });
+            }
+        }
+
+        void http_client::handle_write_post(channel_ptr sp, boost::system::error_code const &ec, std::size_t bytes_transferred) {
+            BOOST_ASSERT(sp);
+            if (ec) {
+                //
+                //  connection lost
+                //
+                reset();
+                if (sp) {
+                    //	"on_disconnect"
+                    sp->dispatch("on_disconnect", ec);
+                }
+            } else if (sp) {
+                //
+                //  prevents data race on req_post_
+                //
+                expose_dispatcher(*sp).wrap([this, sp]() {
+                    req_post_.pop_front();
+                    if (!req_post_.empty()) {
+                        do_write_post();
+                    }
+                });
+            }
+        }
     } // namespace net
 } // namespace cyng

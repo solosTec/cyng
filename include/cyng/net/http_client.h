@@ -43,7 +43,7 @@ namespace cyng {
                 std::function<void(std::string, std::string)>,                                 // [0] connect
                 std::function<void(std::string, std::string, cyng::param_map_t)>,              // [1] GET
                 std::function<void(std::string, std::string, cyng::param_map_t, std::string)>, // [1] POST
-                std::function<void(cyng::buffer_t)>,                                           // on receive
+                std::function<void(std::uint32_t, cyng::buffer_t)>,                            // on receive
                 std::function<void(boost::system::error_code)>,                                // disconnect
                 std::function<void(eod)>                                                       // stop
                 >;
@@ -55,18 +55,10 @@ namespace cyng {
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::system::error_code)>
                     cb_failed,                                           // connect failed
                 std::function<void(endpoint_t, channel_ptr)> cb_connect, // successful connected
-                std::function<void(cyng::buffer_t)> cb_receive,
+                std::function<void(std::uint32_t, cyng::buffer_t)> cb_receive,
                 std::function<void(boost::system::error_code)> cb_disconnect);
 
             ~http_client() = default;
-
-            template <typename T = boost::beast::http::empty_body> void do_write(boost::beast::http::request<T> &req) {
-                if (auto sp = channel_.lock(); sp && sp->is_open()) {
-
-                    boost::beast::http::async_write(
-                        stream_, req, boost::beast::bind_front_handler(&http_client::handle_write, this, sp->shared_from_this()));
-                }
-            }
 
           private:
             /**
@@ -80,7 +72,28 @@ namespace cyng {
             void get(std::string target, std::string host, cyng::param_map_t header);
             void post(std::string target, std::string host, cyng::param_map_t header, std::string body);
 
-            void handle_write(
+            /**
+             * Starts an async write of all pending GET requests
+             */
+            void do_write_get();
+
+            /**
+             * Starts an async write of all pending POST requests
+             */
+            void do_write_post();
+
+            /**
+             * Continues async writing if more GET requests queued
+             */
+            void handle_write_get(
+                channel_ptr, // reference
+                boost::system::error_code const &ec,
+                std::size_t bytes_transferred);
+
+            /**
+             * Continues async writing if more POST requests queued
+             */
+            void handle_write_post(
                 channel_ptr, // reference
                 boost::system::error_code const &ec,
                 std::size_t bytes_transferred);
@@ -127,11 +140,17 @@ namespace cyng {
             boost::beast::http::response<boost::beast::http::string_body> res_;
 
             /**
-             * write buffer
+             * write buffers
              */
-            boost::beast::http::request<boost::beast::http::empty_body> req_empty_;
-            boost::beast::http::request<boost::beast::http::string_body> req_string_;
+            std::deque<boost::beast::http::request<boost::beast::http::empty_body>> req_get_;
+            std::deque<boost::beast::http::request<boost::beast::http::string_body>> req_post_;
         };
+
+        boost::beast::http::request<boost::beast::http::empty_body>
+        make_get_req(std::string target, std::string host, std::map<std::string, std::string>);
+
+        boost::beast::http::request<boost::beast::http::string_body>
+        make_post_req(std::string target, std::string host, std::map<std::string, std::string>, std::string body);
     } // namespace net
 } // namespace cyng
 

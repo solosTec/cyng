@@ -77,9 +77,10 @@ BOOST_AUTO_TEST_CASE(http) {
             sp->dispatch("get", "/", "localhost", header);
             // sp->dispatch("post", "/", "localhost", "hello, world!");
         },
-        [&](cyng::buffer_t data) {
+        [&](std::uint32_t result, cyng::buffer_t data) {
             //  read from socket
-            std::cout << "read " << data.size() << " bytes: " << std::string(data.begin(), data.end()) << std::endl;
+            std::cout << "read " << data.size() << ", result: " << result << ", bytes: " << std::string(data.begin(), data.end())
+                      << std::endl;
         },
         [&](boost::system::error_code ec) {
             //	fill async

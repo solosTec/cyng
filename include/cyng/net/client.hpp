@@ -40,7 +40,7 @@ namespace cyng {
             using resolver_t = typename boost::asio::ip::basic_resolver<protocol_t>;
 
           private:
-            friend class task<client<S,N>>;
+            friend class task<client<S, N>>;
 
             using signatures_t = std::tuple<
                 std::function<void(std::string, std::string)>,  // [0] connect
