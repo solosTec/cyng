@@ -7,11 +7,11 @@ namespace cyng {
     namespace net {
 
         http_client::http_client(channel_weak wp
-				, cyng::controller& ctl
+				, controller& ctl
 				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::beast::error_code)> cb_failed // connect failed
 				, std::function<void(endpoint_t, channel_ptr)> cb_connect // successful connected
-                , std::function<void(std::uint32_t, cyng::buffer_t)> cb_receive
-                , std::function<void(boost::system::error_code)> cb_disconnect
+                , cb_receive_t cb_receive
+                , cb_disconnect_t cb_disconnect
             )
 			: sigs_ {
 					std::bind(&http_client::connect, this, std::placeholders::_1, std::placeholders::_2),	//	[0] connect
@@ -96,10 +96,10 @@ namespace cyng {
         /**
          * lazy
          */
-        void http_client::get(std::string target, std::string host, cyng::param_map_t header) {
+        void http_client::get(std::string target, std::string host, param_map_t header) {
 
             auto const b = req_get_.empty();
-            auto const map = cyng::to_map<std::string>(header, "");
+            auto const map = to_map<std::string>(header, "");
             req_get_.push_back(make_get_req(target, host, map));
             if (b) {
                 do_write_get();
@@ -117,10 +117,10 @@ namespace cyng {
             }
         }
 
-        void http_client::post(std::string target, std::string host, cyng::param_map_t header, std::string body) {
+        void http_client::post(std::string target, std::string host, param_map_t header, std::string body) {
 
             auto const b = req_post_.empty();
-            auto const map = cyng::to_map<std::string>(header, "");
+            auto const map = to_map<std::string>(header, "");
             req_post_.push_back(make_post_req(target, host, map, body));
 
             if (b) {
@@ -164,20 +164,9 @@ namespace cyng {
 
             if (auto sp = channel_.lock(); sp) {
 
-                // auto h = boost::beast::bind_front_handler(&http_client::on_read, this, sp);
-                // using wrapper_t = boost::beast::detail::bind_front_wrapper<
-                //     void (cyng::net::http_client::*)(std::shared_ptr<cyng::channel>, boost::system::error_code, unsigned
-                //     __int64), cyng::net::http_client *, std::shared_ptr<cyng::channel>>;
-                // expose_dispatcher(*sp).wrap<wrapper_t>(h);
-
                 // Receive the HTTP response
                 boost::beast::http::async_read(
                     stream_, buffer_, res_, boost::beast::bind_front_handler(&http_client::on_read, this, sp));
-
-                // socket_.async_read_some(
-                //     boost::asio::buffer(rec_),
-                //     expose_dispatcher(*sp).wrap(
-                //         std::bind(&client::handle_read, this, std::placeholders::_1, std::placeholders::_2, sp)));
             }
         }
 
@@ -192,9 +181,15 @@ namespace cyng {
                     //  get de-obfuscated data
                     //
                     // std::cout << res_ << std::endl;
+                    param_map_t header;
+                    for (auto const &field : res_) {
+                        std::string value = field.value();
+                        // std::cout << "> " << field.name_string() << ": " << value << std::endl;
+                        header.emplace(field.name_string(), make_object(value));
+                    }
                     std::uint32_t const result = res_.result_int();
                     auto const body = res_.body();
-                    sp->dispatch("on_receive", result, cyng::buffer_t(body.begin(), body.end()));
+                    sp->dispatch("on_receive", result, header, buffer_t(body.begin(), body.end()));
 
                     //
                     //	continue reading
@@ -223,7 +218,7 @@ namespace cyng {
             req.method(boost::beast::http::verb::get);
             req.target(target);
             req.set(boost::beast::http::field::host, "host");
-            req.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
+            // req.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
 
             for (auto const &p : map) {
                 req.insert(p.first, p.second); //  custom field
@@ -246,7 +241,7 @@ namespace cyng {
                 req.insert(p.first, p.second); //  custom field
             }
 
-            req.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
+            // req.set(boost::beast::http::field::user_agent, CYNG_VERSION_SUFFIX);
             req.body() = body;
             return req;
         }

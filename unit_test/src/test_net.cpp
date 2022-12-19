@@ -9,6 +9,7 @@
 #include <cyng/net/http_client_factory.h>
 #include <cyng/net/resolver.hpp>
 #include <cyng/net/server_factory.hpp>
+#include <cyng/obj/container_cast.hpp>
 #include <cyng/obj/container_factory.hpp>
 
 #include <iostream>
@@ -73,14 +74,18 @@ BOOST_AUTO_TEST_CASE(http) {
         },
         [&](boost::asio::ip::tcp::endpoint ep, cyng::channel_ptr sp) {
             std::cout << "connected to " << ep << " #" << sp->get_id() << std::endl;
-            auto const header = cyng::param_map_factory("key", "value").operator cyng::param_map_t();
+            auto const header = cyng::param_map_factory("key", "value").get_map();
             sp->dispatch("get", "/", "localhost", header);
             // sp->dispatch("post", "/", "localhost", "hello, world!");
         },
-        [&](std::uint32_t result, cyng::buffer_t data) {
+        [&](std::uint32_t result, cyng::param_map_t header, cyng::buffer_t data) {
             //  read from socket
-            std::cout << "read " << data.size() << ", result: " << result << ", bytes: " << std::string(data.begin(), data.end())
-                      << std::endl;
+            auto const map = cyng::to_map<std::string>(header, "");
+            for (auto const &field : map) {
+                std::cout << "> " << field.first << ": " << field.second << std::endl;
+            }
+            std::cout << "read " << data.size() << " bytes, result: " << result
+                      << ", body: " << std::string(data.begin(), data.end()) << std::endl;
         },
         [&](boost::system::error_code ec) {
             //	fill async
@@ -89,7 +94,7 @@ BOOST_AUTO_TEST_CASE(http) {
     proxy.connect("localhost", "8088");
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
-    std::this_thread::sleep_for(std::chrono::seconds(20));
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     proxy.stop();
     std::this_thread::sleep_for(std::chrono::seconds(2));
     ctl.shutdown();

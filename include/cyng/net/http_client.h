@@ -27,6 +27,9 @@
 namespace cyng {
     namespace net {
 
+        using cb_receive_t = std::function<void(std::uint32_t, param_map_t, buffer_t)>;
+        using cb_disconnect_t = std::function<void(boost::system::error_code)>;
+
         /**
          * timeout callback (calculate timeout)
          * on_connect callback
@@ -43,8 +46,8 @@ namespace cyng {
                 std::function<void(std::string, std::string)>,                                 // [0] connect
                 std::function<void(std::string, std::string, cyng::param_map_t)>,              // [1] GET
                 std::function<void(std::string, std::string, cyng::param_map_t, std::string)>, // [1] POST
-                std::function<void(std::uint32_t, cyng::buffer_t)>,                            // on receive
-                std::function<void(boost::system::error_code)>,                                // disconnect
+                cb_receive_t,                                                                  // on receive
+                cb_disconnect_t,                                                               // disconnect
                 std::function<void(eod)>                                                       // stop
                 >;
 
@@ -55,8 +58,8 @@ namespace cyng {
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::system::error_code)>
                     cb_failed,                                           // connect failed
                 std::function<void(endpoint_t, channel_ptr)> cb_connect, // successful connected
-                std::function<void(std::uint32_t, cyng::buffer_t)> cb_receive,
-                std::function<void(boost::system::error_code)> cb_disconnect);
+                cb_receive_t cb_receive,
+                cb_disconnect_t cb_disconnect);
 
             ~http_client() = default;
 

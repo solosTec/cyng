@@ -34,8 +34,8 @@ namespace cyng {
             http_client_proxy create_proxy(
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::system::error_code)> cb_failed,
                 std::function<void(endpoint_t, channel_ptr)> cb_connect,
-                std::function<void(std::uint32_t, cyng::buffer_t)> cb_receive,
-                std::function<void(boost::system::error_code)> on_disconnect);
+                cb_receive_t cb_receive,
+                cb_disconnect_t on_disconnect);
 
           private:
             /**
@@ -49,8 +49,8 @@ namespace cyng {
             channel_ptr create_channel(
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::system::error_code)> cb_failed,
                 std::function<void(endpoint_t, channel_ptr)> cb_connect,
-                std::function<void(std::uint32_t, cyng::buffer_t)> cb_receive,
-                std::function<void(boost::system::error_code)> on_disconnect);
+                cb_receive_t cb_receive,
+                cb_disconnect_t on_disconnect);
 
           private:
             controller &ctl_;

@@ -442,9 +442,8 @@ BOOST_AUTO_TEST_CASE(dom) {
                   ())                                   //
                  ("4", 4)                               //
                  ())                                    //
-                ("5", 5)                                //
-                    .
-                    operator cyng::param_map_t();
+                ("5", 5)
+                    .get_map();
 
 #ifdef _DEBUG
     // std::cout << cyng::io::to_typed(cyng::make_object(pmap)) << std::endl;
