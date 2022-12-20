@@ -238,7 +238,10 @@ namespace cyng {
         void transform(vector_t &vec, std::vector<std::string> const &path, fun_pmap_t f) {
             std::size_t idx = 0;
             for (auto pos = vec.begin(); pos != vec.end();) {
-                //  extend path by index
+                //
+                // vector enumeration:
+                // extend path by index
+                //
                 auto p = path;
                 p.push_back("#" + std::to_string(idx));
                 if (transform(*pos, p, f)) {
@@ -463,6 +466,40 @@ namespace cyng {
             return insert(object_cast<param_map_t>(r.first->second), pos, end, param);
         }
 
+        bool insert(
+            param_map_t *pmap,
+            std::vector<std::string>::const_iterator pos,
+            std::vector<std::string>::const_iterator end,
+            object obj) {
+            if (pos == end) {
+                //
+                //  not found
+                //
+#ifdef _DEBUG
+                std::cout << "insert: " << obj << std::endl;
+#endif
+                return false;
+            }
+            auto const name = *pos++;
+            auto idx = pmap->find(name);
+            if (idx != pmap->end()) {
+                //
+                //  walk down
+                //
+                decltype(auto) pm = object_cast<param_map_t>(idx->second);
+                if (pm != nullptr) {
+                    return insert(pm, pos, end, obj);
+                } else {
+                    // error: name already assigned
+                    return false;
+                }
+            }
+            //
+            //  create entry
+            //
+            return pmap->emplace(name, obj).second;
+        }
+
         std::pair<param_t, bool>
         extract(param_map_t *pmap, std::vector<std::string>::const_iterator pos, std::vector<std::string>::const_iterator end) {
             if (pos != end) {
@@ -526,10 +563,17 @@ namespace cyng {
         return false;
     }
 
+    bool insert(param_map_t &pmap, std::vector<std::string> const &path, object obj) {
+        if (!path.empty()) {
+            return insert(&pmap, path.begin(), path.end(), obj);
+        }
+        return false;
+    }
+
     void rename(param_map_t &pmap, std::vector<std::string> path, std::vector<std::string> const &rep) {
         decltype(auto) r = extract(pmap, path);
         if (r.second) {
-            insert(pmap, rep, r.first);
+            insert(pmap, rep, r.first.second);
 #ifdef _DEBUG
             // std::cout << cyng::io::to_plain(cyng::make_object(pmap)) << std::endl;
             //  std::cout << cyng::io::to_typed(cyng::make_object(pmap)) << std::endl;

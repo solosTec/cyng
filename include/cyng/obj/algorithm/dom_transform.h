@@ -39,7 +39,7 @@ namespace cyng {
      * Extract the object with the specified path.
      * The boolean value is true, if the specified path was found.
      */
-    [[nodiscard]] std::pair<param_t, bool> extract(param_map_t &pmap, std::vector<std::string> const &path);
+    std::pair<param_t, bool> extract(param_map_t &pmap, std::vector<std::string> const &path);
 
     /**
      * Take a parameter map and extract all object values into a vactor.
@@ -57,6 +57,7 @@ namespace cyng {
      * Insert a parameter at the specified path
      */
     bool insert(param_map_t &pmap, std::vector<std::string> const &path, param_t param);
+    bool insert(param_map_t &pmap, std::vector<std::string> const &path, object obj);
 
     /**
      * Move an object to a different path
