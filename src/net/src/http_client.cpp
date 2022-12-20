@@ -183,7 +183,7 @@ namespace cyng {
                     // std::cout << res_ << std::endl;
                     param_map_t header;
                     for (auto const &field : res_) {
-                        std::string value = field.value();
+                        std::string value = field.value().to_string();
                         // std::cout << "> " << field.name_string() << ": " << value << std::endl;
                         header.emplace(field.name_string(), make_object(value));
                     }
