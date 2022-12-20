@@ -81,6 +81,6 @@ target_link_libraries(cyng_sys
 #        "$<BUILD_INTERFACE:date::date>"
 #        "$<$<AND:0,${CYNG_USE_DATE_LIBRARY}>:date::date>"
 #        "$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>"
-        "$<BUILD_INTERFACE:$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>>"
+#        "$<BUILD_INTERFACE:$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>>"
 )
   

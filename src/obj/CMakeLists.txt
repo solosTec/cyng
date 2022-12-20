@@ -71,8 +71,8 @@ target_compile_definitions(cyng_obj
         $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
 )
 
-target_link_libraries(cyng_obj 
-    PRIVATE 
-        "$<BUILD_INTERFACE:$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>>"
+#target_link_libraries(cyng_obj 
+#    PRIVATE 
+#        "$<BUILD_INTERFACE:$<$<BOOL:${CYNG_USE_DATE_LIBRARY}>:date::date>>"
 #        $<BUILD_INTERFACE:date::date>
-)
+#)
