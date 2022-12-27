@@ -37,27 +37,27 @@ add_library(cyng_obj ${GLOBAL_LIBRARY_TYPE} ${object_lib})
 add_library(cyng::obj ALIAS "cyng_obj")
 
 target_include_directories(cyng_obj
-    PUBLIC 
+    PRIVATE
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
         $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
-    PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_features(cyng_obj PRIVATE 
-    cxx_alignas
-    cxx_std_20
-    cxx_auto_type
-    cxx_constexpr
-    cxx_lambdas
-    cxx_noexcept
-    cxx_override
-    cxx_range_for
-    cxx_rvalue_references
-    cxx_static_assert
-    cxx_strong_enums
+target_compile_features(cyng_obj 
+    PRIVATE 
+        cxx_alignas
+        cxx_std_20
+        cxx_auto_type
+        cxx_constexpr
+        cxx_lambdas
+        cxx_noexcept
+        cxx_override
+        cxx_range_for
+        cxx_rvalue_references
+        cxx_static_assert
+        cxx_strong_enums
 )
 
 #

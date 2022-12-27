@@ -401,11 +401,22 @@ endif()
 
 message(STATUS "** install targets              : ${REQUESTED_LIBS}")
  
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
-        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
+install(
+    DIRECTORY 
+        "${CMAKE_SOURCE_DIR}/include/cyng" # source directory
+    DESTINATION 
+        "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
         FILES_MATCHING # install only matched files
-        PATTERN "*.h"
-        PATTERN "*hpp"
+    PATTERN "*.h"
+    PATTERN "*hpp"
+)
+#
+# install cyng.h
+#
+install(
+    FILES 
+        "${CMAKE_BINARY_DIR}/include/cyng.h"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
 )
 
 # export target to a cyng_coreTargets.cmake

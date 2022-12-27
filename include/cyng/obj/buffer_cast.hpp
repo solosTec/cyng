@@ -11,7 +11,6 @@
 #include <cyng/obj/object.h>
 
 #include <algorithm>
-// #include <bit>
 #include <array>
 #include <cstring>
 #include <cyng.h> //	cyng_BIG_ENDIAN
