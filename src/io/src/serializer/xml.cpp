@@ -46,6 +46,24 @@ namespace cyng {
             return node.append_child(pugi::node_pcdata).set_value(v.c_str());
         }
 
+        bool serializer<std::u8string, XML>::write(pugi::xml_node node, std::u8string const &v) {
+            // node.append_attribute("type").set_value(cyng::intrinsic_name<std::u8string>());
+            // return node.append_child(pugi::node_pcdata).set_value(v.c_str());
+            return false;
+        }
+
+        bool serializer<std::u16string, XML>::write(pugi::xml_node node, std::u16string const &v) {
+            // node.append_attribute("type").set_value(cyng::intrinsic_name<std::u8string>());
+            // return node.append_child(pugi::node_pcdata).set_value(v.c_str());
+            return false;
+        }
+
+        bool serializer<std::u32string, XML>::write(pugi::xml_node node, std::u32string const &v) {
+            // node.append_attribute("type").set_value(cyng::intrinsic_name<std::u8string>());
+            // return node.append_child(pugi::node_pcdata).set_value(v.c_str());
+            return false;
+        }
+
         bool serializer<boost::uuids::uuid, XML>::write(pugi::xml_node node, boost::uuids::uuid const &v) {
             node.append_attribute("type").set_value(cyng::intrinsic_name<boost::uuids::uuid>());
             auto const str = boost::uuids::to_string(v);

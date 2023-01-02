@@ -252,6 +252,7 @@ namespace cyng {
             return cs;
         }
         std::size_t serializer<double, JSON>::write(std::ostream &os, double v) { return serializer<double, PLAIN>::write(os, v); }
+
         std::size_t serializer<std::string, JSON>::write(std::ostream &os, std::string const &str) {
             calc_size const cs(os);
             //	store and reset stream state
@@ -288,6 +289,24 @@ namespace cyng {
 
             os << '"';
 
+            return cs;
+        }
+
+        std::size_t serializer<std::u8string, JSON>::write(std::ostream &os, std::u8string const &str) {
+            calc_size const cs(os);
+            os << "\"ToDo\"";
+            return cs;
+        }
+
+        std::size_t serializer<std::u16string, JSON>::write(std::ostream &os, std::u16string const &str) {
+            calc_size const cs(os);
+            os << "\"ToDo\"";
+            return cs;
+        }
+
+        std::size_t serializer<std::u32string, JSON>::write(std::ostream &os, std::u32string const &str) {
+            calc_size const cs(os);
+            os << "\"ToDo\"";
             return cs;
         }
 

@@ -66,16 +66,6 @@ namespace cyng {
             return write_binary(os, b) + sizeof(std::uint16_t) + ll;
         }
 
-        std::size_t serializer<std::string, BINARY>::write(std::ostream &os, std::string const &str) {
-            //
-            //	type - length - data
-            //
-            serialize_type_tag<std::string>(os);
-            auto const ll = serialize_length(os, str.size());
-            os << str;
-            return str.size() + sizeof(std::uint16_t) + ll;
-        }
-
         std::size_t serializer<std::filesystem::path, BINARY>::write(std::ostream &os, std::filesystem::path const &p) {
             //
             //	type - length - data

@@ -12,209 +12,106 @@
 #include <cyng/obj/tag.hpp>
 
 namespace cyng {
-	namespace io {
+    namespace io {
 
-		/**
-		 * fallback
-		 */
-		template <typename T>
-		struct serializer <T, CPP>
-		{
-			static std::size_t write(std::ostream& os, T const& v) {
-				calc_size const cs(os);
-				os << '"' << v << '"';
-				return cs;
-			}
-		};
+        /**
+         * fallback
+         */
+        template <typename T> struct serializer<T, CPP> {
+            static std::size_t write(std::ostream &os, T const &v) {
+                calc_size const cs(os);
+                os << '"' << v << '"';
+                return cs;
+            }
+        };
 
-		template <>
-		struct serializer <null, CPP>
-		{
-			static std::size_t write(std::ostream& os, null n);
-		};
+        template <> struct serializer<null, CPP> {
+            static std::size_t write(std::ostream &os, null n);
+        };
 
-		template <>
-		struct serializer <eod, CPP>
-		{
-			static std::size_t write(std::ostream& os, eod e);
-		};
+        template <> struct serializer<eod, CPP> {
+            static std::size_t write(std::ostream &os, eod e);
+        };
 
-		template <>
-		struct serializer <bool, CPP>
-		{
-			static std::size_t write(std::ostream& os, bool v);
-		};
+        template <> struct serializer<bool, CPP> {
+            static std::size_t write(std::ostream &os, bool v);
+        };
 
+        template <> struct serializer<std::int8_t, CPP> {
+            static std::size_t write(std::ostream &os, std::int8_t v);
+        };
 
-		//template <>
-		//struct serializer <char, CPP>
-		//{
-		//	static std::size_t write(std::ostream& os, char v);
-		//};
+        template <> struct serializer<std::int16_t, CPP> {
+            static std::size_t write(std::ostream &os, std::int16_t v);
+        };
 
-		template <>
-		struct serializer <std::int8_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::int8_t v);
-		};
+        template <> struct serializer<std::int32_t, CPP> {
+            static std::size_t write(std::ostream &os, std::int32_t v);
+        };
 
-		template <>
-		struct serializer <std::int16_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::int16_t v);
-		};
+        template <> struct serializer<std::int64_t, CPP> {
+            static std::size_t write(std::ostream &os, std::int64_t v);
+        };
 
-		template <>
-		struct serializer <std::int32_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::int32_t v);
-		};
+        template <> struct serializer<std::uint8_t, CPP> {
+            static std::size_t write(std::ostream &os, std::uint8_t v);
+        };
 
-		template <>
-		struct serializer <std::int64_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::int64_t v);
-		};
+        template <> struct serializer<std::uint16_t, CPP> {
+            static std::size_t write(std::ostream &os, std::uint16_t v);
+        };
 
-		template <>
-		struct serializer <std::uint8_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::uint8_t v);
-		};
+        template <> struct serializer<std::uint32_t, CPP> {
+            static std::size_t write(std::ostream &os, std::uint32_t v);
+        };
 
-		template <>
-		struct serializer <std::uint16_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::uint16_t v);
-		};
+        template <> struct serializer<std::uint64_t, CPP> {
+            static std::size_t write(std::ostream &os, std::uint64_t v);
+        };
 
-		template <>
-		struct serializer <std::uint32_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::uint32_t v);
-		};
+        template <> struct serializer<double, CPP> {
+            static std::size_t write(std::ostream &os, double v);
+        };
 
-		template <>
-		struct serializer <std::uint64_t, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::uint64_t v);
-		};
+        template <typename CharT, typename Traits, typename Allocator>
+        struct serializer<std::basic_string<CharT, Traits, Allocator>, CPP> {
+            using string_t = std::basic_string<CharT, Traits, Allocator>;
+            static std::size_t write(std::ostream &os, string_t const &s) {
+                static const type<string_t> type;
 
-		template <>
-		struct serializer <double, CPP>
-		{
-			static std::size_t write(std::ostream& os, double v);
-		};
+                calc_size const cs(os);
+                os << '"';
+                serializer<string_t, PLAIN>::write(os, s);
+                os << '"';
 
-		template <>
-		struct serializer <std::string, CPP> 
-		{
-			static std::size_t write(std::ostream& os, std::string const& str);
-		};
+                return cs;
+            }
+        };
 
-		template <>
-		struct serializer <std::filesystem::path, CPP>
-		{
-			static std::size_t write(std::ostream& os, std::filesystem::path const&);
-		};
+        template <> struct serializer<std::filesystem::path, CPP> {
+            static std::size_t write(std::ostream &os, std::filesystem::path const &);
+        };
 
-		//template<typename T>
-		//struct serializer <boost::asio::ip::basic_endpoint<T>, CPP>
-		//{
-		//	static std::size_t write(std::ostream& os, boost::asio::ip::basic_endpoint<T> const& ep) {
+        template <> struct serializer<severity, CPP> {
+            static std::size_t write(std::ostream &os, severity s);
+        };
 
-		//		auto const address = ep.address().to_string();
-		//		auto const port = ep.port();
+        template <> struct serializer<boost::uuids::uuid, CPP> {
+            static std::size_t write(std::ostream &os, boost::uuids::uuid const &v);
+        };
 
-		//		//
-		//		//	address:port
-		//		//
-		//		os
-		//			<< address
-		//			<< ':'
-		//			<< port
-		//			;
+        template <> struct serializer<vector_t, CPP> {
+            static std::size_t write(std::ostream &o, vector_t const &v);
+        };
 
-		//		return address.size() + sizeof(port) + 1;
-		//	}
-		//};
+        template <> struct serializer<tuple_t, CPP> {
+            static std::size_t write(std::ostream &o, tuple_t const &v);
+        };
 
-		template <>
-		struct serializer <severity, CPP>
-		{
-			static std::size_t write(std::ostream& os, severity s);
-		};
+        template <> struct serializer<param_t, CPP> {
+            static std::size_t write(std::ostream &o, param_t const &v);
+        };
 
-		template <>
-		struct serializer <boost::uuids::uuid, CPP>
-		{
-			static std::size_t write(std::ostream& os, boost::uuids::uuid const& v);
-		};
-
-		template <>
-		struct serializer <vector_t, CPP>
-		{
-			static std::size_t write(std::ostream& o, vector_t const& v);
-		};
-
-		template <>
-		struct serializer <tuple_t, CPP>
-		{
-			static std::size_t write(std::ostream& o, tuple_t const& v);
-		};
-
-		//template <>
-		//struct serializer <deque_t, CPP>
-		//{
-		//	static std::size_t write(std::ostream& o, deque_t const& v);
-		//};
-
-		template <>
-		struct serializer <param_t, CPP>
-		{
-			static std::size_t write(std::ostream& o, param_t const& v);
-		};
-
-		//template <>
-		//struct serializer <attr_t, CPP>
-		//{
-		//	static std::size_t write(std::ostream& o, attr_t const& v);
-		//};
-
-		//template <>
-		//struct serializer <param_map_t, CPP>
-		//{
-		//	static std::size_t write(std::ostream& o, param_map_t const& v);
-		//};
-
-		//template <>
-		//struct serializer <attr_map_t, CPP>
-		//{
-		//	static std::size_t write(std::ostream& o, attr_map_t const& v);
-		//};
-
-		///**
-		// * Write a timespan in hh::mm::ss.ffff format.
-		// *
-		// * @tparam R an arithmetic type representing the number of ticks
-		// * @tparam P a std::ratio representing the tick period (i.e. the number of seconds per tick)
-		// */
-		//template <typename R, typename P>
-		//struct serializer <std::chrono::duration<R, P>, CPP>
-		//{
-		//	using type = std::chrono::duration<R, P>;
-		//	static std::size_t write(std::ostream& o, std::chrono::duration<R, P> const& v) {
-		//		//	ToDO:
-		//		return 0;
-		//	}
-		//};
-
-		//template <>
-		//struct serializer <std::chrono::system_clock::time_point, CPP>
-		//{
-		//	static std::size_t write(std::ostream& o, std::chrono::system_clock::time_point const&);
-		//};
-
-	}
-}
+    } // namespace io
+} // namespace cyng
 #endif

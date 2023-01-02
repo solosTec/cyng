@@ -287,6 +287,12 @@ BOOST_AUTO_TEST_CASE(parser) {
     inp = convert(obj);
     p.read(std::begin(inp), std::end(inp));
 
+    std::u32string s32{'h', 'e', 'l', 'l', 'o'};
+    obj = cyng::make_object(s32);
+    cmp = cyng::io::to_typed(obj); //
+    inp = convert(obj);
+    p.read(std::begin(inp), std::end(inp));
+
     //
     //	test "¶" c2 b6
     //

@@ -133,20 +133,21 @@ namespace cyng {
      */
     template <typename T, std::size_t N = sizeof(T), std::size_t OFFSET = 0> [[nodiscard]] buffer_t to_buffer_be(T n) {
 
+        static_assert(N != 0, "invalid size");
         static_assert(OFFSET <= N, "index out if range");
         static_assert(N + OFFSET <= sizeof(T), "type size exceeded");
         static_assert(std::is_trivial<T>::value, "trivial data type required");
 
-        using length_t = std::integral_constant<std::size_t, N>;
+        // using length_t = std::integral_constant<std::size_t, N>;
 
         buffer_t vec;
-        vec.resize(length_t::value);
-        BOOST_ASSERT(vec.size() == length_t::value);
+        vec.resize(N);
+        BOOST_ASSERT(vec.size() == N);
 
-        if (vec.size() == length_t::value) {
+        if (vec.size() == N) {
             auto r = vec.data();
             const void *src = reinterpret_cast<const char *>(&n) + OFFSET;
-            std::memcpy(r, src, length_t::value);
+            std::memcpy(r, src, N);
         }
         return vec;
     }

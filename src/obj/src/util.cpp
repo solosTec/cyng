@@ -15,13 +15,6 @@
 
 namespace cyng {
 
-    std::string make_string(buffer_t const &buffer) {
-        std::string s;
-        s.reserve(buffer.size());
-        std::copy(buffer.begin(), buffer.end(), std::inserter(s, s.end()));
-        return s;
-    }
-
     std::string make_string(buffer_t const &buffer, std::size_t offset) {
         return std::string(std::begin(buffer) + offset, std::end(buffer));
     }
@@ -119,7 +112,9 @@ namespace cyng {
         return std::chrono::system_clock::time_point(duration(to_numeric<rep>(buffer)));
     }
 
-    boost::asio::ip::address make_ip_address(buffer_t const &buffer) { return boost::asio::ip::make_address(make_string(buffer)); }
+    boost::asio::ip::address make_ip_address(buffer_t const &buffer) {
+        return boost::asio::ip::make_address(make_string<std::string::value_type>(buffer));
+    }
 
     boost::system::error_code make_ec(buffer_t const &buffer) {
         boost::system::error_code ec;

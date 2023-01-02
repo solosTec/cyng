@@ -86,7 +86,19 @@ namespace cyng {
         return {o, make_object(std::forward<Args>(args)...)};
     }
 
-    [[nodiscard]] std::string make_string(buffer_t const &);
+    template <class CharT, class Traits = std::char_traits<CharT>, class Allocator = std::allocator<CharT>>
+    [[nodiscard]] auto make_string(buffer_t const &buffer) -> std::basic_string<CharT, Traits, Allocator> {
+        using string_t = std::basic_string<CharT, Traits, Allocator>;
+        using value_t = typename string_t::value_type;
+        string_t s;
+        constexpr static std::size_t size = sizeof(value_t) / sizeof(char);
+        s.reserve(buffer.size() / size);
+        for (std::size_t idx = 0; idx < buffer.size(); idx += size) {
+            auto const r = to_numeric<value_t>(buffer, idx);
+            s.push_back(r);
+        }
+        return s;
+    }
 
     [[nodiscard]] std::string make_string(buffer_t const &, std::size_t offset);
 

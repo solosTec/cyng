@@ -138,9 +138,23 @@ namespace cyng {
         template <> struct serializer<bool, BINARY> {
             static std::size_t write(std::ostream &os, bool v);
         };
-        template <> struct serializer<std::string, BINARY> {
-            static std::size_t write(std::ostream &os, std::string const &);
+
+        template <typename CharT, typename Traits /* = std::char_traits<CharT>*/, typename Allocator /*= std::allocator<CharT>*/>
+        struct serializer<std::basic_string<CharT, Traits, Allocator>, BINARY> {
+            using string_t = std::basic_string<CharT, Traits, Allocator>;
+            static std::size_t write(std::ostream &os, string_t const &str) {
+                //
+                //	type - length - data
+                //
+                serialize_type_tag<string_t>(os);
+                auto const ll = serialize_length(os, str.size() * sizeof(CharT));
+                for (auto const &c : str) {
+                    write_binary<CharT>(os, c);
+                }
+                return str.size() * sizeof(CharT) + sizeof(std::uint16_t) + ll;
+            }
         };
+
         template <> struct serializer<std::filesystem::path, BINARY> {
             static std::size_t write(std::ostream &os, std::filesystem::path const &);
         };

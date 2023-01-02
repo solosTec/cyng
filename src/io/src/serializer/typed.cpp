@@ -53,28 +53,28 @@ namespace cyng {
             return cs;
         }
 
-        std::size_t serializer<std::uint8_t, TYPED>::write(std::ostream &os, uint8_t v) {
+        std::size_t serializer<std::uint8_t, TYPED>::write(std::ostream &os, std::uint8_t v) {
             calc_size const cs(os);
             serializer<std::uint8_t, PLAIN>::write(os, v);
             os << "u8";
             return cs;
         }
 
-        std::size_t serializer<std::uint16_t, TYPED>::write(std::ostream &os, uint16_t v) {
+        std::size_t serializer<std::uint16_t, TYPED>::write(std::ostream &os, std::uint16_t v) {
             calc_size const cs(os);
             serializer<std::uint16_t, PLAIN>::write(os, v);
             os << "u16";
             return cs;
         }
 
-        std::size_t serializer<std::uint32_t, TYPED>::write(std::ostream &os, uint32_t v) {
+        std::size_t serializer<std::uint32_t, TYPED>::write(std::ostream &os, std::uint32_t v) {
             calc_size const cs(os);
             serializer<std::uint32_t, PLAIN>::write(os, v);
             os << "u32";
             return cs;
         }
 
-        std::size_t serializer<std::uint64_t, TYPED>::write(std::ostream &os, uint64_t v) {
+        std::size_t serializer<std::uint64_t, TYPED>::write(std::ostream &os, std::uint64_t v) {
             calc_size const cs(os);
             serializer<std::uint64_t, PLAIN>::write(os, v);
             os << "u64";
@@ -107,13 +107,13 @@ namespace cyng {
             return cs;
         }
 
-        std::size_t serializer<std::string, TYPED>::write(std::ostream &os, std::string const &s) {
-            static const type<std::string> type;
+        // std::size_t serializer<std::string, TYPED>::write(std::ostream &os, std::string const &s) {
+        //     static const type<std::string> type;
 
-            calc_size const cs(os);
-            os << '"' << s << '"' << type.type_name();
-            return cs;
-        }
+        //    calc_size const cs(os);
+        //    os << '"' << s << '"' << type.type_name();
+        //    return cs;
+        //}
 
         std::size_t serializer<std::filesystem::path, TYPED>::write(std::ostream &os, std::filesystem::path const &p) {
             static const type<std::filesystem::path> type;

@@ -50,6 +50,18 @@ namespace cyng {
             static bool write(pugi::xml_node, std::string const &v);
         };
 
+        template <> struct serializer<std::u8string, XML> {
+            static bool write(pugi::xml_node, std::u8string const &v);
+        };
+
+        template <> struct serializer<std::u16string, XML> {
+            static bool write(pugi::xml_node, std::u16string const &v);
+        };
+
+        template <> struct serializer<std::u32string, XML> {
+            static bool write(pugi::xml_node, std::u32string const &v);
+        };
+
         template <> struct serializer<boost::uuids::uuid, XML> {
             static bool write(pugi::xml_node node, boost::uuids::uuid const &v);
         };

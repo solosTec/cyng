@@ -63,6 +63,9 @@ namespace cyng {
                     case TC_INT64: return write_impl<traits::reverse_type<TC_INT64>::type>(os, obj);
 
                     case TC_STRING: return write_impl<traits::reverse_type<TC_STRING>::type>(os, obj);
+                    case TC_STRING_U8: return write_impl<traits::reverse_type<TC_STRING_U8>::type>(os, obj);
+                    case TC_STRING_U16: return write_impl<traits::reverse_type<TC_STRING_U16>::type>(os, obj);
+                    case TC_STRING_U32: return write_impl<traits::reverse_type<TC_STRING_U32>::type>(os, obj);
                     case TC_FS_PATH: return write_impl<traits::reverse_type<TC_FS_PATH>::type>(os, obj);
 
                     case TC_TIME_POINT: return write_impl<traits::reverse_type<TC_TIME_POINT>::type>(os, obj);

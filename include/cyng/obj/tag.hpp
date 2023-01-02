@@ -33,6 +33,9 @@ namespace cyng {
             std::int64_t,
 
             std::string,
+            std::u8string,
+            std::u16string,
+            std::u32string,
             std::filesystem::path,
             // std::filesystem::file_status,
 
@@ -126,7 +129,11 @@ namespace cyng {
             "i32", //	int32_t
             "i64", //	int64_t
 
-            "s",       //	string
+            "s",    //	string
+            "su8",  // std::u8string,
+            "su16", // std::u16string,
+            "su32", // std::u32string,
+
             "fs:path", //	boost::filesystem::path
 
             "chrono:tp",  //	chrono::system_clock::time_point
@@ -258,6 +265,10 @@ namespace cyng {
         TC_INT64 = type_tag_traits<std::int64_t>(),
 
         TC_STRING = type_tag_traits<std::string>(),
+        TC_STRING_U8 = type_tag_traits<std::u8string>(),
+        TC_STRING_U16 = type_tag_traits<std::u16string>(),
+        TC_STRING_U32 = type_tag_traits<std::u32string>(),
+
         TC_FS_PATH = type_tag_traits<std::filesystem::path>(),
 
         TC_TIME_POINT = type_tag_traits<std::chrono::system_clock::time_point>(),
