@@ -59,9 +59,11 @@ namespace cyng {
             static std::size_t write(std::ostream &os, std::uint64_t v);
         };
 
+#if __cplusplus >= 202002L
         template <> struct serializer<std::u8string, PLAIN> {
             static std::size_t write(std::ostream &os, std::u8string const &v);
         };
+#endif
 
         template <> struct serializer<std::u16string, PLAIN> {
             static std::size_t write(std::ostream &os, std::u16string const &v);

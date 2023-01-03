@@ -117,11 +117,14 @@ namespace cyng {
             return cs;
         }
 
+#if __cplusplus >= 202002L
         std::size_t serializer<std::u8string, PLAIN>::write(std::ostream &os, std::u8string const &s) {
             calc_size const cs(os);
             os << "ToDo";
             return cs;
         }
+#endif
+
         std::size_t serializer<std::u16string, PLAIN>::write(std::ostream &os, std::u16string const &s) {
             calc_size const cs(os);
             //  ToDo:

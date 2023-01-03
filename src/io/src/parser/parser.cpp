@@ -138,7 +138,7 @@ namespace cyng {
             case TC_INT64: return deserialize_numeric<traits::reverse_type<TC_INT64>::type>();
 
             case TC_STRING: return make_object(make_string<std::string::value_type>(buffer_));
-            case TC_STRING_U8: return make_object(make_string<std::u8string::value_type>(buffer_));
+//            case TC_STRING_U8: return make_object(make_string<std::u8string::value_type>(buffer_));
             case TC_STRING_U16: return make_object(make_string<std::u16string::value_type>(buffer_));
             case TC_STRING_U32: return make_object(make_string<std::u32string::value_type>(buffer_));
 

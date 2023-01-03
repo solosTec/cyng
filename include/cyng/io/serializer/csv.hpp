@@ -38,7 +38,6 @@ namespace cyng {
         struct serializer<std::basic_string<CharT, Traits, Allocator>, CSV> {
             using string_t = std::basic_string<CharT, Traits, Allocator>;
             static std::size_t write(std::ostream &os, string_t const &s) {
-                static const type<string_t> type;
 
                 calc_size const cs(os);
                 os << '"';

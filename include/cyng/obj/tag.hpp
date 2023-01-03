@@ -33,7 +33,7 @@ namespace cyng {
             std::int64_t,
 
             std::string,
-            std::u8string,
+//            std::u8string,    //!< requires C++20
             std::u16string,
             std::u32string,
             std::filesystem::path,
@@ -130,7 +130,7 @@ namespace cyng {
             "i64", //	int64_t
 
             "s",    //	string
-            "su8",  // std::u8string,
+//            "su8",  // std::u8string,
             "su16", // std::u16string,
             "su32", // std::u32string,
 
@@ -265,7 +265,7 @@ namespace cyng {
         TC_INT64 = type_tag_traits<std::int64_t>(),
 
         TC_STRING = type_tag_traits<std::string>(),
-        TC_STRING_U8 = type_tag_traits<std::u8string>(),
+//        TC_STRING_U8 = type_tag_traits<std::u8string>(),
         TC_STRING_U16 = type_tag_traits<std::u16string>(),
         TC_STRING_U32 = type_tag_traits<std::u32string>(),
 

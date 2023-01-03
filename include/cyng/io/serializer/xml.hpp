@@ -50,9 +50,11 @@ namespace cyng {
             static bool write(pugi::xml_node, std::string const &v);
         };
 
+#if __cplusplus >= 202002L
         template <> struct serializer<std::u8string, XML> {
             static bool write(pugi::xml_node, std::u8string const &v);
         };
+#endif
 
         template <> struct serializer<std::u16string, XML> {
             static bool write(pugi::xml_node, std::u16string const &v);

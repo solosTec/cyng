@@ -292,11 +292,13 @@ namespace cyng {
             return cs;
         }
 
+#if __cplusplus >= 202002L
         std::size_t serializer<std::u8string, JSON>::write(std::ostream &os, std::u8string const &str) {
             calc_size const cs(os);
             os << "\"ToDo\"";
             return cs;
         }
+#endif
 
         std::size_t serializer<std::u16string, JSON>::write(std::ostream &os, std::u16string const &str) {
             calc_size const cs(os);

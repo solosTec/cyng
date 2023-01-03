@@ -72,18 +72,6 @@ namespace cyng {
             static std::size_t write(std::ostream &os, std::uint64_t v);
         };
 
-        // template <> struct serializer<std::u8string, TYPED> {
-        //     static std::size_t write(std::ostream &os, std::u8string const &v);
-        // };
-
-        // template <> struct serializer<std::u16string, TYPED> {
-        //     static std::size_t write(std::ostream &os, std::u16string const &v);
-        // };
-
-        // template <> struct serializer<std::u32string, TYPED> {
-        //     static std::size_t write(std::ostream &os, std::u32string const &v);
-        // };
-
         template <> struct serializer<float, TYPED> {
             static std::size_t write(std::ostream &os, float v);
         };
