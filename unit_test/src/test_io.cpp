@@ -518,7 +518,8 @@ BOOST_AUTO_TEST_CASE(parser) {
     //
     //	color_8
     //
-    obj = cyng::make_object(cyng::color_8(0, 128, 64, 0));
+    // obj = cyng::make_object(cyng::color_8(0, 128, 64, 0));
+    obj = cyng::make_object(cyng::names::green<std::uint8_t>());
     cmp = cyng::io::to_typed(obj); //
     inp = convert(obj);
     p.read(std::begin(inp), std::end(inp));
