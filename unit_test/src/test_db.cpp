@@ -3,15 +3,15 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
+
+#include <cyng/db/details/statement_interface.h>
+#include <cyng/db/julian.h>
 #include <cyng/db/session.h>
 #include <cyng/db/storage.h>
 #include <cyng/io/ostream.h>
-#include <cyng/obj/tag.hpp>
-
-#include <cyng/db/details/statement_interface.h>
-#include <cyng/obj/util.hpp>
-// #include <cyng/sys/clock.h>
 #include <cyng/obj/intrinsics/date.h>
+#include <cyng/obj/tag.hpp>
+#include <cyng/obj/util.hpp>
 
 #include <iostream>
 
@@ -115,5 +115,14 @@ BOOST_AUTO_TEST_CASE(SQLite) {
 }
 
 BOOST_AUTO_TEST_CASE(ODBC) {}
+
+BOOST_AUTO_TEST_CASE(julian) {
+    // auto tp = cyng::sys_to_jdate(std::chrono::system_clock::now());
+    //   2459932.40170139
+    auto jtp = cyng::jdate_clock::time_point{cyng::jdate_clock::duration{2457354.310832}};
+    auto tp = floor<std::chrono::seconds>(jdate_to_sys(jtp));
+    // std::cout << "Julian day " << jtp.time_since_epoch().count() << " is " << tp << " UTC\n";
+    //   Julian day 2.45735e+06 is 2015-11-27 19:27:35 UTC
+}
 
 BOOST_AUTO_TEST_SUITE_END()

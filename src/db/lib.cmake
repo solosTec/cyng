@@ -8,6 +8,7 @@ set (db_cpp
     src/connection_types.cpp
     src/session_pool.cpp
     src/storage.cpp
+    src/julian.cpp
 )
     
 set (db_h
@@ -15,6 +16,7 @@ set (db_h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/db/connection_types.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/db/session_pool.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/db/storage.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/julian.h
 )
 
 set (db_details

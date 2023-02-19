@@ -6,6 +6,7 @@
  */
 
 #include "sqlite_result.h"
+#include <cyng/db/julian.h>
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/intrinsics/date.h>
@@ -161,11 +162,20 @@ namespace cyng {
                         int size = ::sqlite3_column_bytes(stmt, index);
                         const std::string result((const char *)ptr, size);
                         BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
-                        //	format is "%Y-%m-%d %H:%M:%S"
-                        //  example "2022-11-30 12:41:00"
-                        //	parse time stamp as UTC
-                        auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
-                        return make_object(d.to_utc_time_point());
+                        if (result.size() == 19 && result.at(4) == '-' && result.at(7) == '-' && result.at(13) == ':') {
+                            //	format is "%Y-%m-%d %H:%M:%S"
+                            //  example "2022-11-30 12:41:00"
+                            //	parse time stamp as UTC
+                            auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
+                            return make_object(d.to_utc_time_point());
+                        } else if (result.size() == 16 && result.at(7) == '.') {
+                            //  julian date
+                            auto const d = std::stod(result, nullptr);
+                            auto jtp = cyng::jdate_clock::time_point{cyng::jdate_clock::duration{d}};
+                            auto tp = floor<std::chrono::system_clock::duration>(jdate_to_sys(jtp));
+                            return make_object(tp);
+                        }
+                        //  error
                     }
                     return make_object();
                 }
@@ -176,10 +186,22 @@ namespace cyng {
                         int size = ::sqlite3_column_bytes(stmt, index);
                         const std::string result((const char *)ptr, size);
                         BOOST_ASSERT(result.size() == static_cast<std::size_t>(size));
-                        //	format is "%Y-%m-%d %H:%M:%S"
-                        //  example "2022-11-28 11:06:44"
-                        auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
-                        return make_object(d);
+                        // BOOST_ASSERT(result.size() == 19);
+                        if (result.size() == 19 && result.at(4) == '-' && result.at(7) == '-' && result.at(13) == ':') {
+                            //	format is "%Y-%m-%d %H:%M:%S"
+                            //  example "2022-11-28 11:06:44"
+                            auto const d = make_date(result, "%Y-%m-%d %H:%M:%S");
+                            return make_object(d);
+                        }
+                        //  example: 2459932.40170139
+                        else if (result.size() == 16 && result.at(7) == '.') {
+                            //  julian date
+                            auto const d = std::stod(result, nullptr);
+                            auto jtp = cyng::jdate_clock::time_point{cyng::jdate_clock::duration{d}};
+                            auto tp = floor<std::chrono::seconds>(jdate_to_sys(jtp));
+                            return make_object(cyng::date::make_date_from_utc_time(tp));
+                        }
+                        //  error
                     }
                     return make_object();
                 }

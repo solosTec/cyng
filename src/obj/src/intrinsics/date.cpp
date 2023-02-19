@@ -277,7 +277,12 @@ namespace cyng {
             //
             //  "%z" timezone works only for local time.
             //
-            os << std::put_time(&d.operator const tm &(), format.c_str());
+            auto const &v = d.operator const tm &();
+            BOOST_ASSERT(v.tm_sec >= 0 && v.tm_sec < 61);
+            BOOST_ASSERT(v.tm_min >= 0 && v.tm_min < 60);
+            BOOST_ASSERT(v.tm_mday > 0 && v.tm_mday < 32);
+            BOOST_ASSERT(v.tm_year < 200); //   this is an artificial restriction
+            os << std::put_time(&v, format.c_str());
         } catch (std::exception const &ex) {
             os << ex.what();
         }
