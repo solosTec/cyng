@@ -17,6 +17,7 @@ set (net_cpp
 )
     
 set (net_h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/net/net.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/net/client.hpp
     ${PROJECT_SOURCE_DIR}/../../include/cyng/net/client_factory.hpp
     ${PROJECT_SOURCE_DIR}/../../include/cyng/net/client_proxy.h

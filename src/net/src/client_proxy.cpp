@@ -22,7 +22,7 @@ namespace cyng {
             return *this;
         }
 
-        client_proxy &client_proxy::operator=(client_proxy &&proxy) {
+        client_proxy &client_proxy::operator=(client_proxy &&proxy) noexcept {
             //
             //  close running client
             //
@@ -45,6 +45,15 @@ namespace cyng {
             }
         }
 
+        void client_proxy::close() {
+            if (client_) {
+                //
+                //  close socket
+                //
+                client_->dispatch(4);
+            }
+        }
+
         void client_proxy::send(cyng::buffer_t &&data) {
             if (client_) {
                 client_->dispatch(1, std::move(data));
@@ -52,6 +61,20 @@ namespace cyng {
         }
 
         void client_proxy::send(std::string const &data) { send(cyng::make_buffer(data)); }
+
+        void client_proxy::send(std::deque<buffer_t> &&msg) {
+            if (client_) {
+                deque_t deq;
+                std::transform(msg.begin(), msg.end(), std::back_inserter(deq), [](buffer_t data) -> object {
+                    //
+                    return make_object(data);
+                });
+                // for (auto &data : msg) {
+                //     client_->dispatch(1, std::move(data));
+                // }
+                client_->dispatch(5, deq);
+            }
+        }
 
     } // namespace net
 } // namespace cyng

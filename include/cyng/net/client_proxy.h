@@ -7,8 +7,11 @@
 #ifndef CYNG_NET_CLIENT_PROXY_H
 #define CYNG_NET_CLIENT_PROXY_H
 
+// #include <cyng/net/net.h>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/task/channel.h>
+
+#include <deque>
 
 namespace cyng {
     namespace net {
@@ -22,7 +25,7 @@ namespace cyng {
              * Assign a (new) channel
              */
             client_proxy &operator=(channel_ptr);
-            client_proxy &operator=(client_proxy &&);
+            client_proxy &operator=(client_proxy &&) noexcept;
 
             /**
              * close client
@@ -35,10 +38,16 @@ namespace cyng {
             void connect(std::string host, std::string service);
 
             /**
+             * close connection
+             */
+            void close();
+
+            /**
              * send
              */
             void send(cyng::buffer_t &&data);
             void send(std::string const &data);
+            void send(std::deque<cyng::buffer_t> &&msg);
 
           private:
             channel_ptr client_;

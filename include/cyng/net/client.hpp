@@ -9,7 +9,10 @@
 
 #include <boost/asio.hpp>
 
+#include <cyng/net/net.h>
 #include <cyng/net/resolver.hpp>
+#include <cyng/obj/algorithm/add.hpp>
+#include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/obj/intrinsics/eod.h>
 #include <cyng/task/channel.h>
@@ -44,9 +47,11 @@ namespace cyng {
 
             using signatures_t = std::tuple<
                 std::function<void(std::string, std::string)>,  // [0] connect
-                std::function<void(cyng::buffer_t)>,            // [1] send
-                std::function<void(cyng::buffer_t)>,            // on receive
-                std::function<void(boost::system::error_code)>, // disconnect
+                std::function<void(buffer_t)>,                  // [1] send
+                std::function<void(buffer_t)>,                  // on receive
+                std::function<void(boost::system::error_code)>, // on disconnect
+                std::function<void(eod)>,                       // close connection
+                std::function<void(deque_t)>,                   // send deque
                 std::function<void(eod)>                        // stop
                 >;
 
@@ -55,17 +60,20 @@ namespace cyng {
 
           public:
             client(channel_weak wp
-				, cyng::controller& ctl
+				, controller& ctl
 				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed // connect failed
 				, std::function<void(endpoint_t, channel_ptr)> cb_connect // successful connected
                 , std::function<void(cyng::buffer_t)> cb_receive
                 , std::function<void(boost::system::error_code)> cb_disconnect
+                , std::function<void(client_state)> cb_state
             )
 			: sigs_ {
 					std::bind(&client::connect, this, std::placeholders::_1, std::placeholders::_2),	//	[0] connect
 					std::bind(&client::send, this, std::placeholders::_1),	// [1] 	send (write to socket)
                     cb_receive, // [2] 	on_receive (read from socket)
                     cb_disconnect, // [3] 	on_disconnect (socket was closed)
+					std::bind(&client::reset, this),	// [4] close
+					std::bind(&client::send_deque, this, std::placeholders::_1), // [5] 	send (write to socket)
 					std::bind(&client::stop, this, std::placeholders::_1)	//	eod
 				}
 				, channel_(wp)
@@ -73,13 +81,14 @@ namespace cyng {
 				, ctl_(ctl)
                 , cb_connect_(cb_connect)
 				, cb_failed_(cb_failed)
+                , cb_state_(cb_state)
 				, socket_(ctl.get_ctx())
 				, rec_({0})
 				, snd_()
 			{
-                auto sp = channel_.lock();
-                if (sp) {
-                    sp->set_channel_names({"connect", "send", "on_receive", "on_disconnect"});
+                if (auto sp = channel_.lock(); sp) {
+                    sp->set_channel_names({"connect", "send", "on_receive", "on_disconnect", "close"});
+                    cb_state_(client_state::INITIAL);
                 }
             }
 
@@ -93,10 +102,24 @@ namespace cyng {
 
                 if (auto sp = channel_.lock(); sp) {
 
-                    resolver_ = ctl_.create_channel_with_ref<cyng::net::resolver<S>>(ctl_.get_ctx(), [=, this](S &&s) {
+                    //
+                    //  update state
+                    //
+                    cb_state_(client_state::WAIT);
+
+                    resolver_ = ctl_.create_channel_with_ref<resolver<S>>(ctl_.get_ctx(), [=, this](S &&s) {
                         if (s.is_open()) {
                             socket_ = std::move(s);
+
+                            //
+                            //  update state
+                            //
                             cb_connect_(socket_.remote_endpoint(), sp); //	connect callback
+                            cb_state_(client_state::CONNECTED);
+
+                            //
+                            //  start reading
+                            //
                             this->do_read();
                         } else {
                             //
@@ -145,6 +168,23 @@ namespace cyng {
                 }
             }
 
+            void send_deque(deque_t msg) {
+
+                auto const b = snd_.empty();
+
+                //
+                //  convert to buffer_t and add it to the write buffer
+                //
+                std::transform(msg.begin(), msg.end(), std::back_inserter(snd_), [](object const &obj) -> buffer_t {
+                    //  TC_BUFFER expected
+                    BOOST_ASSERT(obj.tag() == TC_BUFFER);
+                    return to_buffer(obj);
+                });
+
+                if (b) {
+                    do_write();
+                }
+            }
             void do_write() {
 
                 if (auto sp = channel_.lock(); sp && sp->is_open()) {
@@ -180,18 +220,28 @@ namespace cyng {
                 }
             }
 
+            /**
+             * close socket and clear send buffer
+             */
             void reset() {
-                // std::cout << "reset" << std::endl;
-                boost::system::error_code ignored_ec;
-                socket_.shutdown(S::shutdown_receive, ignored_ec);
-                socket_.close(ignored_ec);
-                snd_.clear();
+                if (auto sp = channel_.lock(); sp) {
+                    boost::system::error_code ignored_ec;
+                    socket_.shutdown(S::shutdown_receive, ignored_ec);
+                    socket_.close(ignored_ec);
+                    snd_.clear();
+                    cb_state_(client_state::STOPPED);
+                }
             }
 
             /**
              * cleanup socket
              */
-            void stop(eod) { reset(); }
+            void stop(eod) {
+                if (resolver_) {
+                    resolver_->stop();
+                }
+                reset();
+            }
 
             void do_read() {
 
@@ -213,11 +263,8 @@ namespace cyng {
                     if (!ec) {
 
                         //
-                        //  get de-obfuscated data
+                        //  forward data
                         //
-                        // auto const data = parser_.read(input_buffer_.begin(),
-                        // input_buffer_.begin() + n); std::cout << std::string(rec_.begin(),
-                        // rec_.begin() + n) << std::endl;
                         sp->dispatch("on_receive", cyng::buffer_t(rec_.begin(), rec_.begin() + n));
 
                         //
@@ -245,6 +292,7 @@ namespace cyng {
             cyng::controller &ctl_;
             std::function<void(endpoint_t, channel_ptr)> cb_connect_;
             std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed_;
+            std::function<void(client_state)> cb_state_;
             S socket_;
 
             /**

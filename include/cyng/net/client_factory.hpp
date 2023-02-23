@@ -34,9 +34,10 @@ namespace cyng {
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed,
                 std::function<void(typename S::endpoint_type, channel_ptr)> cb_connect,
                 std::function<void(cyng::buffer_t)> cb_receive,
-                std::function<void(boost::system::error_code)> on_disconnect) {
+                std::function<void(boost::system::error_code)> on_disconnect,
+                std::function<void(client_state)> cb_state) {
 
-                return {create_channel<S, N>(cb_failed, cb_connect, cb_receive, on_disconnect)};
+                return {create_channel<S, N>(cb_failed, cb_connect, cb_receive, on_disconnect, cb_state)};
             }
 
           private:
@@ -53,7 +54,8 @@ namespace cyng {
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed,
                 std::function<void(typename S::endpoint_type, channel_ptr)> cb_connect,
                 std::function<void(cyng::buffer_t)> cb_receive,
-                std::function<void(boost::system::error_code)> on_disconnect) {
+                std::function<void(boost::system::error_code)> on_disconnect,
+                std::function<void(client_state)> cb_state) {
 
                 //
                 //	create an uuid
@@ -63,7 +65,8 @@ namespace cyng {
                 channel_ptr cp;
                 using client_t = client<S, N>;
                 // boost::asio::io_context & ctx = ctl_.get_ctx();
-                return ctl_.create_named_channel_with_ref<client_t>(tag, ctl_, cb_failed, cb_connect, cb_receive, on_disconnect);
+                return ctl_.create_named_channel_with_ref<client_t>(
+                    tag, ctl_, cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
             }
 
           private:

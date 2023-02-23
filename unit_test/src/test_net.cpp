@@ -49,6 +49,19 @@ BOOST_AUTO_TEST_CASE(client) {
         [&](boost::system::error_code ec) {
             //	fill async
             std::cout << "reconnect " << ec << std::endl;
+        },
+        [this](cyng::net::client_state state) -> void {
+            //
+            //  update client state
+            //
+            std::cout << "state change ";
+            switch (state) {
+            case cyng::net::client_state::INITIAL: std::cout << "INITIAL " << std::endl; break;
+            case cyng::net::client_state::WAIT: std::cout << "WAIT " << std::endl; break;
+            case cyng::net::client_state::CONNECTED: std::cout << "CONNECTED " << std::endl; break;
+            case cyng::net::client_state::STOPPED: std::cout << "STOPPED " << std::endl; break;
+            }
+            std::cout << std::endl;
         });
 
     // channel->dispatch(0, "google.com", "80");
@@ -107,7 +120,6 @@ BOOST_AUTO_TEST_CASE(server) {
     auto const ep = boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 9999u);
 
     auto proxy = sf.create_proxy<boost::asio::ip::tcp::socket, 2048>(
-        ep,
         [](boost::system::error_code ec) { std::cout << "listen callback " << ec << std::endl; },
         [](boost::asio::ip::tcp::socket socket) {
             boost::system::error_code ec;
@@ -115,7 +127,7 @@ BOOST_AUTO_TEST_CASE(server) {
             boost::asio::write(socket, boost::asio::buffer(msg), ec);
             socket.close();
         });
-    proxy.start(); //	start
+    proxy.listen(ep); //	start
     std::this_thread::sleep_for(std::chrono::seconds(20));
     proxy.stop();
     std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -259,7 +271,7 @@ BOOST_AUTO_TEST_CASE(sim) {
 
             std::thread t([&ios]() { ios.run(); });
 
-            // auto rnd = make_rnd_alnum();
+            //  auto rnd = make_rnd_alnum();
             // while (c.is_open()) {
             //    // auto const data = rnd.next(size);
             //    // std::cout << "next data package: [" << data << "] " << data.size() << " bytes" << std::endl;
