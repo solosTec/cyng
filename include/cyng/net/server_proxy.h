@@ -19,13 +19,12 @@ namespace cyng {
             server_proxy(server_proxy const &) = default;
 
             /**
-             * Assign a (new) channel
+             * Assign another proxy
              */
-            // server_proxy &operator=(channel_ptr);
             server_proxy &operator=(server_proxy &&) noexcept;
 
             /**
-             * close client
+             * stop/close server
              */
             void stop();
 

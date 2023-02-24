@@ -67,7 +67,8 @@ namespace cyng {
                 , std::function<void(boost::system::error_code)> cb_disconnect
                 , std::function<void(client_state)> cb_state
             )
-			: sigs_ {
+            : state_(client_state::INITIAL)
+			, sigs_ {
 					std::bind(&client::connect, this, std::placeholders::_1, std::placeholders::_2),	//	[0] connect
 					std::bind(&client::send, this, std::placeholders::_1),	// [1] 	send (write to socket)
                     cb_receive, // [2] 	on_receive (read from socket)
@@ -111,7 +112,7 @@ namespace cyng {
                     //
                     //  update state
                     //
-                    cb_state_(client_state::WAIT);
+                    update(client_state::WAIT);
 
                     resolver_ = ctl_.create_channel_with_ref<resolver<S>>(
                                         ctl_.get_ctx(),
@@ -126,7 +127,8 @@ namespace cyng {
                                                     socket_.local_endpoint(),
                                                     socket_.remote_endpoint(),
                                                     sp); //	connect callback
-                                                cb_state_(client_state::CONNECTED);
+
+                                                update(client_state::CONNECTED);
                                                 reconnect_counter_ = 0;
 
                                                 //
@@ -144,6 +146,8 @@ namespace cyng {
                                                     //  "connect" => client::connect(host, service)
                                                     //
                                                     sp->suspend(timeout, "connect", host, service);
+                                                } else {
+                                                    update(client_state::INITIAL);
                                                 }
                                             }
                                             resolver_->stop();
@@ -242,7 +246,7 @@ namespace cyng {
                     socket_.shutdown(S::shutdown_receive, ignored_ec);
                     socket_.close(ignored_ec);
                     snd_.clear();
-                    cb_state_(client_state::STOPPED);
+                    update(client_state::STOPPED);
                 }
             }
 
@@ -296,7 +300,15 @@ namespace cyng {
                 }
             }
 
+            void update(client_state state) {
+                if (state_ != state) {
+                    cb_state_(state);
+                    state_ = state;
+                }
+            }
+
           public:
+            client_state state_;
             signatures_t sigs_;
 
           private:
