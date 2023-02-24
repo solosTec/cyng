@@ -61,8 +61,8 @@ namespace cyng {
           public:
             client(channel_weak wp
 				, controller& ctl
-				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed // connect failed
-				, std::function<void(endpoint_t, channel_ptr)> cb_connect // successful connected
+				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed // connect failed
+				, std::function<void(endpoint_t, endpoint_t, channel_ptr)> cb_connect // successful connected
                 , std::function<void(cyng::buffer_t)> cb_receive
                 , std::function<void(boost::system::error_code)> cb_disconnect
                 , std::function<void(client_state)> cb_state
@@ -78,6 +78,7 @@ namespace cyng {
 				}
 				, channel_(wp)
 				, resolver_()
+                , reconnect_counter_(0)
 				, ctl_(ctl)
                 , cb_connect_(cb_connect)
 				, cb_failed_(cb_failed)
@@ -94,6 +95,11 @@ namespace cyng {
 
             ~client() = default;
 
+            /**
+             * direct send reduces latency at the loss of thread safety.
+             */
+            std::function<void(cyng::buffer_t)> get_direct_send() { return std::bind(&client::send, this, std::placeholders::_1); }
+
           private:
             /**
              * connect async
@@ -107,36 +113,43 @@ namespace cyng {
                     //
                     cb_state_(client_state::WAIT);
 
-                    resolver_ = ctl_.create_channel_with_ref<resolver<S>>(ctl_.get_ctx(), [=, this](S &&s) {
-                        if (s.is_open()) {
-                            socket_ = std::move(s);
+                    resolver_ = ctl_.create_channel_with_ref<resolver<S>>(
+                                        ctl_.get_ctx(),
+                                        [=, this](S &&s) mutable {
+                                            if (s.is_open()) {
+                                                socket_ = std::move(s);
 
-                            //
-                            //  update state
-                            //
-                            cb_connect_(socket_.remote_endpoint(), sp); //	connect callback
-                            cb_state_(client_state::CONNECTED);
+                                                //
+                                                //  update state
+                                                //
+                                                cb_connect_(
+                                                    socket_.local_endpoint(),
+                                                    socket_.remote_endpoint(),
+                                                    sp); //	connect callback
+                                                cb_state_(client_state::CONNECTED);
+                                                reconnect_counter_ = 0;
 
-                            //
-                            //  start reading
-                            //
-                            this->do_read();
-                        } else {
-                            //
-                            //	optional reconnect
-                            //
-                            auto const [timeout, reconnect] = cb_failed_(sp->get_id());
-                            if (reconnect) {
-                                //
-                                //  reconnect after timeout
-                                //  "connect" => client::connect(host, service)
-                                //
-                                sp->suspend(timeout, "connect", host, service);
-                            }
-                        }
-                        resolver_->stop();
-                        resolver_.reset();
-                    });
+                                                //
+                                                //  start reading
+                                                //
+                                                this->do_read();
+                                            } else {
+                                                //
+                                                //	optional reconnect
+                                                //
+                                                auto const [timeout, reconnect] = cb_failed_(sp->get_id(), ++reconnect_counter_);
+                                                if (reconnect) {
+                                                    //
+                                                    //  reconnect after timeout
+                                                    //  "connect" => client::connect(host, service)
+                                                    //
+                                                    sp->suspend(timeout, "connect", host, service);
+                                                }
+                                            }
+                                            resolver_->stop();
+                                            resolver_.reset();
+                                        })
+                                    .first;
 
                     //
                     //	connect
@@ -289,9 +302,11 @@ namespace cyng {
           private:
             channel_weak channel_;
             channel_ptr resolver_;
+            std::size_t reconnect_counter_;
+
             cyng::controller &ctl_;
-            std::function<void(endpoint_t, channel_ptr)> cb_connect_;
-            std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed_;
+            std::function<void(endpoint_t, endpoint_t, channel_ptr)> cb_connect_;
+            std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed_;
             std::function<void(client_state)> cb_state_;
             S socket_;
 

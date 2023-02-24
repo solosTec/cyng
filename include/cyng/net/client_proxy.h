@@ -7,7 +7,6 @@
 #ifndef CYNG_NET_CLIENT_PROXY_H
 #define CYNG_NET_CLIENT_PROXY_H
 
-// #include <cyng/net/net.h>
 #include <cyng/obj/intrinsics/buffer.h>
 #include <cyng/task/channel.h>
 
@@ -18,13 +17,12 @@ namespace cyng {
         class client_proxy {
           public:
             client_proxy();
-            client_proxy(channel_ptr);
+            client_proxy(channel_ptr, std::function<void(cyng::buffer_t)>);
             client_proxy(client_proxy const &) = default;
 
             /**
              * Assign a (new) channel
              */
-            client_proxy &operator=(channel_ptr);
             client_proxy &operator=(client_proxy &&) noexcept;
 
             /**
@@ -38,19 +36,37 @@ namespace cyng {
             void connect(std::string host, std::string service);
 
             /**
+             * open connection defered
+             */
+            template <typename R, typename P> void connect(std::chrono::duration<R, P> d, std::string host, std::string service) {
+                if (client_) {
+                    client_->suspend(d, 0, cyng::make_tuple(host, service));
+                }
+            }
+
+            /**
              * close connection
              */
             void close();
 
             /**
-             * send
+             * send data
+             * @param data data to send
+             * @param direct if true the send method of the implementation class is called. This is not threadsafe.
              */
-            void send(cyng::buffer_t &&data);
-            void send(std::string const &data);
+            void send(cyng::buffer_t &&data, bool direct);
+            void send(std::string const &data, bool direct);
+
+            /**
+             * send asynchronous
+             */
             void send(std::deque<cyng::buffer_t> &&msg);
+
+            channel_ptr get_channel();
 
           private:
             channel_ptr client_;
+            std::function<void(cyng::buffer_t)> direct_send_;
         };
     } // namespace net
 } // namespace cyng

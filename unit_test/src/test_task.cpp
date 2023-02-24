@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_SUITE(task_suite)
 
 BOOST_AUTO_TEST_CASE(controller) {
     cyng::controller ctl(2);
-    auto cp = ctl.create_channel<cyng::demo_task>();
+    auto cp = ctl.create_channel<cyng::demo_task>().first;
     BOOST_REQUIRE(cp);
     if (cp) {
         BOOST_REQUIRE_EQUAL(cp->get_name(), "demo_task");
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(named) {
 BOOST_AUTO_TEST_CASE(weak) //	with weak pointer
 {
     cyng::controller ctl;
-    auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
+    auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude").first;
     ctl.get_registry().lookup("dude", [](std::vector<cyng::channel_ptr> channels) {
         BOOST_REQUIRE(!channels.empty());
         if (!channels.empty()) {
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(future) {
 
 BOOST_AUTO_TEST_CASE(next) {
     cyng::controller ctl;
-    auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
+    auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude").first;
 
     //
     //	* calls function #3 demo_task_ref::demo3(int n)
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE(next) {
 
 BOOST_AUTO_TEST_CASE(defer) {
     cyng::controller ctl;
-    auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude");
+    auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude").first;
 
     auto r = channel->defer("demo3", 11);
     std::this_thread::sleep_for(std::chrono::seconds(1));

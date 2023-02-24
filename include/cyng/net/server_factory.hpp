@@ -43,10 +43,11 @@ namespace cyng {
                 //
                 std::string const tag = boost::uuids::to_string(uuid_rgn_());
 
-                channel_ptr cp;
+                // channel_ptr cp;
                 using server_t = server<S, N>;
                 boost::asio::io_context &ctx = ctl_.get_ctx();
-                return ctl_.create_named_channel_with_ref<server_t>(tag, ctx, cb_listen, cb_accept);
+                auto [cp, impl] = ctl_.create_named_channel_with_ref<server_t>(tag, ctx, cb_listen, cb_accept);
+                return cp;
             }
 
           private:

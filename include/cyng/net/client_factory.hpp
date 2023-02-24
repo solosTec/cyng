@@ -31,13 +31,15 @@ namespace cyng {
              */
             template <typename S, std::size_t N>
             client_proxy create_proxy(
-                std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed,
-                std::function<void(typename S::endpoint_type, channel_ptr)> cb_connect,
+                std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed,
+                std::function<void(typename S::endpoint_type, typename S::endpoint_type, channel_ptr)> cb_connect,
                 std::function<void(cyng::buffer_t)> cb_receive,
                 std::function<void(boost::system::error_code)> on_disconnect,
                 std::function<void(client_state)> cb_state) {
 
-                return {create_channel<S, N>(cb_failed, cb_connect, cb_receive, on_disconnect, cb_state)};
+                using client_t = client<S, N>;
+                auto [channel, impl] = create_channel<S, N>(cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
+                return {channel, impl->get_direct_send()};
             }
 
           private:
@@ -50,21 +52,19 @@ namespace cyng {
              * @param cb_connect callback for successful connect
              */
             template <typename S, std::size_t N>
-            channel_ptr create_channel(
-                std::function<std::pair<std::chrono::seconds, bool>(std::size_t)> cb_failed,
-                std::function<void(typename S::endpoint_type, channel_ptr)> cb_connect,
+            auto create_channel(
+                std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed,
+                std::function<void(typename S::endpoint_type, typename S::endpoint_type, channel_ptr)> cb_connect,
                 std::function<void(cyng::buffer_t)> cb_receive,
                 std::function<void(boost::system::error_code)> on_disconnect,
-                std::function<void(client_state)> cb_state) {
+                std::function<void(client_state)> cb_state) -> std::pair<channel_ptr, client<S, N> *> {
 
                 //
                 //	create an uuid
                 //
                 std::string const tag = boost::uuids::to_string(uuid_rgn_());
 
-                channel_ptr cp;
                 using client_t = client<S, N>;
-                // boost::asio::io_context & ctx = ctl_.get_ctx();
                 return ctl_.create_named_channel_with_ref<client_t>(
                     tag, ctl_, cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
             }

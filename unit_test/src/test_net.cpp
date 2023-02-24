@@ -34,11 +34,12 @@ BOOST_AUTO_TEST_CASE(client) {
     cyng::controller ctl(2);
     cyng::net::client_factory cf(ctl);
     auto proxy = cf.create_proxy<boost::asio::ip::tcp::socket, 2048>(
-        [](std::size_t) -> std::pair<std::chrono::seconds, bool> {
-            return {std::chrono::seconds(0), false};
+        [](std::size_t id, std::size_t counter) -> std::pair<std::chrono::seconds, bool> {
+            std::cout << id << " failed " << counter << " times" << std::endl;
+            return {std::chrono::seconds(0), counter > 2};
         },
-        [&](boost::asio::ip::tcp::endpoint ep, cyng::channel_ptr sp) {
-            std::cout << "connected to " << ep << " #" << sp->get_id() << std::endl;
+        [&](boost::asio::ip::tcp::endpoint lep, boost::asio::ip::tcp::endpoint rep, cyng::channel_ptr sp) {
+            std::cout << "connected to " << rep << " #" << sp->get_id() << std::endl;
             // proxy.send("GET / HTTP/1.1\r\n\r\n");
             sp->dispatch("send", cyng::make_buffer("GET / HTTP/1.1\r\n\r\n"));
         },
@@ -137,7 +138,7 @@ BOOST_AUTO_TEST_CASE(server) {
 
 BOOST_AUTO_TEST_CASE(resolver) {
     cyng::controller ctl(2);
-    auto cp = ctl.create_channel_with_ref<cyng::net::resolver<boost::asio::ip::tcp::socket>>(
+    auto [cp, impl] = ctl.create_channel_with_ref<cyng::net::resolver<boost::asio::ip::tcp::socket>>(
         ctl.get_ctx(), [](boost::asio::ip::tcp::socket &&s) { std::cout << s.remote_endpoint() << std::endl; });
     cp->dispatch("connect", "google.com", "80");
     std::this_thread::sleep_for(std::chrono::seconds(20));

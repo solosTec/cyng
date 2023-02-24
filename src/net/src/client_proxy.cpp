@@ -5,21 +5,10 @@ namespace cyng {
         client_proxy::client_proxy()
             : client_() {}
 
-        client_proxy::client_proxy(channel_ptr ptr)
-            : client_(ptr) {
+        client_proxy::client_proxy(channel_ptr ptr, std::function<void(cyng::buffer_t)> direct_send)
+            : client_(ptr)
+            , direct_send_(direct_send) {
             BOOST_ASSERT(ptr);
-        }
-
-        client_proxy &client_proxy::operator=(channel_ptr channel) {
-            BOOST_ASSERT(channel);
-            //
-            //  close running client
-            //
-            if (client_ && client_->is_open()) {
-                client_->stop();
-            }
-            client_ = channel;
-            return *this;
         }
 
         client_proxy &client_proxy::operator=(client_proxy &&proxy) noexcept {
@@ -30,6 +19,7 @@ namespace cyng {
                 client_->stop();
             }
             client_ = std::move(proxy.client_);
+            direct_send_ = std::move(proxy.direct_send_);
             return *this;
         }
 
@@ -54,13 +44,17 @@ namespace cyng {
             }
         }
 
-        void client_proxy::send(cyng::buffer_t &&data) {
+        void client_proxy::send(cyng::buffer_t &&data, bool direct) {
             if (client_) {
-                client_->dispatch(1, std::move(data));
+                if (direct) {
+                    direct_send_(data);
+                } else {
+                    client_->dispatch(1, std::move(data));
+                }
             }
         }
 
-        void client_proxy::send(std::string const &data) { send(cyng::make_buffer(data)); }
+        void client_proxy::send(std::string const &data, bool direct) { send(cyng::make_buffer(data), direct); }
 
         void client_proxy::send(std::deque<buffer_t> &&msg) {
             if (client_) {
@@ -69,12 +63,11 @@ namespace cyng {
                     //
                     return make_object(data);
                 });
-                // for (auto &data : msg) {
-                //     client_->dispatch(1, std::move(data));
-                // }
                 client_->dispatch(5, deq);
             }
         }
+
+        channel_ptr client_proxy::get_channel() { return client_; }
 
     } // namespace net
 } // namespace cyng

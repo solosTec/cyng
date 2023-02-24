@@ -172,7 +172,7 @@ namespace cyng {
                             //  julian date
                             auto const d = std::stod(result, nullptr);
                             auto jtp = cyng::jdate_clock::time_point{cyng::jdate_clock::duration{d}};
-                            auto tp = floor<std::chrono::system_clock::duration>(jdate_to_sys(jtp));
+                            auto tp = std::chrono::floor<std::chrono::system_clock::duration>(jdate_to_sys(jtp));
                             return make_object(tp);
                         }
                         //  error
@@ -198,7 +198,7 @@ namespace cyng {
                             //  julian date
                             auto const d = std::stod(result, nullptr);
                             auto jtp = cyng::jdate_clock::time_point{cyng::jdate_clock::duration{d}};
-                            auto tp = floor<std::chrono::seconds>(jdate_to_sys(jtp));
+                            auto tp = std::chrono::floor<std::chrono::seconds>(jdate_to_sys(jtp));
                             return make_object(cyng::date::make_date_from_utc_time(tp));
                         }
                         //  error
