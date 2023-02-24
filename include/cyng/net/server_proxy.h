@@ -34,9 +34,12 @@ namespace cyng {
              * T has to match the required endpoint type of the server
              */
             template <typename T>
+#ifdef __cpp_concepts
+            //  C++20 or higher
                 requires std::is_same_v<T, boost::asio::ip::tcp::endpoint>     // tcp
                          || std::is_same_v<T, boost::asio::ip::udp::endpoint>  // udp
                          || std::is_same_v<T, boost::asio::ip::icmp::endpoint> // icmp
+#endif
             void listen(T ep) {
                 if (server_) {
                     server_->dispatch(0, ep);
