@@ -23,6 +23,9 @@ namespace cyng {
     namespace sys {
         constexpr std::uint32_t get_cpp_version() { return __cplusplus; }
 
+        //  see <cyng.h>
+        constexpr const char *get_compiler() { return cyng::CYNG_COMPILER_VERSION; }
+
         constexpr const char *get_processor() { return CYNG_SYSTEM_PROCESSOR; }
 
         constexpr const char *get_system_name() { return CYNG_SYSTEM_NAME; }
