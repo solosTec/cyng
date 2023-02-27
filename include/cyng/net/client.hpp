@@ -61,7 +61,7 @@ namespace cyng {
           public:
             client(channel_weak wp
 				, controller& ctl
-				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed // connect failed
+				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string&, std::string&)> cb_failed // connect failed
 				, std::function<void(endpoint_t, endpoint_t, channel_ptr)> cb_connect // successful connected
                 , std::function<void(cyng::buffer_t)> cb_receive
                 , std::function<void(boost::system::error_code)> cb_disconnect
@@ -139,7 +139,8 @@ namespace cyng {
                                                 //
                                                 //	optional reconnect
                                                 //
-                                                auto const [timeout, reconnect] = cb_failed_(sp->get_id(), ++reconnect_counter_);
+                                                auto const [timeout, reconnect] =
+                                                    cb_failed_(sp->get_id(), ++reconnect_counter_, host, service);
                                                 if (reconnect) {
                                                     //
                                                     //  reconnect after timeout
@@ -318,7 +319,7 @@ namespace cyng {
 
             cyng::controller &ctl_;
             std::function<void(endpoint_t, endpoint_t, channel_ptr)> cb_connect_;
-            std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed_;
+            std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string &, std::string &)> cb_failed_;
             std::function<void(client_state)> cb_state_;
             S socket_;
 

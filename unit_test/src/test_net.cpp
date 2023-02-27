@@ -34,8 +34,8 @@ BOOST_AUTO_TEST_CASE(client) {
     cyng::controller ctl(2);
     cyng::net::client_factory cf(ctl);
     auto proxy = cf.create_proxy<boost::asio::ip::tcp::socket, 2048>(
-        [](std::size_t id, std::size_t counter) -> std::pair<std::chrono::seconds, bool> {
-            std::cout << id << " failed " << counter << " times" << std::endl;
+        [](std::size_t id, std::size_t counter, std::string &host, std::string &service) -> std::pair<std::chrono::seconds, bool> {
+            std::cout << id << " failed " << counter << " times: " << host << ":" << service << std::endl;
             return {std::chrono::seconds(0), counter > 2};
         },
         [&](boost::asio::ip::tcp::endpoint lep, boost::asio::ip::tcp::endpoint rep, cyng::channel_ptr sp) {

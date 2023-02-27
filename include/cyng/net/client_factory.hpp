@@ -31,7 +31,8 @@ namespace cyng {
              */
             template <typename S, std::size_t N>
             client_proxy create_proxy(
-                std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed,
+                std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string &, std::string &)>
+                    cb_failed,
                 std::function<void(typename S::endpoint_type, typename S::endpoint_type, channel_ptr)> cb_connect,
                 std::function<void(cyng::buffer_t)> cb_receive,
                 std::function<void(boost::system::error_code)> on_disconnect,
@@ -53,7 +54,8 @@ namespace cyng {
              */
             template <typename S, std::size_t N>
             auto create_channel(
-                std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t)> cb_failed,
+                std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string &, std::string &)>
+                    cb_failed,
                 std::function<void(typename S::endpoint_type, typename S::endpoint_type, channel_ptr)> cb_connect,
                 std::function<void(cyng::buffer_t)> cb_receive,
                 std::function<void(boost::system::error_code)> on_disconnect,
