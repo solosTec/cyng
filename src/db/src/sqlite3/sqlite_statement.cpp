@@ -337,6 +337,7 @@ namespace cyng {
                         const int rc = ::sqlite3_finalize(stmt_);
                         stmt_ = nullptr;
                         state_ = INITIAL;
+                        bind_counter_ = 1;
                         return is_ok(rc);
                     }
                     connection_->show_diagnostics();

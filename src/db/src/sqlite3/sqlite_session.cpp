@@ -10,10 +10,10 @@
 #include <sqlite3/sqlite_session.h>
 #include <sqlite3/sqlite_statement.h>
 
-#include <cyng/obj/algorithm/find.h>
-#include <cyng/sql/dialect.h>
 #include <cyng/io/serialize.h>
+#include <cyng/obj/algorithm/find.h>
 #include <cyng/parse/duration.h>
+#include <cyng/sql/dialect.h>
 
 #ifdef _DEBUG_DB
 #include <iostream>
@@ -94,13 +94,15 @@ namespace cyng {
                 }
             }
 
-            void session::busy_monitor(int counter) {
+            void session::busy_monitor(int counter){
 #ifdef _DEBUG_DB
-                std::cout << "sqlite::busy_monitor( " << counter << " )" << std::endl;
+            // std::cout << "sqlite::busy_monitor( " << counter << " )" << std::endl;
 #endif
             }
 
-            cyng::sql::dialect session::get_dialect() const { return cyng::sql::dialect::SQLITE; }
+            cyng::sql::dialect session::get_dialect() const {
+                return cyng::sql::dialect::SQLITE;
+            }
 
         } // namespace sqlite
     }     // namespace db

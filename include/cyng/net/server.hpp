@@ -19,15 +19,17 @@
 namespace cyng {
     namespace net {
         /**
-         * @tparam S socket type (boost::asio::ip::tcp::socket)
+         * @tparam S socket type (boost::asio::ip::YYY::socket)
          * @tparam N receive buffer size (2048)
          *
          */
         template <typename S, std::size_t N> class server {
+
+            using socket_t = S;
             using protocol_t = typename S::protocol_type;
+            //  not available for udp
             using acceptor_t = typename boost::asio::basic_socket_acceptor<protocol_t>;
             using endpoint_t = typename S::endpoint_type;
-            using socket_t = S;
 
             template <typename T> friend class task;
 
