@@ -31,6 +31,7 @@ namespace cyng {
              */
             template <typename S, std::size_t N>
             client_proxy create_proxy(
+                channel::cb_err_t cb,
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string &, std::string &)>
                     cb_failed,
                 std::function<void(typename S::endpoint_type, typename S::endpoint_type, channel_ptr)> cb_connect,
@@ -39,7 +40,7 @@ namespace cyng {
                 std::function<void(client_state)> cb_state) {
 
                 using client_t = client<S, N>;
-                auto [channel, impl] = create_channel<S, N>(cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
+                auto [channel, impl] = create_channel<S, N>(cb, cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
                 return {channel, impl->get_direct_send()};
             }
 
@@ -54,6 +55,7 @@ namespace cyng {
              */
             template <typename S, std::size_t N>
             auto create_channel(
+                channel::cb_err_t cb,
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string &, std::string &)>
                     cb_failed,
                 std::function<void(typename S::endpoint_type, typename S::endpoint_type, channel_ptr)> cb_connect,
@@ -68,7 +70,7 @@ namespace cyng {
 
                 using client_t = client<S, N>;
                 return ctl_.create_named_channel_with_ref<client_t>(
-                    tag, ctl_, cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
+                    tag, ctl_, cb, cb_failed, cb_connect, cb_receive, on_disconnect, cb_state);
             }
 
           private:

@@ -34,6 +34,7 @@ BOOST_AUTO_TEST_CASE(client) {
     cyng::controller ctl(2);
     cyng::net::client_factory cf(ctl);
     auto proxy = cf.create_proxy<boost::asio::ip::tcp::socket, 2048>(
+        [](std::string, std::string) {},
         [](std::size_t id, std::size_t counter, std::string &host, std::string &service) -> std::pair<std::chrono::seconds, bool> {
             std::cout << id << " failed " << counter << " times: " << host << ":" << service << std::endl;
             return {std::chrono::seconds(0), counter > 2};
@@ -41,7 +42,8 @@ BOOST_AUTO_TEST_CASE(client) {
         [&](boost::asio::ip::tcp::endpoint lep, boost::asio::ip::tcp::endpoint rep, cyng::channel_ptr sp) {
             std::cout << "connected to " << rep << " #" << sp->get_id() << std::endl;
             // proxy.send("GET / HTTP/1.1\r\n\r\n");
-            sp->dispatch("send", cyng::make_buffer("GET / HTTP/1.1\r\n\r\n"));
+            sp->dispatch(
+                "send", [](std::string, std::string) {}, cyng::make_buffer("GET / HTTP/1.1\r\n\r\n"));
         },
         [&](cyng::buffer_t data) {
             //  read from socket
@@ -89,7 +91,8 @@ BOOST_AUTO_TEST_CASE(http) {
         [&](boost::asio::ip::tcp::endpoint ep, cyng::channel_ptr sp) {
             std::cout << "connected to " << ep << " #" << sp->get_id() << std::endl;
             auto const header = cyng::param_map_factory("key", "value").get_map();
-            sp->dispatch("get", "/", "localhost", header);
+            sp->dispatch(
+                "get", [](std::string, std::string) {}, "/", "localhost", header);
             // sp->dispatch("post", "/", "localhost", "hello, world!");
         },
         [&](std::uint32_t result, cyng::param_map_t header, cyng::buffer_t data) {
@@ -140,7 +143,8 @@ BOOST_AUTO_TEST_CASE(resolver) {
     cyng::controller ctl(2);
     auto [cp, impl] = ctl.create_channel_with_ref<cyng::net::resolver<boost::asio::ip::tcp::socket>>(
         ctl.get_ctx(), [](boost::asio::ip::tcp::socket &&s) { std::cout << s.remote_endpoint() << std::endl; });
-    cp->dispatch("connect", "google.com", "80");
+    cp->dispatch(
+        "connect", [](std::string, std::string) {}, "google.com", "80");
     std::this_thread::sleep_for(std::chrono::seconds(20));
     cp->stop();
     std::this_thread::sleep_for(std::chrono::seconds(2));

@@ -8,6 +8,7 @@ namespace cyng {
 
         http_client::http_client(channel_weak wp
 				, controller& ctl
+                , channel::cb_err_t cb
 				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::beast::error_code)> cb_failed // connect failed
 				, std::function<void(endpoint_t, channel_ptr)> cb_connect // successful connected
                 , cb_receive_t cb_receive
@@ -23,6 +24,7 @@ namespace cyng {
 				}
 				, channel_(wp)
 				, ctl_(ctl)
+                , cb_(cb)
                 , cb_connect_(cb_connect)
 				, cb_failed_(cb_failed)
 				, resolver_(boost::asio::make_strand(ctl.get_ctx()))
@@ -67,7 +69,7 @@ namespace cyng {
                     //  reconnect after timeout
                     //  "connect" => client::connect(host, service)
                     //
-                    sp->suspend(timeout, "connect", host, service);
+                    sp->suspend(timeout, "connect", cb_, host, service);
                 }
             }
         }
@@ -88,7 +90,7 @@ namespace cyng {
                     //  reconnect after timeout
                     //  "connect" => client::connect(host, service)
                     //
-                    sp->suspend(timeout, "connect", host, service);
+                    sp->suspend(timeout, "connect", cb_, host, service);
                 }
             }
         }
@@ -193,7 +195,7 @@ namespace cyng {
                     }
                     std::uint32_t const result = res_.result_int();
                     auto const body = res_.body();
-                    sp->dispatch("on_receive", result, header, buffer_t(body.begin(), body.end()));
+                    sp->dispatch("on_receive", cb_, result, header, buffer_t(body.begin(), body.end()));
 
                     //
                     //	continue reading
@@ -209,7 +211,7 @@ namespace cyng {
 
                     stream_.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
                     reset();
-                    sp->dispatch("on_disconnect", ec);
+                    sp->dispatch("on_disconnect", cb_, ec);
                 }
             }
         }
@@ -259,7 +261,7 @@ namespace cyng {
                 reset();
                 if (sp) {
                     //	"on_disconnect"
-                    sp->dispatch("on_disconnect", ec);
+                    sp->dispatch("on_disconnect", cb_, ec);
                 }
             } else if (sp) {
                 //
@@ -283,7 +285,7 @@ namespace cyng {
                 reset();
                 if (sp) {
                     //	"on_disconnect"
-                    sp->dispatch("on_disconnect", ec);
+                    sp->dispatch("on_disconnect", cb_, ec);
                 }
             } else if (sp) {
                 //

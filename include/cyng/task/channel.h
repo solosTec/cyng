@@ -34,12 +34,17 @@ namespace cyng {
          * Specify the name of a channel
          */
         bool set_channel_name(std::string, std::size_t);
+
+        /**
+         * New names will be added at the end of channel name list
+         */
         void set_channel_names(std::initializer_list<std::string> il);
 
         /**
+         * @name name of the function
          * @return std::numeric_limits<std::size_t>::max() if slot was not found
          */
-        std::size_t lookup(std::string const &) const;
+        std::pair<std::size_t, bool> lookup(std::string const &name) const;
 
       private:
         /**
@@ -87,6 +92,11 @@ namespace cyng {
         };
         friend result;
 
+        /**
+         * error callback, with channel name and undefined slot name.
+         */
+        using cb_err_t = std::function<void(std::string, std::string)>;
+
       public:
         channel(boost::asio::io_context &io, std::string name);
 
@@ -117,11 +127,11 @@ namespace cyng {
         /**
          * Takes the slot from the named slot table
          */
-        void dispatch(std::string slot, tuple_t &&msg);
-        void dispatch(std::string slot);
+        void dispatch(std::string slot, cb_err_t cb, tuple_t &&msg);
+        void dispatch(std::string slot, cb_err_t cb);
 
-        template <typename... Args> void dispatch(std::string slot, Args &&...args) {
-            dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
+        template <typename... Args> void dispatch(std::string slot, cb_err_t cb, Args &&...args) {
+            dispatch(slot, cb, cyng::make_tuple(std::forward<Args>(args)...));
         }
 
         /**
@@ -170,21 +180,43 @@ namespace cyng {
             }));
         }
 
-        template <typename R, typename P> void suspend(std::chrono::duration<R, P> d, std::string slot, tuple_t &&msg) {
-            suspend(d, lookup(slot), std::move(msg));
+        template <typename R, typename P>
+        void suspend(std::chrono::duration<R, P> d, std::string name, cb_err_t cb, tuple_t &&msg) {
+            auto const [slot, ok] = lookup(name);
+            if (ok) {
+                suspend(d, slot, std::move(msg));
+            } else {
+                if (cb) {
+                    cb(name_, name);
+                }
+            }
         }
 
         template <typename R, typename P, typename... Args>
-        void suspend(std::chrono::duration<R, P> d, std::string slot, Args &&...args) {
-            suspend(d, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
+        void suspend(std::chrono::duration<R, P> d, std::string name, cb_err_t cb, Args &&...args) {
+            auto const [slot, ok] = lookup(name);
+            if (ok) {
+                suspend(d, slot, cyng::make_tuple(std::forward<Args>(args)...));
+            } else {
+                if (cb) {
+                    cb(name_, name);
+                }
+            }
         }
 
         bool suspend(time_point_t tp, std::size_t slot, tuple_t &&msg);
 
-        bool suspend(time_point_t tp, std::string slot, tuple_t &&msg);
+        bool suspend(time_point_t tp, std::string slot, cb_err_t cb, tuple_t &&msg);
 
-        template <typename... Args> bool suspend(time_point_t tp, std::string slot, Args &&...args) {
-            return suspend(tp, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
+        template <typename... Args> bool suspend(time_point_t tp, std::string name, cb_err_t cb, Args &&...args) {
+            auto const [slot, ok] = lookup(name);
+            if (ok) {
+                return suspend(tp, slot, cyng::make_tuple(std::forward<Args>(args)...));
+            }
+            if (cb) {
+                cb(name_, name);
+            }
+            return false;
         }
 
         /**
@@ -195,7 +227,7 @@ namespace cyng {
          * @param msg parameters for for producer function
          */
         void next(std::size_t slot_producer, std::size_t slot_consumer, tuple_t &&msg);
-        void next(std::string slot_producer, std::string slot_consumer, tuple_t &&msg);
+        void next(std::string slot_producer, std::string slot_consumer, cb_err_t cb, tuple_t &&msg);
 
         /**
          * Calls function(slot_producer) and pass result as parameter to function(slot_consumer).
@@ -207,8 +239,13 @@ namespace cyng {
          */
         void next(std::size_t slot_producer, channel_ptr consumer, std::size_t slot_consumer, tuple_t &&msg);
 
-        template <typename... Args> result defer(std::string slot, Args &&...args) {
-            return result(*this, lookup(slot), cyng::make_tuple(std::forward<Args>(args)...));
+        template <typename... Args> result defer(std::string name, cb_err_t cb, Args &&...args) {
+            auto const [slot, ok] = lookup(name);
+            if (ok) {
+                return result(*this, slot, cyng::make_tuple(std::forward<Args>(args)...));
+            }
+            cb(name_, name);
+            return result(*this, slot, {});
         }
 
       private:
@@ -218,7 +255,7 @@ namespace cyng {
          * apply result of function(slot) as argument to f(result)
          */
         void next(std::size_t slot, std::function<void(tuple_t &&msg)> f, tuple_t &&msg);
-        void next(std::string slot, std::function<void(tuple_t &&msg)> f, tuple_t &&msg);
+        void next(std::string slot, cb_err_t cb, std::function<void(tuple_t &&msg)> f, tuple_t &&msg);
 
         /**
          * open channel by providing a task interface

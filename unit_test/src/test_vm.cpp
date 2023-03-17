@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(stack) {}
 BOOST_AUTO_TEST_CASE(vm) {
     cyng::controller ctl;
     cyng::mesh fabric(ctl);
-    auto vm = fabric.create_proxy();
+    auto vm = fabric.create_proxy([](std::string, std::string) {});
     //	ctx_.load(obj)
 
     vm.execute(
@@ -111,7 +111,8 @@ BOOST_AUTO_TEST_CASE(library) {
     cyng::mesh fabric(ctl);
 
     cyng::description d("f1", f1);
-    auto vm2 = fabric.make_proxy(cyng::make_description("foo", f1), cyng::make_description("bar", f2)); //	ok
+    auto vm2 = fabric.make_proxy(
+        [](std::string, std::string) {}, cyng::make_description("foo", f1), cyng::make_description("bar", f2)); //	ok
 
     vm2.execute(
         cyng::op::ESBA,
@@ -139,7 +140,7 @@ BOOST_AUTO_TEST_CASE(library) {
 
     // std::function<void(int)> f = std::bind(&session::foo, &s, std::placeholders::_1);	//	ok
 
-    auto vm = fabric.create_proxy(f1, f2); //	ok
+    auto vm = fabric.create_proxy([](std::string, std::string) {}, f1, f2); //	ok
     // auto vm = fabric.create_proxy(std::move(f1));	//	ok
 
     // auto vm = fabric.create_proxy(std::bind(&session::foo, &s, std::placeholders::_1));	//	not ok
@@ -153,7 +154,8 @@ BOOST_AUTO_TEST_CASE(library) {
     //	return s.size();
     //	});
 
-    auto vmZ = fabric.create_proxy(cyng::vm_adaptor<session, std::uint64_t, std::string>(&s, &session::foo));
+    auto vmZ = fabric.create_proxy(
+        [](std::string, std::string) {}, cyng::vm_adaptor<session, std::uint64_t, std::string>(&s, &session::foo));
     vmZ.set_channel_names({"Z"});
     vmZ.execute(
         cyng::op::ESBA,
@@ -202,7 +204,7 @@ BOOST_AUTO_TEST_CASE(library) {
 BOOST_AUTO_TEST_CASE(mesh) {
     cyng::controller ctl;
     cyng::mesh fabric(ctl);
-    auto vm = fabric.create_proxy();
+    auto vm = fabric.create_proxy([](std::string, std::string) {});
     // std::cerr << vm->get_name() << std::endl;
 
     //
@@ -281,7 +283,8 @@ BOOST_AUTO_TEST_CASE(signature) {
 
     auto channel = ctl.create_named_channel_with_ref<sig>("sig").first;
     BOOST_ASSERT(channel->is_open());
-    channel->dispatch("hello", "abc");
+    channel->dispatch(
+        "hello", [](std::string, std::string) {}, "abc");
     std::this_thread::sleep_for(std::chrono::seconds(2));
     channel->stop();
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -304,8 +307,10 @@ BOOST_AUTO_TEST_CASE(forward) {
 
     cyng::controller ctl;
     cyng::mesh fabric(ctl);
-    auto vm1 = fabric.make_proxy(parent, cyng::make_description("f1", f1), cyng::make_description("f2", f1));
-    auto vm2 = fabric.make_proxy(parent, cyng::make_description("f2", f2));
+    auto vm1 = fabric.make_proxy(
+        parent, [](std::string, std::string) {}, cyng::make_description("f1", f1), cyng::make_description("f2", f1));
+    auto vm2 = fabric.make_proxy(
+        parent, [](std::string, std::string) {}, cyng::make_description("f2", f2));
 
     vm1.load(cyng::generate_forward("f2", vm1.get_tag(), "hello from vm1"));
     vm1.run();

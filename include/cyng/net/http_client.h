@@ -55,6 +55,7 @@ namespace cyng {
             http_client(
                 channel_weak wp,
                 cyng::controller &ctl,
+                channel::cb_err_t cb,
                 std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::system::error_code)>
                     cb_failed,                                           // connect failed
                 std::function<void(endpoint_t, channel_ptr)> cb_connect, // successful connected
@@ -130,6 +131,7 @@ namespace cyng {
           private:
             channel_weak channel_;
             cyng::controller &ctl_;
+            channel::cb_err_t cb_;
             std::function<void(endpoint_t, channel_ptr)> cb_connect_;
             std::function<std::pair<std::chrono::seconds, bool>(std::size_t, boost::system::error_code)> cb_failed_;
 

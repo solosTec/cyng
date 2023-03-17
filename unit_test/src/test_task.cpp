@@ -54,6 +54,7 @@ BOOST_AUTO_TEST_CASE(scheduler) {
 BOOST_AUTO_TEST_CASE(named) {
     cyng::controller ctl(4);
     auto channel = ctl.create_named_channel<cyng::demo_task>("dude");
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     ctl.get_registry().lookup("dude", [](std::vector<cyng::channel_ptr> channels) {
         BOOST_REQUIRE(!channels.empty());
         if (!channels.empty()) {
@@ -62,6 +63,7 @@ BOOST_AUTO_TEST_CASE(named) {
             channels.front()->stop();
         }
     });
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     ctl.shutdown();
     ctl.stop();
 }
@@ -70,6 +72,7 @@ BOOST_AUTO_TEST_CASE(weak) //	with weak pointer
 {
     cyng::controller ctl;
     auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude").first;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     ctl.get_registry().lookup("dude", [](std::vector<cyng::channel_ptr> channels) {
         BOOST_REQUIRE(!channels.empty());
         if (!channels.empty()) {
@@ -78,7 +81,8 @@ BOOST_AUTO_TEST_CASE(weak) //	with weak pointer
             //	The following call generates an exception
             // channels.front()->dispatch("demo4", cyng::make_tuple(channels.front()));
             // channels.front()->dispatch(3, cyng::make_tuple(12));
-            channels.front()->dispatch("demo3", cyng::make_tuple(12));
+            channels.front()->dispatch(
+                "demo3", [](std::string, std::string) {}, cyng::make_tuple(12));
             channels.front()->dispatch(1, cyng::make_tuple(2));
             // cyng::make_object(channels.front());
             std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -87,6 +91,7 @@ BOOST_AUTO_TEST_CASE(weak) //	with weak pointer
             channels.front()->stop();
         }
     });
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     ctl.shutdown();
     ctl.stop();
 }
@@ -146,7 +151,8 @@ BOOST_AUTO_TEST_CASE(next) {
     //  * demo3() increase the specified int value (11) by one
     //	* and pass result (12) as parameter to function #1 demo_task_ref::demo1(int n).
     //
-    channel->next("demo3", "demo1", cyng::make_tuple(11));
+    channel->next(
+        "demo3", "demo1", [](std::string, std::string) {}, cyng::make_tuple(11));
 
     // channel->chain("demo3", cyng::make_tuple(11)).then("demo1");
     std::this_thread::sleep_for(std::chrono::seconds(20));
@@ -159,7 +165,8 @@ BOOST_AUTO_TEST_CASE(defer) {
     cyng::controller ctl;
     auto channel = ctl.create_named_channel_with_ref<cyng::demo_task_ref>("dude").first;
 
-    auto r = channel->defer("demo3", 11);
+    auto r = channel->defer(
+        "demo3", [](std::string, std::string) {}, 11);
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -168,7 +175,7 @@ BOOST_AUTO_TEST_CASE(defer) {
     }
     BOOST_CHECK(r.is_ready());
 
-    std::this_thread::sleep_for(std::chrono::seconds(100));
+    std::this_thread::sleep_for(std::chrono::seconds(10));
     channel->stop();
     ctl.shutdown();
     ctl.stop();

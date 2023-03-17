@@ -57,15 +57,17 @@ namespace cyng {
       public:
         explicit mesh(controller &) noexcept;
 
-        template <typename... Fns> vm_proxy create_proxy(Fns &&...fns) { return create_vm(std::forward<Fns>(fns)...); }
-
-        template <typename... Fns> vm_proxy create_proxy(boost::uuids::uuid parent, Fns &&...fns) {
-            return create_vm(parent, std::forward<Fns>(fns)...);
+        template <typename... Fns> vm_proxy create_proxy(channel::cb_err_t cb, Fns &&...fns) {
+            return create_vm(cb, std::forward<Fns>(fns)...);
         }
 
-        template <typename... D> vm_proxy make_proxy(D &&...ds) {
+        template <typename... Fns> vm_proxy create_proxy(boost::uuids::uuid parent, channel::cb_err_t cb, Fns &&...fns) {
+            return create_vm(parent, cb, std::forward<Fns>(fns)...);
+        }
 
-            vm_proxy proxy = create_vm(get_function<D>(ds)...);
+        template <typename... D> vm_proxy make_proxy(channel::cb_err_t cb, D &&...ds) {
+
+            vm_proxy proxy = create_vm(cb, get_function<D>(ds)...);
 
 #ifdef _DEBUG
             //((std::cout << get_name<D>(ds)), ...);
@@ -78,9 +80,9 @@ namespace cyng {
             return proxy;
         }
 
-        template <typename... D> vm_proxy make_proxy(boost::uuids::uuid parent, D &&...ds) {
+        template <typename... D> vm_proxy make_proxy(boost::uuids::uuid parent, channel::cb_err_t cb, D &&...ds) {
 
-            vm_proxy proxy = create_vm(parent, get_function<D>(ds)...);
+            vm_proxy proxy = create_vm(parent, cb, get_function<D>(ds)...);
 
             //
             //	set channel names
@@ -92,7 +94,6 @@ namespace cyng {
         /**
          * Search for a VM with the specified tag
          */
-        // channel_ptr lookup(boost::uuids::uuid tag);
         void lookup(boost::uuids::uuid tag, std::function<void(std::vector<channel_ptr>)> cb);
 
         /**
@@ -101,11 +102,11 @@ namespace cyng {
         controller &get_ctl();
 
       private:
-        template <typename... Fns> channel_ptr create_vm(Fns &&...fns) {
-            return create_vm(boost::uuids::nil_uuid(), std::forward<Fns>(fns)...);
+        template <typename... Fns> channel_ptr create_vm(channel::cb_err_t cb, Fns &&...fns) {
+            return create_vm(boost::uuids::nil_uuid(), cb, std::forward<Fns>(fns)...);
         }
 
-        template <typename... Fns> channel_ptr create_vm(boost::uuids::uuid parent, Fns &&...fns) {
+        template <typename... Fns> channel_ptr create_vm(boost::uuids::uuid parent, channel::cb_err_t cb, Fns &&...fns) {
 
             //
             //	create an uuid
@@ -116,7 +117,8 @@ namespace cyng {
             //	create task channel
             //
             using vm_t = vm<typename std::decay<Fns>::type...>; //	no references
-            return ctl_.create_named_channel_with_ref<vm_t>(boost::uuids::to_string(tag), *this, parent, std::forward<Fns>(fns)...)
+            return ctl_
+                .create_named_channel_with_ref<vm_t>(boost::uuids::to_string(tag), *this, cb, parent, std::forward<Fns>(fns)...)
                 .first;
         }
 

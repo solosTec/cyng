@@ -26,7 +26,9 @@ namespace cyng {
             //
             std::string const tag = boost::uuids::to_string(uuid_rgn_());
 
-            return ctl_.create_named_channel_with_ref<http_client>(tag, ctl_, cb_failed, cb_connect, cb_receive, on_disconnect)
+            return ctl_
+                .create_named_channel_with_ref<http_client>(
+                    tag, ctl_, [](std::string, std::string) {}, cb_failed, cb_connect, cb_receive, on_disconnect)
                 .first;
         }
 

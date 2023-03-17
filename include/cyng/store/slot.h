@@ -12,57 +12,43 @@
 
 namespace cyng {
 
-	class slot : public slot_interface
-	{
+    class slot : public slot_interface {
 
-	public:
-		explicit slot(channel&);
-		explicit slot(channel_ptr);
-		explicit slot(channel_weak);
-		slot(slot const&) = default;
+      public:
+        explicit slot(channel &, channel::cb_err_t);
+        explicit slot(channel_ptr, channel::cb_err_t);
+        explicit slot(channel_weak, channel::cb_err_t);
+        slot(slot const &);
 
-		/**
-		 * insert event
-		 */
-		virtual bool forward(table const*
-			, key_t const&
-			, data_t const&
-			, std::uint64_t
-			, boost::uuids::uuid) override;
+        /**
+         * insert event
+         */
+        virtual bool forward(table const *, key_t const &, data_t const &, std::uint64_t, boost::uuids::uuid) override;
 
-		/**
-		 * modify event
-		 */
-		virtual bool forward(table const* tbl
-			, key_t const& key
-			, attr_t const& attr
-			, data_t const&
-			, std::uint64_t gen
-			, boost::uuids::uuid tag) override;
+        /**
+         * modify event
+         */
+        virtual bool
+        forward(table const *tbl, key_t const &key, attr_t const &attr, data_t const &, std::uint64_t gen, boost::uuids::uuid tag)
+            override;
 
-		/**
-		 * remove event
-		 */
-		virtual bool forward(table const* tbl
-			, key_t const& key
-			, data_t const& data
-			, boost::uuids::uuid tag) override;
+        /**
+         * remove event
+         */
+        virtual bool forward(table const *tbl, key_t const &key, data_t const &data, boost::uuids::uuid tag) override;
 
-		virtual bool forward(table const*
-			, boost::uuids::uuid) override;
+        virtual bool forward(table const *, boost::uuids::uuid) override;
 
-		virtual bool forward(table const*
-			, bool) override;
+        virtual bool forward(table const *, bool) override;
 
+      private:
+        channel_weak channel_;
+        channel::cb_err_t cb_;
+    };
 
-	private:
-		channel_weak channel_;
-	};
+    slot_ptr make_slot(channel &, channel::cb_err_t);
+    slot_ptr make_slot(channel_ptr, channel::cb_err_t);
+    slot_ptr make_slot(channel_weak, channel::cb_err_t);
 
-	slot_ptr make_slot(channel&);
-	slot_ptr make_slot(channel_ptr);
-	slot_ptr make_slot(channel_weak);
-
-}
+} // namespace cyng
 #endif
-

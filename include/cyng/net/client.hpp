@@ -61,6 +61,7 @@ namespace cyng {
           public:
             client(channel_weak wp
 				, controller& ctl
+                , channel::cb_err_t cb
 				, std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string&, std::string&)> cb_failed // connect failed
 				, std::function<void(endpoint_t, endpoint_t, channel_ptr)> cb_connect // successful connected
                 , std::function<void(cyng::buffer_t)> cb_receive
@@ -81,6 +82,7 @@ namespace cyng {
 				, resolver_()
                 , reconnect_counter_(0)
 				, ctl_(ctl)
+                , cb_(cb)
                 , cb_connect_(cb_connect)
 				, cb_failed_(cb_failed)
                 , cb_state_(cb_state)
@@ -146,7 +148,7 @@ namespace cyng {
                                                     //  reconnect after timeout
                                                     //  "connect" => client::connect(host, service)
                                                     //
-                                                    sp->suspend(timeout, "connect", host, service);
+                                                    sp->suspend(timeout, "connect", cb_, host, service);
                                                 } else {
                                                     update(client_state::INITIAL);
                                                 }
@@ -163,7 +165,7 @@ namespace cyng {
                         //
                         //  "connect" => client::connect(host, service)
                         //
-                        resolver_->dispatch("connect", host, service);
+                        resolver_->dispatch("connect", cb_, host, service);
                     } else {
                         //	internal error
                     }
@@ -233,7 +235,7 @@ namespace cyng {
                     reset();
                     if (sp) {
                         //	"on_disconnect"
-                        sp->dispatch("on_disconnect", ec);
+                        sp->dispatch("on_disconnect", cb_, ec);
                     }
                 }
             }
@@ -283,7 +285,7 @@ namespace cyng {
                         //
                         //  forward data
                         //
-                        sp->dispatch("on_receive", cyng::buffer_t(rec_.begin(), rec_.begin() + n));
+                        sp->dispatch("on_receive", cb_, cyng::buffer_t(rec_.begin(), rec_.begin() + n));
 
                         //
                         //	continue reading
@@ -296,7 +298,7 @@ namespace cyng {
                         //  cleanup
                         //
                         reset();
-                        sp->dispatch("on_disconnect", ec);
+                        sp->dispatch("on_disconnect", cb_, ec);
                     }
                 }
             }
@@ -318,6 +320,7 @@ namespace cyng {
             std::size_t reconnect_counter_;
 
             cyng::controller &ctl_;
+            channel::cb_err_t cb_;
             std::function<void(endpoint_t, endpoint_t, channel_ptr)> cb_connect_;
             std::function<std::pair<std::chrono::seconds, bool>(std::size_t, std::size_t, std::string &, std::string &)> cb_failed_;
             std::function<void(client_state)> cb_state_;
