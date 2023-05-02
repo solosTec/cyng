@@ -42,6 +42,7 @@ namespace cyng {
                 //  expecting "hh:mm:ss.ffff" format
                 auto const def_connect_timeout = io::to_plain(make_object(connect_timeout_));
                 auto const connect_timeout_str = find_value(config, std::string("connect.timeout"), def_login_timeout);
+                //	FixMe: warning C4312: 'reinterpret_cast': conversion from 'const SQLUINTEGER' to 'SQLPOINTER' of greater size
                 SQLUINTEGER const connect_timeout = to_seconds(connect_timeout_str).count();
 
                 std::string const dialect_name = cyng::find_value(config, std::string("dialect"), std::string("MYSQL"));
@@ -49,6 +50,7 @@ namespace cyng {
 
                 {
                     //	Login timeout is to set before connection
+                    //	FixMe: warning C4312: 'reinterpret_cast': conversion from 'const SQLUINTEGER' to 'SQLPOINTER' of greater size
                     const SQLRETURN rc =
                         ::SQLSetConnectAttr(connection_, SQL_ATTR_LOGIN_TIMEOUT, reinterpret_cast<SQLPOINTER>(login_timeout), 0);
 

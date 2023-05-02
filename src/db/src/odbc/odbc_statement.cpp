@@ -210,13 +210,14 @@ namespace cyng {
                     if (ptr != nullptr) {
 
                         SQL_TIMESTAMP_STRUCT sqldt{
-                            cyng::year(*ptr),
-                            cyng::month(*ptr),
-                            cyng::day(*ptr),
-                            cyng::hour(*ptr),
-                            cyng::minute(*ptr),
-                            cyng::second(*ptr),
-                            0};
+                            //	conversion from 'int' to 'SQLSMALLINT' requires a narrowing conversion
+                            static_cast<SQLSMALLINT>(cyng::year(*ptr)),
+                            static_cast<SQLUSMALLINT>(cyng::month(*ptr)),
+                            static_cast<SQLUSMALLINT>(cyng::day(*ptr)),
+                            static_cast<SQLUSMALLINT>(cyng::hour(*ptr)),
+                            static_cast<SQLUSMALLINT>(cyng::minute(*ptr)),
+                            static_cast<SQLUSMALLINT>(cyng::second(*ptr)),
+                            static_cast<SQLUSMALLINT>(0)};
                         return bind_parameter(
                             stmt,
                             index,

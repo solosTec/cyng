@@ -259,7 +259,8 @@ namespace cyng
 				ss
 					<< std::hex
 					//	FixMe: possible loss of data
-					<< std::string(sub.begin(), sub.end());
+                    // warning C4244: 'argument': conversion from 'const char32_t' to 'const char', possible loss of data
+                    << std::string(sub.begin(), sub.end());
 
 				std::uint32_t n{ 0 };
 				ss >> n;

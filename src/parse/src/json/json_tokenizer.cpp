@@ -249,6 +249,8 @@ namespace cyng
 				std::stringstream ss;
 				ss
 					<< std::hex
+					// FixMe: check this warning
+					// warning C4244: 'argument': conversion from 'const char32_t' to 'const char', possible loss of data
 					<< std::string(sub.begin(), sub.end());
 
 				std::uint32_t n{ 0 };
