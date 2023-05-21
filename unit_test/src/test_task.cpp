@@ -21,15 +21,18 @@ BOOST_AUTO_TEST_CASE(controller) {
     BOOST_REQUIRE(cp);
     if (cp) {
         BOOST_REQUIRE_EQUAL(cp->get_name(), "demo_task");
-        //		cp->dispatch(0, cyng::make_tuple());
+        cp->suspend(std::chrono::seconds(1), 4, cyng::make_tuple(std::chrono::seconds(12)));
         cp->dispatch(1, cyng::make_tuple(2));
         cp->dispatch(2, cyng::make_tuple(2, "dude", 3.14f));
         cp->dispatch(3, cyng::make_tuple(24));
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        //
+        //  wait for suspended task
+        //
+        std::this_thread::sleep_for(std::chrono::seconds(2));
         cp->stop();
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     // std::cerr << "use_count: " << cp.use_count() << std::endl;
     BOOST_CHECK_EQUAL(cp.use_count(), 1);
     cp.reset();
