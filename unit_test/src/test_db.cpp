@@ -125,4 +125,11 @@ BOOST_AUTO_TEST_CASE(julian) {
     //   Julian day 2.45735e+06 is 2015-11-27 19:27:35 UTC
 }
 
+#if defined(_CYNG_DUCKDB_CONNECTOR)
+BOOST_AUTO_TEST_CASE(DUCKDB) {
+    //
+    BOOST_REQUIRE(true);
+}
+#endif
+
 BOOST_AUTO_TEST_SUITE_END()

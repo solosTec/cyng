@@ -56,6 +56,7 @@ target_compile_definitions(cyng_db
         $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
         $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
         $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
+        $<$<BOOL:${CYNG_DUCKDB_CONNECTOR}>:_CYNG_DUCKDB_CONNECTOR>  # see also cyng.h
 )
 #
 # -Wno-psabi for gcc > 7.1

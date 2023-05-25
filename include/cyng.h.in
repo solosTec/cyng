@@ -51,3 +51,4 @@ namespace ${PROJECT_NAME} {
 #cmakedefine CYNG_ODBC_CONNECTOR
 #cmakedefine CYNG_PQXX_CONNECTOR
 #cmakedefine CYNG_SQLITE3_CONNECTOR
+#cmakedefine CYNG_DUCKDB_CONNECTOR

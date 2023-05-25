@@ -92,7 +92,7 @@ else()
 	message(WARNING "** ODBC not found")
 	set(${CAPITAL_NAME}_ODBC_CONNECTOR OFF CACHE BOOL "ODBC Connector")
 
-endif()	
+endif(ODBC_FOUND)	
 
 #
 #	MySQL: https://github.com/mysql/mysql-connector-odbc/blob/master/cmake/FindMySQL.cmake
@@ -104,3 +104,49 @@ endif()
 #
 #endif()
 set(${CAPITAL_NAME}_MYSQL_CONNECTOR OFF CACHE BOOL "MySQL Connector")
+
+
+#
+# https://github.com/duckdb/duckdb
+# https://github.com/duckdb/duckdb/releases/download/v0.8.0/libduckdb-src.zip
+#
+ set(CYNG_DUCKDB_CONNECTOR OFF CACHE BOOL "Add DuckDB sources")
+ if (CYNG_DUCKDB_CONNECTOR)
+
+#	set(DUCKDB_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/3party/libduckdb-src")
+
+#	message(STATUS "** DuckDB Include    : ${DUCKDB_INCLUDE_DIRS}")
+
+	include (${PROJECT_SOURCE_DIR}/3party/duckdb.cmake)
+#	add_library(cyng_duckdb ${GLOBAL_LIBRARY_TYPE} ${duckdb_lib})
+	add_library(cyng_duckdb SHARED ${duckdb_lib})
+	add_library(cyng::duckdb ALIAS "cyng_duckdb")
+	set_property(TARGET cyng_duckdb PROPERTY POSITION_INDEPENDENT_CODE ON)
+	target_compile_definitions(cyng_duckdb
+		PRIVATE 
+			"DUCKDB_BUILD_LIBRARY"
+	)
+	target_link_libraries(cyng_duckdb
+		PRIVATE
+			"$<$<PLATFORM_ID:Linux>:${CMAKE_DL_LIBS};pthread>"
+	)
+
+	add_library(cyng_duckdb_static STATIC ${duckdb_lib})
+	add_library(cyng::duckdb_static ALIAS "cyng_duckdb_static")
+	target_compile_definitions(cyng_duckdb_static
+		PRIVATE 
+			"DUCKDB_BUILD_LIBRARY"
+	)
+	target_link_libraries(cyng_duckdb_static
+		PRIVATE
+			"$<$<PLATFORM_ID:Linux>:${CMAKE_DL_LIBS};pthread>"
+			"$<$<CXX_COMPILER_ID:MSVC>:ws2_32>"
+	)
+
+	# data comes from sqlite.cmake
+	message(STATUS "** DuckDB  Version    : ${duckdb_VERSION}")
+	message(STATUS "** DuckDB  Include    : ${duckdb_INCLUDE_DIR}")
+	message(STATUS "** DuckDB  Libraries  : ${duckdb_LIBRARY}")
+
+ 
+endif(CYNG_DUCKDB_CONNECTOR)	

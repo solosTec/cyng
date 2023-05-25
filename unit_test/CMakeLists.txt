@@ -50,11 +50,13 @@ target_compile_definitions(unit_test
         BOOST_TEST_DYN_LINK 
         BOOST_ASIO_HAS_MOVE 
         $<$<CONFIG:Debug>:_DEBUG_UNIT_TEST>
+        $<$<BOOL:${CYNG_DUCKDB_CONNECTOR}>:_CYNG_DUCKDB_CONNECTOR>
 )
 
 #
 # -Wno-psabi for gcc > 7.1
 # add_compile_options(/utf-8)
+# CYNG_DUCKDB_CONNECTOR is defined in "cyng.h"
 #
 target_compile_options(unit_test 
     PRIVATE 
@@ -95,6 +97,7 @@ target_link_libraries(unit_test
         cyng::sys
         cyng::parse
         cyng::net
+        $<$<BOOL:${CYNG_DUCKDB_CONNECTOR}>:cyng::duckdb>
         "$<$<PLATFORM_ID:Linux>:pthread;${CMAKE_DL_LIBS}>"
         "$<$<PLATFORM_ID:Linux>:Boost::locale>"
         "$<$<PLATFORM_ID:Windows>:odbc32>"
