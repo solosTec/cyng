@@ -1,6 +1,5 @@
-#include "demo_task.h"
 #include <boost/test/unit_test.hpp>
-#include <iostream>
+#include "demo_task.h"
 
 namespace cyng {
 
@@ -23,7 +22,7 @@ namespace cyng {
     }
 
     int demo_task::demo0() {
-        std::cout << "demo0()" << std::endl;
+        // std::cout << "demo0()" << std::endl;
         return 1;
     }
 
@@ -45,7 +44,8 @@ namespace cyng {
     }
     void demo_task::demo4(std::chrono::seconds s) {
         // std::cout << "demo4(" << s << ")" << std::endl;
-        BOOST_CHECK_EQUAL(s, std::chrono::seconds(12));
+        //  compare seconds itself failes with BOOST_CHECK_EQUAL()
+        BOOST_CHECK_EQUAL(s.count(), std::chrono::seconds(12).count());
     }
 
 } // namespace cyng

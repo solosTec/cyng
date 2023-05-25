@@ -143,6 +143,9 @@ set(${CAPITAL_NAME}_MYSQL_CONNECTOR OFF CACHE BOOL "MySQL Connector")
 			"$<$<CXX_COMPILER_ID:MSVC>:ws2_32>"
 	)
 
+	get_target_property(duckdb_LIBRARY cyng_duckdb_static LIBRARY_OUTPUT_NAME)
+	
+
 	# data comes from sqlite.cmake
 	message(STATUS "** DuckDB  Version    : ${duckdb_VERSION}")
 	message(STATUS "** DuckDB  Include    : ${duckdb_INCLUDE_DIR}")

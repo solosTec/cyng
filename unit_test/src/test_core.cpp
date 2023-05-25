@@ -725,7 +725,7 @@ BOOST_AUTO_TEST_CASE(date) {
     {
         cyng::date const ref(2022, 7, 10, 16, 56, 32);
         auto const diff = cyng::date::time_since_epoch<std::chrono::seconds>(ref);
-        std::cout << diff << std::endl;
+//        std::cout << diff << std::endl;
         BOOST_REQUIRE_EQUAL(diff.count(), 1657472192u); // GMT: Sunday, 10. July 2022 16:56:32
     }
 }
