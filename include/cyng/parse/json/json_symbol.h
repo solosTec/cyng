@@ -1,71 +1,64 @@
 /*
  * The MIT License (MIT)
- * 
- * Copyright (c) 2021 Sylko Olzscher 
- * 
- */ 
+ *
+ * Copyright (c) 2021 Sylko Olzscher
+ *
+ */
 
 #ifndef CYNG_JSON_SYMBOL_H
 #define CYNG_JSON_SYMBOL_H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
-  #pragma once
+#pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-
+#include <cstdint> // uint8_t, uint16_t, uint32_t
+#include <functional>
 #include <iostream>
 #include <string>
-#include <functional>
 
-namespace cyng	
-{
-	namespace json 
-	{
-		enum class symbol_type
-		{
-			SYM_EOF,		//!<	no more symbols
-			UNKNOWN,		//!<	unknown or error state
-			STRING,			//!<	text in quoted
-			//UUID,			//!<	UUID string
-			LITERAL,		//!<	text without quotes
-			NUMBER,			//!<	number (int)
-			FLOAT,			//!<	number (float)
-			BOOLEAN,		//!<	true/false
-			NOTHING,		//!<	null
+namespace cyng {
+    namespace json {
+        enum class symbol_type {
+            SYM_EOF, //!<	no more symbols
+            UNKNOWN, //!<	unknown or error state
+            STRING,  //!<	text in quoted
+            // UUID,			//!<	UUID string
+            LITERAL, //!<	text without quotes
+            NUMBER,  //!<	number (int)
+            FLOAT,   //!<	number (float)
+            BOOLEAN, //!<	true/false
+            NOTHING, //!<	null
 
-			SYMBOL,			//!<	',', ':', '[', ']', '{', '}'
-			WS,				//!<	' ', '\n', '\r', '\t'
-		};
+            SYMBOL, //!<	',', ':', '[', ']', '{', '}'
+            WS,     //!<	' ', '\n', '\r', '\t'
+        };
 
-		struct symbol
-		{
-			symbol(symbol_type, std::string const&);
-			symbol(symbol_type, std::u32string const&);
-			explicit symbol(symbol_type, std::uint32_t);
+        struct symbol {
+            symbol(symbol_type, std::string const &);
+            symbol(symbol_type, std::u32string const &);
+            explicit symbol(symbol_type, std::uint32_t);
 
-			symbol_type const type_;
-			std::string const value_;
+            symbol_type const type_;
+            std::string const value_;
+        };
 
-		};
+        /**
+         * Streaming operator
+         */
+        std::ostream &operator<<(std::ostream &os, const symbol &sym);
 
+        /**
+         * Define an emit function
+         */
+        using emit_symbol_f = std::function<void(symbol &&)>;
 
-		/**
-		 * Streaming operator
-		 */
-		std::ostream& operator<<(std::ostream& os, const symbol& sym);
+        /**
+         * @return the name of the symbol
+         */
+        std::string name(symbol_type);
 
-		/**
-		 * Define an emit function
-		 */
-		using emit_symbol_f = std::function<void(symbol&&)>;
-
-		/**
-		 * @return the name of the symbol
-		 */
-		std::string name(symbol_type);
-
-	}
-}
+    } // namespace json
+} // namespace cyng
 
 #endif
-

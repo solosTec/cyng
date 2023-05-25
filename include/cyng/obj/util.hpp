@@ -9,6 +9,7 @@
 
 #include <cyng/obj/buffer_cast.hpp>
 #include <cyng/obj/factory.hpp>
+#include <cyng/obj/intrinsics/color.hpp>
 
 #include <algorithm>
 #include <iterator>

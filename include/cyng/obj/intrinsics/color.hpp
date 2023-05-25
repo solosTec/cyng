@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstdint> // uint8_t, uint16_t
 #include <limits>
 
 #if defined(max)
