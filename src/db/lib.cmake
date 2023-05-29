@@ -56,6 +56,20 @@ set (db_odbc
     src/odbc/odbc_statement.cpp
 )
 
+set (db_duck
+#    src/duckdb/duckdb_defs.h
+    src/duckdb/duckdb_session.h
+    src/duckdb/duckdb_session.cpp
+#    src/duckdb/duckdb_connection.h
+#    src/duckdb/duckdb_connection.cpp
+#    src/duckdb/duckdb_error.hpp
+#    src/duckdb/duckdb_error.cpp
+#    src/duckdb/duckdb_result.h
+#    src/duckdb/duckdb_result.cpp
+#    src/duckdb/duckdb_statement.h
+#    src/duckdb/duckdb_statement.cpp
+)
+
 source_group("details" FILES ${db_details})
 
 
@@ -74,4 +88,9 @@ endif()
 if (${CAPITAL_NAME}_ODBC_CONNECTOR)
     source_group("ODBC" FILES ${db_odbc})
     list(APPEND db_lib ${db_odbc})
+endif()
+
+if (${CAPITAL_NAME}_DUCKDB_CONNECTOR)
+    source_group("DuckDB" FILES ${db_duck})
+    list(APPEND db_lib ${db_duck})
 endif()

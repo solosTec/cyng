@@ -30,6 +30,10 @@
 #include <sqlite3/sqlite_session.h>
 #endif
 
+#if defined(CYNG_DUCKDB_CONNECTOR)
+#include <duckdb/duckdb_session.h>
+#endif
+
 namespace cyng {
     namespace db {
         session::session(connection_type type)
@@ -85,6 +89,10 @@ namespace cyng {
 
 #if defined(CYNG_SQLITE3_CONNECTOR)
             case connection_type::SQLITE: return std::make_shared<sqlite::session>();
+#endif
+
+#if defined(CYNG_DUCKDB_CONNECTOR)
+            case connection_type::DUCKDB: return std::make_shared<duckdb::session>();
 #endif
 
 #if defined(CYNG_ODBC_CONNECTOR)

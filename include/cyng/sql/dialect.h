@@ -1,61 +1,56 @@
 /*
  * The MIT License (MIT)
- * 
- * Copyright (c) 2017 Sylko Olzscher 
- * 
- */ 
+ *
+ * Copyright (c) 2017 Sylko Olzscher
+ *
+ */
 #ifndef CYNG_SQL_DIALECT_H
 #define CYNG_SQL_DIALECT_H
 
-#include <string>
 #include <cyng/obj/tag.hpp>
+#include <string>
 
-namespace cyng 
-{
-	namespace sql
-	{
-		/**
-		 * List of supported SQL dialects
-		 */
-		enum class dialect 
-		{
-			GENERIC,	//!<	fallback database type
-			MYSQL,		//!<	MySQL Database
-			SQLITE,		//!<	SQLite
-			ORACLE,		//!<	Oracle DB
-			ACCESS,		//!<	MS Access
-			SQLSERVER,	//!<	MS SQL Server
-			POSTGRESQL,	//!<	PostgreSQL 
-		};
-		
-		/**
-		 * @return dialect type 
-		 */
-		dialect get_dialect(std::string const& name);
-		
-		/**
-		 * List of supported SQL dialects
-		 */
-		enum feature
-		{
-			IF_NOT_EXISTS,		//!<	supports create if not exists
-			DATE_TIME_SUPPORT,	//!<	offers support for SQL DATE_TIME type
-		};
+namespace cyng {
+    namespace sql {
+        /**
+         * List of supported SQL dialects
+         */
+        enum class dialect {
+            GENERIC,    //!<	fallback database type
+            MYSQL,      //!<	MySQL Database
+            SQLITE,     //!<	SQLite
+            ORACLE,     //!<	Oracle DB
+            ACCESS,     //!<	MS Access
+            SQLSERVER,  //!<	MS SQL Server
+            POSTGRESQL, //!<	PostgreSQL
+            DUCKDB,     //!<	DuckDB
+        };
 
-		/**
-		 * @return true if SQL dialect support sepcified feature.
-		 */
-		bool has_feature(dialect, feature);
-		
-		/**
-		 * Maps the C++ data type to an SQL data type
-		 * of the specified SQL dialect.
-		 */
-		std::string get_field_type(dialect d, type_code code, std::size_t width = 0);
-		
-	}	
-}
+        /**
+         * @return dialect type
+         */
+        dialect get_dialect(std::string const &name);
 
-#endif	//	CYNG_SQL_DIALECT_H
+        /**
+         * List of supported SQL dialects
+         */
+        enum feature {
+            IF_NOT_EXISTS,     //!<	supports create if not exists
+            DATE_TIME_SUPPORT, //!<	offers support for SQL DATE_TIME type
+        };
 
+        /**
+         * @return true if SQL dialect support sepcified feature.
+         */
+        bool has_feature(dialect, feature);
 
+        /**
+         * Maps the C++ data type to an SQL data type
+         * of the specified SQL dialect.
+         */
+        std::string get_field_type(dialect d, type_code code, std::size_t width = 0);
+
+    } // namespace sql
+} // namespace cyng
+
+#endif //	CYNG_SQL_DIALECT_H

@@ -16,6 +16,8 @@ namespace cyng {
                 return dialect::MYSQL;
             } else if (boost::algorithm::iequals(name, "SQLITE") || boost::algorithm::iequals(name, "SQLITE3")) {
                 return dialect::SQLITE;
+            } else if (boost::algorithm::iequals(name, "DUCKDB")) {
+                return dialect::DUCKDB;
             } else if (boost::algorithm::iequals(name, "ORACLE")) {
                 return dialect::ORACLE;
             } else if (boost::algorithm::iequals(name, "ACCESS") || boost::algorithm::iequals(name, "MSACCESS")) {
