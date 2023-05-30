@@ -88,7 +88,9 @@ namespace cyng {
                 , cb_state_(cb_state)
 				, socket_(ctl.get_ctx())
 				, rec_({0})
-				, snd_()
+				, snd_()            
+                , rx_{0}
+                , sx_{0}
 			{
                 if (auto sp = channel_.lock(); sp) {
                     sp->set_channel_names({"connect", "send", "on_receive", "on_disconnect", "close"});
@@ -212,16 +214,22 @@ namespace cyng {
                     boost::asio::async_write(
                         socket_,
                         boost::asio::buffer(snd_.front().data(), snd_.front().size()),
-                        expose_dispatcher(*sp).wrap(std::bind(&client::handle_write, this, std::placeholders::_1, sp)));
+                        expose_dispatcher(*sp).wrap(
+                            std::bind(&client::handle_write, this, std::placeholders::_1, std::placeholders::_2, sp)));
                 }
             }
 
-            void handle_write(const boost::system::error_code &ec, channel_ptr sp) {
+            void handle_write(const boost::system::error_code &ec, std::size_t n, channel_ptr sp) {
 
                 BOOST_ASSERT(sp);
                 if (!ec) {
 
                     BOOST_ASSERT(!snd_.empty());
+
+                    //
+                    //	update sx
+                    //
+                    sx_ += n;
 
                     snd_.pop_front();
                     if (!snd_.empty()) {
@@ -288,6 +296,11 @@ namespace cyng {
                         sp->dispatch("on_receive", cb_, cyng::buffer_t(rec_.begin(), rec_.begin() + n));
 
                         //
+                        //	update rx
+                        //
+                        rx_ += static_cast<std::uint64_t>(n);
+
+                        //
                         //	continue reading
                         //
                         do_read();
@@ -335,6 +348,11 @@ namespace cyng {
              * write buffer
              */
             std::deque<cyng::buffer_t> snd_;
+
+            /**
+             * statistics
+             */
+            std::uint64_t rx_, sx_;
         };
     } // namespace net
 } // namespace cyng
