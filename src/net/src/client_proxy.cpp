@@ -31,6 +31,7 @@ namespace cyng {
 
         void client_proxy::connect(std::string host, std::string service) {
             if (client_) {
+                //  channel 0 - connect(std::string host, std::string service)
                 client_->dispatch(0, host, service);
             }
         }
@@ -39,9 +40,32 @@ namespace cyng {
             if (client_) {
                 //
                 //  close socket
+                //  channel 4 - reset()
                 //
                 client_->dispatch(4);
             }
+        }
+
+        bool client_proxy::send(std::function<cyng::buffer_t()> fn) {
+            //
+            if (client_) {
+                //
+                // extend lifetime
+                //
+                auto sp = client_;
+
+                //
+                //  Uses the same strand as the client implementation.
+                //  Therefore "client::send(cyng::buffer_t msg)" is called
+                //  in a threadsafe way.
+                //
+                boost::asio::post(expose_dispatcher(*client_), [this, fn, sp]() {
+                    // client::send(cyng::buffer_t msg)
+                    direct_send_(fn());
+                });
+                return true;
+            }
+            return false;
         }
 
         void client_proxy::send(cyng::buffer_t &&data, bool direct) {
@@ -49,6 +73,7 @@ namespace cyng {
                 if (direct) {
                     direct_send_(data);
                 } else {
+                    //  channel 1 -  send(cyng::buffer_t)
                     client_->dispatch(1, std::move(data));
                 }
             }
@@ -63,6 +88,7 @@ namespace cyng {
                     //
                     return make_object(data);
                 });
+                //  channel 5 - send_deque(deque_t)
                 client_->dispatch(5, deq);
             }
         }

@@ -52,10 +52,19 @@ namespace cyng {
             /**
              * send data
              * @param data data to send
-             * @param direct if true the send method of the implementation class is called. This is not threadsafe.
+             * @param direct if true the send method of the implementation class is called. This is NOT threadsafe.
              */
             void send(cyng::buffer_t &&data, bool direct);
             void send(std::string const &data, bool direct);
+
+            /**
+             * The lambda that generates the data to send is guarded
+             * by a strand. This allows to produce and send data
+             * in a threadsafe way.
+             *
+             * @return true if the internal channel pointer is valid.
+             */
+            bool send(std::function<cyng::buffer_t()>);
 
             /**
              * send asynchronous
@@ -66,6 +75,10 @@ namespace cyng {
 
           private:
             channel_ptr client_;
+
+            /**
+             * This function is provided by the client implementation: send(cyng::buffer_t msg)
+             */
             std::function<void(cyng::buffer_t)> direct_send_;
         };
     } // namespace net

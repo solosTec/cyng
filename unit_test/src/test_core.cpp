@@ -307,6 +307,23 @@ BOOST_AUTO_TEST_CASE(cast, *boost::unit_test::tolerance(0.00001)) {
     BOOST_CHECK_EQUAL(vec2.at(0), 42);
     BOOST_CHECK_EQUAL(vec2.at(1), 43);
     BOOST_CHECK_EQUAL(vec2.at(2), 44);
+
+    //
+    //  string cast
+    //
+    {
+        cyng::buffer_t const buffer = {0};
+        std::string s = cyng::to_string_nil(buffer, 0);
+        BOOST_CHECK(s.empty());
+    }
+    {
+        cyng::buffer_t const buffer = {'a', 'b', 'c', 0};
+        std::string s = cyng::to_string_nil(buffer, 0);
+        BOOST_CHECK_EQUAL(s.size(), 3);
+        BOOST_CHECK_EQUAL(s.at(0), 'a');
+        BOOST_CHECK_EQUAL(s.at(1), 'b');
+        BOOST_CHECK_EQUAL(s.at(2), 'c');
+    }
 }
 
 BOOST_AUTO_TEST_CASE(obis) {
@@ -725,7 +742,7 @@ BOOST_AUTO_TEST_CASE(date) {
     {
         cyng::date const ref(2022, 7, 10, 16, 56, 32);
         auto const diff = cyng::date::time_since_epoch<std::chrono::seconds>(ref);
-//        std::cout << diff << std::endl;
+        //        std::cout << diff << std::endl;
         BOOST_REQUIRE_EQUAL(diff.count(), 1657472192u); // GMT: Sunday, 10. July 2022 16:56:32
     }
 }

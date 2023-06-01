@@ -48,10 +48,10 @@ namespace cyng {
             using signatures_t = std::tuple<
                 std::function<void(std::string, std::string)>,  // [0] connect
                 std::function<void(buffer_t)>,                  // [1] send
-                std::function<void(buffer_t)>,                  // on receive
-                std::function<void(boost::system::error_code)>, // on disconnect
-                std::function<void(eod)>,                       // close connection
-                std::function<void(deque_t)>,                   // send deque
+                std::function<void(buffer_t)>,                  // [2] on receive
+                std::function<void(boost::system::error_code)>, // [3] on disconnect
+                std::function<void(eod)>,                       // [4] close connection
+                std::function<void(deque_t)>,                   // [5] send deque
                 std::function<void(eod)>                        // stop
                 >;
 
@@ -175,7 +175,8 @@ namespace cyng {
             }
 
             /**
-             * lazy
+             * A direct call of this function is not threadsafe
+             * since the send buffer snd_ is not synchronized.
              */
             void send(cyng::buffer_t msg) {
 
@@ -192,6 +193,10 @@ namespace cyng {
 
             void send_deque(deque_t msg) {
 
+                //
+                //  it's essential not to start a new write operation
+                //  if one is already running.
+                //
                 auto const b = snd_.empty();
 
                 //

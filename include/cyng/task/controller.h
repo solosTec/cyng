@@ -89,32 +89,37 @@ namespace cyng {
             //	create a channel with an auto deleter
             //
             channel_ptr spc(new channel(get_ctx(), name), auto_remove(get_registry(), id));
+            BOOST_ASSERT(spc.operator bool());
 
-            //	task pointer, task id
-            task<T> *tsk = create_task<Traits, T>(spc, id, std::forward<Args>(args)...);
-            BOOST_ASSERT(tsk != nullptr);
+            if (spc) {
 
-            //  get a pointer to the implementation
-            T *impl = tsk->get_impl();
-            BOOST_ASSERT(impl != nullptr);
+                //	task pointer, task id
+                task<T> *tsk = create_task<Traits, T>(spc, id, std::forward<Args>(args)...);
+                BOOST_ASSERT(tsk != nullptr);
 
-            //
-            //	update channel state
-            //
-            if (spc->open(tsk)) {
+                //  get a pointer to the implementation
+                T *impl = tsk->get_impl();
+                BOOST_ASSERT(impl != nullptr);
 
                 //
-                //	insert into registry (async)
+                //	update channel state
                 //
-                get_registry().insert(spc);
-            } else {
-                BOOST_ASSERT_MSG(false, "open channel failed");
+                if (spc->open(tsk)) {
+
+                    //
+                    //	insert into registry (async)
+                    //
+                    get_registry().insert(spc);
+                } else {
+                    BOOST_ASSERT_MSG(false, "open channel failed");
+                }
+
+                //
+                //	make sure registry is updated
+                //
+                return {spc, impl};
             }
-
-            //
-            //	make sure registry is updated
-            //
-            return {spc, impl};
+            return {spc, nullptr};
         }
 
         /**

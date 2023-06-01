@@ -73,6 +73,7 @@ namespace cyng {
         if (ok) {
             dispatch(slot, std::move(msg));
         } else {
+            //  error case: slot name is not defined
             if (cb) {
                 cb(name_, name);
             }
