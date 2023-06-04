@@ -533,6 +533,14 @@ BOOST_AUTO_TEST_CASE(parser) {
     p.read(std::begin(inp), std::end(inp));
 
     //
+    //	time
+    //
+    obj = cyng::make_object(cyng::make_time());
+    cmp = cyng::io::to_typed(obj); //
+    inp = convert(obj);
+    p.read(std::begin(inp), std::end(inp));
+
+    //
     //	param_t
     //
     // obj = cyng::pair_factory("abc", "hello");

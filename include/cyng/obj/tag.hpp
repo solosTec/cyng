@@ -33,7 +33,7 @@ namespace cyng {
             std::int64_t,
 
             std::string,
-//            std::u8string,    //!< requires C++20
+            //            std::u8string,    //!< requires C++20
             std::u16string,
             std::u32string,
             std::filesystem::path,
@@ -73,6 +73,7 @@ namespace cyng {
             object, //	object is also part of the type system
             raw,    //	unparsed object
             date,
+            time,
 
             tuple_t,
             vector_t,
@@ -130,7 +131,7 @@ namespace cyng {
             "i64", //	int64_t
 
             "s",    //	string
-//            "su8",  // std::u8string,
+                    //            "su8",  // std::u8string,
             "su16", // std::u16string,
             "su32", // std::u32string,
 
@@ -170,6 +171,7 @@ namespace cyng {
             "obj", //	object
             "raw", //	unparsed object
             "date",
+            "time",
 
             "tpl",   //	tuple_t
             "vec",   //	vector_t
@@ -265,7 +267,7 @@ namespace cyng {
         TC_INT64 = type_tag_traits<std::int64_t>(),
 
         TC_STRING = type_tag_traits<std::string>(),
-//        TC_STRING_U8 = type_tag_traits<std::u8string>(),
+        //        TC_STRING_U8 = type_tag_traits<std::u8string>(),
         TC_STRING_U16 = type_tag_traits<std::u16string>(),
         TC_STRING_U32 = type_tag_traits<std::u32string>(),
 
@@ -305,6 +307,7 @@ namespace cyng {
         TC_OBJECT = type_tag_traits<object>(),
         TC_RAW = type_tag_traits<raw>(),
         TC_DATE = type_tag_traits<date>(),
+        TC_TIME = type_tag_traits<time>(),
 
         TC_TUPLE = type_tag_traits<tuple_t>(),
         TC_VECTOR = type_tag_traits<vector_t>(),

@@ -253,6 +253,10 @@ namespace cyng {
             static std::size_t write(std::ostream &os, date const &);
         };
 
+        template <> struct serializer<time, BINARY> {
+            static std::size_t write(std::ostream &os, time const &);
+        };
+
         template <> struct serializer<attr_t, BINARY> {
             static std::size_t write(std::ostream &os, attr_t const &);
         };

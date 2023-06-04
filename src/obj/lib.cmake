@@ -36,6 +36,7 @@ set (object_intrinscis
     src/intrinsics/raw.cpp
     src/intrinsics/program.cpp
     src/intrinsics/date.cpp
+    src/intrinsics/time.cpp
 
     ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/aes_key.hpp
     ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/buffer.h
@@ -54,6 +55,7 @@ set (object_intrinscis
     ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/raw.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/program.h
     ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/date.h
+    ${PROJECT_SOURCE_DIR}/../../include/cyng/obj/intrinsics/time.h
 )
 
 set (object_core 

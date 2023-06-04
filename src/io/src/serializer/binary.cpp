@@ -10,6 +10,8 @@
 #include <cyng/obj/factory.hpp>
 #include <cyng/obj/object.h>
 
+#include <numeric>
+
 #include <boost/io/ios_state.hpp>
 
 namespace cyng {
@@ -186,10 +188,11 @@ namespace cyng {
             serialize_type_tag<obis_path_t>(os);
             auto const ll = serialize_length(os, v.size() * obis::size());
             std::size_t size{sizeof(std::uint16_t) + ll};
-            for (auto const &o : v) {
-                size += write_binary(os, o.data());
-            }
-            return size;
+
+            //  Attempt to use the accumulate algorithm.
+            return size + std::accumulate(v.begin(), v.end(), std::size_t(0), [&](std::size_t n, obis const &code) {
+                       return n + write_binary(os, code.data());
+                   });
         }
 
         std::size_t serializer<edis, BINARY>::write(std::ostream &os, edis const &v) {
@@ -262,8 +265,23 @@ namespace cyng {
 
             auto const ll = serialize_length(os, r.size() * sizeof(int));
             std::size_t size{sizeof(std::uint16_t) + ll};
-            size += write_binary(os, r);
-            return size;
+            return size + write_binary(os, r);
+        }
+
+        std::size_t serializer<time, BINARY>::write(std::ostream &os, time const &t) {
+            //
+            //	type - length - value
+            //
+            serialize_type_tag<time>(os);
+
+            //
+            //  time will be converted to u64
+            //
+            auto const ll = serialize_length(os, sizeof(std::uint64_t));
+
+            auto const seconds = static_cast<std::uint64_t>(t.to_seconds().count());
+
+            return write_binary(os, seconds) + sizeof(std::uint16_t) + ll;
         }
 
         std::size_t serializer<attr_t, BINARY>::write(std::ostream &os, attr_t const &v) {
@@ -300,12 +318,12 @@ namespace cyng {
         }
 
         std::size_t serializer<attr_map_t, BINARY>::write(std::ostream &os, attr_map_t const &amap) {
-            std::size_t size{0};
 
             //	serialize each element from attribute map
-            for (auto const &attr : amap) {
-                size += serializer<attr_t, BINARY>::write(os, attr);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(amap), std::end(amap), std::size_t{0}, [&](std::size_t n, attr_t const &attr) {
+                    return n + serializer<attr_t, BINARY>::write(os, attr);
+                });
 
             //	element count as object
             size += serialize_binary(os, make_object<std::size_t>(amap.size()));
@@ -315,12 +333,12 @@ namespace cyng {
         }
 
         std::size_t serializer<param_map_t, BINARY>::write(std::ostream &os, param_map_t const &pmap) {
-            std::size_t size{0};
 
             //	serialize each element from parameter map
-            for (auto const &param : pmap) {
-                size += serializer<param_t, BINARY>::write(os, param);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(pmap), std::end(pmap), std::size_t{0}, [&](std::size_t n, param_t const &param) {
+                    return n + serializer<param_t, BINARY>::write(os, param);
+                });
 
             //	element count
             size += serialize_binary(os, make_object<std::size_t>(pmap.size()));
@@ -330,12 +348,11 @@ namespace cyng {
         }
 
         std::size_t serializer<prop_map_t, BINARY>::write(std::ostream &os, prop_map_t const &omap) {
-            std::size_t size{0};
-
             //	serialize each element from parameter map
-            for (auto const &prop : omap) {
-                size += serializer<prop_t, BINARY>::write(os, prop);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(omap), std::end(omap), std::size_t{0}, [&](std::size_t n, prop_t const &prop) {
+                    return n + serializer<prop_t, BINARY>::write(os, prop);
+                });
 
             //	element count
             size += serialize_binary(os, make_object<std::size_t>(omap.size()));
@@ -344,16 +361,16 @@ namespace cyng {
             return size + serialize_binary(os, make_object(op::MAKE_PROP_MAP));
         }
 
-        std::size_t serializer<tuple_t, BINARY>::write(std::ostream &os, tuple_t const &v) {
-            std::size_t size{0};
+        std::size_t serializer<tuple_t, BINARY>::write(std::ostream &os, tuple_t const &tpl) {
 
             //	serialize each element from the tuple
-            for (auto const &obj : v) {
-                size += serialize_binary(os, obj);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(tpl), std::end(tpl), std::size_t{0}, [&](std::size_t n, object const &obj) {
+                    return n + serialize_binary(os, obj);
+                });
 
             //	element count as object
-            size += serialize_binary(os, make_object<std::size_t>(v.size()));
+            size += serialize_binary(os, make_object<std::size_t>(tpl.size()));
 
             //
             //	serialize instruction to build a tuple
@@ -361,16 +378,16 @@ namespace cyng {
             return size + serialize_binary(os, make_object(op::MAKE_TUPLE));
         }
 
-        std::size_t serializer<vector_t, BINARY>::write(std::ostream &os, vector_t const &v) {
-            std::size_t size{0};
+        std::size_t serializer<vector_t, BINARY>::write(std::ostream &os, vector_t const &vec) {
 
             //	serialize each element from vector
-            for (auto const &obj : v) {
-                size += serialize_binary(os, obj);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(vec), std::end(vec), std::size_t{0}, [&](std::size_t n, object const &obj) {
+                    return n + serialize_binary(os, obj);
+                });
 
             //	element count as object
-            size += serialize_binary(os, make_object<std::size_t>(v.size()));
+            size += serialize_binary(os, make_object<std::size_t>(vec.size()));
 
             //
             //	serialize instruction to build a vector
@@ -378,16 +395,16 @@ namespace cyng {
             return size + serialize_binary(os, make_object(op::MAKE_VECTOR));
         }
 
-        std::size_t serializer<deque_t, BINARY>::write(std::ostream &os, deque_t const &v) {
-            std::size_t size{0};
+        std::size_t serializer<deque_t, BINARY>::write(std::ostream &os, deque_t const &deq) {
 
             //	serialize each element from set
-            for (auto const &obj : v) {
-                size += serialize_binary(os, obj);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(deq), std::end(deq), std::size_t{0}, [&](std::size_t n, object const &obj) {
+                    return n + serialize_binary(os, obj);
+                });
 
             //	element count as object
-            size += serialize_binary(os, make_object<std::size_t>(v.size()));
+            size += serialize_binary(os, make_object<std::size_t>(deq.size()));
 
             //
             //	serialize instruction to build a set
@@ -395,16 +412,16 @@ namespace cyng {
             return size + serialize_binary(os, make_object(op::MAKE_DEQUE));
         }
 
-        std::size_t serializer<prg_t, BINARY>::write(std::ostream &os, prg_t const &v) {
-            std::size_t size{0};
+        std::size_t serializer<prg_t, BINARY>::write(std::ostream &os, prg_t const &prg) {
 
             //	serialize each buffer from set
-            for (auto const &buf : v) {
-                size += serializer<buffer_t, BINARY>::write(os, buf);
-            }
+            std::size_t size =
+                std::accumulate(std::begin(prg), std::end(prg), std::size_t{0}, [&](std::size_t n, buffer_t const &buf) {
+                    return n + serializer<buffer_t, BINARY>::write(os, buf);
+                });
 
             //	element count as object
-            size += serialize_binary(os, make_object<std::size_t>(v.size()));
+            size += serialize_binary(os, make_object<std::size_t>(prg.size()));
 
             //
             //	serialize instruction to build a set

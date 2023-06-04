@@ -184,6 +184,8 @@ namespace cyng {
 
     [[nodiscard]] date make_date(buffer_t const &);
 
+    [[nodiscard]] time make_time(buffer_t const &);
+
     [[nodiscard]] boost::system::error_code make_ec(buffer_t const &);
 
     [[nodiscard]] op make_op(buffer_t const &buffer);

@@ -44,6 +44,7 @@
 #include <cyng/obj/intrinsics/pid.h>
 #include <cyng/obj/intrinsics/raw.h>
 #include <cyng/obj/intrinsics/severity.h>
+#include <cyng/obj/intrinsics/time.h>
 #include <cyng/obj/intrinsics/version.h>
 
 #include <cyng/obj/intrinsics/container.h>

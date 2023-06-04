@@ -16,6 +16,8 @@ project(
     cyng
     VERSION 0.9.4.${_TWEAK_ID}
     LANGUAGES C CXX
+    DESCRIPTION "Dynamic programming in C++"
+    HOMEPAGE_URL "https://github.com/solosTec/cyng"
 )
 
 #
@@ -381,18 +383,6 @@ if(${CAPITAL_NAME}_UNIT_TEST)
 endif()
 
 #
-# generate config file
-#
-configure_file (
-    "${PROJECT_SOURCE_DIR}/include/cyng.h.in"
-    "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}.h"
-)
-configure_file (
-    "${PROJECT_SOURCE_DIR}/include/version.hpp.in"
-    "${PROJECT_SOURCE_DIR}/include/cyng/version.hpp"
-)
-
-#
 # install
 #
 if(UNIX)
@@ -400,6 +390,27 @@ if(UNIX)
 endif()
 
 message(STATUS "** install targets              : ${REQUESTED_LIBS}")
+message(STATUS "** CMAKE_INSTALL_DATAROOTDIR    : ${CMAKE_INSTALL_DATAROOTDIR}")
+
+
+#
+# generate config file
+#
+configure_file (
+    "${PROJECT_SOURCE_DIR}/share/cyng.h.in"
+    "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}.h"
+)
+configure_file (
+    "${PROJECT_SOURCE_DIR}/share/version.hpp.in"
+    "${PROJECT_SOURCE_DIR}/include/cyng/version.hpp"
+)
+
+configure_file (
+    ${CMAKE_CURRENT_SOURCE_DIR}/share/pkgconfig/${PROJECT_NAME}.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+    @ONLY
+)
+
  
 install(
     DIRECTORY 
@@ -417,6 +428,14 @@ install(
     FILES 
         "${CMAKE_BINARY_DIR}/include/cyng.h"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
+)
+
+#
+# install cyng.pc
+#
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )
 
 # export target to a cyng_coreTargets.cmake

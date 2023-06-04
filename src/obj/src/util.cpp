@@ -143,6 +143,15 @@ namespace cyng {
         return date{};
     }
 
+    time make_time(buffer_t const &buffer) {
+        if (buffer.size() >= sizeof(std::uint64_t)) {
+
+            auto const n = to_numeric<std::uint64_t>(buffer);
+            return time(n);
+        }
+        return time{};
+    }
+
     op make_op(buffer_t const &buffer) {
         BOOST_ASSERT(buffer.size() == 2);
         return static_cast<op>(to_numeric<std::uint16_t>(buffer));
