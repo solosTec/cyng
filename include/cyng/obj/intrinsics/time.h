@@ -16,6 +16,17 @@
 
 #include <boost/assert.hpp>
 
+#if __cplusplus <= 201703L && __GNUC__
+namespace std {
+    namespace chrono {
+        using days = duration<int, ratio_multiply<ratio<24>, hours::period>>;
+        using weeks = duration<int, ratio_multiply<ratio<7>, days::period>>;
+        using years = duration<int, ratio_multiply<ratio<146097, 400>, days::period>>;
+        using months = duration<int, ratio_divide<years::period, ratio<12>>>;
+    } // namespace chrono
+} // namespace std
+#endif // _HAS_CXX20
+
 namespace cyng {
 
     /**
