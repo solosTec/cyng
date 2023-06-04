@@ -17,7 +17,8 @@
 #include <boost/assert.hpp>
 
 // see https://gcc.gnu.org/onlinedocs/gcc-11.2.0/libstdc++/api/a18553_source.html
-#if __cplusplus <= 201703L //&& __GNUC__
+// #if __cplusplus <= 201703L //&& __GNUC__
+#if (__GNUC__ <= 8)
 namespace std {
     namespace chrono {
         using days = duration<int, ratio_multiply<ratio<24>, hours::period>>;
