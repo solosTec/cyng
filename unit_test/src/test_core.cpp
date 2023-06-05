@@ -747,27 +747,43 @@ BOOST_AUTO_TEST_CASE(date) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(time){
+BOOST_AUTO_TEST_CASE(time) {
 #ifdef _DEBUG
 
-    {//
-     auto const t = cyng::make_time();
-// print current UTC time
-std::cout << t << std::endl;
-}
-{
-    auto const t = cyng::make_time();
-    std::cout << std::chrono::duration_cast<std::chrono::hours>(t.get_utc_offset(true)) << std::endl;
-}
-{
-    //
-    auto const t = cyng::make_time(2023, 6, 2, 22, 25, 0);
-    //  converts to UTC (!): 2023-06-02T20:25:00Z
-    std::cout << t << std::endl;
-    std::cout << t.get_start_of_day() << ", " << t.get_end_of_day() << std::endl;
-    std::cout << t.get_start_of_month() << ", " << t.get_end_of_month() << ", " << t.days_in_month() << std::endl;
-}
+    { //
+        auto const t = cyng::make_time();
+        // print current UTC time
+        std::cout << t << std::endl;
+    }
+    {
+        auto const t = cyng::make_time();
+        std::cout << std::chrono::duration_cast<std::chrono::hours>(t.get_utc_offset(true)) << std::endl;
+    }
+    {
+        //
+        auto const t = cyng::make_time(2023, 6, 2, 22, 25, 0);
+        //  converts to UTC (!): 2023-06-02T20:25:00Z
+        std::cout << t << std::endl;
+        std::cout << t.get_start_of_day() << ", " << t.get_end_of_day() << std::endl;
+        std::cout << t.get_start_of_month() << ", " << t.get_end_of_month() << ", " << t.days_in_month() << std::endl;
+    }
 #endif
+
+    //  rerefence time
+    auto const ref_time = cyng::make_time(2023, 6, 5, 19, 55, 0);
+    std::cout << ref_time << std::endl;
+    std::cout << ref_time.get_start_of_day() << ", " << ref_time.get_end_of_day() << std::endl;
+    std::cout << ref_time.get_start_of_month() << ", " << ref_time.get_end_of_month() << ", " << ref_time.days_in_month()
+              << std::endl;
+    BOOST_CHECK_EQUAL(ref_time.days_in_month().count(), 30u);
+    std::cout << ref_time.get_start_of_year() << ", " << ref_time.get_end_of_year() << ", " << ref_time.days_in_year() << std::endl;
+    BOOST_CHECK_EQUAL(ref_time.days_in_year().count(), 365u);
+
+    std::cout << ref_time + std::chrono::minutes(2) << std::endl;
+    BOOST_CHECK_EQUAL(cyng::minute((ref_time + std::chrono::minutes(2)).to_utc()), 57);
+
+    std::cout << ref_time - std::chrono::minutes(2) << std::endl;
+    BOOST_CHECK_EQUAL(cyng::minute((ref_time - std::chrono::minutes(2)).to_utc()), 53);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -16,9 +16,9 @@
 
 #include <boost/assert.hpp>
 
-// see https://gcc.gnu.org/onlinedocs/gcc-11.2.0/libstdc++/api/a18553_source.html
+// see https://gcc.gnu.org/onlinedocs/gcc-9.2.0/libstdc++/api/a00050_source.html
 // #if __cplusplus <= 201703L //&& __GNUC__
-#if (__GNUC__ <= 8)
+#if __GNUC__ && (__GNUC__ <= 10)
 namespace std {
     namespace chrono {
         using days = duration<int, ratio_multiply<ratio<24>, hours::period>>;
@@ -86,23 +86,54 @@ namespace cyng {
         std::chrono::seconds to_seconds() const;
 
         /**
-         * This is 00:00 of the this day.
+         * This is 00:00 of the this day UTC.
          */
         [[nodiscard]] time get_start_of_day() const noexcept;
 
         /**
-         * This is 00:00 of the next day.
+         * This is 00:00 of the next day UTC.
          */
         [[nodiscard]] time get_end_of_day() const noexcept;
 
+        /**
+         * This is the first day 00:00 of the this month UTC.
+         */
         [[nodiscard]] time get_start_of_month() const noexcept;
 
         /**
-         * This is the first day 00:00 of the next month.
+         * This is the first day 00:00 of the next month UTC.
          */
         [[nodiscard]] time get_end_of_month() const noexcept;
 
+        /**
+         * @return get_end_of_month() - get_start_of_month()
+         */
         [[nodiscard]] std::chrono::days days_in_month() const;
+
+        /**
+         * This is the first day 00:00 of the this year UTC.
+         */
+        [[nodiscard]] time get_start_of_year() const noexcept;
+
+        /**
+         * This is the first day 00:00 of the next year UTC.
+         */
+        [[nodiscard]] time get_end_of_year() const noexcept;
+
+        /**
+         * @return get_end_of_year() - get_start_of_year()
+         */
+        [[nodiscard]] std::chrono::days days_in_year() const noexcept;
+
+        template <typename R, typename P> time add(std::chrono::duration<R, P> d) const {
+            //  use implementation of chrono library
+            return time(operator std::chrono::system_clock::time_point() + d);
+        }
+
+        template <typename R, typename P> time sub(std::chrono::duration<R, P> d) const {
+            //  use implementation of chrono library
+            return time(operator std::chrono::system_clock::time_point() - d);
+        }
 
       private:
         /**
@@ -123,9 +154,17 @@ namespace cyng {
     time make_time();
 
     /**
+     * The generated time object is UTC time.
+     *
      * @return time object with the time specified in tm.
      */
     time make_time(std::tm const &tm);
+
+    /**
+     * The generated time object is UTC time.
+     *
+     * @return time object with the time as specified.
+     */
     time make_time(int year, int month, int day, int hour, int minute, int second);
 
     /**
@@ -150,10 +189,55 @@ namespace cyng {
      */
     std::chrono::seconds operator-(time const &tpl, time const &tpr);
 
+    template <typename R, typename P> time operator+(time const &tp, std::chrono::duration<R, P> d) {
+        //  add timespan
+        return tp.add<R, P>(d);
+    }
+
+    template <typename R, typename P> time operator-(time const &tp, std::chrono::duration<R, P> d) {
+        //  sub timespan
+        return tp.sub<R, P>(d);
+    }
+
     /**
      * RFC 3339
      */
     std::ostream &operator<<(std::ostream &os, time const &);
+
+    /**
+     * @return gregorian year
+     */
+    constexpr int year(std::tm const &d) { return d.tm_year + 1900; }
+
+    /**
+     * @return gregorian month [0, 11]
+     */
+    constexpr int month(std::tm const &d) { return d.tm_mon + 1; }
+
+    /**
+     * @return day of month [1, 31]
+     */
+    constexpr int day(std::tm const &d) { return d.tm_mday; }
+
+    /**
+     * @return day of year
+     */
+    constexpr int day_of_year(std::tm const &d) { return d.tm_yday; }
+
+    /**
+     * @return hour of day
+     */
+    constexpr int hour(std::tm const &d) { return d.tm_hour; }
+
+    /**
+     * @return minute of hour
+     */
+    constexpr int minute(std::tm const &d) { return d.tm_min; }
+
+    /**
+     * @return second of minute
+     */
+    constexpr int second(std::tm const &d) { return d.tm_sec; }
 
 } // namespace cyng
 

@@ -42,6 +42,14 @@ namespace cyng {
             return buf;
         }
 
+        std::time_t to_gmtime(std::tm tm) {
+#ifdef _MSC_VER
+            return ::_mkgmtime(&tm);
+#else
+            return ::timegm(&tm);
+#endif
+        }
+
         /**
          * This non-standard function converts a std::tm struct into
          * a UTC timestamp.
@@ -106,38 +114,54 @@ namespace cyng {
     }
 
     time time::get_start_of_day() const noexcept {
-        auto const tm = to_localtime();
+        auto const tm = to_utc();
         std::tm const tmp = {0, 0, 0, tm.tm_mday, tm.tm_mon, tm.tm_year, tm.tm_wday, tm.tm_yday, 0};
-        return make_time(tmp);
+        return time(to_gmtime(tmp));
     }
     time time::get_end_of_day() const noexcept {
-        auto const tm = to_localtime();
+        auto const tm = to_utc();
         std::tm const tmp = {0, 0, 0, tm.tm_mday + 1, tm.tm_mon, tm.tm_year, tm.tm_wday, tm.tm_yday, 0};
-        return make_time(tmp);
+        return time(to_gmtime(tmp));
     }
 
     time time::get_start_of_month() const noexcept {
         //  doesn't work as expected
-        auto const tm = to_localtime();
+        auto const tm = to_utc();
         std::tm const tmp = {0, 0, 0, 1, tm.tm_mon, tm.tm_year, 0, 0, 0};
-        return make_time(tmp);
+        return time(to_gmtime(tmp));
     }
+
     time time::get_end_of_month() const noexcept {
-        //  doesn't work as expected
-        auto const tm = to_localtime();
+        auto const tm = to_utc();
         //  [0, 11]
         if (tm.tm_mon < 11) {
             //  same year
             std::tm tmp = {0, 0, 0, 1, tm.tm_mon + 1, tm.tm_year, 0, 0, 0};
-            return make_time(tmp);
+            return time(to_gmtime(tmp));
         }
         std::tm tmp = {0, 0, 0, 1, 0, tm.tm_year + 1, 0, 0, 0};
-        return make_time(tmp);
+        return time(to_gmtime(tmp));
     }
 
     std::chrono::days time::days_in_month() const {
-        //  doesn't work as expected
         return std::chrono::duration_cast<std::chrono::days>(get_end_of_month().to_seconds() - get_start_of_month().to_seconds());
+    }
+
+    time time::get_start_of_year() const noexcept {
+        auto const tm = to_utc();
+        std::tm const tmp = {0, 0, 0, 1, 0, tm.tm_year, 0, 0, 0};
+        return time(to_gmtime(tmp));
+    }
+    time time::get_end_of_year() const noexcept {
+        auto const tm = to_utc();
+        std::tm tmp = {0, 0, 0, 1, 0, tm.tm_year + 1, 0, 0, 0};
+        //  All fields of tm are updated to fit their proper ranges
+        return time(to_gmtime(tmp));
+    }
+
+    std::chrono::days time::days_in_year() const noexcept {
+        auto const s = get_start_of_year();
+        return std::chrono::duration_cast<std::chrono::days>(get_end_of_year().to_seconds() - get_start_of_year().to_seconds());
     }
 
     bool operator==(time const &tpl, time const &tpr) { return tpl.tt_ == tpr.tt_; }
@@ -154,16 +178,7 @@ namespace cyng {
         return std::chrono::duration_cast<std::chrono::seconds>(s);
     }
 
-    std::size_t hash(time const &d) {
-        std::size_t h{0};
-        auto f = std::hash<std::time_t>{};
-
-        //
-        //	combine all values
-        //
-        h ^= f(d.tt_) << 1;
-        return h;
-    }
+    std::size_t hash(time const &d) { return std::hash<std::time_t>{}(d.tt_); }
 
     time make_time() { return time(std::time(nullptr)); }
     time make_time(std::tm const &tm) { return time(std::mktime(const_cast<std::tm *>(&tm))); }
@@ -179,7 +194,8 @@ namespace cyng {
             0,                                // days since January 1 - [0, 365]
             -1                                // try to detect daylight savings time flag
         };
-        return make_time(tm);
+        // https://stackoverflow.com/a/29311491
+        return time(to_gmtime(tm));
     }
 
     time make_time(std::chrono::system_clock::time_point const &tp) {
