@@ -93,6 +93,14 @@ namespace cyng {
          */
         object at(std::size_t) const;
 
+        /**
+         * Produce a tuple with a multitude of specified values
+         */
+        template <typename... Args> auto values(std::pair<std::string, Args> &&...v) const -> std::tuple<Args...> {
+            //  recursion call of value()
+            return {value<Args>(v.first, std::move(v.second))...};
+        }
+
       private:
         object get_data(std::size_t) const;
 
