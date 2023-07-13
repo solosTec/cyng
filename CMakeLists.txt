@@ -78,7 +78,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         message(STATUS "** MSVC_VERSION       : ${MSVC_VERSION}")
         message(STATUS "Use static libraries")
         set(GLOBAL_LIBRARY_TYPE STATIC)
-        #set(Boost_USE_STATIC_LIBS ON)
+        # required if "CYNG_TOOLS" is selected
+        set(Boost_USE_STATIC_LIBS ON)
         # target is Windows 10
 	    add_compile_definitions(_WIN32_WINNT=0x0A00 _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN)
         add_compile_options(/bigobj)
@@ -161,6 +162,15 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     endif()
     message(STATUS "** unit tests         : ${${CAPITAL_NAME}_UNIT_TEST}")
 
+    #
+    # manage tools: CYNG_TOOLS
+    # default is OFF
+    #
+    if(NOT DEFINED ${CAPITAL_NAME}_TOOLS)
+	    set(${CAPITAL_NAME}_TOOLS OFF CACHE BOOL "build cyng tools")
+    endif()
+    message(STATUS "** tools              : ${${CAPITAL_NAME}_TOOLS}")
+
 endif()
 
 if(NOT GLOBAL_LIBRARY_TYPE)
@@ -192,7 +202,7 @@ include (cmake/db_connectors.cmake)
 
 # Find packages ...
 
-set(SMF_BOOST_COMPONENTS regex iostreams program_options system thread random locale)
+set(SMF_BOOST_COMPONENTS regex iostreams system thread random locale)
 
 #
 # unit tests
@@ -201,6 +211,13 @@ set(SMF_BOOST_COMPONENTS regex iostreams program_options system thread random lo
 if(${CAPITAL_NAME}_UNIT_TEST)
     message(STATUS "** Generate a Unit-Test")
     list(APPEND SMF_BOOST_COMPONENTS unit_test_framework)
+endif()
+
+#
+# program_options has a dependency from filesystem
+#
+if(${CAPITAL_NAME}_TOOLS)
+    list(APPEND SMF_BOOST_COMPONENTS program_options filesystem)
 endif()
 
 # Find Boost
@@ -381,6 +398,13 @@ endif()
 
 if(${CAPITAL_NAME}_UNIT_TEST)
     add_subdirectory(unit_test)
+endif()
+
+#
+#	simple assembler
+#
+if(${CAPITAL_NAME}_TOOLS)
+    add_subdirectory(tools/src/asm)
 endif()
 
 #

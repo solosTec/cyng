@@ -21,7 +21,14 @@
 #include <boost/uuid/uuid.hpp>
 
 namespace cyng {
+    /**
+     * string splitter
+     */
     std::vector<std::string> split(std::string str, std::string delims);
+
+    /**
+     * string splitter, but with string_view
+     */
     std::vector<boost::string_view> split(boost::string_view str, boost::string_view delims);
 
     /**

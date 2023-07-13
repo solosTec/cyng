@@ -79,7 +79,10 @@ namespace cyng {
         using clock_t = timer_t::clock_type;
         using time_point_t = clock_t::time_point;
 
-        class result {
+        /**
+         * used in the defer() method
+         */
+        class result final {
           public:
             result(channel &, std::size_t slot, tuple_t &&msg);
             result(result &) = delete; // deleted
@@ -99,6 +102,8 @@ namespace cyng {
 
       public:
         channel(boost::asio::io_context &io, std::string name);
+        channel(channel const &) = delete;
+        ~channel() = default;
 
         /**
          * @return true, if channel is open
@@ -116,12 +121,13 @@ namespace cyng {
          *
          * @param slot slot ID
          * @param msg object list that will be casted to the required function signature.
+         * @return number of pending requests
          */
-        void dispatch(std::size_t slot, tuple_t &&msg);
-        void dispatch(std::size_t slot);
+        long dispatch(std::size_t slot, tuple_t &&msg);
+        long dispatch(std::size_t slot);
 
-        template <typename... Args> void dispatch(std::size_t slot, Args &&...args) {
-            dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
+        template <typename... Args> long dispatch(std::size_t slot, Args &&...args) {
+            return dispatch(slot, cyng::make_tuple(std::forward<Args>(args)...));
         }
 
         /**
@@ -130,6 +136,10 @@ namespace cyng {
         void dispatch(std::string slot, cb_err_t cb, tuple_t &&msg);
         void dispatch(std::string slot, cb_err_t cb);
 
+        /**
+         * Generate dispatch function that converts all arguments into a tuple and
+         * call the internal dispatcher.
+         */
         template <typename... Args> void dispatch(std::string slot, cb_err_t cb, Args &&...args) {
             dispatch(slot, cb, cyng::make_tuple(std::forward<Args>(args)...));
         }
@@ -139,6 +149,14 @@ namespace cyng {
          * @return true if channel was closed, false if channel was already closed
          */
         bool stop();
+
+        template <typename R, typename P> //
+        bool safe_stop(std::chrono::duration<R, P> d) {
+            while (pending_.load() > 0) {
+                std::this_thread::sleep_for(d);
+            }
+            return stop();
+        }
 
         /*
          * cancel timer
@@ -162,46 +180,60 @@ namespace cyng {
         /**
          * time-delayed execution
          */
-        template <typename R, typename P> void suspend(std::chrono::duration<R, P> d, std::size_t slot, tuple_t &&msg) {
+        template <typename R, typename P> long suspend(std::chrono::duration<R, P> d, std::size_t slot, tuple_t &&msg) {
 
             if (!is_open(slot))
                 return;
-
-            auto sp = this->shared_from_this(); //  extend life time
 
             //	formerly: expires_from_now()
             //	Since boost 1.66.0
             timer_.expires_after(d);
 
+            //  extend life time
+            auto sp = this->shared_from_this();
+
+            //
+            //	update pending counter
+            //
+            ++pending_;
+
             timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, sp, slot, msg](boost::system::error_code const &ec) {
                 if (ec != boost::asio::error::operation_aborted && is_open(slot)) {
                     task_->dispatch(slot, msg, sp);
                 }
+                //
+                //	update pending counter
+                //
+                --pending_;
             }));
+
+            return pending_.load();
         }
 
         template <typename R, typename P>
-        void suspend(std::chrono::duration<R, P> d, std::string name, cb_err_t cb, tuple_t &&msg) {
+        long suspend(std::chrono::duration<R, P> d, std::string name, cb_err_t cb, tuple_t &&msg) {
             auto const [slot, ok] = lookup(name);
             if (ok) {
-                suspend(d, slot, std::move(msg));
+                return suspend(d, slot, std::move(msg));
             } else {
                 if (cb) {
                     cb(name_, name);
                 }
             }
+            return pending_.load();
         }
 
         template <typename R, typename P, typename... Args>
-        void suspend(std::chrono::duration<R, P> d, std::string name, cb_err_t cb, Args &&...args) {
+        long suspend(std::chrono::duration<R, P> d, std::string name, cb_err_t cb, Args &&...args) {
             auto const [slot, ok] = lookup(name);
             if (ok) {
-                suspend(d, slot, cyng::make_tuple(std::forward<Args>(args)...));
+                return suspend(d, slot, cyng::make_tuple(std::forward<Args>(args)...));
             } else {
                 if (cb) {
                     cb(name_, name);
                 }
             }
+            return pending_.load();
         }
 
         bool suspend(time_point_t tp, std::size_t slot, tuple_t &&msg);
@@ -249,6 +281,9 @@ namespace cyng {
         }
 
       private:
+        /**
+         * dispatch a message with a callback function to passing the result.
+         */
         void dispatch_r(std::size_t slot, tuple_t &&msg, std::function<void(cyng::tuple_t)>);
 
         /**
@@ -288,6 +323,11 @@ namespace cyng {
          * Each channel has a non-unique name
          */
         std::string const name_;
+
+        /**
+         * Number of pending requests
+         */
+        std::atomic<std::uint32_t> pending_;
     };
 
     /**

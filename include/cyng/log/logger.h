@@ -24,6 +24,7 @@ namespace cyng {
 
         void push(logging::record const &);
         void stop();
+        void safe_stop();
         void set_level(severity);
 
         void start_console_logger();

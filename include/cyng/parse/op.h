@@ -12,8 +12,8 @@
 #include <boost/predef.h>
 
 namespace cyng {
-	
-	op to_op(std::string const& str);
+
+    op to_op(std::string const &str);
 }
 #endif
 

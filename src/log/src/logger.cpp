@@ -26,6 +26,12 @@ namespace cyng {
             channel_->stop();
     }
 
+    void logger::safe_stop() {
+        if (channel_) {
+            channel_->safe_stop(std::chrono::microseconds(8));
+        }
+    }
+
     void logger::set_level(severity lev) {
         if (channel_ && channel_->is_open(5)) {
             channel_->dispatch(5, cyng::make_tuple(lev));

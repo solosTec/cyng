@@ -1,5 +1,6 @@
-#include <cyng/obj/object.h>
 #include <cyng/task/channel.h>
+
+#include <cyng/obj/object.h>
 #include <cyng/task/task.hpp>
 
 #if defined _DEBUG_TASK || defined _DEBUG
@@ -19,9 +20,11 @@ namespace cyng {
         , dispatcher_(io)
         , timer_(io)
         , task_(nullptr)
-        , name_(name) {}
+        , name_(name)
+        , pending_{0} // pending requests
+    {}
 
-    void channel::dispatch(std::size_t slot, tuple_t &&msg) {
+    long channel::dispatch(std::size_t slot, tuple_t &&msg) {
         if (is_open(slot)) {
 
             //
@@ -31,17 +34,30 @@ namespace cyng {
             BOOST_ASSERT_MSG(slot != std::numeric_limits<std::size_t>::max(), "unknown slot name");
 
             //
+            //	update pending counter
+            //
+            ++pending_;
+            BOOST_ASSERT(pending_ != 0);
+
+            //
             //	thread safe access to task
             //
-            auto sp = shared_from_this(); //  extend life time
-
-            boost::asio::post(dispatcher_, [this, sp, slot, msg]() -> void {
-                if (sp->is_open(slot)) {
+            boost::asio::post(dispatcher_, [this, sp = shared_from_this(), slot, msg]() -> void {
+                BOOST_ASSERT_MSG(sp, "no channel");
+                if (sp && sp->is_open(slot)) {
                     auto const tpl = task_->dispatch(slot, msg, sp);
                     boost::ignore_unused(tpl);
+
+                    //
+                    //	update pending counter
+                    //
+                    BOOST_ASSERT(pending_ > 0);
+                    --pending_;
                 }
             });
         }
+
+        return pending_.load();
     }
 
     void channel::dispatch_r(std::size_t slot, tuple_t &&msg, std::function<void(cyng::tuple_t)> cb) {
@@ -66,7 +82,7 @@ namespace cyng {
         }
     }
 
-    void channel::dispatch(std::size_t slot) { dispatch(slot, make_tuple()); }
+    long channel::dispatch(std::size_t slot) { return dispatch(slot, make_tuple()); }
 
     void channel::dispatch(std::string name, cb_err_t cb, tuple_t &&msg) {
         auto const [slot, ok] = lookup(name);
@@ -148,31 +164,39 @@ namespace cyng {
     }
 
     bool channel::stop() {
-        //  extend life time
-        auto sp = this->shared_from_this();
+
+        //
+        //  already closed (this is safe)
+        //
+        if (!task_) {
+            return false;
+        }
 
         //
         //  mark channel as closed
         //	release pointer so that the task object can control its own life time
         //
         auto ptr = task_.release();
-
-        //
-        //  already closed (this is safe)
-        //
-        if (nullptr == ptr)
-            return false;
         BOOST_ASSERT(!is_open());
 
         //
         //  cancel timer
         //
         timer_.cancel();
-        dispatcher_.post([this, ptr, sp]() mutable {
+
+        //
+        //	update pending counter
+        //
+        BOOST_ASSERT_MSG(pending_ == 0, "task is still busy");
+        ++pending_;
+
+        //  extend life time
+        dispatcher_.post([this, ptr, sp = this->shared_from_this()]() mutable {
             //
             //  call stop(eod) in task implementation class
             //
             ptr->stop(sp);
+            --pending_;
         });
 
         ptr = nullptr;
@@ -192,12 +216,24 @@ namespace cyng {
 
         auto sp = this->shared_from_this(); //  extend life time
 
+        //
+        //	set timer
+        //
         timer_.expires_at(tp);
+
+        //
+        //	update pending counter
+        //
+        ++pending_;
 
         timer_.async_wait(boost::asio::bind_executor(dispatcher_, [this, slot, msg, sp](boost::system::error_code const &ec) {
             if (ec != boost::asio::error::operation_aborted && sp->is_open(slot)) {
                 task_->dispatch(slot, msg, sp);
             }
+            //
+            //	update pending counter
+            //
+            --pending_;
         }));
 
         return true;

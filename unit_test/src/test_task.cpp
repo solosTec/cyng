@@ -183,4 +183,12 @@ BOOST_AUTO_TEST_CASE(defer) {
     ctl.shutdown();
     ctl.stop();
 }
+
+BOOST_AUTO_TEST_CASE(pipe) { //
+    BOOST_REQUIRE(true);
+    //  can we implement a pipe operator for tasks?
+    //  task1 | task2 | task3
+    //  instead of ctl_.create_named_channel_with_ref<tokenizer>("task2", task1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
