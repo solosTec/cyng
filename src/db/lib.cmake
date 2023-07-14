@@ -12,17 +12,17 @@ set (db_cpp
 )
     
 set (db_h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/session.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/connection_types.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/session_pool.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/storage.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/julian.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/session.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/connection_types.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/session_pool.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/storage.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/julian.h
 )
 
 set (db_details
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/details/session_interface.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/details/statement_interface.h
-    ${PROJECT_SOURCE_DIR}/../../include/cyng/db/details/result_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/details/session_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/details/statement_interface.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/db/details/result_interface.h
 )
 
 set (db_sqlite3

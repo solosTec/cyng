@@ -26,7 +26,7 @@ namespace cyng {
          */
         class parser {
           public:
-            using cb_f = std::function<void(object)>;
+            using cb_f = std::function<void(object const &)>;
 
           private:
             class code {

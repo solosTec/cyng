@@ -19,7 +19,7 @@ namespace cyng {
         class reader {
 
           public:
-            reader(logger);
+            reader(logger, parser::cb_f);
 
             /**
              * start reading

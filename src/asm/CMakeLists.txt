@@ -39,8 +39,8 @@ add_library(cyng::asm ALIAS "cyng_asm")
 target_include_directories(cyng_asm
     PUBLIC 
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/../../include>
-        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/../../include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${date_SOURCE_DIR}/include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src

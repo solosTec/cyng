@@ -5,6 +5,7 @@ set (asm_lib)
 
 set (asm_cpp
     src/reader.cpp
+    src/writer.cpp
     src/code.cpp
     src/position.cpp
     src/tokenizer.cpp
@@ -14,6 +15,7 @@ set (asm_cpp
     
 set (asm_h
     ${CMAKE_SOURCE_DIR}/include/cyng/asm/reader.h
+    ${CMAKE_SOURCE_DIR}/include/cyng/asm/writer.h
     ${CMAKE_SOURCE_DIR}/include/cyng/asm/code.h
     ${CMAKE_SOURCE_DIR}/include/cyng/asm/position.h
     ${CMAKE_SOURCE_DIR}/include/cyng/asm/tokenizer.h

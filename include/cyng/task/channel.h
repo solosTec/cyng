@@ -183,7 +183,7 @@ namespace cyng {
         template <typename R, typename P> long suspend(std::chrono::duration<R, P> d, std::size_t slot, tuple_t &&msg) {
 
             if (!is_open(slot))
-                return;
+                return 0;
 
             //	formerly: expires_from_now()
             //	Since boost 1.66.0

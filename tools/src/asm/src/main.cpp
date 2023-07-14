@@ -1,6 +1,7 @@
 #include <cyng.h>
 
 #include <cyng/asm/reader.h>
+#include <cyng/asm/writer.h>
 
 #include <cyng/io/ostream.h>
 #include <cyng/log/log.h>
@@ -131,7 +132,8 @@ int main(int argc, char *argv[]) {
     //
     //  start assembler
     //
-    cyng::assembler::reader r(_);
+    cyng::assembler::writer w(_, output_path);
+    cyng::assembler::reader r(_, std::bind(&cyng::assembler::writer::emit, &w, std::placeholders::_1));
     r.start(inp_file);
 
     ctl.stop(); //  remove work item

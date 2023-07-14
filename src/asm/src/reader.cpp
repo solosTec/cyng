@@ -15,12 +15,9 @@
 
 namespace cyng {
     namespace assembler {
-        reader::reader(logger _)
+        reader::reader(logger _, parser::cb_f emit)
             : logger_(_)
-            , parser_([this](object obj) -> void {
-                //
-                CYNG_LOG_TRACE(logger_, "(" << obj << ":" << obj.rtti().type_name() << ")");
-            })
+            , parser_(emit)
             , tokenizer_([this](token &&tok) -> void {
                 //  forward to parser
                 CYNG_LOG_TRACE(logger_, tok);
