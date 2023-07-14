@@ -1,4 +1,4 @@
-﻿#include <tokenizer.h>
+﻿#include <cyng/asm/tokenizer.h>
 
 #include <cyng/io/parser/stream.hpp>
 // #include <cyng/parse/op.h>
@@ -158,7 +158,7 @@ namespace cyng {
             return {state::START, false};
         }
         std::pair<tokenizer::state, bool> tokenizer::timepoint(code const &c) {
-            if (c.is_nl()) {
+            if (c.is_ws()) {
                 //  e.g. 2021-08-09T17:12:13
                 BOOST_ASSERT(token_.size() == 19);
                 emit({token_type::DAT, token_});

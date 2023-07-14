@@ -9,8 +9,8 @@
 
 #include <cyng/log/logger.h>
 
-#include <tokenizer.h>
-#include <parser.h>
+#include <cyng/asm/parser.h>
+#include <cyng/asm/tokenizer.h>
 
 #include <filesystem>
 

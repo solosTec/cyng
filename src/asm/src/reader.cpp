@@ -1,8 +1,8 @@
 ﻿
-#include <reader.h>
+#include <cyng/asm/reader.h>
 
-#include <code.h>
-#include <position.h>
+#include <cyng/asm/code.h>
+#include <cyng/asm/position.h>
 
 #include <cyng/io/parser/stream.hpp>
 #include <cyng/io/serialize.h>

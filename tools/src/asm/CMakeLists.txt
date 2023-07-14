@@ -1,23 +1,19 @@
 cmake_minimum_required (VERSION 3.14)
-project(ASM)
+project(AS)
 
-
-message(STATUS "")                                                           
-message(STATUS "                                  ____    ")
-message(STATUS "                                ,'  , `.  ")
-message(STATUS "                             ,-+-,.' _ |  ")
-message(STATUS "               .--.--.    ,-+-. ;   , ||  ")
-message(STATUS "   ,--.--.    /  /    '  ,--.'|'   |  ||  ")
-message(STATUS "  /       \\  |  :  /`./ |   |  ,', |  |, ")
-message(STATUS " .--.  .-. | |  :  ;_   |   | /  | |--'   ")
-message(STATUS "  \\__\\/: . .  \\  \\    `.|   : |  | ,  ")
-message(STATUS "  ,\" .--.; |   `----.   \\   : |  |/     ")
-message(STATUS " /  /  ,.  |  /  /`--'  /   | |`-'        ")
-message(STATUS ";  :   .'   \\'--'.     /|   ;/           ")
-message(STATUS "|  ,     .-./  `--'---' '---'             ")
-message(STATUS " `--`---'                                 ")
-                                         
-
+                          
+message(STATUS "   ,---,       .--.--.        ")
+message(STATUS "  '  .' \\     /  /    '.     ")
+message(STATUS " /  ;    '.  |  :  /`. /      ")
+message(STATUS ":  :       \\ ;  |  |--`      ")
+message(STATUS ":  |   /\\   \\|  :  ;_       ")
+message(STATUS "|  :  ' ;.   :\\  \\    `.    ")
+message(STATUS "|  |  ;/  \\   \\`----.   \\  ")
+message(STATUS "'  :  | \\  \\ ,'__ \\  \\  | ")
+message(STATUS "|  |  '  '--' /  /`--'  /     ")
+message(STATUS "|  :  :      '--'.     /      ")
+message(STATUS "|  | ,'        `--'---'       ")
+message(STATUS "`--''                         ")
 message(STATUS "")
                                                            
 
@@ -32,13 +28,13 @@ message(STATUS "** Boost_LIBRARIES    : ${Boost_LIBRARIES}")
 message(STATUS "** Boost_PROGRAM_OPTIONS_LIBRARY : ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 
 #
-# add executable: asm
+# add executable: as
 #
 include (app.cmake)
-add_executable(asm ${asm_app})
-target_compile_features(asm PRIVATE cxx_std_20)
+add_executable(as ${as_app})
+target_compile_features(as PRIVATE cxx_std_20)
 
-target_include_directories(asm
+target_include_directories(as
     PRIVATE
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -46,11 +42,11 @@ target_include_directories(asm
 )
 
 #
-#   debug asm
+#   debug as
 #
-target_compile_definitions(asm 
+target_compile_definitions(as 
     PRIVATE 
-        $<$<CONFIG:Debug>:_DEBUG_ASM>
+        $<$<CONFIG:Debug>:_DEBUG_AS>
         $<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>
         $<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS>
         $<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>   
@@ -58,7 +54,7 @@ target_compile_definitions(asm
 #
 # -Wno-psabi for gcc > 7.1
 #
-target_compile_options(asm 
+target_compile_options(as 
     PRIVATE 
         $<$<AND:$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},7.1>,$<CXX_COMPILER_ID:GNU>>:-Wno-psabi>
         $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
@@ -68,14 +64,14 @@ target_compile_options(asm
 #
 #   dependencies: Boost
 #
-target_link_libraries(asm 
+target_link_libraries(as 
     PRIVATE 
 		cyng::obj
 		cyng::io
 		cyng::log
 		cyng::task
 		cyng::parse
-#        Boost::filesystem
+		cyng::asm
         Boost::program_options
         Boost::filesystem
         "$<$<PLATFORM_ID:Linux>:pthread>"

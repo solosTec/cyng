@@ -388,6 +388,9 @@ add_subdirectory(src/parse)
 add_subdirectory(src/sys)
 add_subdirectory(src/rnd)
 add_subdirectory(src/net)
+if(${CAPITAL_NAME}_TOOLS)
+    add_subdirectory(src/asm)
+endif()
 
 #
 #	platform specific libraries

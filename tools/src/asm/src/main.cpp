@@ -1,6 +1,6 @@
 #include <cyng.h>
 
-#include <reader.h>
+#include <cyng/asm/reader.h>
 
 #include <cyng/io/ostream.h>
 #include <cyng/log/log.h>

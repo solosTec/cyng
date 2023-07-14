@@ -7,8 +7,8 @@
 #ifndef CYNG_ASM_TOKENIZER_H
 #define CYNG_ASM_TOKENIZER_H
 
-#include <code.h>
-#include <token.h>
+#include <cyng/asm/code.h>
+#include <cyng/asm/token.h>
 
 #include <cstdint>
 #include <functional>

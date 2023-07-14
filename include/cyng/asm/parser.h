@@ -7,7 +7,7 @@
 #ifndef CYNG_ASM_PARSER_H
 #define CYNG_ASM_PARSER_H
 
-#include <token.h>
+#include <cyng/asm/token.h>
 
 #include <cyng/obj/object.h>
 
