@@ -7,15 +7,16 @@
 #ifndef CYNG_TASK_CHANNEL_H
 #define CYNG_TASK_CHANNEL_H
 
+#include <cyng/obj/intrinsics/container.h>
+#include <cyng/obj/util.hpp>
+#include <cyng/task/task_interface.h>
+
 #include <atomic>
 #include <boost/asio.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
-
-#include <cyng/obj/intrinsics/container.h>
-#include <cyng/obj/util.hpp>
-#include <cyng/task/task_interface.h>
+#include <thread>
 
 namespace cyng {
 
