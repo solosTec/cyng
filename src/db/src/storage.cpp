@@ -1,12 +1,6 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2021 Sylko Olzscher
- *
- */
+#include <cyng/db/storage.h>
 
 #include <cyng/db/details/statement_interface.h>
-#include <cyng/db/storage.h>
 #include <cyng/log/conv.h>
 #include <cyng/obj/numeric_cast.hpp>
 #include <cyng/parse/buffer.h>
@@ -27,29 +21,29 @@ namespace cyng {
         storage::storage(session s)
             : s_(s) {}
 
-        void storage::loop(meta_sql const &ms, loop_f f) {
+        std::size_t storage::loop(meta_sql const &ms, loop_f f) {
 
             cyng::sql::select s(s_.get_dialect(), ms);
-            // auto const sql = s.all(ms, true).from(ms.get_name())();
             auto const sql = s.all(ms, true).from()();
-#ifdef _DEBUG_DB
-//			std::cout << sql << std::endl;
-#endif
             auto stmt = s_.create_statement();
             stmt->prepare(sql);
 
             //
             //	read all results
             //
+            std::size_t counter = 0;
             while (auto res = stmt->get_result()) {
 
                 //
                 //	Convert SQL result to record
                 //	false terminates the loop
                 //
-                if (!f(to_record(ms, res)))
+                if (!f(to_record(ms, res))) {
                     break;
+                }
+                ++counter;
             }
+            return counter;
         }
     } // namespace db
 
