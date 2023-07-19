@@ -63,7 +63,7 @@ namespace cyng {
       public:
         using channel_type = T;
         using rgb_type = std::array<T, DIM>;
-        using hsl_type = std::array<double, 3>; //!<	hue-saturation-lightness
+        using hsl_type = std::array<double, HSL_DIM>; //!<	hue-saturation-lightness
 
       public:
         color()

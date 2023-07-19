@@ -87,7 +87,7 @@ namespace cyng {
                     ss << ' ';
                     has_pk = false;
                 }
-                ss << '[' << col.name_ << ": " << data_.at(idx) << ']';
+                ss << '[' << col.name_ << ":" << data_.at(idx) << ']';
             }
         });
 

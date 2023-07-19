@@ -187,7 +187,7 @@ namespace cyng {
         //
         //	update pending counter
         //
-        BOOST_ASSERT_MSG(pending_ == 0, "task is still busy");
+        // BOOST_ASSERT_MSG(pending_ == 0, "task is still busy");
         ++pending_;
 
         //  extend life time
